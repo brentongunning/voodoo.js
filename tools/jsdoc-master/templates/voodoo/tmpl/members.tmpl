@@ -1,0 +1,40 @@
+<?js var data = obj; ?>
+<dt>
+    <?js
+      // Remove closure compiler quotes
+      var start = name.indexOf('[\'');
+      var end = name.indexOf('\']');
+      while (start != -1 && end != -1 && start < end) {
+        pre = name.substring(0, start);
+        if (pre == 'this') pre = '';
+        if (pre != '') pre = pre + '.';
+
+        post = name.substring(end + 2, name.length);
+  
+        name = pre + name.substring(start + 2, end) + post;
+
+        start = name.indexOf('[\'');
+        end = name.indexOf('\']');
+      }
+    ?>
+    
+    <h4 class="name" id="<?js= id ?>"><?js= data.attribs + name + (data.signature ? data.signature : '') ?></h4>
+    
+    <?js if (data.summary) { ?>
+    <p class="summary"><?js= summary ?></p>
+    <?js } ?>
+</dt>
+<dd>
+    <?js if (data.description) { ?>
+    <div class="description">
+        <?js= data.description ?>
+    </div>
+    <?js } ?>
+    
+    <?js= this.partial('details.tmpl', data) ?>
+    
+    <?js if (data.examples && examples.length) { ?>
+        <h5>Example<?js= examples.length > 1? 's':'' ?></h5>
+        <?js= this.partial('examples.tmpl', examples) ?>
+    <?js } ?>
+</dd>

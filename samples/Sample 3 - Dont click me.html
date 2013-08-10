@@ -1,0 +1,235 @@
+<html>
+<head>
+  <link href='http://fonts.googleapis.com/css?family=Josefin+Slab'
+      rel='stylesheet' type='text/css'>
+  <title>Don't click me - Voodoo Sample 3</title>
+</head>
+<script src="../lib/three.min.js"></script>
+<script src="../build/voodoo-0.8.4.min.debug.js"></script>
+<style type="text/css">
+  * {font-family:'Josefin Slab',serif;}
+  #content {position:absolute; left:0px; top:500px; width:100%;}
+  #bargraph {width:400px; height:300px;
+      border-width:1px; border-color:black; border-style:solid;}
+  body {min-height:2000px}
+</style>
+<body>
+  <center>
+    <h4>Voodoo Sample - Copyright (c) 2013 VoodooJs Authors</h4>
+    <h1>Don't click me</h1>
+    <h3>Description</h3>
+    <p>This sample demonstrates how to respond to create triggers that
+       respond to mouse events.</p>
+  </center>
+  <div id="content">
+    <center>
+      <div id="bargraph"></div>
+    </center>
+  </div>
+</body>
+<script>
+
+// ----------------------------------------------------------------------------
+// BarGraphView
+// ----------------------------------------------------------------------------
+
+var BarGraphView = voodoo.View.extend({
+  load: function() {
+    this.depth = 200;
+    this.barDepth = 100;
+
+    this.material = new THREE.MeshPhongMaterial();
+    this.material.color.setRGB(0.7, 0.7, 0.7);
+    this.material.ambient.setRGB(0.2, 0.2, 0.2);
+    this.cubbyMesh = new THREE.Mesh(this.createCubbyGeometry(), this.material);
+
+    this.cubbyMesh.position.z = -this.depth / 2;
+    this.cubbyMesh.scale.z = this.depth / 2;
+
+    this.scene.add(this.cubbyMesh);
+
+    this.bars = [];
+    this.createBar(0.7, new THREE.Color(0xFF8080), new THREE.Color(0xFF4444), new THREE.Color(0x404040));
+    this.createBar(0.9, new THREE.Color(0x80FF80), new THREE.Color(0x44FF44), new THREE.Color(0x404040));
+    this.createBar(0.2, new THREE.Color(0x8080FF), new THREE.Color(0x4444FF), new THREE.Color(0x404040));
+    this.createBar(0.5, new THREE.Color(0xFF80FF), new THREE.Color(0xFF44FF), new THREE.Color(0x404040));
+
+    this.selectedBar = 0;
+  },
+
+  unload: function() {
+    this.scene.remove(this.cubbyMesh);
+
+    for (var i = 0; i < this.bars.length; ++i)
+      this.scene.remove(this.bars[i].mesh);
+  },
+
+  createCubbyGeometry: function() {
+    var cubbyGeometry = new THREE.Geometry();
+
+    var vertices = cubbyGeometry.vertices
+    vertices.push(new THREE.Vector3(-1, -1, -1)); // 0: left, top, back
+    vertices.push(new THREE.Vector3( 1, -1, -1)); // 1: right, top, back
+    vertices.push(new THREE.Vector3(-1,  1, -1)); // 2: left, bottom, back
+    vertices.push(new THREE.Vector3( 1,  1, -1)); // 3: right, bottom, back
+    vertices.push(new THREE.Vector3(-1, -1,  1)); // 4: left, top, front
+    vertices.push(new THREE.Vector3( 1, -1,  1)); // 5: right, top, front
+    vertices.push(new THREE.Vector3(-1,  1,  1)); // 6: left, bottom, front
+    vertices.push(new THREE.Vector3( 1,  1,  1)); // 7: right, bottom, front
+
+    cubbyGeometry.faces.push(new THREE.Face3(0, 1, 2)); // Back
+    cubbyGeometry.faces.push(new THREE.Face3(2, 1, 3));
+    cubbyGeometry.faces.push(new THREE.Face3(4, 0, 6)); // Left
+    cubbyGeometry.faces.push(new THREE.Face3(6, 0, 2));
+    cubbyGeometry.faces.push(new THREE.Face3(1, 5, 3)); // Right
+    cubbyGeometry.faces.push(new THREE.Face3(3, 5, 7));
+    cubbyGeometry.faces.push(new THREE.Face3(4, 5, 0)); // Top
+    cubbyGeometry.faces.push(new THREE.Face3(0, 5, 1));
+    cubbyGeometry.faces.push(new THREE.Face3(2, 3, 6)); // Bottom
+    cubbyGeometry.faces.push(new THREE.Face3(6, 3, 7));
+
+    cubbyGeometry.computeFaceNormals();
+
+    return cubbyGeometry;
+  },
+
+  createBar: function(height, hoverColor, selectColor, ambientColor) {
+    var defaultColor = new THREE.Color(0xAAAAAA);
+
+    var barMaterial = new THREE.MeshPhongMaterial();
+    barMaterial.color.copy(defaultColor);
+    barMaterial.ambient.copy(ambientColor);
+    var barMesh = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), barMaterial);
+    this.scene.add(barMesh);
+
+    this.bars.push({
+      material: barMaterial,
+      mesh: barMesh,
+      height: height,
+      defaultColor: defaultColor,
+      hoverColor: hoverColor,
+      selectColor: selectColor
+    });
+
+    this.triggers.add(barMesh, this.bars.length);
+  },
+
+  move: function(x, y, w, h) {
+    this.cubbyMesh.position.x = x + w / 2;
+    this.cubbyMesh.position.y = y + h / 2;
+    this.cubbyMesh.scale.x = w / 2;
+    this.cubbyMesh.scale.y = h / 2;
+
+    var padding = 0.15;
+    for (var i = 0; i < this.bars.length; ++i) {
+      this.bars[i].mesh.position.x = x + w * padding +
+          w * (1 - padding * 2) * (i / (this.bars.length - 1));
+      this.bars[i].mesh.position.y = y + h - h * this.bars[i].height / 2;
+      this.bars[i].mesh.position.z = -this.depth + this.barDepth / 2;
+      this.bars[i].mesh.scale.x = w / this.bars.length / 2;
+      this.bars[i].mesh.scale.y = h * this.bars[i].height;
+      this.bars[i].mesh.scale.z = this.barDepth;
+    }
+  },
+
+  selectBar: function(barIndex) {
+    // Unselect all bars first
+    for (var i = 0; i < this.bars.length; ++i)
+      this.bars[i].material.color.copy(this.bars[i].defaultColor);
+
+    // Select the bar
+    if (barIndex >= 1 && barIndex <= this.bars.length) {
+      var bar = this.bars[barIndex - 1];
+      bar.material.color.copy(bar.selectColor);
+    }
+
+    this.selectedBar = barIndex;
+  },
+
+  hoverBar: function(barIndex) {
+    // Highlight the bar
+    if (barIndex >= 1 && barIndex <= this.bars.length &&
+        barIndex != this.selectedBar) {
+      var bar = this.bars[barIndex - 1];
+      bar.material.color.copy(bar.hoverColor);
+    }
+  },
+
+  leaveBar: function(barIndex) {
+    // Unselect the bar
+    if (barIndex >= 1 && barIndex <= this.bars.length &&
+        barIndex != this.selectedBar) {
+      var bar = this.bars[barIndex - 1];
+      bar.material.color.copy(bar.defaultColor);
+    }
+  }
+});
+
+// ----------------------------------------------------------------------------
+// BarGraphStencilView
+// ----------------------------------------------------------------------------
+
+var BarGraphStencilView = voodoo.View.extend({
+  load: function() {
+    this.stencilMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2),
+        new THREE.MeshBasicMaterial());
+
+    this.scene.add(this.stencilMesh);
+    this.triggers.add(this.stencilMesh);
+  },
+
+  unload: function() {
+    this.scene.remove(this.stencilMesh);
+    this.triggers.remove(this.stencilMesh);
+  },
+
+  move: function(x, y, w, h) {
+    this.stencilMesh.position.x = x + w / 2;
+    this.stencilMesh.position.y = y + h / 2;
+    this.stencilMesh.scale.x = w / 2;
+    this.stencilMesh.scale.y = h / 2;
+  }
+});
+
+// ----------------------------------------------------------------------------
+// BarGraphModel
+// ----------------------------------------------------------------------------
+
+var BarGraphModel = voodoo.Model.extend({
+  name: 'BarGraphModel',
+  viewType: BarGraphView,
+  stencilViewType: BarGraphStencilView,
+
+  initialize: function(options) {
+    this.element = options.element;
+  },
+
+  setUpViews: function() {
+    // Add events
+    this.on('click', this.selectBar);
+    this.on('mouseover', this.hoverBar);
+    this.on('mouseout', this.leaveBar);
+  },
+
+  update: function(deltaTime) {
+    var pos = voodoo.utility.findAbsolutePosition(this.element);
+    var w = this.element.offsetWidth;
+    var h = this.element.offsetHeight;
+
+    this.view.move(pos.x, pos.y, w, h);
+    this.stencilView.move(pos.x, pos.y, w, h);
+  },
+
+  selectBar: function(event) { this.view.selectBar(event.triggerId); },
+  hoverBar: function(event) { this.view.hoverBar(event.triggerId); },
+  leaveBar: function(event) { this.view.leaveBar(event.triggerId); }
+});
+
+// ----------------------------------------------------------------------------
+// Setup
+// ----------------------------------------------------------------------------
+
+new BarGraphModel({element: document.getElementById('bargraph')});
+
+</script>
+</html>
