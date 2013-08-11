@@ -19,7 +19,7 @@ In addition, after building there will be these new folders:
 
 # How to Build
 
-Voodoo currently builds only on Windows. It would be great if someone ported the build engine to Unix and Python.
+Voodoo currently builds on Windows. It would be great if someone ported the build engine to Unix and Python.
 
 ## Step 1: Install Python 2.7
 
