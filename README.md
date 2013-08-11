@@ -37,10 +37,10 @@ Voodoo currently builds on Windows. It would be great if someone ported the buil
 
   http://www.java.com/en/
 
-## Step 4: Update tools\user.cmd
+## Step 5: Update tools\user.cmd
 
   Update this script with paths to your installations and browsers to test.
 
-## Step 5: Build
+## Step 6: Build
 
   Run build.cmd in the root folder.
