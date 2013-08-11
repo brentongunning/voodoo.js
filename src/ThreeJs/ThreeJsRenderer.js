@@ -346,8 +346,6 @@ ThreeJsRenderer_.prototype.getViewportSize_ = function() {
   var size = {width: testDiv.offsetWidth, height: testDiv.offsetHeight};
   document.documentElement.removeChild(testDiv);
 
-  window.console.log('viewportSize: ' + size.width + ',' + size.height);
-
   return size;
 };
 
