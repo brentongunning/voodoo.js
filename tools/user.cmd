@@ -29,8 +29,8 @@ set sevenzip=C:\Program Files\7-Zip\7z
 
 :: Browsers to test, separated by commas
 
--set chrome=C:\Program Files (x86)\Google\Chrome\Application\chrome.exe
--set firefox=C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+set chrome=C:\Program Files (x86)\Google\Chrome\Application\chrome.exe
+set firefox=C:\Program Files (x86)\Mozilla Firefox\firefox.exe
 
 
 set browsersToTest=%chrome%,%firefox%
