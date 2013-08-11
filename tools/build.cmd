@@ -227,7 +227,7 @@ if %dropping%==1 (
   copy /B /Y "%project_config%\readme.txt" "%drop_staging%"
   copy /B /Y "%project_config%\license.txt" "%drop_staging%"
   
-  7z a -tzip "%drop_file%" "%drop_staging%\*"
+  "%sevenzip%" a -tzip "%drop_file%" "%drop_staging%\*"
   if errorlevel 1 call :error "Failed to zip"
   call :rmdir "%drop_staging%"
 )
@@ -254,7 +254,7 @@ set test=0
 if "%op%"=="all" set test=1
 if "%op%"=="test" set test=1
 if "%op%"=="testdebug" set test=1
-set jstest=java -jar "%root%js-test-driver\JsTestDriver-1.3.5.jar"
+set jstest="%java%" -jar "%root%js-test-driver\JsTestDriver-1.3.5.jar"
 set port=46576
 set server=http://localhost:46576
 set testconf=%project_config%\jsTestDriver.conf
@@ -288,7 +288,7 @@ for /r "%externs_dir%" %%F in (*.js) do (
 )
 echo [Build] Compiling %compiletype% build
 call :delete "%outfile%"
-java -jar "%root%compiler-latest\compiler.jar" --compilation_level %optimizations% --js_output_file "%outfile%" --warning_level VERBOSE --js "%build_merged%" %externs% --define='DEBUG=%compiledebug%' --define='VERSION='%version%'' --define='NAMESPACE='%project%'' --language_in=ECMASCRIPT5_STRICT
+"%java%" -jar "%root%compiler-latest\compiler.jar" --compilation_level %optimizations% --js_output_file "%outfile%" --warning_level VERBOSE --js "%build_merged%" %externs% --define='DEBUG=%compiledebug%' --define='VERSION='%version%'' --define='NAMESPACE='%project%'' --language_in=ECMASCRIPT5_STRICT
 echo.
 endlocal
 if errorlevel 1 call :error "Compilation failed"
