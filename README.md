@@ -3,7 +3,7 @@ Voodoo.js
 
 # Introduction
 
-Voodoo's folder structure
+Folder structure:
 
   * /config - Build settings
   * /samples - Examples
@@ -11,7 +11,7 @@ Voodoo's folder structure
   * /test - Unit tests
   * /tools - Build engine
   
-In addition, after building you will find the following new folders:
+In addition, after building there will be these new folders:
 
   * /build - Compiled source
   * /docs - Documentation
