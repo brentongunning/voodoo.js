@@ -6,7 +6,7 @@
 
 
 /**
- * Enumeration for the different types of layer passes.
+ * Enumeration for the different types of rendering passes called layers.
  *
  * @private
  * @enum {number}
@@ -20,12 +20,9 @@ var LayerPass_ = {
 
 
 /**
- * 3D layer description and content.
- *
  * A layer is essentially a render pass on a scene. Voodoo's engine
- * may create multiple layers, and each model view is instantiated on
- * each layer when the model is created. Users developing models should
- * use the layer to access the scene when they load their 3D content.
+ * may create multiple layers, and each view is instantiated on
+ * each layer when the model is created.
  *
  * @constructor
  * @private
