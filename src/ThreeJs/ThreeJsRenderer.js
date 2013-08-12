@@ -110,6 +110,55 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
     this.setupFullscreenCanvasRenderer_(this.belowRenderer_);
     this.belowCanvas_.style.zIndex = this.engine_.options_['belowZIndex'];
   }
+
+  // Add window events for scroll and resize.
+
+  // Moves the canvas whenever the page is scrolled
+  var self = this;
+  function onScroll(event) {
+    self.targetLeft = window.pageXOffset + 'px';
+    self.targetTop = window.pageYOffset + 'px';
+  };
+
+  // Resizes the canvas whenever the browser is resized
+  function onResize(event) {
+    self.viewportSize = self.getViewportSize_();
+    var canvasWidth = self.viewportSize.width;
+    var canvasHeight = self.viewportSize.height;
+
+    self.aboveRenderer_.setSize(canvasWidth, canvasHeight);
+    self.belowRenderer_.setSize(canvasWidth, canvasHeight);
+
+    var styleCanvasWidth = canvasWidth + 'px';
+    var styleCanvasHeight = canvasHeight + 'px';
+    self.aboveCanvas_.style.width = styleCanvasWidth;
+    self.belowCanvas_.style.width = styleCanvasWidth;
+    self.aboveCanvas_.style.height = styleCanvasHeight;
+    self.belowCanvas_.style.height = styleCanvasHeight;
+
+    var devicePixelRatio = window.devicePixelRatio || 1.0;
+    var renderingCanvasWidth = canvasWidth * devicePixelRatio;
+    var renderingCanvasHeight = canvasHeight * devicePixelRatio;
+    self.aboveCanvas_.width = renderingCanvasWidth;
+    self.belowCanvas_.width = renderingCanvasWidth;
+    self.aboveCanvas_.height = renderingCanvasHeight;
+    self.belowCanvas_.height = renderingCanvasHeight;
+
+    // This code forces webkit to redraw. It's needed because of a bug where
+    // Chrome does not repaint some elements under the fullscreen canvas on
+    // browser resize
+    document.body.style.display = 'none';
+    var unused = document.body.offsetHeight;
+    document.body.style.display = 'block';
+  }
+
+  onResize(null);
+  onScroll(null);
+
+  // Register the canvasRenderer's onScroll and onResize events with the
+  // window so we can adjust our canvas size
+  window.addEventListener('scroll', onScroll, false);
+  window.addEventListener('resize', onResize, false);
 };
 
 
@@ -463,6 +512,10 @@ ThreeJsRenderer_.prototype.render_ = function() {
     this.aboveRenderer_.context.finish();
   if (this.engine_.options_['belowLayer'])
     this.belowRenderer_.context.finish();
+
+  // Move the canvases to the target position right before we render
+  this.aboveCanvas_.style.left = this.belowCanvas_.style.left = this.targetLeft;
+  this.aboveCanvas_.style.top = this.belowCanvas_.style.top = this.targetTop;
 };
 
 
@@ -515,10 +568,8 @@ ThreeJsRenderer_.prototype.setupDeltaTimer_ = function() {
  */
 ThreeJsRenderer_.prototype.setupFullscreenCanvasRenderer_ =
     function(canvasRenderer) {
-  var self = this;
   var canvas = canvasRenderer.domElement;
   var canvasStyle = canvas.style;
-  canvas.id = 'hey';
 
   // Reverse the face culling order on the renderer. Normally, RHS like
   // Three.Js would cull CCW tris, but see Camera.js for an explanation.
@@ -526,37 +577,7 @@ ThreeJsRenderer_.prototype.setupFullscreenCanvasRenderer_ =
   canvasRenderer.setFaceCulling(THREE.CullFaceFront,
       THREE.FrontFaceDirectionCCW);
 
-  // Moves the canvas whenever the page is scrolled
-  function onScroll(event) {
-    canvasStyle.left = window.pageXOffset + 'px';
-    canvasStyle.top = window.pageYOffset + 'px';
-  };
-
-  // Resizes the canvas whenever the browser is resized
-  function onResize(event) {
-    self.viewportSize = self.getViewportSize_();
-    var canvasWidth = self.viewportSize.width;
-    var canvasHeight = self.viewportSize.height;
-
-    canvasRenderer.setSize(canvasWidth, canvasHeight);
-    canvas.style.width = canvasWidth + 'px';
-    canvas.style.height = canvasHeight + 'px';
-    var devicePixelRatio = window.devicePixelRatio || 1.0;
-    canvas.width = canvasWidth * devicePixelRatio;
-    canvas.height = canvasHeight * devicePixelRatio;
-
-    // This code forces webkit to redraw. It's needed because of a bug where
-    // Chrome does not repaint some elements under the fullscreen canvas on
-    // browser resize
-    document.body.style.display = 'none';
-    var unused = document.body.offsetHeight;
-    document.body.style.display = 'block';
-  }
-
   canvasStyle.position = 'absolute';
-
-  onResize(null);
-  onScroll(null);
 
   // This lets mouse events fall through to underlying objects so we can
   // select text and still use the page even when a canvas is on top.
@@ -564,11 +585,6 @@ ThreeJsRenderer_.prototype.setupFullscreenCanvasRenderer_ =
 
   // Add the canvas to the page
   document.body.appendChild(canvas);
-
-  // Register the canvasRenderer's onScroll and onResize events with the
-  // window so we can adjust our canvas size
-  window.addEventListener('scroll', onScroll, false);
-  window.addEventListener('resize', onResize, false);
 };
 
 
