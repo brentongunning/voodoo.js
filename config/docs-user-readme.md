@@ -1,5 +1,5 @@
 ## Voodoo Javascript Library
-#### Version 0.8.4 (Public Beta) ####
+#### Version 0.8.5 (Public Beta) ####
 
 This documentation covers the public API for Voodoo. All objects documented here are contained in the **voodoo** namespace.
 
