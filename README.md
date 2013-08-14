@@ -16,6 +16,7 @@ In addition, after building there will be these new folders:
   * /build - Compiled source
   * /docs - Documentation
   * /drop - Zip file for public sharing
+  * /lib - Dependencies
 
 # How to Build
 
