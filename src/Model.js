@@ -67,7 +67,7 @@ Model.prototype['construct'] = function(options) {
   log_.assert_(this['viewType'], 'Model view type cannot be undefined or null');
   this['stencilViewType'] = this['stencilViewType'] || this['viewType'];
 
-  this.id_ = '<' + (++nextModelId_) + ',' + this['name'] + '>';
+  this.setId_();
   log_.modelInformation_(this, 'Constructing');
 
   // If no engine has been created, create one with default options.
@@ -82,12 +82,6 @@ Model.prototype['construct'] = function(options) {
   this['initialize'](options);
 
   this.createViews_();
-  this.view_ = this.views_.length > 1 ?
-      new Composite_(this.views_) :
-      this.views_[0];
-  this.stencilView_ = this.stencilViews_.length > 1 ?
-      new Composite_(this.stencilViews_) :
-      this.stencilViews_[0];
 
   this.setupViewProperties_();
   this['setUpViews']();
@@ -296,6 +290,30 @@ Model.prototype.createViews_ = function() {
         break;
     }
   }
+
+  // Create composite view and stencil views if there are more than one.
+  this.view_ = this.views_.length > 1 ?
+      new Composite_(this.views_) :
+      this.views_[0];
+  this.stencilView_ = this.stencilViews_.length > 1 ?
+      new Composite_(this.stencilViews_) :
+      this.stencilViews_[0];
+};
+
+
+/**
+ * Sets the identifier used for thei model in logging.
+ *
+ * @private
+ */
+Model.prototype.setId_ = function() {
+  this.id_ = '<' + (++nextModelId_) + ',';
+
+  // Only write the organization if it's not the default.
+  if (this['organization'] !== defaultOrganization_)
+    this.id_ += this['organization'] + '.';
+
+  this.id_ += this['name'] + '>';
 };
 
 
