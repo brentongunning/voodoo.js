@@ -15,6 +15,16 @@
 var nextModelId_ = 0;
 
 
+/**
+ * Default model organization when none is specified.
+ *
+ * @type {string}
+ * @const
+ * @private
+ */
+var defaultOrganization_ = '*';
+
+
 
 /**
  * Base class for all models.
@@ -60,20 +70,15 @@ Model.prototype['construct'] = function(options) {
   this.id_ = '<' + (++nextModelId_) + ',' + this['name'] + '>';
   log_.modelInformation_(this, 'Constructing');
 
-  // Check if the engine needs to be created
+  // If no engine has been created, create one with default options.
   if (typeof window['voodoo']['engine'] === 'undefined' ||
       window['voodoo']['engine'] === null) {
     window['voodoo']['engine'] = new Engine(new Options());
   }
 
-  if (typeof window['voodoo']['engine'] === 'undefined' ||
-      window['voodoo']['engine'] === null) {
-    log_.error_('Engine must be initialized');
-    return;
-  }
-
   this.eventListeners_ = {};
 
+  this.setupCache_();
   this['initialize'](options);
 
   this.createViews_();
@@ -84,18 +89,7 @@ Model.prototype['construct'] = function(options) {
       new Composite_(this.stencilViews_) :
       this.stencilViews_[0];
 
-  // Setup properties
-  Object.defineProperty(this, 'view', {
-    get: function() { return this.view_; },
-    set: function() { log_.error_('view is read-only'); },
-    writeable: false
-  });
-  Object.defineProperty(this, 'stencilView', {
-    get: function() { return this.stencilView_; },
-    set: function() { log_.error_('stencilView is read-only'); },
-    writeable: false
-  });
-
+  this.setupViewProperties_();
   this['setUpViews']();
 
   // Add this model to the engine to be updated
@@ -202,14 +196,6 @@ Model.prototype['setUpViews'] = function() {
 
 
 /**
- * The composite stencil view for this model.
- *
- * @type {Object}
- */
-Model.prototype['stencilView'] = null;
-
-
-/**
  * Shuts down the views. This is called before cleanUp() when a model is
  * destroyed. Derived classes may override this. This should never be called by
  * the user.
@@ -230,6 +216,22 @@ Model.prototype['tearDownViews'] = function() {
 Model.prototype['update'] = function(deltaTime) {
   // No-op
 };
+
+
+/**
+ * The storage cache for model objects.
+ *
+ * @type {Cache}
+ */
+Model.prototype['cache'] = null;
+
+
+/**
+ * The composite stencil view for this model.
+ *
+ * @type {Object}
+ */
+Model.prototype['stencilView'] = null;
 
 
 /**
@@ -298,6 +300,42 @@ Model.prototype.createViews_ = function() {
 
 
 /**
+ * Sets up the cache and the public property for it.
+ *
+ * @private
+ */
+Model.prototype.setupCache_ = function() {
+  this.cache_ = window['voodoo']['engine'].modelCache_.applyModel_(this);
+
+  Object.defineProperty(this, 'cache', {
+    get: function() { return this.cache_; },
+    set: function() { log_.error_('cache is read-only'); },
+    writeable: false
+  });
+};
+
+
+/**
+ * Creates the public properties for the views of the Model.
+ *
+ * @private
+ */
+Model.prototype.setupViewProperties_ = function() {
+  Object.defineProperty(this, 'view', {
+    get: function() { return this.view_; },
+    set: function() { log_.error_('view is read-only'); },
+    writeable: false
+  });
+
+  Object.defineProperty(this, 'stencilView', {
+    get: function() { return this.stencilView_; },
+    set: function() { log_.error_('stencilView is read-only'); },
+    writeable: false
+  });
+};
+
+
+/**
  * Friendly type name for this model.
  *
  * This must be set before creating any instances.
@@ -305,6 +343,17 @@ Model.prototype.createViews_ = function() {
  * @type {string}
  */
 Model.prototype['name'] = null;
+
+
+/**
+ * Organization name for this model.
+ *
+ * This is optional and is used to differentiate between models with the same
+ * name in the cache.
+ *
+ * @type {string}
+ */
+Model.prototype['organization'] = defaultOrganization_;
 
 
 /**

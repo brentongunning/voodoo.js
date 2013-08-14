@@ -30,7 +30,7 @@ function ThreeJsRenderer_(engine) {
 
 
 /**
- * Shuts down the rendering engine
+ * Shuts down the rendering engine.
  */
 ThreeJsRenderer_.prototype.destroy = function() {
   if (this.engine_.options_['aboveLayer'])
@@ -184,9 +184,11 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
     this.aboveScene_ = new ThreeJsScene_();
 
     this.aboveTriggers_ = new ThreeJsTriggers_(this.aboveScene_);
+    this.aboveCache_ = new Cache({});
 
     this.aboveLayer_ = new Layer_(LayerPass_['Above'], renderer,
-        this.aboveCamera_, this.aboveScene_, this.aboveTriggers_);
+        this.aboveCamera_, this.aboveScene_, this.aboveTriggers_,
+        this.aboveCache_);
 
     this.layers_.push(this.aboveLayer_);
   }
@@ -204,10 +206,15 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
     this.belowTriggers_ = new ThreeJsTriggers_(this.belowScene_);
     this.stencilTriggers_ = new ThreeJsTriggers_(this.stencilScene_);
 
+    this.belowCache_ = new Cache({});
+    this.stencilCache_ = new Cache({});
+
     this.belowLayer_ = new Layer_(LayerPass_['Below'], renderer,
-        this.belowCamera_, this.belowScene_, this.belowTriggers_);
+        this.belowCamera_, this.belowScene_, this.belowTriggers_,
+        this.belowCache_);
     this.stencilLayer_ = new Layer_(LayerPass_['Stencil'], renderer,
-        this.belowCamera_, this.stencilScene_, this.stencilTriggers_);
+        this.belowCamera_, this.stencilScene_, this.stencilTriggers_,
+        this.stencilCache_);
 
     this.layers_.push(this.belowLayer_);
     this.layers_.push(this.stencilLayer_);

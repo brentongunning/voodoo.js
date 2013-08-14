@@ -24,7 +24,7 @@ set gjslint=C:\Python27\scripts\gjslint
 
 :: 7Zip Path
 
-set sevenzip=C:\Program Files\7-Zip\7z
+set sevenzip=C:\Program Files (x86)\7-Zip\7z
 
 
 :: Browsers to test, separated by commas

@@ -27,13 +27,13 @@ function ThreeJsTriggers_(scene) {
 
 
 /**
- * Inherit from Triggers
+ * Inherit from Triggers.
  */
 ThreeJsTriggers_.prototype = new Triggers();
 
 
 /**
- * Set the constructor back
+ * Set the constructor back.
  */
 ThreeJsTriggers_.prototype.constructor = ThreeJsTriggers_.constructor;
 

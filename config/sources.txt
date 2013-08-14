@@ -4,6 +4,7 @@ Composite.js
 Log.js
 Debug.js
 
+Cache.js
 Event.js
 Model.js
 View.js

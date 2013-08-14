@@ -62,13 +62,13 @@ function ThreeJsCamera_(canvas, fovY, zNear, zFar) {
 
 
 /**
- * Inherit from Camera
+ * Inherit from Camera.
  */
 ThreeJsCamera_.prototype = new Camera();
 
 
 /**
- * Set the constructor back
+ * Set the constructor back.
  */
 ThreeJsCamera_.prototype.constructor = ThreeJsCamera_.constructor;
 

@@ -47,37 +47,16 @@ View.prototype['construct'] = function(model, layer) {
   log_.assert_(model, 'View model passed to initialize cannot be null');
   log_.assert_(layer, 'View layer passed to initialize cannot be null');
 
+  // Setup private vars
   this.model_ = model;
   this.layer_ = layer;
   this.triggers_ = this.layer_.triggers.applyView(this);
+  this.cache_ = this.layer_.cache.applyModel_(this.model_);
 
-  // Setup properties
-  Object.defineProperty(this, 'camera', {
-    get: function() { return this.layer_.camera; },
-    set: function() { log_.error_('camera is read-only'); },
-    writeable: false
-  });
-  Object.defineProperty(this, 'model', {
-    get: function() { return this.model_; },
-    set: function() { log_.error_('model is read-only'); },
-    writeable: false
-  });
-  Object.defineProperty(this, 'renderer', {
-    get: function() { return this.layer_.renderer; },
-    set: function() { log_.error_('renderer is read-only'); },
-    writeable: false
-  });
-  Object.defineProperty(this, 'scene', {
-    get: function() { return this.layer_.scene; },
-    set: function() { log_.error_('scene is read-only'); },
-    writeable: false
-  });
-  Object.defineProperty(this, 'triggers', {
-    get: function() { return this.triggers_; },
-    set: function() { log_.error_('triggers is read-only'); },
-    writeable: false
-  });
+  // Create public properties
+  this.setupPublicProperties_();
 
+  // Call the user's load function.
   this['load']();
 };
 
@@ -123,6 +102,14 @@ View.prototype['load'] = function() {
  */
 View.prototype['unload'] = function() {
 };
+
+
+/**
+ * The storage cache for view objects.
+ *
+ * @type {Cache}
+ */
+View.prototype['cache'] = null;
 
 
 /**
@@ -185,6 +172,50 @@ View.prototype['zMax'] = Number.POSITIVE_INFINITY;
  * @type {number}
  */
 View.prototype['zMin'] = Number.NEGATIVE_INFINITY;
+
+
+/**
+ * Creates the View's public properties.
+ *
+ * @private
+ */
+View.prototype.setupPublicProperties_ = function() {
+  Object.defineProperty(this, 'cache', {
+    get: function() { return this.cache_; },
+    set: function() { log_.error_('cache is read-only'); },
+    writeable: false
+  });
+
+  Object.defineProperty(this, 'camera', {
+    get: function() { return this.layer_.camera; },
+    set: function() { log_.error_('camera is read-only'); },
+    writeable: false
+  });
+
+  Object.defineProperty(this, 'model', {
+    get: function() { return this.model_; },
+    set: function() { log_.error_('model is read-only'); },
+    writeable: false
+  });
+
+  Object.defineProperty(this, 'renderer', {
+    get: function() { return this.layer_.renderer; },
+    set: function() { log_.error_('renderer is read-only'); },
+    writeable: false
+  });
+
+  Object.defineProperty(this, 'scene', {
+    get: function() { return this.layer_.scene; },
+    set: function() { log_.error_('scene is read-only'); },
+    writeable: false
+  });
+
+  Object.defineProperty(this, 'triggers', {
+    get: function() { return this.triggers_; },
+    set: function() { log_.error_('triggers is read-only'); },
+    writeable: false
+  });
+};
 
 // Exports
 this['View'] = View;

@@ -32,17 +32,34 @@ var LayerPass_ = {
  * @param {Camera} camera This layer's virtual camera.
  * @param {Scene} scene 3D scene graph.
  * @param {Triggers} triggers 3D objects that trigger mouse events.
+ * @param {Cache} cache Cache for all views in the layer.
  */
-function Layer_(pass, renderer, camera, scene, triggers) {
-  log_.assert_(renderer == Renderer['ThreeJs'],
-      'Only ThreeJs is supported');
+function Layer_(pass, renderer, camera, scene, triggers, cache) {
+  log_.assert_(renderer == Renderer['ThreeJs'], 'Only ThreeJs is supported');
 
   this.pass = pass;
   this.renderer = renderer;
   this.camera = camera;
   this.scene = scene;
   this.triggers = triggers;
+  this.cache = cache;
 }
+
+
+/**
+ * The cache for this layer.
+ *
+ * @type {Cache}
+ */
+Layer_.prototype.cache = null;
+
+
+/**
+ * The camera for this layer.
+ *
+ * @type {Camera}
+ */
+Layer_.prototype.camera = null;
 
 
 /**
@@ -59,14 +76,6 @@ Layer_.prototype.pass = null;
  * @type {Renderer}
  */
 Layer_.prototype.renderer = null;
-
-
-/**
- * The camera for this layer.
- *
- * @type {Camera}
- */
-Layer_.prototype.camera = null;
 
 
 /**

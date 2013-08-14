@@ -12,7 +12,7 @@
  * @const
  * @private
  */
-var DefaultTriggerId_ = -1;
+var defaultTriggerId_ = -1;
 
 
 
@@ -33,7 +33,7 @@ function EventTrigger_(view, object, opt_triggerId) {
   this.view_ = view;
   this.object_ = object;
   this.triggerId_ = typeof opt_triggerId === 'undefined' ?
-      DefaultTriggerId_ : opt_triggerId;
+      defaultTriggerId_ : opt_triggerId;
   this.model_ = view['model'];
 }
 
@@ -76,7 +76,7 @@ EventTrigger_.prototype.model_ = null;
  * @private
  * @type {number|string}
  */
-EventTrigger_.prototype.triggerId_ = DefaultTriggerId_;
+EventTrigger_.prototype.triggerId_ = defaultTriggerId_;
 
 
 /**
@@ -105,7 +105,7 @@ this.Event = function(type, model, opt_triggerId) {
   this['type'] = type;
   this['model'] = model;
   this['triggerId'] = typeof opt_triggerId === 'undefined' ?
-      DefaultTriggerId_ : opt_triggerId;
+      defaultTriggerId_ : opt_triggerId;
 };
 
 
@@ -211,7 +211,7 @@ this.Event.prototype['type'] = null;
  *
  * @type {string|number}
  */
-this.Event.prototype['triggerId'] = DefaultTriggerId_;
+this.Event.prototype['triggerId'] = defaultTriggerId_;
 
 // Exports
 this['Event'] = this.Event;

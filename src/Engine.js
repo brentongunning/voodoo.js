@@ -34,6 +34,7 @@ function Engine(options) {
   }
 
   this.options_ = options;
+  this.modelCache_ = new Cache({});
 
   // Make sure the options are valid
   if (!this.options_['aboveLayer'] &&
@@ -162,6 +163,15 @@ Engine.prototype.addModel_ = function(model) {
 Engine.prototype.removeModel_ = function(model) {
   this.models_.splice(this.models_.indexOf(model), 1);
 };
+
+
+/**
+ * Cache for all model objects.
+ *
+ * @private
+ * @type {Cache}
+ */
+Engine.prototype.modelCache_ = null;
 
 
 /**

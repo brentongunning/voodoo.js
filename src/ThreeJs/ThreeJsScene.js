@@ -20,13 +20,13 @@ function ThreeJsScene_() {
 
 
 /**
- * Inherit from Scene
+ * Inherit from Scene.
  */
 ThreeJsScene_.prototype = new Scene();
 
 
 /**
- * Set the constructor back
+ * Set the constructor back.
  */
 ThreeJsScene_.prototype.constructor = ThreeJsScene_.constructor;
 

@@ -45,6 +45,7 @@ Release Notes
 -------------------------------------------------------------------------------
 
 8-11-2013 - 0.8.5
+Add Cache to Model and View for sharing objects across different controls.
 Reduce jitteryness when scrolling
 
 8-10-2013 - 0.8.4

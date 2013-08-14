@@ -9,6 +9,45 @@
 var voodoo = {};
 
 // ----------------------------------------------------------------------------
+// Cache
+// ----------------------------------------------------------------------------
+
+/** @constructor */
+voodoo.Cache = function() {};
+
+/**
+ * @param {string} key
+ * @param {string=} opt_name
+ * @param {string=} opt_organization
+ */
+voodoo.Cache.prototype.delete = function(key, opt_name, opt_organization) {};
+
+/**
+ * @param {string} key
+ * @param {string=} opt_name
+ * @param {string=} opt_organization
+ * @return {Object}
+ */
+voodoo.Cache.prototype.get = function(key, opt_name, opt_organization) {};
+
+
+/**
+ * @param {string} key
+ * @param {string=} opt_name
+ * @param {string=} opt_organization
+ * @return {boolean}
+ */
+voodoo.Cache.prototype.has = function(key, opt_name, opt_organization) {};
+
+/**
+ * @param {string} key
+ * @param {Object} value
+ * @param {string=} opt_name
+ * @param {string=} opt_organization
+ */
+voodoo.Cache.prototype.set = function(key, value, opt_name, opt_organization) {};
+
+// ----------------------------------------------------------------------------
 // Extendable
 // ----------------------------------------------------------------------------
 
@@ -104,6 +143,9 @@ voodoo.Model.prototype.view;
 /** @type {Object} */
 voodoo.Model.prototype.stencilView;
 
+/** @type {voodoo.Cache} */
+voodoo.Model.prototype.cache;
+
 /** @type {string} */
 voodoo.Model.prototype.name;
 
@@ -125,6 +167,9 @@ voodoo.View = function() {};
 
 voodoo.View.prototype.load = function() {};
 voodoo.View.prototype.unload = function() {};
+
+/** @type {voodoo.Cache} */
+voodoo.View.prototype.cache;
 
 /** @type {voodoo.Camera} */
 voodoo.View.prototype.camera;
