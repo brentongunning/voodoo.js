@@ -1,22 +1,29 @@
 <html>
 <head>
-  <link href='http://fonts.googleapis.com/css?family=Josefin+Slab'
-      rel='stylesheet' type='text/css'>
-  <title>Put a ring on it - Voodoo Sample 1</title>
+  <title>Voodoo Sample - Models and Views</title>
 </head>
-<script src="../lib/three.min.js"></script>
-<script src="../build/voodoo-0.8.5.min.debug.js"></script>
+<script src="../../lib/three.min.js"></script>
+<script src="../../lib/voodoo.min.debug.js"></script>
 <style type="text/css">
-  * {font-family:'Josefin Slab',serif;}
-  #content {position:absolute; left:0px; top:450px; width:100%; height:200px}
-  #quote {width: 800px; height:180px; text-align: left}
+  #content {
+    position:absolute;
+    left:0px;
+    top:450px;
+    width:100%;
+    height:200px
+  }
+
+  #quote {
+    width: 800px;
+    height:180px;
+    text-align: left
+  }
 </style>
 <body>
   <center>
-    <h4>Voodoo Sample - Copyright (c) 2013 VoodooJs Authors</h4>
-    <h1>Put a ring on it</h1>
+    <h1>Models and Views</h1>
     <h3>Description</h3>
-    <p>This sample goes over the basic structure for creating models and views.
+    <p>This sample shows the basic structure for creating models and views.
        We use a simple ring as an example.</p>
   </center>
   <div id="content">
@@ -147,7 +154,7 @@ var SampleModel = voodoo.Model.extend({
 // ----------------------------------------------------------------------------
 
 // Create our model.
-new SampleModel({color: 'white', ambient: 'rgb(60, 60, 60)'});
+new SampleModel({color: 'red', ambient: 'rgb(0, 0, 0)'});
 
 </script>
 </html>

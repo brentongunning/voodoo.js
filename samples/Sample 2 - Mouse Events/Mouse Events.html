@@ -1,0 +1,158 @@
+<html>
+<head>
+  <title>Voodoo Sample - Mouse Events</title>
+</head>
+<script src="../../lib/three.min.js"></script>
+<script src="../../lib/voodoo.min.debug.js"></script>
+<style type="text/css">
+  #content {
+    position:absolute;
+    left:0px;
+    top:300px;
+    width:100%;
+  }
+
+  #redLight {
+    width:150px;
+    height:150px;
+  }
+
+  #yellowLight {
+    width:150px;
+    height:150px;
+  }
+
+  #greenLight {
+    width:150px;
+    height:150px;
+  }
+</style>
+<body>
+  <center>
+    <h1>Mouse Events</h1>
+    <h3>Description</h3>
+    <p>This sample demonstrates how to respond to create triggers that
+       respond to mouse events. Move your mouse and click the objects below.</p>
+  </center>
+  <div id="content">
+    <center>
+      <div id="redLight"></div>
+      <div id="yellowLight"></div>
+      <div id="greenLight"></div>
+    </center>
+  </div>
+</body>
+<script>
+
+// ----------------------------------------------------------------------------
+// HoverBallView
+// ----------------------------------------------------------------------------
+
+var TrafficLightView = voodoo.View.extend({
+  load: function() {
+    // Create a sphere
+    this.material = new THREE.MeshLambertMaterial();
+    this.material.ambient.copy(this.model.ambient);
+    this.material.color.copy(this.model.color);
+    this.geometry = new THREE.SphereGeometry(0.5, 40, 40);
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+
+    // Add the sphere to the scene
+    this.scene.add(this.mesh);
+
+    // The triggers tells voodoo that the sphere should respond to mouse
+    // events. Add it like the scene.
+    this.triggers.add(this.mesh);
+  },
+
+  unload: function() {
+    // Remove the sphere from the scene
+    this.scene.remove(this.mesh);
+
+    // Also remove the sphere from the triggers.
+    this.triggers.remove(this.mesh);
+  },
+
+  // Called from the model each update to position the ball over the div.
+  move: function(x, y, w, h) {
+    this.mesh.position.x = x + w / 2;
+    this.mesh.position.y = y + h / 2;
+    this.mesh.scale.x = w;
+    this.mesh.scale.y = h;
+    this.mesh.scale.z = (w + h) / 2;
+  },
+
+  // We call this from the model whenever the user hovers over this object.
+  mouseover: function() {
+    this.material.color.copy(this.model.hover);
+  },
+
+  // We call this from the model whenever the user's mouse leaves the object.
+  mouseout: function() {
+    this.material.color.copy(this.model.color);
+  }
+});
+
+// ----------------------------------------------------------------------------
+// HoverBall
+// ----------------------------------------------------------------------------
+
+var TrafficLight = voodoo.Model.extend({
+  name: 'TrafficLight',
+  viewType: TrafficLightView,
+
+  initialize: function(options) {
+    this.element = options.element;
+
+    this.ambient = voodoo.utility.convertCssColorToThreeJsColor(options.ambient);
+    this.color = voodoo.utility.convertCssColorToThreeJsColor(options.color);
+    this.hover = voodoo.utility.convertCssColorToThreeJsColor(options.hover);
+
+    // Add event handlers for hovers. The 'view' is normally not accessable in
+    // initialize, but we are just defining callbacks, so it is OK to
+    // reference them.
+    this.on('mouseover', function(event) { this.view.mouseover(); });
+    this.on('mouseout', function(event) { this.view.mouseout(); });
+  },
+
+  update: function(deltaTime) {
+    var pos = voodoo.utility.findAbsolutePosition(this.element);
+    var w = this.element.offsetWidth;
+    var h = this.element.offsetHeight;
+
+    this.view.move(pos.x, pos.y, w, h);
+  }
+});
+
+// ----------------------------------------------------------------------------
+// Setup
+// ----------------------------------------------------------------------------
+
+var redLight = new TrafficLight({
+  element: document.getElementById('redLight'),
+  ambient: 'rgb(100, 30, 30)',
+  color: 'black',
+  hover: 'darkred'
+});
+
+var yellowLight = new TrafficLight({
+  element: document.getElementById('yellowLight'),
+  ambient: 'rgb(100, 100, 30)',
+  color: 'black',
+  hover: 'rgb(150, 150, 0)'
+});
+
+var greenLight = new TrafficLight({
+  element: document.getElementById('greenLight'),
+  ambient: 'rgb(30, 100, 30)',
+  color: 'black',
+  hover: 'darkgreen'
+});
+
+// We can also call our event handlers from outside our models.
+redLight.on('click', function() { alert('Stop!'); })
+yellowLight.on('click', function() { alert('Caution...'); })
+greenLight.on('click', function() { alert('Go!'); })
+
+</script>
+</html>
