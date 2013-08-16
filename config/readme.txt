@@ -45,15 +45,16 @@ Release Notes
 -------------------------------------------------------------------------------
 
 8-11-2013 - 0.8.5
+Add seam layer for eliminating the seam between antialiased layers.
 Add Cache to Model and View for sharing objects across different controls.
-Reduce jitteryness when scrolling
+Reduce jitteryness when scrolling.
 
 8-10-2013 - 0.8.4
-Bug Fix: Canvas size is now correct on Retina displays
+Bug Fix: Canvas size is now correct on Retina displays.
 
 7-22-2013 - 0.8.3
-Moving to MIT license
-Updating bundled ThreeJs to r59
+Moving to MIT license.
+Updating bundled ThreeJs to r59.
 
 7-13-2013 - 0.8.2
 Adding voodoo.version.

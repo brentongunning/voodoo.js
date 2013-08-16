@@ -192,8 +192,6 @@ ThreeJsCamera_.prototype.setZNearAndFar_ = function(zNear, zFar) {
 
   this.camera_.projectionMatrix.makePerspective(this.fovY_,
       this.aspectRatio_, this.zNear_, this.zFar_);
-
-  this.pendingCameraMoveEvent_ = true;
 };
 
 

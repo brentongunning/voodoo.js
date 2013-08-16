@@ -32,11 +32,11 @@ Options.prototype['aboveLayer'] = true;
 /**
  * CSS Z Index style for the above canvas.
  *
- * Default is 10000.
+ * Default is 9999.
  *
  * @type {number}
  */
-Options.prototype['aboveZIndex'] = 10000;
+Options.prototype['aboveZIndex'] = 9999;
 
 
 /**
@@ -100,6 +100,29 @@ Options.prototype['frameLoop'] = true;
  * @type {Renderer}
  */
 Options.prototype['renderer'] = Renderer['ThreeJs'];
+
+
+/**
+ * Whether to connect the seam between the above and below layers when
+ * using antialiasing. This results in an additional render layer and
+ * may affect performance. If antialiasing is false, this has no effect.
+ *
+ * Default is true.
+ *
+ * @type {boolean}
+ */
+Options.prototype['seamLayer'] = true;
+
+
+/**
+ * The z-index for the seam layer. This should always be higher than the
+ * above layer z-index.
+ *
+ * Default is 10000.
+ *
+ * @type {number}
+ */
+Options.prototype['seamZIndex'] = 10000;
 
 
 /**

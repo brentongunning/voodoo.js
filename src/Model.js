@@ -283,6 +283,12 @@ Model.prototype.createViews_ = function() {
         if (this['viewType'].prototype['zMin'] < 0.0)
           this.views_.push(new this['viewType'](this, layer));
         break;
+      case LayerPass_['Seam']:
+        if (this['viewType'].prototype['zMax'] > 0.0 ||
+            (this['viewType'].prototype['zMax'] == 0.0 &&
+             this['viewType'].prototype['zMin'] == 0.0))
+          this.views_.push(new this['viewType'](this, layer));
+        break;
       case LayerPass_['Stencil']:
         if (nonuniqueStencilView)
           this.views_.push(new this['viewType'](this, layer));

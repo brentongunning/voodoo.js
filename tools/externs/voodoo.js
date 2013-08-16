@@ -316,6 +316,12 @@ voodoo.Options.prototype.frameLoop;
 voodoo.Options.prototype.renderer;
 
 /** @type {boolean} */
+voodoo.Options.prototype.seamLayer;
+
+/** @type {number} */
+voodoo.Options.prototype.seamZIndex;
+
+/** @type {boolean} */
 voodoo.Options.prototype.standardLighting;
 
 // ----------------------------------------------------------------------------

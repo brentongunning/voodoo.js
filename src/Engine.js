@@ -34,13 +34,9 @@ function Engine(options) {
   }
 
   this.options_ = options;
-  this.modelCache_ = new Cache({});
+  this.validateOptions_();
 
-  // Make sure the options are valid
-  if (!this.options_['aboveLayer'] &&
-      !this.options_['belowLayer']) {
-    log_.error_('At least one layer must be enabled');
-  }
+  this.modelCache_ = new Cache({});
 
   // Setup models property
   this.models_ = [];
@@ -162,6 +158,20 @@ Engine.prototype.addModel_ = function(model) {
  */
 Engine.prototype.removeModel_ = function(model) {
   this.models_.splice(this.models_.indexOf(model), 1);
+};
+
+
+/**
+ * Checks that the options are valid.
+ *
+ * @private
+ */
+Engine.prototype.validateOptions_ = function() {
+  // Check that there is at least one layer
+  if (!this.options_['aboveLayer'] &&
+      !this.options_['belowLayer']) {
+    log_.error_('At least one layer must be enabled');
+  }
 };
 
 
