@@ -140,6 +140,11 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
     this.engine_.options_['seamLayer'] = false;
   }
 
+  // Require both above and below layers to have a seam layer.
+  if (~this.engine_.options_['aboveLayer'] ||
+      !this.engine_.options_['belowLayer'])
+    this.engine_.options_['seamLayer'] = false;
+
   // Create the canvas for the seam layer.
   if (this.engine_.options_['seamLayer']) {
     // The seam layer always has antialiasing off to blend the layers.
