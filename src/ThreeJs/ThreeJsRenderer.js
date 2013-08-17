@@ -589,7 +589,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
     if (this.engine_.options_['seamLayer']) {
       // First render onto the stencil buffer the above parts.
 
-      var seam = 5.0;
+      var seam = this.engine_.options_.seamPixels_;
       var zCamera = this.seamCamera_['position']['z'];
       this.seamCamera_.setZNearAndFar_(this.engine_.options_.zNear_,
           zCamera - seam);

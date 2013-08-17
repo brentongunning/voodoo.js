@@ -103,6 +103,17 @@ Options.prototype['renderer'] = Renderer['ThreeJs'];
 
 
 /**
+ * Number of 'pixels' along the z axis that the buffer contains.
+ * The higher we go, the less chance we have of a seam, but the more
+ * we overlap the antialiased scene with an unantialised seam.
+ *
+ * @private
+ * @type {number}
+ */
+Options.prototype.seamPixels_ = 10;
+
+
+/**
  * Whether to connect the seam between the above and below layers when
  * using antialiasing. This results in an additional render layer and
  * may affect performance. If antialiasing is false, this has no effect.
