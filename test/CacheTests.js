@@ -18,6 +18,11 @@ CacheTests = TestCase('CacheTests');
  * Test case setup. Runs once before each test.
  */
 CacheTests.prototype.setUp = function() {
+  // Create an engine with no antialiasing so no seam layers.
+  var options = new voodoo.Options();
+  options.antialias = false;
+  voodoo.engine = new voodoo.Engine(options);
+
   // Global counters available to each test case.
   this.modelCacheHits = 0;
   this.modelCacheMisses = 0;

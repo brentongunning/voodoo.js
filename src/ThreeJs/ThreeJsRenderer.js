@@ -141,7 +141,7 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
   }
 
   // Require both above and below layers to have a seam layer.
-  if (~this.engine_.options_['aboveLayer'] ||
+  if (!this.engine_.options_['aboveLayer'] ||
       !this.engine_.options_['belowLayer'])
     this.engine_.options_['seamLayer'] = false;
 

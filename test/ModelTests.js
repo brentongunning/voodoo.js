@@ -17,8 +17,8 @@ function Counters() {
 
 
 /**
-* Resets all counters.
-*/
+  * Resets all counters.
+  */
 Counters.prototype.reset = function() {
   this.viewLoad = 0;
   this.viewUnload = 0;
@@ -120,15 +120,21 @@ ModelTests = TestCase('ModelTests');
 
 
 /**
- * Resets counters before each test case.
+ * Test case setup. Runs once before each test.
  */
 ModelTests.prototype.setUp = function() {
+  // Reset counters before each test case.
   globalCounters.reset();
+
+  // Create an engine with no antialiasing so no seam layers.
+  var options = new voodoo.Options();
+  options.antialias = false;
+  voodoo.engine = new voodoo.Engine(options);
 };
 
 
 /**
- * Shutdown the engine between test cases
+ * Shutdown the engine between test cases.
  */
 ModelTests.prototype.tearDown = function() {
   if (typeof voodoo.engine !== 'undefined')
