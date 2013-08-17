@@ -45,9 +45,10 @@ Release Notes
 -------------------------------------------------------------------------------
 
 8-11-2013 - 0.8.5
-Add seam layer for eliminating the seam between antialiased layers.
-Add Cache to Model and View for sharing objects across different controls.
-Reduce jitteryness when scrolling.
+Added seam layer for eliminating the seam between antialiased layers.
+Added Cache to Model and View for sharing objects across different controls.
+Reduced jitteryness when scrolling.
+Updated ThreeJs to r60.
 
 8-10-2013 - 0.8.4
 Bug Fix: Canvas size is now correct on Retina displays.
