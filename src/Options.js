@@ -72,6 +72,16 @@ Options.prototype['belowZIndex'] = -1;
 
 
 /**
+ * Max time in milliseconds between clicks to count as a double click.
+ *
+ * @private
+ * @const
+ * @type {number}
+ */
+Options.prototype.doubleClickInterval_ = 500;
+
+
+/**
  * Camera field of view in degrees along the y axis.
  *
  * Default is 30.

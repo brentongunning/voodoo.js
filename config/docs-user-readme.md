@@ -3,7 +3,10 @@
 
 This documentation covers the public API for Voodoo. All objects documented here are contained in the **voodoo** namespace.
 
-ThreeJs documentation may be found at http://www.threejs.org/docs
+Additional documentation:
+
+* [VoodooJs Wiki](https://github.com/brentongunning/voodoo/wiki)
+* [ThreeJs Documentation](http://www.threejs.org/docs)
 
 Usage:
 

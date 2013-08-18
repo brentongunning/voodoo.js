@@ -5,16 +5,6 @@
 // ----------------------------------------------------------------------------
 
 
-/**
- * Max time in milliseconds between clicks to count as a double click
- *
- * @private
- * @const
- * @type {number}
- */
-var DoubleClickInterval_ = 500;
-
-
 
 /**
  * The event dispatching engine.
@@ -194,7 +184,7 @@ Dispatcher_.prototype.onMouseDown_ = function(event) {
     if (this.heldTrigger_[event.button].isEquivalentTo(lastClicked) &&
         this.lastClickClientX_[event.button] == event.clientX &&
         this.lastClickClientY_[event.button] == event.clientY &&
-        interval <= DoubleClickInterval_) {
+        interval <= this.engine_.options_.doubleClickInterval_) {
 
       this.pendingDoubleClickEvent_[event.button] = true;
     }
