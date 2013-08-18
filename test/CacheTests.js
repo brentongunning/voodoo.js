@@ -19,9 +19,7 @@ CacheTests = TestCase('CacheTests');
  */
 CacheTests.prototype.setUp = function() {
   // Create an engine with no antialiasing so no seam layers.
-  var options = new voodoo.Options();
-  options.antialias = false;
-  voodoo.engine = new voodoo.Engine(options);
+  voodoo.engine = new voodoo.Engine({ antialias: false });
 
   // Global counters available to each test case.
   this.modelCacheHits = 0;

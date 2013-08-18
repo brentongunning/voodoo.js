@@ -39,7 +39,7 @@ LightTests.prototype.tearDown = function() {
 LightTests.prototype.testEnableStandardLighting = function(queue) {
   var cameraLight = null, ambientLight = null;
 
-  voodoo.engine = new voodoo.Engine(new voodoo.Options());
+  voodoo.engine = new voodoo.Engine({});
 
   assertEquals(2, voodoo.engine.models.length);
 

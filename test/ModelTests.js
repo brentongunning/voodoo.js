@@ -127,9 +127,7 @@ ModelTests.prototype.setUp = function() {
   globalCounters.reset();
 
   // Create an engine with no antialiasing so no seam layers.
-  var options = new voodoo.Options();
-  options.antialias = false;
-  voodoo.engine = new voodoo.Engine(options);
+  voodoo.engine = new voodoo.Engine({ antialias: false });
 };
 
 
@@ -210,9 +208,7 @@ ModelTests.prototype.testCompositeStencilView = function() {
  * stencil views.
  */
 ModelTests.prototype.testDestroyModel = function() {
-  var options = new voodoo.Options();
-  options.standardLighting = false;
-  voodoo.engine = new voodoo.Engine(options);
+  voodoo.engine = new voodoo.Engine({ standardLighting: false });
 
   var model = new HookedModel();
   assertEquals(1, voodoo.engine.models.length);

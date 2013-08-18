@@ -11,9 +11,15 @@
  * Engine when it is being created.
  *
  * @constructor
+ *
+ * @param {Object=} opt_options Options settings to set.
  */
-function Options() {
+function Options(opt_options) {
   log_.information_('Creating Options');
+
+  if (typeof opt_options !== 'undefined')
+    for (var key in opt_options)
+      this[key] = opt_options[key];
 }
 
 

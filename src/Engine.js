@@ -15,10 +15,11 @@
  *
  * @constructor
  *
- * @param {Options} options Options for voodoo.
+ * @param {Options|Object=} opt_options Options for voodoo.
  */
-function Engine(options) {
-  log_.assert_(options != null, 'Options must not be null');
+function Engine(opt_options) {
+  var options = new Options(opt_options);
+
   log_.assert_(options['renderer'] == Renderer['ThreeJs'],
       'Only ThreeJs is supported');
 

@@ -18,9 +18,7 @@ ThreeJsTests = TestCase('ThreeJsTests');
  * Placeholder for ThreeJs test case setup.
  */
 ThreeJsTests.prototype.setUp = function() {
-  var options = new voodoo.Options();
-  options.fovY = 45; // Used in the camera tests
-  voodoo.engine = new voodoo.Engine(options);
+  voodoo.engine = new voodoo.Engine({ fovY: 45 });
 };
 
 
