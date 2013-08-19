@@ -539,7 +539,7 @@ ThreeJsRenderer_.prototype.raycast_ = function() {
  */
 ThreeJsRenderer_.prototype.render_ = function() {
   if (DEBUG && window['voodoo']['debug']['drawStencils']) {
-    // Render stencils
+    // Render just the stencils
 
     if (this.engine_.options_['belowLayer']) {
       this.belowRenderer_.context.disable(
@@ -548,6 +548,9 @@ ThreeJsRenderer_.prototype.render_ = function() {
       this.belowRenderer_.render(this.stencilScene_.scene_,
           this.belowCamera_.camera_);
     }
+
+    this.aboveRenderer_.clear();
+    this.seamRenderer_.clear();
   } else {
     // Render normally
 
@@ -608,12 +611,12 @@ ThreeJsRenderer_.prototype.render_ = function() {
       context.stencilOp(context.KEEP, context.KEEP, context.KEEP);
       context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
 
+      // Now render the seam parts normally but mask out any sections
+      // that are in the stencil buffer since they should be above the seam.
+
       this.seamCamera_.setZNearAndFar_(zCamera - seam, zCamera + seam);
       this.seamRenderer_.render(this.seamScene_.scene_,
           this.seamCamera_.camera_);
-
-      // Now render the seam parts normally but mask out any sections
-      // that are in the stencil buffer since they should be above the seam.
     }
   }
 
