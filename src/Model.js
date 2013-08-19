@@ -285,8 +285,10 @@ Model.prototype.createViews_ = function() {
           this.views_.push(new this['viewType'](this, layer));
         break;
       case LayerPass_['Seam']:
-        if (this['viewType'].prototype['above'] &&
-            this['viewType'].prototype['below'])
+        // If the model has content in the above layer, it MUST be added
+        // to the seam layer to work with the stencil tests against other
+        // models in the seam layer.
+        if (this['viewType'].prototype['above'])
           this.views_.push(new this['viewType'](this, layer));
         break;
       case LayerPass_['Stencil']:
