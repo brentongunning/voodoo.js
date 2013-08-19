@@ -65,6 +65,9 @@ Model.prototype['cleanUp'] = function() {
 Model.prototype['construct'] = function(options) {
   log_.assert_(this['name'], 'Model type name cannot be undefined or null');
   log_.assert_(this['viewType'], 'Model view type cannot be undefined or null');
+  log_.assert_(this['viewType'].prototype['above'] ||
+      this['viewType'].prototype['below'],
+      'View must exist on at least one layer');
   this['stencilViewType'] = this['stencilViewType'] || this['viewType'];
 
   this.setId_();
@@ -274,25 +277,25 @@ Model.prototype.createViews_ = function() {
 
     switch (layer.pass) {
       case LayerPass_['Above']:
-        if (this['viewType'].prototype['zMax'] > 0.0 ||
-            (this['viewType'].prototype['zMax'] == 0.0 &&
-             this['viewType'].prototype['zMin'] == 0.0))
+        if (this['viewType'].prototype['above'])
           this.views_.push(new this['viewType'](this, layer));
         break;
       case LayerPass_['Below']:
-        if (this['viewType'].prototype['zMin'] < 0.0)
+        if (this['viewType'].prototype['below'])
           this.views_.push(new this['viewType'](this, layer));
         break;
       case LayerPass_['Seam']:
-        if (this['viewType'].prototype['zMax'] > 0.0 ||
-            (this['viewType'].prototype['zMax'] == 0.0 &&
-             this['viewType'].prototype['zMin'] == 0.0))
+        if (this['viewType'].prototype['above'] &&
+            this['viewType'].prototype['below'])
           this.views_.push(new this['viewType'](this, layer));
         break;
       case LayerPass_['Stencil']:
-        if (nonuniqueStencilView)
-          this.views_.push(new this['viewType'](this, layer));
-        else this.stencilViews_.push(new this['stencilViewType'](this, layer));
+        if (this['viewType'].prototype['below']) {
+          if (nonuniqueStencilView)
+            this.views_.push(new this['viewType'](this, layer));
+          else
+            this.stencilViews_.push(new this['stencilViewType'](this, layer));
+        }
         break;
     }
   }

@@ -105,6 +105,30 @@ View.prototype['unload'] = function() {
 
 
 /**
+ * Whether this view's contents should be created on the above layer. Setting
+ * this to false when all the View's contents are below the page will result
+ * in better performance.
+ *
+ * Default is true.
+ *
+ * @type {boolean}
+ */
+View.prototype['above'] = true;
+
+
+/**
+ * Whether this view's contents should be created on the below layer. Setting
+ * this to false when all the View's contents are above the page will result
+ * in better performance.
+ *
+ * Default is true.
+ *
+ * @type {boolean}
+ */
+View.prototype['below'] = true;
+
+
+/**
  * The storage cache for view objects.
  *
  * @type {Cache}
@@ -150,28 +174,6 @@ View.prototype['scene'] = null;
  * @type {Triggers}
  */
 View.prototype['triggers'] = null;
-
-
-/**
- * The maximum Z value for this View.
- *
- * The engine uses this value for optimizations. If your View's contents
- * are always below the main page content, then this can be set to 0.0.
- *
- * @type {number}
- */
-View.prototype['zMax'] = Number.POSITIVE_INFINITY;
-
-
-/**
- * The minimum Z value for this View.
- *
- * The engine uses this value for optimizations. If your View's contents
- * are always above the main page content, then this can be set to 0.0.
- *
- * @type {number}
- */
-View.prototype['zMin'] = Number.NEGATIVE_INFINITY;
 
 
 /**

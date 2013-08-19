@@ -66,7 +66,7 @@ EngineTests.prototype.testCreateEngineWithInvalidOptions = function() {
   options.aboveLayer = false;
   options.belowLayer = false;
 
-  assertException('Expected exception from invalid options', function() {
+  assertException('Invalid engine options', function() {
     voodoo.engine = new voodoo.Engine(options);
   });
 };

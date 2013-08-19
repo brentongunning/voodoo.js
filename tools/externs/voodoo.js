@@ -168,6 +168,12 @@ voodoo.View = function() {};
 voodoo.View.prototype.load = function() {};
 voodoo.View.prototype.unload = function() {};
 
+/** @type {boolean} */
+voodoo.View.prototype.above;
+
+/** @type {boolean} */
+voodoo.View.prototype.below;
+
 /** @type {voodoo.Cache} */
 voodoo.View.prototype.cache;
 
@@ -185,12 +191,6 @@ voodoo.View.prototype.scene;
 
 /** @type {voodoo.Triggers} */
 voodoo.View.prototype.triggers;
-
-/** @type {number} */
-voodoo.View.prototype.zMax;
-
-/** @type {number} */
-voodoo.View.prototype.zMin;
 
 // ----------------------------------------------------------------------------
 // Camera

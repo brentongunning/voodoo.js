@@ -349,7 +349,7 @@ ThreeJsRenderer_.prototype.findClosestAboveLayerIntersection_ = function(
     //  3) Below Z=0 AND the stencil layer is used AND our ray intersects it
     if (this.engine_.options_['belowLayer'] &&
         intersections[0]['point']['z'] < 0 &&
-        trigger.view_['zMin'] < 0.0 &&
+        trigger.view_['below'] &&
         model['viewType'] != model['stencilViewType'] &&
         stencilIntersections.indexOf(model) === -1)
       continue;
@@ -387,9 +387,7 @@ ThreeJsRenderer_.prototype.findClosestBelowLayerIntersection_ =
 
     // If the trigger has any part in the above layer, then ignore it
     // because we already checked it during the above layer checks.
-    if (this.engine_.options_['aboveLayer'] &&
-        (model['view']['zMax'] > 0.0 ||
-        model['view']['zMin'] >= 0.0))
+    if (this.engine_.options_['aboveLayer'] && model['view']['above'])
       continue;
 
     var intersections = this.belowRaycaster_['intersectObject'](obj, true);
@@ -438,21 +436,18 @@ ThreeJsRenderer_.prototype.findStencilLayerIntersections_ = function() {
     var obj = trigger.object_;
     var model = trigger.model_;
 
-    if (model['viewType'] === model['stencilViewType']) {
-      // When the view and stencil view are the same types, stencil checking
-      // doesn't matter.
+    // When the view and stencil view are the same types, stencil checking
+    // doesn't matter.
+    if (model['viewType'] === model['stencilViewType'])
       continue;
-    }
 
-    if (trigger.view_['zMin'] >= 0.0) {
-      // Check if a stencil layer could even exists at all
+    // Check if a stencil layer could even exists at all
+    if (!trigger.view_['below'])
       continue;
-    }
 
-    if (stencilTriggers.indexOf(model) !== -1) {
-      // If we already checked this model, continue
+    // If we already checked this model, continue
+    if (stencilTriggers.indexOf(model) !== -1)
       continue;
-    }
 
     // Check for a hit
     if (this.belowRaycaster_.intersectObject(obj, true).length > 0)
