@@ -259,23 +259,22 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
         this.engine_.options_.zFar_);
 
     this.belowScene_ = new ThreeJsScene_();
-    this.stencilScene_ = new ThreeJsScene_();
-
     this.belowTriggers_ = new ThreeJsTriggers_(this.belowScene_);
-    this.stencilTriggers_ = new ThreeJsTriggers_(this.stencilScene_);
-
     this.belowCache_ = new Cache({});
-    this.stencilCache_ = new Cache({});
-
     this.belowLayer_ = new Layer_(LayerPass_['Below'], renderer,
         this.belowCamera_, this.belowScene_, this.belowTriggers_,
         this.belowCache_);
-    this.stencilLayer_ = new Layer_(LayerPass_['Stencil'], renderer,
-        this.belowCamera_, this.stencilScene_, this.stencilTriggers_,
-        this.stencilCache_);
-
     this.layers_.push(this.belowLayer_);
-    this.layers_.push(this.stencilLayer_);
+
+    if (this.engine_.options_['stencils']) {
+      this.stencilScene_ = new ThreeJsScene_();
+      this.stencilTriggers_ = new ThreeJsTriggers_(this.stencilScene_);
+      this.stencilCache_ = new Cache({});
+      this.stencilLayer_ = new Layer_(LayerPass_['Stencil'], renderer,
+          this.belowCamera_, this.stencilScene_, this.stencilTriggers_,
+          this.stencilCache_);
+      this.layers_.push(this.stencilLayer_);
+    }
   }
 
   // Create the seam layer
@@ -350,6 +349,7 @@ ThreeJsRenderer_.prototype.findClosestAboveLayerIntersection_ = function(
     if (this.engine_.options_['belowLayer'] &&
         intersections[0]['point']['z'] < 0 &&
         trigger.view_['below'] &&
+        this.engine_.options_['stencils'] &&
         model['viewType'] != model['stencilViewType'] &&
         stencilIntersections.indexOf(model) === -1)
       continue;
@@ -405,8 +405,9 @@ ThreeJsRenderer_.prototype.findClosestBelowLayerIntersection_ =
         intersections[0]['distance'] >= currentClosest.distance)
       continue;
 
-    // Check for a stencil intersection if it matters
-    if (model['viewType'] != model['stencilViewType'] &&
+    // Look for a stencil intersection
+    if (this.engine_.options_['stencils'] &&
+        model['viewType'] != model['stencilViewType'] &&
         stencilIntersections.indexOf(model) === -1)
       continue;
 
@@ -503,7 +504,8 @@ ThreeJsRenderer_.prototype.raycast_ = function() {
   if (this.engine_.options_['belowLayer'] &&
       this.engine_.options_['aboveLayer']) {
     // With both canvases, raycast on both layers
-    var stencilIntersections = this.findStencilLayerIntersections_();
+    var stencilIntersections = this.engine_.options_['stencils'] ?
+        this.findStencilLayerIntersections_() : [];
 
     closestIntersection = this.findClosestAboveLayerIntersection_(
         closestIntersection, stencilIntersections);
@@ -541,13 +543,16 @@ ThreeJsRenderer_.prototype.render_ = function() {
   if (DEBUG && window['voodoo']['debug']['drawStencils']) {
     // Render just the stencils
 
-    if (this.engine_.options_['belowLayer']) {
-      this.belowRenderer_.context.disable(
-          this.belowRenderer_.context.STENCIL_TEST);
-      this.belowRenderer_.autoClear = true;
-      this.belowRenderer_.render(this.stencilScene_.scene_,
-          this.belowCamera_.camera_);
+    if (this.engine_.options_['stencils']) {
+      if (this.engine_.options_['belowLayer']) {
+        this.belowRenderer_.context.disable(
+            this.belowRenderer_.context.STENCIL_TEST);
+        this.belowRenderer_.autoClear = true;
+        this.belowRenderer_.render(this.stencilScene_.scene_,
+            this.belowCamera_.camera_);
+      }
     }
+    else this.belowRenderer_.clear();
 
     this.aboveRenderer_.clear();
     this.seamRenderer_.clear();
@@ -555,7 +560,8 @@ ThreeJsRenderer_.prototype.render_ = function() {
     // Render normally
 
     if (this.engine_.options_['belowLayer']) {
-      if (DEBUG && window['voodoo']['debug']['disableStencils']) {
+      if (!this.engine_.options_['stencils'] ||
+          (DEBUG && window['voodoo']['debug']['disableStencils'])) {
         this.belowRenderer_.context.disable(
             this.belowRenderer_.context.STENCIL_TEST);
         this.belowRenderer_.autoClear = true;

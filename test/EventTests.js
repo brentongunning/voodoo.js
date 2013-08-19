@@ -49,7 +49,7 @@ EventTests = TestCase('EventTests');
  * correctly to have any clickable regions. We resize it.
  */
 EventTests.prototype.setUp = function() {
-  voodoo.engine = new voodoo.Engine({ frameLoop: false });
+  voodoo.engine = new voodoo.Engine({ frameLoop: false, stencils: true });
 
   document.body.style.height = '1000px';
 

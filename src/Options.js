@@ -164,6 +164,16 @@ Options.prototype['standardLighting'] = true;
 
 
 /**
+ * Whether to enable the stencil layers and the use of stencil views.
+ *
+ * Default is true.
+ *
+ * @type {boolean}
+ */
+Options.prototype['stencils'] = true;
+
+
+/**
  * The time to wait in milliseconds before updating when the page regains focus.
  *
  * Default is 350.

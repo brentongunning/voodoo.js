@@ -127,7 +127,7 @@ ModelTests.prototype.setUp = function() {
   globalCounters.reset();
 
   // Create an engine with no antialiasing so no seam layers.
-  voodoo.engine = new voodoo.Engine({ antialias: false });
+  voodoo.engine = new voodoo.Engine({ antialias: false, stencils: true });
 };
 
 

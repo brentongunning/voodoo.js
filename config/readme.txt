@@ -50,6 +50,7 @@ Added Cache to Model and View for sharing objects across different controls.
 Simplified API - Passing an options object when creating an engine.
 Simplified API - Replaced View.zMin/zMax with View.above/below.
 Reduced jitteryness when scrolling.
+Created options.stencils that's true by default.
 Updated ThreeJs to r60.
 
 8-10-2013 - 0.8.4

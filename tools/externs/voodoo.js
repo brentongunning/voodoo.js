@@ -324,6 +324,9 @@ voodoo.Options.prototype.seamZIndex;
 /** @type {boolean} */
 voodoo.Options.prototype.standardLighting;
 
+/** @type {boolean} */
+voodoo.Options.prototype.stencils;
+
 // ----------------------------------------------------------------------------
 // Renderer
 // ----------------------------------------------------------------------------

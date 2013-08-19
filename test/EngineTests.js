@@ -52,7 +52,10 @@ EngineTests.prototype.testCreateEngineWithCustomOptions = function() {
   options.fovY = 45;
   options.frameLoop = true;
   options.renderer = voodoo.Renderer.ThreeJs;
+  options.seamLayer = false;
+  options.seamZIndex = 50;
   options.standardLighting = false;
+  options.stencils = true;
 
   voodoo.engine = new voodoo.Engine(options);
 };
