@@ -45,12 +45,13 @@ Release Notes
 -------------------------------------------------------------------------------
 
 8-11-2013 - 0.8.5
-Added seam layer for eliminating the seam between antialiased layers.
-Added Cache to Model and View for sharing objects across different controls.
-Simplified API - Passing an options object when creating an engine.
-Simplified API - Replaced View.zMin/zMax with View.above/below.
+Added seam layer to fix the small gap between antialiased layers.
+Added Cache to Model and View for reusing objects across controls.
+Simplified API: Passing an options object when creating an engine.
+Simplified API: Replaced View.zMin/zMax with View.above/below.
 Reduced jitteryness when scrolling.
-Created options.stencils that's true by default.
+Added Options.stencils for enabling or disabling stencils altogether.
+Simplified samples.
 Updated ThreeJs to r60.
 
 8-10-2013 - 0.8.4
