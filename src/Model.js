@@ -65,9 +65,9 @@ Model.prototype['cleanUp'] = function() {
 Model.prototype['construct'] = function(options) {
   log_.assert_(this['name'], 'Model type name cannot be undefined or null');
   log_.assert_(this['viewType'], 'Model view type cannot be undefined or null');
-  log_.assert_(this['viewType'].prototype['above'] ||
-      this['viewType'].prototype['below'],
-      'View must exist on at least one layer');
+  if (!this['viewType'].prototype['above'] &&
+      !this['viewType'].prototype['below'])
+    log_.error_('View must exist on at least one layer');
   this['stencilViewType'] = this['stencilViewType'] || this['viewType'];
 
   this.setId_();
