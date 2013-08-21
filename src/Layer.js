@@ -14,8 +14,9 @@
 var LayerPass_ = {
   'Above': 0,
   'Below': 1,
-  'Stencil': 2,
-  'Seam': 3
+  'BelowStencil': 2,
+  'Seam': 3,
+  'SeamStencil': 4
 };
 
 

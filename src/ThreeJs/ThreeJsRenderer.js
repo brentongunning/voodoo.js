@@ -267,17 +267,18 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
     this.layers_.push(this.belowLayer_);
 
     if (this.engine_.options_['stencils']) {
-      this.stencilScene_ = new ThreeJsScene_();
-      this.stencilTriggers_ = new ThreeJsTriggers_(this.stencilScene_);
-      this.stencilCache_ = new Cache({});
-      this.stencilLayer_ = new Layer_(LayerPass_['Stencil'], renderer,
-          this.belowCamera_, this.stencilScene_, this.stencilTriggers_,
-          this.stencilCache_);
-      this.layers_.push(this.stencilLayer_);
+      this.belowStencilScene_ = new ThreeJsScene_();
+      this.belowStencilTriggers_ = new ThreeJsTriggers_(
+          this.belowStencilScene_);
+      this.belowStencilCache_ = new Cache({});
+      this.belowStencilLayer_ = new Layer_(LayerPass_['BelowStencil'], renderer,
+          this.belowCamera_, this.belowStencilScene_,
+          this.belowStencilTriggers_, this.belowStencilCache_);
+      this.layers_.push(this.belowStencilLayer_);
     }
   }
 
-  // Create the seam layer
+  // Create the seam layer and seam stencil layer
   if (this.engine_.options_['seamLayer']) {
     this.seamCamera_ = new ThreeJsCamera_(this.seamCanvas_,
         this.engine_.options_['fovY'],
@@ -296,6 +297,16 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
         this.seamCache_);
 
     this.layers_.push(this.seamLayer_);
+
+    if (this.engine_.options_['stencils']) {
+      this.seamStencilScene_ = new ThreeJsScene_();
+      this.seamStencilTriggers_ = new ThreeJsTriggers_(this.seamStencilScene_);
+      this.seamStencilCache_ = new Cache({});
+      this.seamStencilLayer_ = new Layer_(LayerPass_['SeamStencil'], renderer,
+          this.seamCamera_, this.seamStencilScene_, this.seamStencilTriggers_,
+          this.seamStencilCache_);
+      this.layers_.push(this.seamStencilLayer_);
+    }
   }
 
   this.pendingUpdateLayerZBoundaries_ = false;
@@ -430,7 +441,7 @@ ThreeJsRenderer_.prototype.findClosestBelowLayerIntersection_ =
  */
 ThreeJsRenderer_.prototype.findStencilLayerIntersections_ = function() {
   var stencilIntersections = [];
-  var stencilTriggers = this.stencilLayer_.triggers.triggers_;
+  var stencilTriggers = this.belowStencilLayer_.triggers.triggers_;
 
   for (var i = 0; i < stencilTriggers.length; ++i) {
     var trigger = stencilTriggers[i];
@@ -548,7 +559,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
         this.belowRenderer_.context.disable(
             this.belowRenderer_.context.STENCIL_TEST);
         this.belowRenderer_.autoClear = true;
-        this.belowRenderer_.render(this.stencilScene_.scene_,
+        this.belowRenderer_.render(this.belowStencilScene_.scene_,
             this.belowCamera_.camera_);
       }
     }
@@ -575,7 +586,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
         context.stencilFunc(context.NEVER, 1, 0xffffffff);
         this.belowRenderer_.autoClear = false;
         this.belowRenderer_.clear();
-        this.belowRenderer_.render(this.stencilScene_.scene_,
+        this.belowRenderer_.render(this.belowStencilScene_.scene_,
             this.belowCamera_.camera_);
 
         context.stencilOp(context.KEEP, context.KEEP, context.KEEP);
@@ -596,29 +607,56 @@ ThreeJsRenderer_.prototype.render_ = function() {
     // between layers. The stencil buffer is used so we don't draw on top
     // of content mistakenly.
     if (this.engine_.options_['seamLayer']) {
-      // First render onto the stencil buffer the above parts.
-
       var seam = this.engine_.options_.seamPixels_;
       var zCamera = this.seamCamera_['position']['z'];
-      this.seamCamera_.setZNearAndFar_(this.engine_.options_.zNear_,
-          zCamera - seam);
 
       var context = this.seamRenderer_.context;
-
       context.enable(context.STENCIL_TEST);
-      context.clearStencil(0);
-      context.stencilOp(context.REPLACE, context.REPLACE, context.REPLACE);
-      context.stencilFunc(context.NEVER, 1, 0xffffffff);
+
       this.seamRenderer_.autoClear = false;
       this.seamRenderer_.clear();
+
+      // We use the stencil buffer to only draw seams where they have to be
+      // and where they should be. When the stencil buffer is 1, the don't draw
+      // anything and where it is 0, we may be drawing a seam.
+
+      if (!this.engine_.options_['stencils'] ||
+          (DEBUG && window['voodoo']['debug']['disableStencils'])) {
+        // No stencils
+
+        context.clearStencil(0);
+      } else {
+        // Stencils
+
+        context.clearStencil(1);
+
+        // The seam may only be inside the stencils and in the small seam space
+        // above the page.
+        context.stencilOp(context.REPLACE, context.REPLACE, context.REPLACE);
+        context.stencilFunc(context.NEVER, 0, 0xffffffff);
+
+        this.seamCamera_.setZNearAndFar_(this.engine_.options_.zNear_,
+            this.engine_.options_.zFar_);
+        this.seamRenderer_.render(this.seamStencilScene_.scene_,
+            this.seamCamera_.camera_);
+
+        this.seamCamera_.setZNearAndFar_(zCamera - seam, zCamera);
+        this.seamRenderer_.render(this.seamScene_.scene_,
+            this.seamCamera_.camera_);
+      }
+
+      // No seams may overlap content above the seam space.
+      context.stencilOp(context.REPLACE, context.REPLACE, context.REPLACE);
+      context.stencilFunc(context.NEVER, 1, 0xffffffff);
+
+      this.seamCamera_.setZNearAndFar_(this.engine_.options_.zNear_,
+          zCamera - seam);
       this.seamRenderer_.render(this.seamScene_.scene_,
           this.seamCamera_.camera_);
 
+      // Draw what's remaining normally and it will be our seam.
       context.stencilOp(context.KEEP, context.KEEP, context.KEEP);
       context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
-
-      // Now render the seam parts normally but mask out any sections
-      // that are in the stencil buffer since they should be above the seam.
 
       this.seamCamera_.setZNearAndFar_(zCamera - seam, zCamera + seam);
       this.seamRenderer_.render(this.seamScene_.scene_,

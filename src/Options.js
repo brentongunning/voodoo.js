@@ -123,6 +123,8 @@ Options.prototype['renderer'] = Renderer['ThreeJs'];
  * The higher we go, the less chance we have of a seam, but the more
  * we overlap the antialiased scene with an unantialised seam.
  *
+ * Default is 10.
+ *
  * @private
  * @type {number}
  */

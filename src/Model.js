@@ -291,7 +291,15 @@ Model.prototype.createViews_ = function() {
         if (this['viewType'].prototype['above'])
           this.views_.push(new this['viewType'](this, layer));
         break;
-      case LayerPass_['Stencil']:
+      case LayerPass_['BelowStencil']:
+        if (this['viewType'].prototype['below']) {
+          if (nonuniqueStencilView)
+            this.views_.push(new this['viewType'](this, layer));
+          else
+            this.stencilViews_.push(new this['stencilViewType'](this, layer));
+        }
+        break;
+      case LayerPass_['SeamStencil']:
         if (this['viewType'].prototype['below']) {
           if (nonuniqueStencilView)
             this.views_.push(new this['viewType'](this, layer));
