@@ -1,7 +1,7 @@
 Voodoo.js
 ======
 
-# Introduction
+## Introduction
 
 Folder structure:
 
@@ -18,30 +18,30 @@ In addition, after building there will be these new folders:
   * /drop - Zip file for public sharing
   * /lib - Dependencies
 
-# How to Build
+### How to Build
 
 Voodoo currently builds on Windows. It would be great if someone ported the build engine to Unix and Python.
 
-## Step 1: Install Python 2.7
+#### Step 1: Install Python 2.7
 
   http://www.python.org/download/
   
-## Step 2: Install Closure Linter
+#### Step 2: Install Closure Linter
 
   https://developers.google.com/closure/utilities/docs/linter_howto
 
-## Step 3: Install 7zip
+#### Step 3: Install 7zip
 
   http://www.7-zip.org/
   
-## Step 4: Install Java 1.7 Runtime
+#### Step 4: Install Java 1.7 Runtime
 
   http://www.java.com/en/
 
-## Step 5: Update tools\user.cmd
+#### Step 5: Update tools\user.cmd
 
   Update this script with paths to your installations and browsers to test.
 
-## Step 6: Build
+#### Step 6: Build
 
   Run build.cmd in the root folder.
