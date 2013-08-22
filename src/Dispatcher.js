@@ -206,6 +206,9 @@ Dispatcher_.prototype.onMouseMove_ = function(event) {
   this.clientX_ = event.clientX;
   this.clientY_ = event.clientY;
   this.pendingMouseMove_ = true;
+
+  if (this.engine_.options_['realtime'])
+    this.update();
 };
 
 

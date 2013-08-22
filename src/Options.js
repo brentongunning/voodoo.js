@@ -109,6 +109,19 @@ Options.prototype['frameLoop'] = true;
 
 
 /**
+ * Whether to render every time the page is scrolled or resized, creating a
+ * very consistent experience at the expense of performance, or to render only
+ * when requestAnimationFrame runs, which is less frequent. If true, this
+ * also performs mouse raycasts in real-time rather than only on updates.
+ *
+ * Default is true.
+ *
+ * @type {boolean}
+ */
+Options.prototype['realtime'] = true;
+
+
+/**
  * 3D rendering engine to use.
  *
  * Default is ThreeJs.

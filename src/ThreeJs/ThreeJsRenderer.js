@@ -165,6 +165,9 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
   function onScroll(event) {
     self.targetLeft = window.pageXOffset + 'px';
     self.targetTop = window.pageYOffset + 'px';
+
+    if (self.engine_.options_['realtime'] && event)
+      self.frame();
   };
 
   // Resizes the canvas whenever the browser is resized
@@ -208,6 +211,9 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
     document.body.style.display = 'none';
     var unused = document.body.offsetHeight;
     document.body.style.display = 'block';
+
+    if (self.engine_.options_['realtime'] && event)
+      self.frame();
   }
 
   onResize(null);
@@ -665,24 +671,20 @@ ThreeJsRenderer_.prototype.render_ = function() {
   }
 
   // Force rendering to complete on all layers so there is no slicing from
-  // timing differences
-  if (this.engine_.options_['aboveLayer'])
-    this.aboveRenderer_.context.finish();
-  if (this.engine_.options_['belowLayer'])
-    this.belowRenderer_.context.finish();
-  if (this.engine_.options_['seamLayer'])
-    this.seamRenderer_.context.finish();
-
-  // Move the canvases to the target position right before we render
+  // timing differences. Then move the canvases to the target position right
+  // after we render.
   if (this.engine_.options_['aboveLayer']) {
+    this.aboveRenderer_.context.finish();
     this.aboveCanvas_.style.left = this.targetLeft;
     this.aboveCanvas_.style.top = this.targetTop;
   }
   if (this.engine_.options_['belowLayer']) {
+    this.belowRenderer_.context.finish();
     this.belowCanvas_.style.left = this.targetLeft;
     this.belowCanvas_.style.top = this.targetTop;
   }
   if (this.engine_.options_['seamLayer']) {
+    this.seamRenderer_.context.finish();
     this.seamCanvas_.style.left = this.targetLeft;
     this.seamCanvas_.style.top = this.targetTop;
   }
