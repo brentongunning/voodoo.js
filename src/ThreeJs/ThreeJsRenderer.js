@@ -166,8 +166,10 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
     self.targetLeft = window.pageXOffset + 'px';
     self.targetTop = window.pageYOffset + 'px';
 
-    if (self.engine_.options_['realtime'] && event)
-      self.frame();
+    if (self.engine_.options_['realtime'] && event) {
+      self.updateCameras_();
+      self.render_();
+    }
   };
 
   // Resizes the canvas whenever the browser is resized
@@ -822,7 +824,24 @@ ThreeJsRenderer_.prototype.update_ = function() {
     deltaTime = temp;
   } else this.lastDeltaTime_ = deltaTime;
 
+  this.updateCameras_();
 
+  // Update each model
+  var models = this.engine_.models_;
+  for (var modelIndex = 0; modelIndex < models.length; ++modelIndex)
+    models[modelIndex].update(deltaTime);
+
+  // Tell the dispatcher to dispatch all frame-based events.
+  this.engine_.dispatcher_.update();
+};
+
+
+/**
+ * Updates the cameras each frame.
+ *
+ * @private
+ */
+ThreeJsRenderer_.prototype.updateCameras_ = function() {
   // Update the cameras
   if (this.engine_.options_['aboveLayer'])
     this.aboveCamera_.update_();
@@ -854,14 +873,6 @@ ThreeJsRenderer_.prototype.update_ = function() {
     if (this.engine_.options_['seamLayer'])
       this.seamCamera_.pendingCameraMoveEvent_ = false;
   }
-
-  // Update each model
-  var models = this.engine_.models_;
-  for (var modelIndex = 0; modelIndex < models.length; ++modelIndex)
-    models[modelIndex].update(deltaTime);
-
-  // Tell the dispatcher to dispatch all frame-based events.
-  this.engine_.dispatcher_.update();
 };
 
 
