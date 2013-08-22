@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
-Voodoo Javascript Library - Version 0.8.5 (Public Beta)
+Voodoo Javascript Library - Version 0.8.6 (Public Beta)
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
@@ -44,7 +44,10 @@ See license.txt.
 Release Notes
 -------------------------------------------------------------------------------
 
-8-11-2013 - 0.8.5
+8-21-2013 - 0.8.6
+Add Options.realtime to support both realtime and deferred rendering and updates.
+
+8-19-2013 - 0.8.5
 Added seam layer to fix the small gap between antialiased layers.
 Added Cache to Model and View for reusing objects across controls.
 Simplified API: Passing an options object when creating an engine.
