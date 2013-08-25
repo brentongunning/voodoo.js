@@ -6,6 +6,7 @@ Debug.js
 
 Cache.js
 Event.js
+FpsTimer.js
 Model.js
 View.js
 Camera.js

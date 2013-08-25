@@ -38,6 +38,16 @@ Debug.prototype['drawStencils'] = false;
 
 
 /**
+ * Whether to show the frames per second in the top left corner of the screen.
+ *
+ * Default is false.
+ *
+ * @type {boolean}
+ */
+Debug.prototype['showFps'] = false;
+
+
+/**
  * Global Debug instance. This is created automatically.
  *
  * @type {Debug}

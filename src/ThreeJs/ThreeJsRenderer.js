@@ -26,6 +26,9 @@ function ThreeJsRenderer_(engine) {
   this.createFullscreenRenderers_();
   this.createLayers_();
   this.setupDeltaTimer_();
+
+  if (DEBUG)
+    this.fpsTimer_ = new FpsTimer_();
 }
 
 
@@ -39,6 +42,9 @@ ThreeJsRenderer_.prototype.destroy = function() {
     document.body.removeChild(this.belowCanvas_);
   if (this.engine_.options_['seamLayer'])
     document.body.removeChild(this.seamCanvas_);
+
+  if (DEBUG)
+    this.fpsTimer_.destroy();
 };
 
 
@@ -48,6 +54,9 @@ ThreeJsRenderer_.prototype.destroy = function() {
 ThreeJsRenderer_.prototype.frame = function() {
   this.update_();
   this.render_();
+
+  if (DEBUG)
+    this.fpsTimer_.frame();
 };
 
 
