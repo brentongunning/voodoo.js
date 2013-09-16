@@ -25,6 +25,7 @@ function ThreeJsRenderer_(engine) {
   this.validateAndPrepareWebpage_();
   this.createFullscreenRenderers_();
   this.createLayers_();
+  this.registerWindowEvents_();
   this.setupDeltaTimer_();
 
   if (DEBUG)
@@ -167,73 +168,8 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
     this.seamCanvas_.style.zIndex = this.engine_.options_['seamZIndex'];
   }
 
-  // Add window events for scroll and resize.
-
-  // Moves the canvas whenever the page is scrolled
-  var self = this;
-  function onScroll(event) {
-    self.targetLeft = window.pageXOffset + 'px';
-    self.targetTop = window.pageYOffset + 'px';
-
-    if (self.engine_.options_['realtime'] && event) {
-      self.updateCameras_();
-      self.render_();
-    }
-  };
-
-  // Resizes the canvas whenever the browser is resized
-  function onResize(event) {
-    self.viewportSize = self.getViewportSize_();
-    var canvasWidth = self.viewportSize.width;
-    var canvasHeight = self.viewportSize.height;
-    var styleCanvasWidth = canvasWidth + 'px';
-    var styleCanvasHeight = canvasHeight + 'px';
-    var devicePixelRatio = window.devicePixelRatio || 1.0;
-    var renderingCanvasWidth = canvasWidth * devicePixelRatio;
-    var renderingCanvasHeight = canvasHeight * devicePixelRatio;
-
-    if (self.engine_.options_['aboveLayer']) {
-      self.aboveRenderer_.setSize(canvasWidth, canvasHeight);
-      self.aboveCanvas_.style.width = styleCanvasWidth;
-      self.aboveCanvas_.style.height = styleCanvasHeight;
-      self.aboveCanvas_.width = renderingCanvasWidth;
-      self.aboveCanvas_.height = renderingCanvasHeight;
-    }
-
-    if (self.engine_.options_['belowLayer']) {
-      self.belowRenderer_.setSize(canvasWidth, canvasHeight);
-      self.belowCanvas_.style.width = styleCanvasWidth;
-      self.belowCanvas_.style.height = styleCanvasHeight;
-      self.belowCanvas_.width = renderingCanvasWidth;
-      self.belowCanvas_.height = renderingCanvasHeight;
-    }
-
-    if (self.engine_.options_['seamLayer']) {
-      self.seamRenderer_.setSize(canvasWidth, canvasHeight);
-      self.seamCanvas_.style.width = styleCanvasWidth;
-      self.seamCanvas_.style.height = styleCanvasHeight;
-      self.seamCanvas_.width = renderingCanvasWidth;
-      self.seamCanvas_.height = renderingCanvasHeight;
-    }
-
-    // This code forces webkit to redraw. It's needed because of a bug where
-    // Chrome does not repaint some elements under the fullscreen canvas on
-    // browser resize
-    document.body.style.display = 'none';
-    var unused = document.body.offsetHeight;
-    document.body.style.display = 'block';
-
-    if (self.engine_.options_['realtime'] && event)
-      self.frame();
-  }
-
-  onResize(null);
-  onScroll(null);
-
-  // Register the canvasRenderer's onScroll and onResize events with the
-  // window so we can adjust our canvas size
-  window.addEventListener('scroll', onScroll, false);
-  window.addEventListener('resize', onResize, false);
+  this.onResize_(null);
+  this.onScroll_(null);
 };
 
 
@@ -510,6 +446,77 @@ ThreeJsRenderer_.prototype.getViewportSize_ = function() {
 
 
 /**
+ * Resizes the canvas whenever the browser is resized
+ *
+ * @private
+ *
+ * @param {Event} event Event.
+ */
+ThreeJsRenderer_.prototype.onResize_ = function(event) {
+  this.viewportSize = this.getViewportSize_();
+  var canvasWidth = this.viewportSize.width;
+  var canvasHeight = this.viewportSize.height;
+  var styleCanvasWidth = canvasWidth + 'px';
+  var styleCanvasHeight = canvasHeight + 'px';
+  var devicePixelRatio = window.devicePixelRatio || 1.0;
+  var renderingCanvasWidth = canvasWidth * devicePixelRatio;
+  var renderingCanvasHeight = canvasHeight * devicePixelRatio;
+
+  if (this.engine_.options_['aboveLayer']) {
+    this.aboveRenderer_.setSize(canvasWidth, canvasHeight);
+    this.aboveCanvas_.style.width = styleCanvasWidth;
+    this.aboveCanvas_.style.height = styleCanvasHeight;
+    this.aboveCanvas_.width = renderingCanvasWidth;
+    this.aboveCanvas_.height = renderingCanvasHeight;
+  }
+
+  if (this.engine_.options_['belowLayer']) {
+    this.belowRenderer_.setSize(canvasWidth, canvasHeight);
+    this.belowCanvas_.style.width = styleCanvasWidth;
+    this.belowCanvas_.style.height = styleCanvasHeight;
+    this.belowCanvas_.width = renderingCanvasWidth;
+    this.belowCanvas_.height = renderingCanvasHeight;
+  }
+
+  if (this.engine_.options_['seamLayer']) {
+    this.seamRenderer_.setSize(canvasWidth, canvasHeight);
+    this.seamCanvas_.style.width = styleCanvasWidth;
+    this.seamCanvas_.style.height = styleCanvasHeight;
+    this.seamCanvas_.width = renderingCanvasWidth;
+    this.seamCanvas_.height = renderingCanvasHeight;
+  }
+
+  // This code forces webkit to redraw. It's needed because of a bug where
+  // Chrome does not repaint some elements under the fullscreen canvas on
+  // browser resize
+  document.body.style.display = 'none';
+  var unused = document.body.offsetHeight;
+  document.body.style.display = 'block';
+
+  if (this.engine_.options_['realtime'] && event)
+    this.frame();
+};
+
+
+/**
+ * Moves the canvas whenever the page is scrolled
+ *
+ * @private
+ *
+ * @param {Event} event Event.
+ */
+ThreeJsRenderer_.prototype.onScroll_ = function(event) {
+  this.targetLeft = window.pageXOffset + 'px';
+  this.targetTop = window.pageYOffset + 'px';
+
+  if (this.engine_.options_['realtime'] && event) {
+    this.updateCameras_();
+    this.render_();
+  }
+};
+
+
+/**
  * Raycasts based on the current mouse and returns the intersected trigger.
  *
  * The return object has the following members:
@@ -559,6 +566,28 @@ ThreeJsRenderer_.prototype.raycast_ = function() {
     hitY: point ? point['y'] : Number.MAX_VALUE,
     hitZ: point ? point['z'] : Number.MAX_VALUE
   };
+};
+
+
+/**
+ * Registers window events for scrolling and resizing to update the canvases.
+ *
+ * This is called internally during ThreeJsRenderer_'s constructor.
+ *
+ * @private
+ */
+ThreeJsRenderer_.prototype.registerWindowEvents_ = function() {
+  log_.information_('Registering for window events');
+
+  // Register the canvasRenderer's onScroll and onResize events with the
+  // window so we can adjust our canvas size
+  var self = this;
+  window.addEventListener('scroll', function(event) {
+    self.onScroll_.call(self, event);
+  }, false);
+  window.addEventListener('resize', function(event) {
+    self.onResize_.call(self, event);
+  }, false);
 };
 
 
