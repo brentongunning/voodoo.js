@@ -65,7 +65,8 @@ ThreeJsRenderer_.prototype.frame = function() {
     if (this.engine_.options_['performanceScaling'] &&
         !this.performanceScaling_) {
       if (this.fpsTimer_.fps >
-          this.engine_.options_.performanceScalingFpsThreshold_) {
+          this.engine_.options_.performanceScalingFpsThreshold_ ||
+          this.lastTicks_ == 0) {
         this.lastValidFpsTime_ = new Date();
       } else {
         var now = new Date();
