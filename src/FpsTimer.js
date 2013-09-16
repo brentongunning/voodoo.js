@@ -20,6 +20,7 @@ function FpsTimer_() {
 
     this.fpsDiv_ = document.createElement('div');
     this.fpsDiv_.style.position = 'fixed';
+    this.fpsDiv_.style.zIndex = 999999999;
     this.fpsDiv_.style.left = '0px';
     this.fpsDiv_.style.top = '0px';
     this.fpsDiv_.style.backgroundColor = 'black';
