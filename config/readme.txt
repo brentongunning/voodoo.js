@@ -46,6 +46,7 @@ Release Notes
 
 9-16-2013 - 0.8.6
 Add Options.realtime to support both realtime and deferred rendering and updates.
+Add Options.performanceScaling to lower resolution when performance drops.
 More improvements to reduce jitteryness when scrolling.
 Add Debug.showFPS to display the frames per second.
 Updated ThreeJs to r61.

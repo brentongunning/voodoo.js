@@ -109,6 +109,40 @@ Options.prototype['frameLoop'] = true;
 
 
 /**
+ * Whether to scale down the resolution of the canvases if the frames per second
+ * drops below 45 for more than 3 seconds.
+ *
+ * Default is true.
+ *
+ * @type {boolean}
+ */
+Options.prototype['performanceScaling'] = true;
+
+
+/**
+ * The FPS threshold at which to scale the canvas resolution down.
+ *
+ * Default is 45.
+ *
+ * @private
+ * @type {number}
+ */
+Options.prototype.performanceScalingFpsThreshold_ = 45;
+
+
+/**
+ * The number of seconds of frames below the threshold before the
+ * resolution is scaled.
+ *
+ * Default is 3.
+ *
+ * @private
+ * @type {number}
+ */
+Options.prototype.performanceScalingTimeLimit_ = 3;
+
+
+/**
  * Whether to render every time the page is scrolled or resized, creating a
  * very consistent experience at the expense of performance, or to render only
  * when requestAnimationFrame runs, which is less frequent. If true, this

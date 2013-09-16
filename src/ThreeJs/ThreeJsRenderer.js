@@ -28,8 +28,11 @@ function ThreeJsRenderer_(engine) {
   this.registerWindowEvents_();
   this.setupDeltaTimer_();
 
-  if (DEBUG)
+  if (DEBUG || this.engine_.options_['performanceScaling']) {
     this.fpsTimer_ = new FpsTimer_();
+    this.lastValidFpsTime_ = new Date();
+    this.performanceScaling_ = false;
+  }
 }
 
 
@@ -44,7 +47,7 @@ ThreeJsRenderer_.prototype.destroy = function() {
   if (this.engine_.options_['seamLayer'])
     document.body.removeChild(this.seamCanvas_);
 
-  if (DEBUG)
+  if (DEBUG || this.engine_.options_['performanceScaling'])
     this.fpsTimer_.destroy();
 };
 
@@ -56,8 +59,27 @@ ThreeJsRenderer_.prototype.frame = function() {
   this.update_();
   this.render_();
 
-  if (DEBUG)
+  if (DEBUG || this.engine_.options_['performanceScaling']) {
     this.fpsTimer_.frame();
+
+    if (this.engine_.options_['performanceScaling'] &&
+        !this.performanceScaling_) {
+      if (this.fpsTimer_.fps >
+          this.engine_.options_.performanceScalingFpsThreshold_) {
+        this.lastValidFpsTime_ = new Date();
+      } else {
+        var now = new Date();
+        var seconds = (now - this.lastValidFpsTime_) / 1000;
+        if (seconds > this.engine_.options_.performanceScalingTimeLimit_) {
+          log_.information_('Enabling performance scaling');
+
+          this.canvasScale_ = 0.5;
+          this.performanceScaling_ = true;
+          this.onResize_(null);
+        }
+      }
+    }
+  }
 };
 
 
@@ -118,6 +140,9 @@ ThreeJsRenderer_.prototype.capturePointerEvents_ = function(capture) {
  */
 ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
   log_.information_('Creating WebGL renderers');
+
+  // This reduced by 1/2 when the FPS drops below 45 for a few frames.
+  this.canvasScale_ = 1.0;
 
   var webGlOptions = {
     antialias: this.engine_.options_['antialias']
@@ -459,11 +484,13 @@ ThreeJsRenderer_.prototype.onResize_ = function(event) {
   var styleCanvasWidth = canvasWidth + 'px';
   var styleCanvasHeight = canvasHeight + 'px';
   var devicePixelRatio = window.devicePixelRatio || 1.0;
-  var renderingCanvasWidth = canvasWidth * devicePixelRatio;
-  var renderingCanvasHeight = canvasHeight * devicePixelRatio;
+  var renderingCanvasWidth = canvasWidth * devicePixelRatio *
+      this.canvasScale_;
+  var renderingCanvasHeight = canvasHeight * devicePixelRatio *
+      this.canvasScale_;
 
   if (this.engine_.options_['aboveLayer']) {
-    this.aboveRenderer_.setSize(canvasWidth, canvasHeight);
+    this.aboveRenderer_.setSize(renderingCanvasWidth, renderingCanvasHeight);
     this.aboveCanvas_.style.width = styleCanvasWidth;
     this.aboveCanvas_.style.height = styleCanvasHeight;
     this.aboveCanvas_.width = renderingCanvasWidth;
@@ -471,7 +498,7 @@ ThreeJsRenderer_.prototype.onResize_ = function(event) {
   }
 
   if (this.engine_.options_['belowLayer']) {
-    this.belowRenderer_.setSize(canvasWidth, canvasHeight);
+    this.belowRenderer_.setSize(renderingCanvasWidth, renderingCanvasHeight);
     this.belowCanvas_.style.width = styleCanvasWidth;
     this.belowCanvas_.style.height = styleCanvasHeight;
     this.belowCanvas_.width = renderingCanvasWidth;
@@ -479,7 +506,7 @@ ThreeJsRenderer_.prototype.onResize_ = function(event) {
   }
 
   if (this.engine_.options_['seamLayer']) {
-    this.seamRenderer_.setSize(canvasWidth, canvasHeight);
+    this.seamRenderer_.setSize(renderingCanvasWidth, renderingCanvasHeight);
     this.seamCanvas_.style.width = styleCanvasWidth;
     this.seamCanvas_.style.height = styleCanvasHeight;
     this.seamCanvas_.width = renderingCanvasWidth;
