@@ -44,10 +44,11 @@ See license.txt.
 Release Notes
 -------------------------------------------------------------------------------
 
-8-21-2013 - 0.8.6
+9-16-2013 - 0.8.6
 Add Options.realtime to support both realtime and deferred rendering and updates.
 More improvements to reduce jitteryness when scrolling.
 Add Debug.showFPS to display the frames per second.
+Updated ThreeJs to r61.
 
 8-19-2013 - 0.8.5
 Added seam layer to fix the small gap between antialiased layers.
