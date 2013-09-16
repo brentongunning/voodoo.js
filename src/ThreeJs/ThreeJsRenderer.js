@@ -510,8 +510,7 @@ ThreeJsRenderer_.prototype.onScroll_ = function(event) {
   this.targetTop = window.pageYOffset + 'px';
 
   if (this.engine_.options_['realtime'] && event) {
-    this.updateCameras_();
-    this.render_();
+    this.frame();
   }
 };
 
