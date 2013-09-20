@@ -1,28 +1,29 @@
-Utility.js
-Extendable.js
-Composite.js
-Log.js
-Debug.js
+Core\Log.js
+Core\Debug.js
+Core\Utility.js
+Core\Extendable.js
+Core\Composite.js
+Core\Layer.js
+Core\Cache.js
+Core\Model.js
+Core\View.js
 
-Cache.js
-Event.js
-FpsTimer.js
-Model.js
-View.js
-Camera.js
-Triggers.js
-Scene.js
+Render\FpsTimer.js
+Render\Camera.js
+Render\Scene.js
+Render\Renderer.js
+
+Event\Event.js
+Event\Triggers.js
+Event\Dispatcher.js
 
 ThreeJs\ThreeJsCamera.js
 ThreeJs\ThreeJsScene.js
 ThreeJs\ThreeJsTriggers.js
 ThreeJs\ThreeJsRenderer.js
 
-Renderer.js
-Dispatcher.js
-Layer.js
-Options.js
-Engine.js
+Core\Engine.js
+Core\Options.js
 
 Lights\Light.js
 Lights\AmbientLight.js
