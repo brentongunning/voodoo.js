@@ -16,13 +16,20 @@
  * @constructor
  * @private
  *
+ * @param {Array.<EventTrigger_>} triggers ThreeJs triggers.
  * @param {ThreeJsScene_} scene ThreeJs scene.
+ * @param {View} view Owning view.
  */
-function ThreeJsTriggers_(scene) {
+function ThreeJsTriggers_(triggers, scene, view) {
   log_.information_('Creating ThreeJs Triggers');
 
-  this.triggers_ = [];
+  log_.assert_(triggers, 'Triggers must be valid');
+  log_.assert_(scene, 'Scene must be valid');
+  log_.assert_(view, 'View must be valid');
+
+  this.triggers_ = triggers;
   this.scene_ = scene;
+  this.view_ = view;
 }
 
 
@@ -45,16 +52,13 @@ ThreeJsTriggers_.prototype.constructor = ThreeJsTriggers_.constructor;
  *
  * @this {ThreeJsTriggers_}
  *
- * @param {View} view View.
  * @param {THREE.Object3D} object Object that triggers mouse events.
  * @param {string|number=} opt_triggerId Optional event id.
  */
-ThreeJsTriggers_.prototype['add'] = function(view, object,
-    opt_triggerId) {
-  log_.assert_(view, 'View must be valid');
+ThreeJsTriggers_.prototype['add'] = function(object, opt_triggerId) {
   log_.assert_(object, 'Object must be valid');
 
-  var trigger = new EventTrigger_(view, object, opt_triggerId);
+  var trigger = new EventTrigger_(this.view_, object, opt_triggerId);
 
   // See if this trigger already exists
   if (DEBUG) {
@@ -97,36 +101,3 @@ ThreeJsTriggers_.prototype['remove'] = function(object) {
 
   object['addedToVoodooTriggers'] = false;
 };
-
-
-/**
- * Customizes the triggers list for a particular view so that the
- * user doesn't have to specify the view every time.
- *
- * @this {ThreeJsTriggers_}
- *
- * @param {View} view View to customize for.
- * @return {Object} Customized trigger list.
- */
-ThreeJsTriggers_.prototype.applyView = function(view) {
-  var triggers = this;
-  return {
-    add: function(object, opt_trigger_id) {
-      triggers['add'](view, object, opt_trigger_id);
-    },
-    remove: function(object, opt_trigger_id) {
-      triggers['remove'](object);
-    }
-  };
-};
-
-
-/**
- * The internal array of triggers.
- *
- * This is exposed internally for enumeration across the triggers.
- *
- * @private
- * @type {Array.<EventTrigger_>}
- */
-ThreeJsTriggers_.prototype.triggers_ = null;

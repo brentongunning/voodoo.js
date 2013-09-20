@@ -229,14 +229,14 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
         this.engine_.options_.zNear_,
         this.engine_.options_.zFar_);
 
-    this.aboveScene_ = new ThreeJsScene_();
+    this.aboveSceneFactory_ = new ThreeJsSceneFactory_();
 
-    this.aboveTriggers_ = new ThreeJsTriggers_(this.aboveScene_);
-    this.aboveCache_ = new Cache({});
+    this.aboveTriggersFactory_ = new ThreeJsTriggersFactory_();
+    this.aboveCacheFactory_ = new CacheFactory_();
 
     this.aboveLayer_ = new Layer_(LayerPass_['Above'], renderer,
-        this.aboveCamera_, this.aboveScene_, this.aboveTriggers_,
-        this.aboveCache_);
+        this.aboveCamera_, this.aboveSceneFactory_, this.aboveTriggersFactory_,
+        this.aboveCacheFactory_);
 
     this.layers_.push(this.aboveLayer_);
   }
@@ -248,22 +248,21 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
         this.engine_.options_.zNear_,
         this.engine_.options_.zFar_);
 
-    this.belowScene_ = new ThreeJsScene_();
-    this.belowTriggers_ = new ThreeJsTriggers_(this.belowScene_);
-    this.belowCache_ = new Cache({});
+    this.belowSceneFactory_ = new ThreeJsSceneFactory_();
+    this.belowTriggersFactory_ = new ThreeJsTriggersFactory_();
+    this.belowCacheFactory_ = new CacheFactory_();
     this.belowLayer_ = new Layer_(LayerPass_['Below'], renderer,
-        this.belowCamera_, this.belowScene_, this.belowTriggers_,
-        this.belowCache_);
+        this.belowCamera_, this.belowSceneFactory_, this.belowTriggersFactory_,
+        this.belowCacheFactory_);
     this.layers_.push(this.belowLayer_);
 
     if (this.engine_.options_['stencils']) {
-      this.belowStencilScene_ = new ThreeJsScene_();
-      this.belowStencilTriggers_ = new ThreeJsTriggers_(
-          this.belowStencilScene_);
-      this.belowStencilCache_ = new Cache({});
+      this.belowStencilSceneFactory_ = new ThreeJsSceneFactory_();
+      this.belowStencilTriggersFactory_ = new ThreeJsTriggersFactory_();
+      this.belowStencilCacheFactory_ = new CacheFactory_();
       this.belowStencilLayer_ = new Layer_(LayerPass_['BelowStencil'], renderer,
-          this.belowCamera_, this.belowStencilScene_,
-          this.belowStencilTriggers_, this.belowStencilCache_);
+          this.belowCamera_, this.belowStencilSceneFactory_,
+          this.belowStencilTriggersFactory_, this.belowStencilCacheFactory_);
       this.layers_.push(this.belowStencilLayer_);
     }
   }
@@ -275,26 +274,26 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
         this.engine_.options_.zNear_,
         this.engine_.options_.zFar_);
 
-    this.seamScene_ = new ThreeJsScene_();
+    this.seamSceneFactory_ = new ThreeJsSceneFactory_();
 
     // The triggers for the seam layer aren't actually used. We just
     // create one so as not to break user code.
-    this.seamTriggers_ = new ThreeJsTriggers_(this.seamScene_);
-    this.seamCache_ = new Cache({});
+    this.seamTriggersFactory_ = new ThreeJsTriggersFactory_();
+    this.seamCacheFactory_ = new CacheFactory_();
 
     this.seamLayer_ = new Layer_(LayerPass_['Seam'], renderer,
-        this.seamCamera_, this.seamScene_, this.seamTriggers_,
-        this.seamCache_);
+        this.seamCamera_, this.seamSceneFactory_, this.seamTriggersFactory_,
+        this.seamCacheFactory_);
 
     this.layers_.push(this.seamLayer_);
 
     if (this.engine_.options_['stencils']) {
-      this.seamStencilScene_ = new ThreeJsScene_();
-      this.seamStencilTriggers_ = new ThreeJsTriggers_(this.seamStencilScene_);
-      this.seamStencilCache_ = new Cache({});
+      this.seamStencilSceneFactory_ = new ThreeJsSceneFactory_();
+      this.seamStencilTriggersFactory_ = new ThreeJsTriggersFactory_();
+      this.seamStencilCacheFactory_ = new CacheFactory_();
       this.seamStencilLayer_ = new Layer_(LayerPass_['SeamStencil'], renderer,
-          this.seamCamera_, this.seamStencilScene_, this.seamStencilTriggers_,
-          this.seamStencilCache_);
+          this.seamCamera_, this.seamStencilSceneFactory_,
+          this.seamStencilTriggersFactory_, this.seamStencilCacheFactory_);
       this.layers_.push(this.seamStencilLayer_);
     }
   }
@@ -416,7 +415,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
         this.belowRenderer_.context.disable(
             this.belowRenderer_.context.STENCIL_TEST);
         this.belowRenderer_.autoClear = true;
-        this.belowRenderer_.render(this.belowStencilScene_.scene_,
+        this.belowRenderer_.render(this.belowStencilSceneFactory_.scene_,
             this.belowCamera_.camera_);
       }
     }
@@ -443,19 +442,19 @@ ThreeJsRenderer_.prototype.render_ = function() {
         context.stencilFunc(context.NEVER, 1, 0xffffffff);
         this.belowRenderer_.autoClear = false;
         this.belowRenderer_.clear();
-        this.belowRenderer_.render(this.belowStencilScene_.scene_,
+        this.belowRenderer_.render(this.belowStencilSceneFactory_.scene_,
             this.belowCamera_.camera_);
 
         context.stencilOp(context.KEEP, context.KEEP, context.KEEP);
         context.stencilFunc(context.EQUAL, 1, 0xffffffff);
       }
 
-      this.belowRenderer_.render(this.belowScene_.scene_,
+      this.belowRenderer_.render(this.belowSceneFactory_.scene_,
           this.belowCamera_.camera_);
     }
 
     if (this.engine_.options_['aboveLayer']) {
-      this.aboveRenderer_.render(this.aboveScene_.scene_,
+      this.aboveRenderer_.render(this.aboveSceneFactory_.scene_,
           this.aboveCamera_.camera_);
     }
 
@@ -494,11 +493,11 @@ ThreeJsRenderer_.prototype.render_ = function() {
 
         this.seamCamera_.setZNearAndFar_(this.engine_.options_.zNear_,
             this.engine_.options_.zFar_);
-        this.seamRenderer_.render(this.seamStencilScene_.scene_,
+        this.seamRenderer_.render(this.seamStencilSceneFactory_.scene_,
             this.seamCamera_.camera_);
 
         this.seamCamera_.setZNearAndFar_(zCamera - seam, zCamera);
-        this.seamRenderer_.render(this.seamScene_.scene_,
+        this.seamRenderer_.render(this.seamSceneFactory_.scene_,
             this.seamCamera_.camera_);
       }
 
@@ -508,7 +507,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
 
       this.seamCamera_.setZNearAndFar_(this.engine_.options_.zNear_,
           zCamera - seam);
-      this.seamRenderer_.render(this.seamScene_.scene_,
+      this.seamRenderer_.render(this.seamSceneFactory_.scene_,
           this.seamCamera_.camera_);
 
       // Draw what's remaining normally and it will be our seam.
@@ -516,7 +515,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
       context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
 
       this.seamCamera_.setZNearAndFar_(zCamera - seam, zCamera + seam);
-      this.seamRenderer_.render(this.seamScene_.scene_,
+      this.seamRenderer_.render(this.seamSceneFactory_.scene_,
           this.seamCamera_.camera_);
     }
   }

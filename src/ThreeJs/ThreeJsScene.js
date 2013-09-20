@@ -11,11 +11,13 @@
  *
  * @constructor
  * @private
+ *
+ * @param {THREE.Scene} scene Three.js scene.
  */
-function ThreeJsScene_() {
+function ThreeJsScene_(scene) {
   log_.information_('Creating ThreeJs Scene');
 
-  this.scene_ = new THREE.Scene();
+  this.scene_ = scene;
 }
 
 

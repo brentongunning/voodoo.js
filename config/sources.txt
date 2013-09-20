@@ -6,23 +6,28 @@ Core\Extendable.js
 Core\Composite.js
 Core\Layer.js
 Core\Cache.js
+Core\CacheFactory.js
 Core\Model.js
 Core\View.js
 
 Render\FpsTimer.js
 Render\Camera.js
 Render\Scene.js
+Render\SceneFactory.js
 Render\Renderer.js
 
 Event\Event.js
 Event\Triggers.js
+Event\TriggersFactory.js
 Event\Raycaster.js
 Event\Dispatcher.js
 
 ThreeJs\ThreeJsCamera.js
 ThreeJS\ThreeJsRaycaster.js
 ThreeJs\ThreeJsScene.js
+ThreeJs\ThreeJsSceneFactory.js
 ThreeJs\ThreeJsTriggers.js
+ThreeJs\ThreeJsTriggersFactory.js
 ThreeJs\ThreeJsRenderer.js
 
 Core\Engine.js

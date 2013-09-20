@@ -47,14 +47,15 @@ View.prototype['construct'] = function(model, layer) {
   log_.assert_(model, 'View model passed to initialize cannot be null');
   log_.assert_(layer, 'View layer passed to initialize cannot be null');
 
+  // Create public properties
+  this.setupPublicProperties_();
+
   // Setup private vars
   this.model_ = model;
   this.layer_ = layer;
-  this.triggers_ = this.layer_.triggers.applyView(this);
-  this.cache_ = this.layer_.cache.applyModel_(this.model_);
-
-  // Create public properties
-  this.setupPublicProperties_();
+  this.scene_ = this.layer_.sceneFactory_.createScene_(this);
+  this.triggers_ = this.layer_.triggersFactory_.createTriggers_(this);
+  this.cache_ = this.layer_.cacheFactory_.createCache_(this.model_);
 
   // Call the user's load function.
   this['load']();
@@ -189,7 +190,7 @@ View.prototype.setupPublicProperties_ = function() {
   });
 
   Object.defineProperty(this, 'camera', {
-    get: function() { return this.layer_.camera; },
+    get: function() { return this.layer_.camera_; },
     set: function() { log_.error_('camera is read-only'); },
     writeable: false
   });
@@ -201,13 +202,13 @@ View.prototype.setupPublicProperties_ = function() {
   });
 
   Object.defineProperty(this, 'renderer', {
-    get: function() { return this.layer_.renderer; },
+    get: function() { return this.layer_.renderer_; },
     set: function() { log_.error_('renderer is read-only'); },
     writeable: false
   });
 
   Object.defineProperty(this, 'scene', {
-    get: function() { return this.layer_.scene; },
+    get: function() { return this.scene_; },
     set: function() { log_.error_('scene is read-only'); },
     writeable: false
   });

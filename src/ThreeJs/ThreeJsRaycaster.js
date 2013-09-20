@@ -55,7 +55,7 @@ ThreeJsRaycaster_.prototype.constructor = ThreeJsRaycaster_.constructor;
  */
 ThreeJsRaycaster_.prototype.findClosestAboveLayerIntersection_ = function(
     currentClosest, stencilIntersections) {
-  var triggers = this.renderer_.aboveLayer_.triggers.triggers_;
+  var triggers = this.renderer_.aboveLayer_.triggersFactory_.triggers_;
 
   for (var i = 0; i < triggers.length; ++i) {
     var trigger = triggers[i];
@@ -109,7 +109,7 @@ ThreeJsRaycaster_.prototype.findClosestAboveLayerIntersection_ = function(
  */
 ThreeJsRaycaster_.prototype.findClosestBelowLayerIntersection_ =
     function(currentClosest, stencilIntersections) {
-  var triggers = this.renderer_.belowLayer_.triggers.triggers_;
+  var triggers = this.renderer_.belowLayer_.triggersFactory_.triggers_;
 
   for (var i = 0; i < triggers.length; ++i) {
     var trigger = triggers[i];
@@ -161,7 +161,8 @@ ThreeJsRaycaster_.prototype.findClosestBelowLayerIntersection_ =
  */
 ThreeJsRaycaster_.prototype.findStencilLayerIntersections_ = function() {
   var stencilIntersections = [];
-  var stencilTriggers = this.renderer_.belowStencilLayer_.triggers.triggers_;
+  var stencilTriggers =
+      this.renderer_.belowStencilLayer_.triggersFactory_.triggers_;
 
   for (var i = 0; i < stencilTriggers.length; ++i) {
     var trigger = stencilTriggers[i];
@@ -257,7 +258,7 @@ ThreeJsRaycaster_.prototype.setMouse_ = function(mouse) {
 
   // Create the above raycaster.
   if (this.engine_.options_['aboveLayer']) {
-    var aboveThreeJsCamera = this.renderer_.aboveLayer_.camera.camera_;
+    var aboveThreeJsCamera = this.renderer_.aboveLayer_.camera_.camera_;
 
     this.aboveMouseVector_ = new THREE.Vector3(mx, my, 1);
 
@@ -275,7 +276,7 @@ ThreeJsRaycaster_.prototype.setMouse_ = function(mouse) {
 
   // Create the below raycaster.
   if (this.engine_.options_['belowLayer']) {
-    var belowThreeJsCamera = this.renderer_.belowLayer_.camera.camera_;
+    var belowThreeJsCamera = this.renderer_.belowLayer_.camera_.camera_;
 
     this.belowMouseVector_ = new THREE.Vector3(mx, my, 1);
 

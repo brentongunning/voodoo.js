@@ -37,7 +37,7 @@ function Engine(opt_options) {
   this.options_ = options;
   this.validateOptions_();
 
-  this.modelCache_ = new Cache({});
+  this.modelCacheFactory_ = new CacheFactory_();
 
   // Setup models property
   this.models_ = [];
@@ -179,12 +179,12 @@ Engine.prototype.validateOptions_ = function() {
 
 
 /**
- * Cache for all model objects.
+ * Cache factory for all model objects.
  *
  * @private
- * @type {Cache}
+ * @type {CacheFactory_}
  */
-Engine.prototype.modelCache_ = null;
+Engine.prototype.modelCacheFactory_ = null;
 
 
 /**

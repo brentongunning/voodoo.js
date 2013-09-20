@@ -15,6 +15,8 @@
  * @param {Object} cache The cache object to use.
  */
 function Cache(cache) {
+  log_.information_('Creating Cache');
+
   this.cache_ = cache;
 }
 
@@ -93,25 +95,6 @@ Cache.prototype['set'] = function(key, value, opt_name, opt_organization) {
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
   subcache[key] = value;
-};
-
-
-/**
- * Customizes the cache for a specific model.
- *
- * @private
- *
- * @param {Model} model Model to customize for.
- *
- * @return {Cache} Customized cache.
- */
-Cache.prototype.applyModel_ = function(model) {
-  var cache = new Cache(this.cache_);
-
-  cache.modelName_ = model['name'];
-  cache.modelOrganization_ = model['organization'];
-
-  return cache;
 };
 
 

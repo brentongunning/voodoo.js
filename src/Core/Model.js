@@ -275,7 +275,7 @@ Model.prototype.createViews_ = function() {
   for (var layerIndex = 0; layerIndex < layers.length; ++layerIndex) {
     var layer = layers[layerIndex];
 
-    switch (layer.pass) {
+    switch (layer.pass_) {
       case LayerPass_['Above']:
         if (this['viewType'].prototype['above'])
           this.views_.push(new this['viewType'](this, layer));
@@ -342,7 +342,8 @@ Model.prototype.setId_ = function() {
  * @private
  */
 Model.prototype.setupCache_ = function() {
-  this.cache_ = window['voodoo']['engine'].modelCache_.applyModel_(this);
+  this.cache_ = window['voodoo']['engine'].modelCacheFactory_.createCache_(
+      this);
 
   Object.defineProperty(this, 'cache', {
     get: function() { return this.cache_; },
