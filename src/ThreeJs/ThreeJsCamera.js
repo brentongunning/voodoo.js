@@ -26,38 +26,8 @@ function ThreeJsCamera_(canvas, fovY, zNear, zFar) {
   this.zNear_ = zNear;
   this.zFar_ = zFar;
 
-  this.pendingScroll_ = false;
-  this.pendingResize_ = false;
-
-  this.init_();
-
-  // Setup properties
-  Object.defineProperty(this, 'fovy', {
-    get: function() { return this.fovY_; },
-    set: function() { log_.error_('fovy is read-only'); },
-    writeable: false
-  });
-  Object.defineProperty(this, 'position', {
-    get: function() {
-      return {
-        'x': this.camera_.position.x,
-        'y': this.camera_.position.y,
-        'z': this.camera_.position.z
-      };
-    },
-    set: function() { log_.error_('position is read-only'); },
-    writeable: false
-  });
-  Object.defineProperty(this, 'zNear', {
-    get: function() { return this.zNear_; },
-    set: function() { log_.error_('zNear is read-only'); },
-    writeable: false
-  });
-  Object.defineProperty(this, 'zFar', {
-    get: function() { return this.zFar_; },
-    set: function() { log_.error_('zFar is read-only'); },
-    writeable: false
-  });
+  this.initialize_();
+  this.createProperties_();
 }
 
 
@@ -125,11 +95,52 @@ ThreeJsCamera_.prototype['zFar'] = null;
 
 
 /**
+ * Creates the public camera properties.
+ *
+ * @private
+ */
+ThreeJsCamera_.prototype.createProperties_ = function() {
+  Object.defineProperty(this, 'fovy', {
+    get: function() { return this.fovY_; },
+    set: function() { log_.error_('fovy is read-only'); },
+    writeable: false
+  });
+
+  Object.defineProperty(this, 'position', {
+    get: function() {
+      return {
+        'x': this.camera_.position.x,
+        'y': this.camera_.position.y,
+        'z': this.camera_.position.z
+      };
+    },
+    set: function() { log_.error_('position is read-only'); },
+    writeable: false
+  });
+
+  Object.defineProperty(this, 'zNear', {
+    get: function() { return this.zNear_; },
+    set: function() { log_.error_('zNear is read-only'); },
+    writeable: false
+  });
+
+  Object.defineProperty(this, 'zFar', {
+    get: function() { return this.zFar_; },
+    set: function() { log_.error_('zFar is read-only'); },
+    writeable: false
+  });
+};
+
+
+/**
  * Initializes the camera.
  *
  * @private
  */
-ThreeJsCamera_.prototype.init_ = function() {
+ThreeJsCamera_.prototype.initialize_ = function() {
+  this.pendingScroll_ = false;
+  this.pendingResize_ = false;
+
   // The camera is oriented so that 0,0 is the upper-left corner
   this.camera_.up.x = 0;
   this.camera_.up.y = -1;
