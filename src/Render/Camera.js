@@ -19,7 +19,7 @@ function Camera() {}
  *
  * @type {number}
  */
-Camera.prototype['fovY'] = null;
+Camera.prototype['fovY'] = 0;
 
 // XYZ object for the camera's position.
 Camera.prototype['position'] = {};
@@ -30,7 +30,7 @@ Camera.prototype['position'] = {};
  *
  * @type {number}
  */
-Camera.prototype['position']['x'] = {};
+Camera.prototype['position']['x'] = 0;
 
 
 /**
@@ -38,7 +38,7 @@ Camera.prototype['position']['x'] = {};
  *
  * @type {number}
  */
-Camera.prototype['position']['y'] = {};
+Camera.prototype['position']['y'] = 0;
 
 
 /**
@@ -46,7 +46,7 @@ Camera.prototype['position']['y'] = {};
  *
  * @type {number}
  */
-Camera.prototype['position']['z'] = {};
+Camera.prototype['position']['z'] = 0;
 
 
 /**
@@ -54,7 +54,7 @@ Camera.prototype['position']['z'] = {};
  *
  * @type {number}
  */
-Camera.prototype['zNear'] = null;
+Camera.prototype['zNear'] = 0;
 
 
 /**
@@ -62,4 +62,4 @@ Camera.prototype['zNear'] = null;
  *
  * @type {number}
  */
-Camera.prototype['zFar'] = null;
+Camera.prototype['zFar'] = 0;
