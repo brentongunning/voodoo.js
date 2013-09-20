@@ -21,7 +21,7 @@ function Dispatcher_(engine) {
   // The dispatcher uses the renderer to raycast for mouse intersections.
   // This isn't totally clean since the renderer should just be doing
   // rendering, but works for now.
-  this.engine_.renderer_.setMousePosition_(0, 0);
+  this.engine_.raycaster_.setMouse_(new Vector2_(0, 0));
 
   // Adds the main mouse event listeners.
   this.addGlobalMouseEventListeners_();
@@ -38,7 +38,8 @@ Dispatcher_.prototype.update = function() {
   // new coordinates. We do this whenever the dispatcher's update runs
   // each frame instead of on mouse moves for performance.
   if (this.pendingMouseMove_)
-    this.engine_.renderer_.setMousePosition_(this.clientX_, this.clientY_);
+    this.engine_.raycaster_.setMouse_(
+        new Vector2_(this.clientX_, this.clientY_));
 
   // We raycast every frame because objects may be moving under the mouse.
   var nextTrigger = this.raycast_();
@@ -265,7 +266,7 @@ Dispatcher_.prototype.onMouseUp_ = function(event) {
  * @return {EventTrigger_}
  */
 Dispatcher_.prototype.raycast_ = function() {
-  var raycastResult = this.engine_.renderer_.raycast_();
+  var raycastResult = this.engine_.raycaster_.raycast_();
 
   this.lastHitX_ = raycastResult.hitX;
   this.lastHitY_ = raycastResult.hitY;

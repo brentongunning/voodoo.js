@@ -20,7 +20,6 @@
 function ThreeJsRenderer_(engine) {
   this.engine_ = engine;
   this.layers_ = [];
-  this.projector_ = new THREE.Projector();
 
   this.validateAndPrepareWebpage_();
   this.createFullscreenRenderers_();
@@ -34,6 +33,18 @@ function ThreeJsRenderer_(engine) {
     this.performanceScaling_ = false;
   }
 }
+
+
+/**
+ * Inherit from RenderingEngine_.
+ */
+ThreeJsRenderer_.prototype = new RenderingEngine_();
+
+
+/**
+ * Set the constructor back.
+ */
+ThreeJsRenderer_.prototype.constructor = ThreeJsRenderer_.constructor;
 
 
 /**
@@ -298,180 +309,6 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
 
 
 /**
- * Gets the next closest intersection on the above layer.
- *
- * This will actually check all objects in the below layer too
- * because ThreeJs has no way to limit rays based on camera
- * clip distance. However, we still perform checks on the below
- * layer for objects that only exist in the below layer.
- *
- * @private
- *
- * @param {Object} currentClosest Currently the closest hit.
- * @param {Array.<Model>} stencilIntersections Models intersecting on stencil.
- *
- * @return {Object} The new closest hit.
- */
-ThreeJsRenderer_.prototype.findClosestAboveLayerIntersection_ = function(
-    currentClosest, stencilIntersections) {
-  var triggers = this.aboveLayer_.triggers.triggers_;
-
-  for (var i = 0; i < triggers.length; ++i) {
-    var trigger = triggers[i];
-    var obj = trigger.object_;
-    var model = trigger.model_;
-
-    var intersections = this.aboveRaycaster_.intersectObject(obj, true);
-
-    // Check for at least one intersection on the object
-    if (intersections.length <= 0)
-      continue;
-
-    // Check that the hit distance is closer than what we currently have
-    if (intersections[0]['distance'] <= 0 ||
-        intersections[0]['distance'] >= currentClosest.distance)
-      continue;
-
-    // Make sure that our intersection point is any of the following
-    //  1) Above Z=0
-    //  2) Below Z=0 AND the stencil layer isn't being used.
-    //  3) Below Z=0 AND the stencil layer is used AND our ray intersects it
-    if (this.engine_.options_['belowLayer'] &&
-        intersections[0]['point']['z'] < 0 &&
-        trigger.view_['below'] &&
-        this.engine_.options_['stencils'] &&
-        model['viewType'] != model['stencilViewType'] &&
-        stencilIntersections.indexOf(model) === -1)
-      continue;
-
-    // New closest intersection. Save it.
-    currentClosest.distance = intersections[0]['distance'];
-    currentClosest.trigger = trigger;
-    currentClosest.point = intersections[0]['point'];
-  }
-
-  return currentClosest;
-};
-
-
-/**
- * Gets the next closest intersection on the below layer.
- *
- * This actually only checks objects that completely exist in the below layer.
- *
- * @private
- *
- * @param {Object} currentClosest Currently the closest hit.
- * @param {Array.<Model>} stencilIntersections Models intersecting on stencil.
- *
- * @return {Object} The new closest hit.
- */
-ThreeJsRenderer_.prototype.findClosestBelowLayerIntersection_ =
-    function(currentClosest, stencilIntersections) {
-  var triggers = this.belowLayer_.triggers.triggers_;
-
-  for (var i = 0; i < triggers.length; ++i) {
-    var trigger = triggers[i];
-    var model = trigger.model_;
-    var obj = trigger.object_;
-
-    // If the trigger has any part in the above layer, then ignore it
-    // because we already checked it during the above layer checks.
-    if (this.engine_.options_['aboveLayer'] && model['view']['above'])
-      continue;
-
-    var intersections = this.belowRaycaster_['intersectObject'](obj, true);
-
-    // Check for at least one intersection on the object
-    if (intersections.length <= 0)
-      continue;
-
-    // Make sure the intersection is in the below layer
-    if (intersections[0]['point']['z'] >= 0)
-      continue;
-
-    // Check that the hit distance is closer than what we currently have
-    if (intersections[0]['distance'] <= 0 ||
-        intersections[0]['distance'] >= currentClosest.distance)
-      continue;
-
-    // Look for a stencil intersection
-    if (this.engine_.options_['stencils'] &&
-        model['viewType'] != model['stencilViewType'] &&
-        stencilIntersections.indexOf(model) === -1)
-      continue;
-
-    // New closest intersection. Save it.
-    currentClosest.distance = intersections[0]['distance'];
-    currentClosest.trigger = trigger;
-    currentClosest.point = intersections[0]['point'];
-  }
-
-  return currentClosest;
-};
-
-
-/**
- * Gets all models on the stencil layer that intersect with the mouse.
- *
- * @private
- *
- * @return {Array.<Model>} All intersecting models on the stencil layer.
- */
-ThreeJsRenderer_.prototype.findStencilLayerIntersections_ = function() {
-  var stencilIntersections = [];
-  var stencilTriggers = this.belowStencilLayer_.triggers.triggers_;
-
-  for (var i = 0; i < stencilTriggers.length; ++i) {
-    var trigger = stencilTriggers[i];
-    var obj = trigger.object_;
-    var model = trigger.model_;
-
-    // When the view and stencil view are the same types, stencil checking
-    // doesn't matter.
-    if (model['viewType'] === model['stencilViewType'])
-      continue;
-
-    // Check if a stencil layer could even exists at all
-    if (!trigger.view_['below'])
-      continue;
-
-    // If we already checked this model, continue
-    if (stencilTriggers.indexOf(model) !== -1)
-      continue;
-
-    // Check for a hit
-    if (this.belowRaycaster_.intersectObject(obj, true).length > 0)
-      stencilIntersections.push(model);
-  }
-
-  return stencilIntersections;
-};
-
-
-/**
- * Gets the size of the client area of the browser.
- *
- * @private
- *
- * @return {Object} Object with width and height numbers.
- */
-ThreeJsRenderer_.prototype.getViewportSize_ = function() {
-  var testDiv = document.createElement('div');
-
-  testDiv.style.cssText =
-      'position: fixed; top: 0; left: 0; bottom: 0; right: 0;';
-  document.documentElement.insertBefore(testDiv,
-      document.documentElement.firstChild);
-
-  var size = {width: testDiv.offsetWidth, height: testDiv.offsetHeight};
-  document.documentElement.removeChild(testDiv);
-
-  return size;
-};
-
-
-/**
  * Resizes the canvas whenever the browser is resized
  *
  * @private
@@ -479,9 +316,9 @@ ThreeJsRenderer_.prototype.getViewportSize_ = function() {
  * @param {Event} event Event.
  */
 ThreeJsRenderer_.prototype.onResize_ = function(event) {
-  this.viewportSize = this.getViewportSize_();
-  var canvasWidth = this.viewportSize.width;
-  var canvasHeight = this.viewportSize.height;
+  this.updateViewportSize_();
+  var canvasWidth = this.viewportSize_.width;
+  var canvasHeight = this.viewportSize_.height;
   var styleCanvasWidth = canvasWidth + 'px';
   var styleCanvasHeight = canvasHeight + 'px';
   var devicePixelRatio = window.devicePixelRatio || 1.0;
@@ -540,59 +377,6 @@ ThreeJsRenderer_.prototype.onScroll_ = function(event) {
   if (this.engine_.options_['realtime'] && event) {
     this.frame();
   }
-};
-
-
-/**
- * Raycasts based on the current mouse and returns the intersected trigger.
- *
- * The return object has the following members:
- *    trigger - The EventTrigger_ that the ray intersected, or null for none.
- *    hitX - X position where the hit occurred.
- *    hitY - Y position where the hit occurred.
- *    hitZ - Z position where the hit occurred.
- *
- * @private
- *
- * @return {Object}
- */
-ThreeJsRenderer_.prototype.raycast_ = function() {
-  var closestIntersection = {
-    distance: Number.MAX_VALUE,
-    trigger: null,
-    point: null
-  };
-
-  if (this.engine_.options_['belowLayer'] &&
-      this.engine_.options_['aboveLayer']) {
-    // With both canvases, raycast on both layers
-    var stencilIntersections = this.engine_.options_['stencils'] ?
-        this.findStencilLayerIntersections_() : [];
-
-    closestIntersection = this.findClosestAboveLayerIntersection_(
-        closestIntersection, stencilIntersections);
-    closestIntersection = this.findClosestBelowLayerIntersection_(
-        closestIntersection, stencilIntersections);
-  }
-  else if (this.engine_.options_['aboveLayer']) {
-    // With only the above canvas, raycast only the above layer
-    closestIntersection = this.findClosestAboveLayerIntersection_(
-        closestIntersection, []);
-  }
-  else if (this.engine_.options_['belowLayer']) {
-    // With only the below canvas, raycast stencils and the below layer
-    var stencilIntersections = this.findStencilLayerIntersections_();
-    closestIntersection = this.findClosestBelowLayerIntersection_(
-        closestIntersection, stencilIntersections);
-  }
-
-  var point = closestIntersection.point;
-  return {
-    trigger: closestIntersection.trigger,
-    hitX: point ? point['x'] : Number.MAX_VALUE,
-    hitY: point ? point['y'] : Number.MAX_VALUE,
-    hitZ: point ? point['z'] : Number.MAX_VALUE
-  };
 };
 
 
@@ -828,46 +612,6 @@ ThreeJsRenderer_.prototype.setupFullscreenCanvasRenderer_ =
 
 
 /**
- * Creates the raycaster objects used to intersect objects. This
- * needs to be called when the mouse moves.
- *
- * @private
- *
- * @param {number} clientX Client mouse x position.
- * @param {number} clientY Client mouse y position.
- */
-ThreeJsRenderer_.prototype.setMousePosition_ = function(clientX, clientY) {
-  var mx = 0, my = 0;
-  if (typeof this.viewportSize !== 'undefined') {
-    mx = (clientX / this.viewportSize.width) * 2 - 1;
-    my = -(clientY / this.viewportSize.height) * 2 + 1;
-  }
-
-  if (this.engine_.options_['aboveLayer']) {
-    this.aboveMouseVector_ = new THREE.Vector3(mx, my, 1);
-    this.projector_.unprojectVector(this.aboveMouseVector_,
-        this.aboveCamera_.camera_);
-    this.aboveMouseVector_ =
-        this.aboveMouseVector_.sub(
-        this.aboveCamera_.camera_.position).normalize();
-    this.aboveRaycaster_ = new THREE.Raycaster(
-        this.aboveCamera_.camera_.position, this.aboveMouseVector_);
-  }
-
-  if (this.engine_.options_['belowLayer']) {
-    this.belowMouseVector_ = new THREE.Vector3(mx, my, 1);
-    this.projector_.unprojectVector(this.belowMouseVector_,
-        this.belowCamera_.camera_);
-    this.belowMouseVector_ =
-        this.belowMouseVector_.sub(
-        this.belowCamera_.camera_.position).normalize();
-    this.belowRaycaster_ = new THREE.Raycaster(
-        this.belowCamera_.camera_.position, this.belowMouseVector_);
-  }
-};
-
-
-/**
  * Updates each model.
  *
  * @private
@@ -961,6 +705,24 @@ ThreeJsRenderer_.prototype.updateLayerZBoundaries_ = function() {
     var zCamera = this.aboveCamera_['position']['z'];
     this.aboveCamera_.setZNearAndFar_(this.engine_.options_.zNear_, zCamera);
   }
+};
+
+
+/**
+ * Gets the size of the client area of the browser.
+ *
+ * @private
+ */
+ThreeJsRenderer_.prototype.updateViewportSize_ = function() {
+  var testDiv = document.createElement('div');
+
+  testDiv.style.cssText =
+      'position: fixed; top: 0; left: 0; bottom: 0; right: 0;';
+  document.documentElement.insertBefore(testDiv,
+      document.documentElement.firstChild);
+
+  this.viewportSize_ = new Size2_(testDiv.offsetWidth, testDiv.offsetHeight);
+  document.documentElement.removeChild(testDiv);
 };
 
 

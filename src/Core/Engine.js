@@ -58,9 +58,11 @@ function Engine(opt_options) {
   switch (options['renderer']) {
     case Renderer['ThreeJs']:
       this.renderer_ = new ThreeJsRenderer_(this);
+      this.raycaster_ = new ThreeJsRaycaster_(this);
       break;
     default:
       this.renderer_ = null;
+      this.raycaster_ = null;
       log_.error_('Unsupported renderer');
       break;
   }
@@ -204,10 +206,19 @@ Engine.prototype.options_ = null;
 
 
 /**
+ * The main raycaster.
+ *
+ * @private
+ * @type {Raycaster_}
+ */
+Engine.prototype.raycaster_ = null;
+
+
+/**
  * The main renderer.
  *
  * @private
- * @type {ThreeJsRenderer_}
+ * @type {RenderingEngine_}
  */
 Engine.prototype.renderer_ = null;
 

@@ -1,4 +1,5 @@
 Core\Log.js
+Core\Types.js
 Core\Debug.js
 Core\Utility.js
 Core\Extendable.js
@@ -15,9 +16,11 @@ Render\Renderer.js
 
 Event\Event.js
 Event\Triggers.js
+Event\Raycaster.js
 Event\Dispatcher.js
 
 ThreeJs\ThreeJsCamera.js
+ThreeJS\ThreeJsRaycaster.js
 ThreeJs\ThreeJsScene.js
 ThreeJs\ThreeJsTriggers.js
 ThreeJs\ThreeJsRenderer.js
