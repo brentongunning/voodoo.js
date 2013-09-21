@@ -38,6 +38,7 @@ function Engine(opt_options) {
   this.validateOptions_();
 
   this.modelCacheFactory_ = new CacheFactory_();
+  this.tracker_ = new Tracker_();
 
   // Setup models property
   this.models_ = [];
@@ -179,21 +180,21 @@ Engine.prototype.validateOptions_ = function() {
 
 
 /**
- * Cache factory for all model objects.
- *
- * @private
- * @type {CacheFactory_}
- */
-Engine.prototype.modelCacheFactory_ = null;
-
-
-/**
  * The main event dispatcher.
  *
  * @private
  * @type {Dispatcher_}
  */
 Engine.prototype.dispatcher_ = null;
+
+
+/**
+ * Cache factory for all model objects.
+ *
+ * @private
+ * @type {CacheFactory_}
+ */
+Engine.prototype.modelCacheFactory_ = null;
 
 
 /**
@@ -221,6 +222,15 @@ Engine.prototype.raycaster_ = null;
  * @type {RenderingEngine_}
  */
 Engine.prototype.renderer_ = null;
+
+
+/**
+ * The HTML element tracker.
+ *
+ * @private
+ * @type {Tracker_}
+ */
+Engine.prototype.tracker_ = null;
 
 
 /**

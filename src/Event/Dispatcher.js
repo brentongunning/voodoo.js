@@ -29,51 +29,6 @@ function Dispatcher_(engine) {
 
 
 /**
- * Detects and dispatches model events.
- *
- * This is called each frame by the renderer.
- */
-Dispatcher_.prototype.update = function() {
-  // Whenever the mouse moves, we need to update the raycaster with the
-  // new coordinates. We do this whenever the dispatcher's update runs
-  // each frame instead of on mouse moves for performance.
-  if (this.pendingMouseMove_)
-    this.engine_.raycaster_.setMouse_(
-        new Vector2_(this.clientX_, this.clientY_));
-
-  // We raycast every frame because objects may be moving under the mouse.
-  var nextTrigger = this.raycast_();
-
-  if (nextTrigger != null) {
-    // Mouse move events are only sent on update to boost performance
-    if (this.pendingMouseMove_)
-      this.dispatchMouseEvent_('mousemove', nextTrigger);
-
-    if (!nextTrigger.isEquivalentTo(this.hoveredTrigger_)) {
-      // Mouse leave the old trigger
-      if (this.hoveredTrigger_ != null)
-        this.dispatchMouseEvent_('mouseout', this.hoveredTrigger_);
-
-      // Mouse enter the new trigger
-      this.dispatchMouseEvent_('mouseover', nextTrigger);
-    }
-
-    this.engine_.renderer_.capturePointerEvents_(true);
-  }
-  else {
-    // Mouse leave the old trigger
-    if (this.hoveredTrigger_ != null)
-      this.dispatchMouseEvent_('mouseout', this.hoveredTrigger_);
-
-    this.engine_.renderer_.capturePointerEvents_(false);
-  }
-
-  this.hoveredTrigger_ = nextTrigger;
-  this.pendingMouseMove_ = false;
-};
-
-
-/**
  * Registers document event listeners.
  *
  * @private
@@ -209,7 +164,7 @@ Dispatcher_.prototype.onMouseMove_ = function(event) {
   this.pendingMouseMove_ = true;
 
   if (this.engine_.options_['realtime'])
-    this.update();
+    this.update_();
 };
 
 
@@ -273,4 +228,51 @@ Dispatcher_.prototype.raycast_ = function() {
   this.lastHitZ_ = raycastResult.hitZ;
 
   return raycastResult.trigger;
+};
+
+
+/**
+ * Detects and dispatches model events.
+ *
+ * This is called each frame by the renderer.
+ *
+ * @private
+ */
+Dispatcher_.prototype.update_ = function() {
+  // Whenever the mouse moves, we need to update the raycaster with the
+  // new coordinates. We do this whenever the dispatcher's update runs
+  // each frame instead of on mouse moves for performance.
+  if (this.pendingMouseMove_)
+    this.engine_.raycaster_.setMouse_(
+        new Vector2_(this.clientX_, this.clientY_));
+
+  // We raycast every frame because objects may be moving under the mouse.
+  var nextTrigger = this.raycast_();
+
+  if (nextTrigger != null) {
+    // Mouse move events are only sent on update to boost performance
+    if (this.pendingMouseMove_)
+      this.dispatchMouseEvent_('mousemove', nextTrigger);
+
+    if (!nextTrigger.isEquivalentTo(this.hoveredTrigger_)) {
+      // Mouse leave the old trigger
+      if (this.hoveredTrigger_ != null)
+        this.dispatchMouseEvent_('mouseout', this.hoveredTrigger_);
+
+      // Mouse enter the new trigger
+      this.dispatchMouseEvent_('mouseover', nextTrigger);
+    }
+
+    this.engine_.renderer_.capturePointerEvents_(true);
+  }
+  else {
+    // Mouse leave the old trigger
+    if (this.hoveredTrigger_ != null)
+      this.dispatchMouseEvent_('mouseout', this.hoveredTrigger_);
+
+    this.engine_.renderer_.capturePointerEvents_(false);
+  }
+
+  this.hoveredTrigger_ = nextTrigger;
+  this.pendingMouseMove_ = false;
 };

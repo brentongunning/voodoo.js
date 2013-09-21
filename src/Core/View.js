@@ -71,6 +71,8 @@ View.prototype['construct'] = function(model, layer) {
  */
 View.prototype['destroy'] = function() {
   this['unload']();
+
+  this.scene_.destroy_();
 };
 
 

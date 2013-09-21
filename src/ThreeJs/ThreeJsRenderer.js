@@ -640,7 +640,10 @@ ThreeJsRenderer_.prototype.update_ = function() {
     models[modelIndex].update(deltaTime);
 
   // Tell the dispatcher to dispatch all frame-based events.
-  this.engine_.dispatcher_.update();
+  this.engine_.dispatcher_.update_();
+
+  // Also update the HTML element tracker
+  this.engine_.tracker_.update_();
 };
 
 

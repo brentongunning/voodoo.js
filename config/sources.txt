@@ -4,6 +4,7 @@ Core\Debug.js
 Core\Utility.js
 Core\Extendable.js
 Core\Composite.js
+Core\LayerPass.js
 Core\Layer.js
 Core\Cache.js
 Core\CacheFactory.js
@@ -15,6 +16,9 @@ Render\Camera.js
 Render\Scene.js
 Render\SceneFactory.js
 Render\Renderer.js
+Render\RenderingEngine.js
+Render\TrackedElement.js
+Render\Tracker.js
 
 Event\Event.js
 Event\Triggers.js
