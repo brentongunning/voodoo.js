@@ -77,12 +77,8 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
     pixels = true;
 
   // Release the old tracker
-  if (this.trackId_ !== null) {
-    this.tracker_.release_(this.trackId_);
-    this.trackId_ = null;
-    this.parent_.position.x = this.parent_.position.y = 0;
-    this.parent_.scale.x = this.parent_.scale.y = 1;
-  }
+  if (this.trackId_ !== null)
+    this['detach']();
 
   // Attach to the new element and setup the callbacks.
   var self = this;
@@ -90,7 +86,6 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
     if (center) {
       if (pixels) {
         this.trackId_ = this.tracker_.track_(element, function(x, y, w, h) {
-          window.console.log(x + ' ' + y + ' ' + w + ' ' + h);
           self.parent_.position.x = x + w / 2.0;
           self.parent_.position.y = y + h / 2.0;
           self.parent_.scale.x = self.parent_.scale.y = 1.0;
@@ -124,6 +119,20 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
 
 
 /**
+ * Removes the local coordinate system of the scene.
+ *
+ * @this {ThreeJsScene_}
+ */
+ThreeJsScene_.prototype['detach'] = function() {
+  this.tracker_.release_(this.trackId_);
+  this.trackId_ = null;
+
+  this.parent_.position.x = this.parent_.position.y = 0;
+  this.parent_.scale.x = this.parent_.scale.y = 1;
+};
+
+
+/**
  * Removes an object to the ThreeJs scene.
  *
  * @this {ThreeJsScene_}
@@ -147,7 +156,7 @@ ThreeJsScene_.prototype['remove'] = function(object) {
 ThreeJsScene_.prototype.destroy_ = function() {
   this.scene_.remove(this.parent_);
   if (this.trackId_ !== null)
-    this.tracker_.release_(this.trackId_);
+    this['detach']();
 
   this.scene_ = null;
   this.parent_ = null;

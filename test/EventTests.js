@@ -5,38 +5,6 @@
 // ----------------------------------------------------------------------------
 
 
-/**
- * Dispatches a mouse event to the document.
- *
- * @param {string} type Type of mouse event (ie. mousemove).
- * @param {number} x X coordinate.
- * @param {number} y Y coordinate.
- */
-function fireMouseEvent(type, x, y) {
-  voodoo.engine.frame();
-
-  var moveEvent = document.createEvent('MouseEvents');
-  moveEvent.initMouseEvent(type, true, true, window, 0, x, y,
-      x, y, false, false, false, false, 0, null);
-  document.dispatchEvent(moveEvent);
-
-  voodoo.engine.frame();
-}
-
-
-/**
- * Dispatches mouse events to perform a click
- *
- * @param {number} x X coordinate.
- * @param {number} y Y coordinate.
- */
-function fireClick(x, y) {
-  fireMouseEvent('mousemove', x, y);
-  fireMouseEvent('mousedown', x, y);
-  fireMouseEvent('mouseup', x, y);
-}
-
-
 
 /**
  * Tests for all the different event types.
@@ -47,24 +15,20 @@ EventTests = TestCase('EventTests');
 
 
 /**
- * Setup the page for mouse event testing. By default, the page is not sized
- * correctly to have any clickable regions. We resize it.
+ * Test case initialization. Runs once before each test.
  */
 EventTests.prototype.setUp = function() {
   voodoo.engine = new voodoo.Engine({ frameLoop: false, stencils: true });
 
-  document.body.style.height = '1000px';
-
-  var evt = document.createEvent('UIEvents');
-  evt.initUIEvent('resize', true, false, window, 0);
-  window.dispatchEvent(evt);
+  enableMouseEvents();
 };
 
 
 /**
- * Shuts down the engine between test cases.
+ * Test case shutdown. Runs once after each test.
  */
 EventTests.prototype.tearDown = function() {
+  // Shutdown the engine between test cases.
   if (typeof voodoo.engine !== 'undefined')
     voodoo.engine.destroy();
 };

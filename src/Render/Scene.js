@@ -38,6 +38,12 @@ Scene.prototype['attach'] = function(element, center, pixels) {};
 
 
 /**
+ * Removes the local coordinate system of the scene.
+ */
+Scene.prototype['detach'] = function() {};
+
+
+/**
  * Removes a mesh from the scene graph.
  *
  * @param {THREE.Object3D} object Object to remove.
