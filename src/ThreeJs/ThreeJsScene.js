@@ -70,7 +70,7 @@ ThreeJsScene_.prototype['add'] = function(object) {
  *    x unit is the element's width, and one y unit is the unit's height. Z
  *    is in pixels regardless.
  */
-ThreeJsScene_.prototype['locate'] = function(element, center, pixels) {
+ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
   if (typeof center === 'undefined')
     center = true;
   if (typeof pixels === 'undefined')
