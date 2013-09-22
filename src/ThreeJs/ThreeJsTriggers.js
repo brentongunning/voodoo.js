@@ -21,8 +21,6 @@
  * @param {View} view Owning view.
  */
 function ThreeJsTriggers_(triggers, scene, view) {
-  log_.information_('Creating ThreeJs Triggers');
-
   log_.assert_(triggers, 'Triggers must be valid');
   log_.assert_(scene, 'Scene must be valid');
   log_.assert_(view, 'View must be valid');

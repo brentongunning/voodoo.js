@@ -13,6 +13,8 @@
  * @param {number} y Y coordinate.
  */
 function fireMouseEvent(type, x, y) {
+  voodoo.engine.frame();
+
   var moveEvent = document.createEvent('MouseEvents');
   moveEvent.initMouseEvent(type, true, true, window, 0, x, y,
       x, y, false, false, false, false, 0, null);
@@ -103,23 +105,23 @@ EventTests.prototype.testMouseEvents = function() {
 
   fireClick(500, 600);
 
-  assertEquals(1, move);
-  assertEquals(1, down);
-  assertEquals(1, up);
-  assertEquals(1, click);
-  assertEquals(0, dblclick);
+  assertEquals('mousemove events:', 1, move);
+  assertEquals('mousedown events:', 1, down);
+  assertEquals('mouseup events:', 1, up);
+  assertEquals('click events:', 1, click);
+  assertEquals('dblclick events:', 0, dblclick);
 
   fireClick(500, 600);
 
-  assertEquals(2, click);
-  assertEquals(1, dblclick);
+  assertEquals('click events: ', 2, click);
+  assertEquals('dblclick events: ', 1, dblclick);
 
-  assertEquals(500, dblClickEvent.client.x);
-  assertEquals(600, dblClickEvent.client.y);
-  assertNotEquals(0, dblClickEvent.hit.x);
-  assertNotEquals(0, dblClickEvent.hit.y);
-  assertNotEquals(0, dblClickEvent.hit.z);
-  assertEquals('dblclick', dblClickEvent.type);
+  assertEquals('client x:', 500, dblClickEvent.client.x);
+  assertEquals('client y:', 600, dblClickEvent.client.y);
+  assertNotEquals('hit x:', 0, dblClickEvent.hit.x);
+  assertNotEquals('hit y:', 0, dblClickEvent.hit.y);
+  assertNotEquals('hit z:', 0, dblClickEvent.hit.z);
+  assertEquals('event type:', 'dblclick', dblClickEvent.type);
 };
 
 
@@ -157,7 +159,7 @@ EventTests.prototype.testStencilClicks = function() {
 
   // Click where the mesh should be first
   fireClick(900, 600);
-  assertEquals(1, clicked);
+  assertEquals('clicked:', 1, clicked);
   assertTrue(Math.abs(0 - event.hit.z) < 0.01);
   assertTrue(event.hit.z < 0);
 
@@ -181,7 +183,7 @@ EventTests.prototype.testStencilClicks = function() {
   model.on('click', function(evt) {clicked++; event = evt;});
 
   fireClick(900, 600);
-  assertEquals(1, clicked);
+  assertEquals('clicked:', 1, clicked);
 };
 
 
@@ -218,13 +220,13 @@ EventTests.prototype.testMultipleTriggerIds = function() {
 
   fireClick(500, 600);
 
-  assertEquals(1, click);
-  assertEquals(0, event.triggerId);
+  assertEquals('click:', 1, click);
+  assertEquals('triggerId:', 0, event.triggerId);
 
   fireClick(1500, 1600);
 
-  assertEquals(2, click);
-  assertEquals(1, event.triggerId);
+  assertEquals('click:', 2, click);
+  assertEquals('triggerId:', 1, event.triggerId);
 };
 
 
@@ -244,7 +246,7 @@ EventTests.prototype.testCameraMove = function() {
     numCameraMoveEvents++;
   });
 
-  assertEquals(0, numCameraMoveEvents);
+  assertEquals('numCameraMoveEvents:', 0, numCameraMoveEvents);
 
   // Fire a window resize event which should try to move the camera
   var evt = document.createEvent('UIEvents');
@@ -252,7 +254,7 @@ EventTests.prototype.testCameraMove = function() {
   window.dispatchEvent(evt);
 
   voodoo.engine.frame();
-  assertEquals(1, numCameraMoveEvents);
+  assertEquals('numCameraMoveEvents:', 1, numCameraMoveEvents);
 
   // Fire a window scroll event which should try to move the camera
   var evt = document.createEvent('UIEvents');
@@ -260,5 +262,5 @@ EventTests.prototype.testCameraMove = function() {
   window.dispatchEvent(evt);
 
   voodoo.engine.frame();
-  assertEquals(2, numCameraMoveEvents);
+  assertEquals('numCameraMoveEvents:', 2, numCameraMoveEvents);
 };

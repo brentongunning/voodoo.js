@@ -16,6 +16,30 @@ function RenderingEngine_() {}
 
 
 /**
+ * Shuts down the rendering engine.
+ *
+ * @private
+ */
+RenderingEngine_.prototype.destroy_ = function() {};
+
+
+/**
+ * Runs one frame of update and render.
+ *
+ * @private
+ */
+RenderingEngine_.prototype.frame_ = function() {};
+
+
+/**
+ * Starts rendering frames.
+ *
+ * @private
+ */
+RenderingEngine_.prototype.run_ = function() {};
+
+
+/**
  * The layer for content above the main page content.
  *
  * @type {Layer_}

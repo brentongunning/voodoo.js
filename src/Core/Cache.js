@@ -15,8 +15,6 @@
  * @param {Object} cache The cache object to use.
  */
 function Cache(cache) {
-  log_.information_('Creating Cache');
-
   this.cache_ = cache;
 }
 

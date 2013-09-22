@@ -15,8 +15,6 @@
  * @param {THREE.Scene} scene Three.js scene.
  */
 function ThreeJsScene_(scene) {
-  log_.information_('Creating ThreeJs Scene');
-
   this.scene_ = scene;
 
   this.tracker_ = window['voodoo']['engine'].tracker_;

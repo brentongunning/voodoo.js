@@ -32,42 +32,18 @@ function FpsTimer_() {
   // Create a timer that runs every second
   var self = this;
   this.fpsTimerId_ = setInterval(function() {
-    self.fps = self.fpsCounter_;
+    self.fps_ = self.fpsCounter_;
     self.fpsCounter_ = 0;
   }, 1000);
 }
 
 
 /**
- * Call this for each frame that runs to update the fps counters.
- */
-FpsTimer_.prototype.frame = function() {
-  this.fpsCounter_++;
-
-  // Show or hide the frames per second.
-  if (window['voodoo']['debug']['showFps']) {
-    if (!this.showingFps_) {
-      this.fpsDiv_.display = 'block';
-      document.body.appendChild(this.fpsDiv_);
-      this.showingFps_ = true;
-    }
-
-    this.fpsDiv_.innerHTML = 'FPS: ' + this.fps;
-  }
-  else {
-    if (this.showingFps_) {
-      this.fpsDiv_.display = 'none';
-      document.body.removeChild(this.fpsDiv_);
-      this.showingFps_ = false;
-    }
-  }
-};
-
-
-/**
  * Stops the fps timer.
+ *
+ * @private
  */
-FpsTimer_.prototype.destroy = function() {
+FpsTimer_.prototype.destroy_ = function() {
   if (this.showingFps_) {
     this.fpsDiv_.display = 'none';
     document.body.removeChild(this.fpsDiv_);
@@ -80,8 +56,37 @@ FpsTimer_.prototype.destroy = function() {
 
 
 /**
+ * Call this for each frame that runs to update the fps counters.
+ *
+ * @private
+ */
+FpsTimer_.prototype.frame_ = function() {
+  this.fpsCounter_++;
+
+  // Show or hide the frames per second.
+  if (window['voodoo']['debug']['showFps']) {
+    if (!this.showingFps_) {
+      this.fpsDiv_.display = 'block';
+      document.body.appendChild(this.fpsDiv_);
+      this.showingFps_ = true;
+    }
+
+    this.fpsDiv_.innerHTML = 'FPS: ' + this.fps_;
+  }
+  else {
+    if (this.showingFps_) {
+      this.fpsDiv_.display = 'none';
+      document.body.removeChild(this.fpsDiv_);
+      this.showingFps_ = false;
+    }
+  }
+};
+
+
+/**
  * The last calculated frames per second.
  *
  * @type {number}
+ * @private
  */
-FpsTimer_.prototype.fps = 0;
+FpsTimer_.prototype.fps_ = 0;

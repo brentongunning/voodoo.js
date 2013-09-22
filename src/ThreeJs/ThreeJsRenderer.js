@@ -48,68 +48,6 @@ ThreeJsRenderer_.prototype.constructor = ThreeJsRenderer_.constructor;
 
 
 /**
- * Shuts down the rendering engine.
- */
-ThreeJsRenderer_.prototype.destroy = function() {
-  if (this.engine_.options_['aboveLayer'])
-    document.body.removeChild(this.aboveCanvas_);
-  if (this.engine_.options_['belowLayer'])
-    document.body.removeChild(this.belowCanvas_);
-  if (this.engine_.options_['seamLayer'])
-    document.body.removeChild(this.seamCanvas_);
-
-  if (DEBUG || this.engine_.options_['performanceScaling'])
-    this.fpsTimer_.destroy();
-};
-
-
-/**
- * Updates each model and renders a single frame.
- */
-ThreeJsRenderer_.prototype.frame = function() {
-  this.update_();
-  this.render_();
-
-  if (DEBUG || this.engine_.options_['performanceScaling']) {
-    this.fpsTimer_.frame();
-
-    if (this.engine_.options_['performanceScaling'] &&
-        !this.performanceScaling_) {
-      if (this.fpsTimer_.fps >
-          this.engine_.options_.performanceScalingFpsThreshold_ ||
-          this.lastTicks_ == 0) {
-        this.lastValidFpsTime_ = new Date();
-      } else {
-        var now = new Date();
-        var seconds = (now - this.lastValidFpsTime_) / 1000;
-        if (seconds > this.engine_.options_.performanceScalingTimeLimit_) {
-          log_.information_('Enabling performance scaling');
-
-          this.canvasScale_ = 0.5;
-          this.performanceScaling_ = true;
-          this.onResize_(null);
-        }
-      }
-    }
-  }
-};
-
-
-/**
- * Starts rendering frames.
- */
-ThreeJsRenderer_.prototype.run = function() {
-  // Tells THREE.js to continue invoking this method
-  var self = this;
-  requestAnimationFrame(function() {
-    self.run();
-  });
-
-  this.frame();
-};
-
-
-/**
  * Enables or disables whether the above canvas captures mouse
  * events or lets them fall through to the page. When the user is hovering
  * over a 3D object, then links on the page, etc. shouldn't be selectable.
@@ -308,6 +246,58 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
 
 
 /**
+ * Shuts down the rendering engine.
+ *
+ * @private
+ */
+ThreeJsRenderer_.prototype.destroy_ = function() {
+  if (this.engine_.options_['aboveLayer'])
+    document.body.removeChild(this.aboveCanvas_);
+  if (this.engine_.options_['belowLayer'])
+    document.body.removeChild(this.belowCanvas_);
+  if (this.engine_.options_['seamLayer'])
+    document.body.removeChild(this.seamCanvas_);
+
+  if (DEBUG || this.engine_.options_['performanceScaling'])
+    this.fpsTimer_.destroy_();
+};
+
+
+/**
+ * Updates each model and renders a single frame.
+ *
+ * @private
+ */
+ThreeJsRenderer_.prototype.frame_ = function() {
+  this.update_();
+  this.render_();
+
+  if (DEBUG || this.engine_.options_['performanceScaling']) {
+    this.fpsTimer_.frame_();
+
+    if (this.engine_.options_['performanceScaling'] &&
+        !this.performanceScaling_) {
+      if (this.fpsTimer_.fps_ >
+          this.engine_.options_.performanceScalingFpsThreshold_ ||
+          this.lastTicks_ == 0) {
+        this.lastValidFpsTime_ = new Date();
+      } else {
+        var now = new Date();
+        var seconds = (now - this.lastValidFpsTime_) / 1000;
+        if (seconds > this.engine_.options_.performanceScalingTimeLimit_) {
+          log_.information_('Enabling performance scaling');
+
+          this.canvasScale_ = 0.5;
+          this.performanceScaling_ = true;
+          this.onResize_(null);
+        }
+      }
+    }
+  }
+};
+
+
+/**
  * Resizes the canvas whenever the browser is resized
  *
  * @private
@@ -358,7 +348,7 @@ ThreeJsRenderer_.prototype.onResize_ = function(event) {
   document.body.style.display = 'block';
 
   if (this.engine_.options_['realtime'] && event)
-    this.frame();
+    this.frame_();
 };
 
 
@@ -374,7 +364,7 @@ ThreeJsRenderer_.prototype.onScroll_ = function(event) {
   this.targetTop = window.pageYOffset + 'px';
 
   if (this.engine_.options_['realtime'] && event) {
-    this.frame();
+    this.frame_();
   }
 };
 
@@ -542,6 +532,22 @@ ThreeJsRenderer_.prototype.render_ = function() {
 
 
 /**
+ * Starts rendering frames.
+ *
+ * @private
+ */
+ThreeJsRenderer_.prototype.run_ = function() {
+  // Tells THREE.js to continue invoking this method
+  var self = this;
+  requestAnimationFrame(function() {
+    self.run_();
+  });
+
+  this.frame_();
+};
+
+
+/**
  * Sets up the callbacks to start and stop the timer.
  *
  * This is called internally during ThreeJsRenderer_'s constructor.
@@ -634,6 +640,9 @@ ThreeJsRenderer_.prototype.update_ = function() {
 
   this.updateCameras_();
 
+  // Also update the HTML element tracker
+  this.engine_.tracker_.update_();
+
   // Update each model
   var models = this.engine_.models_;
   for (var modelIndex = 0; modelIndex < models.length; ++modelIndex)
@@ -641,9 +650,6 @@ ThreeJsRenderer_.prototype.update_ = function() {
 
   // Tell the dispatcher to dispatch all frame-based events.
   this.engine_.dispatcher_.update_();
-
-  // Also update the HTML element tracker
-  this.engine_.tracker_.update_();
 };
 
 

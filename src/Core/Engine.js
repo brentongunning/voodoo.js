@@ -87,7 +87,7 @@ function Engine(opt_options) {
 
   if (options['frameLoop']) {
     log_.information_('Beginning frame loop');
-    this.renderer_.run();
+    this.renderer_.run_();
   }
 }
 
@@ -109,7 +109,7 @@ Engine.prototype['destroy'] = function() {
 
   this.models_ = null;
 
-  this.renderer_.destroy();
+  this.renderer_.destroy_();
 
   if (typeof window['voodoo']['engine'] !== 'undefined')
     delete window['voodoo']['engine'];
@@ -125,7 +125,7 @@ Engine.prototype['destroy'] = function() {
  * @this {Engine}
  */
 Engine.prototype['frame'] = function() {
-  this.renderer_.frame();
+  this.renderer_.frame_();
 };
 
 
