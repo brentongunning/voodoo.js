@@ -149,6 +149,9 @@ voodoo.Model.prototype.cache;
 /** @type {string} */
 voodoo.Model.prototype.name;
 
+/** @type {string} */
+voodoo.Model.prototype.organization;
+
 /** @type {voodoo.View} */
 voodoo.Model.prototype.viewType;
 
@@ -230,6 +233,15 @@ voodoo.Scene = function() {};
 /** @param {THREE.Object3D} object */
 voodoo.Scene.prototype.add = function(object) {};
 
+/**
+ * @param {HTMLElement} element
+ * @param {boolean} center
+ * @param {boolean} pixels
+ */
+voodoo.Scene.prototype.attach = function(element, center, pixels) {};
+
+voodoo.Scene.prototype.detach = function() {};
+
 /** @param {THREE.Object3D} object */
 voodoo.Scene.prototype.remove = function(object) {};
 
@@ -261,6 +273,9 @@ voodoo.Debug.prototype.disableStencils;
 
 /** @type {boolean} */
 voodoo.Debug.prototype.drawStencils;
+
+/** @type {boolean} */
+voodoo.Debug.prototype.showFps;
 
 /** @type {voodoo.Debug} */
 voodoo.debug;
@@ -298,7 +313,7 @@ voodoo.Options.prototype.aboveLayer;
 voodoo.Options.prototype.aboveZIndex;
 
 /** @type {boolean} */
-voodoo.Options.prototype.antialiasing;
+voodoo.Options.prototype.antialias;
 
 /** @type {boolean} */
 voodoo.Options.prototype.belowLayer;
@@ -311,6 +326,12 @@ voodoo.Options.prototype.fovY;
 
 /** @type {boolean} */
 voodoo.Options.prototype.frameLoop;
+
+/** @type {boolean} */
+voodoo.Options.prototype.performanceScaling;
+
+/** @type {boolean} */
+voodoo.Options.prototype.realtime;
 
 /** @type {voodoo.Renderer} */
 voodoo.Options.prototype.renderer;
