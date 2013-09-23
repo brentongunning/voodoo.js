@@ -57,3 +57,21 @@ Scene.prototype['remove'] = function(object) {};
  * @private
  */
 Scene.prototype.destroy_ = function() {};
+
+
+/**
+ * Whether any contents of this View's scene are dirty.
+ *
+ * @private
+ * @type {boolean}
+ */
+Scene.prototype.isDirty_ = true;
+
+
+/**
+ * Array of objects managed by this View's scene.
+ *
+ * @type {Array.<THREE.Object3D>}
+ * @private
+ */
+Scene.prototype.objects_ = null;

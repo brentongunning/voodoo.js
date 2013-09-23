@@ -80,16 +80,20 @@ var TrafficLightView = voodoo.View.extend({
     this.mesh.scale.x = w;
     this.mesh.scale.y = h;
     this.mesh.scale.z = (w + h) / 2;
+
+    this.dirty();
   },
 
   // We call this from the model whenever the user hovers over this object.
   mouseover: function() {
     this.material.color.copy(this.model.hover);
+    this.dirty();
   },
 
   // We call this from the model whenever the user's mouse leaves the object.
   mouseout: function() {
     this.material.color.copy(this.model.color);
+    this.dirty();
   }
 });
 

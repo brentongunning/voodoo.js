@@ -92,6 +92,8 @@ var CubbyView = voodoo.View.extend({
     this.mesh.position.y = y + h / 2;
     this.mesh.scale.x = w / 2;
     this.mesh.scale.y = h / 2;
+
+    this.dirty();
   }
 });
 
@@ -125,6 +127,8 @@ var CubbyStencilView = voodoo.View.extend({
     this.stencilMesh.position.y = y + h / 2;
     this.stencilMesh.scale.x = w / 2;
     this.stencilMesh.scale.y = h / 2;
+
+    this.dirty();
   }
 });
 

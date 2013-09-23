@@ -25,6 +25,8 @@ function ThreeJsScene_(scene) {
   // systems for each View via locate().
   this.parent_ = new THREE.Object3D();
   this.scene_.add(this.parent_);
+
+  this.objects_ = [];
 }
 
 
@@ -53,6 +55,8 @@ ThreeJsScene_.prototype['add'] = function(object) {
   else this.parent_.add(object);
 
   object['addedToVoodooScene'] = true;
+
+  this.objects_.push(object);
 };
 
 
@@ -89,6 +93,7 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
           self.parent_.position.x = x + w / 2.0;
           self.parent_.position.y = y + h / 2.0;
           self.parent_.scale.x = self.parent_.scale.y = 1.0;
+          self.isDirty_ = true;
         });
       } else {
         this.trackId_ = this.tracker_.track_(element, function(x, y, w, h) {
@@ -96,6 +101,7 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
           self.parent_.position.y = y + h / 2.0;
           self.parent_.scale.x = w;
           self.parent_.scale.y = h;
+          self.isDirty_ = true;
         });
       }
     } else {
@@ -104,6 +110,7 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
           self.parent_.position.x = x;
           self.parent_.position.y = y;
           self.parent_.scale.x = self.parent_.scale.y = 1.0;
+          self.isDirty_ = true;
         });
       } else {
         this.trackId_ = this.tracker_.track_(element, function(x, y, w, h) {
@@ -111,6 +118,7 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
           self.parent_.position.y = y;
           self.parent_.scale.x = w;
           self.parent_.scale.y = h;
+          self.isDirty_ = true;
         });
       }
     }
@@ -145,6 +153,10 @@ ThreeJsScene_.prototype['remove'] = function(object) {
   else this.parent_.remove(object);
 
   object['addedToVoodooScene'] = false;
+
+  var index = this.objects_.indexOf(object);
+  if (index != -1)
+    this.objects_.splice(index, 1);
 };
 
 

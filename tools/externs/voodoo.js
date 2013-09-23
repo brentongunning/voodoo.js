@@ -168,6 +168,7 @@ voodoo.Model.prototype.stencilViewType;
  */
 voodoo.View = function() {};
 
+voodoo.View.prototype.dirty = function() {};
 voodoo.View.prototype.load = function() {};
 voodoo.View.prototype.unload = function() {};
 

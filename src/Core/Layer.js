@@ -31,7 +31,34 @@ function Layer_(pass, renderer, camera, sceneFactory, triggersFactory,
   this.sceneFactory_ = sceneFactory;
   this.triggersFactory_ = triggersFactory;
   this.cacheFactory_ = cacheFactory;
+  this.views_ = [];
 }
+
+
+/**
+ * Registers a view with this layer.
+ *
+ * @private
+ *
+ * @param {View} view View to add.
+ */
+Layer_.prototype.addView_ = function(view) {
+  this.views_.push(view);
+};
+
+
+/**
+ * Unregisters a view from this layer.
+ *
+ * @private
+ *
+ * @param {View} view View to remove.
+ */
+Layer_.prototype.removeView_ = function(view) {
+  var index = this.views_.indexOf(view);
+  if (index != -1)
+    this.views_.splice(index, 1);
+};
 
 
 /**
@@ -86,3 +113,12 @@ Layer_.prototype.sceneFactory_ = null;
  * @type {TriggersFactory_}
  */
 Layer_.prototype.triggersFactory_ = null;
+
+
+/**
+ * The views rendering on this layer.
+ *
+ * @private
+ * @type {Array.<View>}
+ */
+Layer_.prototype.views_ = null;

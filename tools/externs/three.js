@@ -3173,56 +3173,79 @@ var THREE = {
  */
 
 /**
-@constructor
-@param {?number=} n11 
-@param {?number=} n12
-@param {?number=} n13
-@param {?number=} n14
-@param {?number=} n21
-@param {?number=} n22
-@param {?number=} n23
-@param {?number=} n24
-@param {?number=} n31
-@param {?number=} n32
-@param {?number=} n33
-@param {?number=} n34
-@param {?number=} n41
-@param {?number=} n42
-@param {?number=} n43
-@param {?number=} n44
-*/
+ * @constructor
+ * @param {?number=} n11 
+ * @param {?number=} n12
+ * @param {?number=} n13
+ * @param {?number=} n14
+ * @param {?number=} n21
+ * @param {?number=} n22
+ * @param {?number=} n23
+ * @param {?number=} n24
+ * @param {?number=} n31
+ * @param {?number=} n32
+ * @param {?number=} n33
+ * @param {?number=} n34
+ * @param {?number=} n41
+ * @param {?number=} n42
+ * @param {?number=} n43
+ * @param {?number=} n44
+ */
 THREE.Matrix4 = function( n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44 ){};
 
 /**
-@param {THREE.Vector3} axis
-@param {number} angle
-*/
+ * @param {THREE.Matrix4} matrix
+ * @return {THREE.Matrix4}
+ */
+THREE.Matrix4.prototype.getInverse = function(matrix){};
+
+/**
+ * @param {THREE.Vector3} axis
+ * @param {number} angle
+ */
 THREE.Matrix4.prototype.makeRotationAxis = function(axis,angle){};
 
 /**
-@param {number} x
-@param {number} y
-@param {number} z
-*/
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ */
 THREE.Matrix4.prototype.makeTranslation = function(x,y,z){};
 
 /**
-@param {number} x
-@param {number} y
-@param {number} z
-*/
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ */
 THREE.Matrix4.prototype.makeScale = function(x,y,z){};
 
 /**
-@param {THREE.Matrix4} a
-@param {THREE.Matrix4} b
-*/
+ * @param {THREE.Matrix4} a
+ * @param {THREE.Matrix4} b
+ * @return {THREE.Matrix4}
+ */
 THREE.Matrix4.prototype.multiplyMatrices = function(a,b){};
 
 /**
-@param {THREE.Vector3} v
-*/
+ * @param {THREE.Vector3} v
+ */
 THREE.Matrix4.prototype.multiplyVector3 = function(v){};
+
+/**
+ * @constructor
+ */
+THREE.Frustum = function(){};
+
+/**
+ * @param {THREE.Matrix4} matrix
+ */
+THREE.Frustum.prototype.setFromMatrix = function(matrix){};
+
+/**
+ * @param {THREE.Object3D} object
+ * @return {boolean}
+ */
+THREE.Frustum.prototype.intersectsObject = function(object){};
 
 /**
 @constructor
@@ -3337,6 +3360,14 @@ THREE.Object3D.prototype.lookAt = function(v){};
 THREE.Object3D.prototype.up = function(){};
 THREE.Object3D.prototype.scale = function(){};
 THREE.Object3D.prototype.position = function(){};
+
+/**
+@param {boolean} force
+*/
+THREE.Object3D.prototype.updateMatrixWorld = function(force){};
+
+/** @type {THREE.Matrix4} */
+THREE.Object3D.prototype.matrixWorld;
 
 THREE.Object3D.prototype.visible;
 

@@ -46,6 +46,7 @@ Release Notes
 
 9-16-2013 - 0.8.6
 Add Scene.attach/detach for Views to automatically align with 2D HTML elements.
+Add View.dirty to support dirtiable-based rendering to preserve battery life.
 Add new sample for creating local coordinate systems using Scene.attach.
 Add Options.realtime to support both realtime and deferred rendering and updates.
 Add Options.performanceScaling to lower resolution when performance drops.

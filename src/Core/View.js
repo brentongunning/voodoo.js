@@ -57,6 +57,11 @@ View.prototype['construct'] = function(model, layer) {
   this.triggers_ = this.layer_.triggersFactory_.createTriggers_(this);
   this.cache_ = this.layer_.cacheFactory_.createCache_(this.model_);
 
+  // The view always starts off dirty.
+  this['dirty']();
+
+  this.layer_.addView_(this);
+
   // Call the user's load function.
   this['load']();
 };
@@ -73,6 +78,17 @@ View.prototype['destroy'] = function() {
   this['unload']();
 
   this.scene_.destroy_();
+  this.layer_.removeView_(this);
+};
+
+
+/**
+ * Marks the view's contents as dirty so that they will be rendered again.
+ *
+ * @this {View}
+ */
+View.prototype['dirty'] = function() {
+  this.scene_.isDirty_ = true;
 };
 
 

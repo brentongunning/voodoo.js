@@ -42,5 +42,5 @@ ThreeJsTriggersFactory_.prototype.constructor =
  * @return {ThreeJsTriggers_} Instantiated Triggers.
  */
 ThreeJsTriggersFactory_.prototype.createTriggers_ = function(view) {
-  return new ThreeJsTriggers_(this.triggers_, view['scene'], view);
+  return new ThreeJsTriggers_(this.triggers_, view['scene'].scene_, view);
 };

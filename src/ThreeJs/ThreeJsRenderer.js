@@ -81,6 +81,22 @@ ThreeJsRenderer_.prototype.capturePointerEvents_ = function(capture) {
 
 
 /**
+ * Resets all dirty flags on all objects in a layer.
+ *
+ * @private
+ *
+ * @param {Layer_} layer Layer to clear.
+ */
+ThreeJsRenderer_.prototype.clearDirtyFlags_ = function(layer) {
+  if (!layer || typeof layer === 'undefined')
+    return;
+
+  for (var viewIndex in layer.views_)
+    layer.views_[viewIndex]['scene'].isDirty_ = false;
+};
+
+
+/**
  * Creates and initializes the above and below fullscreen renderers.
  *
  * This is called internally during ThreeJsRenderer_'s constructor.
@@ -263,6 +279,41 @@ ThreeJsRenderer_.prototype.destroy_ = function() {
 
 
 /**
+ * Determines if a layer needs to be rendered again.
+ *
+ * @private
+ *
+ * @param {Layer_} layer Layer to check.
+ * @param {ThreeJsCamera_} camera Camera to use.
+ * @return {boolean} True if a layer needs to be rendered. False if not.
+ */
+ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer, camera) {
+  if (this.isDirty_) {
+    return true;
+  } else {
+    var frustum = camera.frustum_;
+    for (var viewIndex in layer.views_) {
+      var view = layer.views_[viewIndex];
+      var scene = view['scene'];
+      if (scene.isDirty_) {
+        var objects = scene.objects_;
+        for (var objectIndex in objects) {
+          var object = objects[objectIndex];
+          if (object['geometry'] && typeof object['geometry'] !== 'undefined') {
+            object.updateMatrixWorld(true);
+            if (frustum.intersectsObject(object))
+              return true;
+          }
+        }
+      }
+    }
+  }
+
+  return false;
+};
+
+
+/**
  * Resizes the canvas whenever the browser is resized
  *
  * @private
@@ -312,8 +363,10 @@ ThreeJsRenderer_.prototype.onResize_ = function(event) {
   var unused = document.body.offsetHeight;
   document.body.style.display = 'block';
 
+  this.isDirty_ = true;
+
   if (this.engine_.options_['realtime'] && event)
-    this.frame_();
+    this.engine_['frame']();
 };
 
 
@@ -328,8 +381,10 @@ ThreeJsRenderer_.prototype.onScroll_ = function(event) {
   this.targetLeft = window.pageXOffset + 'px';
   this.targetTop = window.pageYOffset + 'px';
 
+  this.isDirty_ = true;
+
   if (this.engine_.options_['realtime'] && event) {
-    this.frame_();
+    this.engine_['frame']();
   }
 };
 
@@ -392,7 +447,8 @@ ThreeJsRenderer_.prototype.render_ = function() {
     // Render just the stencils
 
     if (this.engine_.options_['stencils']) {
-      if (this.engine_.options_['belowLayer']) {
+      if (this.engine_.options_['belowLayer'] &&
+          this.isRenderNeeded_(this.belowStencilLayer_, this.belowCamera_)) {
         this.belowRenderer_.context.disable(
             this.belowRenderer_.context.STENCIL_TEST);
         this.belowRenderer_.autoClear = true;
@@ -407,7 +463,9 @@ ThreeJsRenderer_.prototype.render_ = function() {
   } else {
     // Render normally
 
-    if (this.engine_.options_['belowLayer']) {
+    if (this.engine_.options_['belowLayer'] &&
+        (this.isRenderNeeded_(this.belowLayer_, this.belowCamera_) ||
+        this.isRenderNeeded_(this.belowStencilLayer_, this.belowCamera_))) {
       if (!this.engine_.options_['stencils'] ||
           (DEBUG && window['voodoo']['debug']['disableStencils'])) {
         this.belowRenderer_.context.disable(
@@ -434,7 +492,8 @@ ThreeJsRenderer_.prototype.render_ = function() {
           this.belowCamera_.camera_);
     }
 
-    if (this.engine_.options_['aboveLayer']) {
+    if (this.engine_.options_['aboveLayer'] &&
+        this.isRenderNeeded_(this.aboveLayer_, this.aboveCamera_)) {
       this.aboveRenderer_.render(this.aboveSceneFactory_.scene_,
           this.aboveCamera_.camera_);
     }
@@ -443,7 +502,9 @@ ThreeJsRenderer_.prototype.render_ = function() {
     // on top of the above layer to eliminate the seam from antialiasing
     // between layers. The stencil buffer is used so we don't draw on top
     // of content mistakenly.
-    if (this.engine_.options_['seamLayer']) {
+    if (this.engine_.options_['seamLayer'] &&
+        (this.isRenderNeeded_(this.seamLayer_, this.seamCamera_) ||
+        this.isRenderNeeded_(this.seamStencilLayer_, this.seamCamera_))) {
       var seam = this.engine_.options_.seamPixels_;
       var zCamera = this.seamCamera_['position']['z'];
 
@@ -519,6 +580,13 @@ ThreeJsRenderer_.prototype.render_ = function() {
     this.seamCanvas_.style.left = this.targetLeft;
     this.seamCanvas_.style.top = this.targetTop;
   }
+
+  this.isDirty_ = false;
+  this.clearDirtyFlags_(this.aboveLayer_);
+  this.clearDirtyFlags_(this.belowLayer_);
+  this.clearDirtyFlags_(this.belowStencilLayer_);
+  this.clearDirtyFlags_(this.seamLayer_);
+  this.clearDirtyFlags_(this.seamStencilLayer_);
 };
 
 

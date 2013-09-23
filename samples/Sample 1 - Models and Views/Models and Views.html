@@ -98,6 +98,9 @@ var SampleView = voodoo.View.extend({
       this.speed = Math.abs(this.speed);
       this.torus.position.x = 0;
     }
+
+    // Objects in our view have changed, so mark it dirty.
+    this.dirty();
   }
 });
 

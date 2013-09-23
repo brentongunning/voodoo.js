@@ -20,6 +20,7 @@
 function ThreeJsCamera_(canvas, fovY, zNear, zFar) {
   log_.information_('Creating ThreeJs Camera');
   this.camera_ = new THREE.Camera();
+  this.frustum_ = new THREE.Frustum();
 
   this.canvas_ = canvas;
   this.fovY_ = fovY;
@@ -185,6 +186,7 @@ ThreeJsCamera_.prototype.update_ = function() {
 
     this.pendingResize_ = false;
     this.pendingCameraMoveEvent_ = true;
+    this.pendingFrustumUpdate_ = true;
   }
 
   if (this.pendingScroll_) {
@@ -199,8 +201,39 @@ ThreeJsCamera_.prototype.update_ = function() {
 
     this.pendingScroll_ = false;
     this.pendingCameraMoveEvent_ = true;
+    this.pendingFrustumUpdate_ = true;
+  }
+
+  if (this.pendingFrustumUpdate_) {
+    this.camera_.updateMatrixWorld(true);
+
+    var matrixWorldInverse = new THREE.Matrix4();
+    matrixWorldInverse.getInverse(this.camera_.matrixWorld);
+
+    this.frustum_.setFromMatrix(new THREE.Matrix4().multiplyMatrices(
+        this.camera_.projectionMatrix, matrixWorldInverse));
+
+    this.pendingFrustumUpdate_ = false;
   }
 };
+
+
+/**
+ * The actual ThreeJs camera object.
+ *
+ * @private
+ * @type {THREE.Camera}
+ */
+ThreeJsCamera_.prototype.camera_ = null;
+
+
+/**
+ * The camera's view frustum.
+ *
+ * @private
+ * @type {THREE.Frustum}
+ */
+ThreeJsCamera_.prototype.frustum_ = null;
 
 
 /**
@@ -211,12 +244,3 @@ ThreeJsCamera_.prototype.update_ = function() {
  * @type {boolean}
  */
 ThreeJsCamera_.prototype.pendingCameraMoveEvent_ = false;
-
-
-/**
- * The actual ThreeJs camera object.
- *
- * @private
- * @type {THREE.Camera}
- */
-ThreeJsCamera_.prototype.camera_ = null;
