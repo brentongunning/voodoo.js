@@ -25,7 +25,6 @@ function ThreeJsRenderer_(engine) {
   this.createFullscreenRenderers_();
   this.createLayers_();
   this.registerWindowEvents_();
-  this.setupDeltaTimer_();
 
   if (DEBUG || this.engine_.options_['performanceScaling']) {
     this.fpsTimer_ = new FpsTimer_();
@@ -264,40 +263,6 @@ ThreeJsRenderer_.prototype.destroy_ = function() {
 
 
 /**
- * Updates each model and renders a single frame.
- *
- * @private
- */
-ThreeJsRenderer_.prototype.frame_ = function() {
-  this.update_();
-  this.render_();
-
-  if (DEBUG || this.engine_.options_['performanceScaling']) {
-    this.fpsTimer_.frame_();
-
-    if (this.engine_.options_['performanceScaling'] &&
-        !this.performanceScaling_) {
-      if (this.fpsTimer_.fps_ >
-          this.engine_.options_.performanceScalingFpsThreshold_ ||
-          this.lastTicks_ == 0) {
-        this.lastValidFpsTime_ = new Date();
-      } else {
-        var now = new Date();
-        var seconds = (now - this.lastValidFpsTime_) / 1000;
-        if (seconds > this.engine_.options_.performanceScalingTimeLimit_) {
-          log_.information_('Enabling performance scaling');
-
-          this.canvasScale_ = 0.5;
-          this.performanceScaling_ = true;
-          this.onResize_(null);
-        }
-      }
-    }
-  }
-};
-
-
-/**
  * Resizes the canvas whenever the browser is resized
  *
  * @private
@@ -397,6 +362,32 @@ ThreeJsRenderer_.prototype.registerWindowEvents_ = function() {
  * @private
  */
 ThreeJsRenderer_.prototype.render_ = function() {
+  this.updateCameras_();
+
+  // Detect performance drops and drop the canvas resolution if it's bad.
+  if (DEBUG || this.engine_.options_['performanceScaling']) {
+    this.fpsTimer_.frame_();
+
+    if (this.engine_.options_['performanceScaling'] &&
+        !this.performanceScaling_) {
+      if (this.fpsTimer_.fps_ >
+          this.engine_.options_.performanceScalingFpsThreshold_ ||
+          this.lastTicks_ == 0) {
+        this.lastValidFpsTime_ = new Date();
+      } else {
+        var now = new Date();
+        var seconds = (now - this.lastValidFpsTime_) / 1000;
+        if (seconds > this.engine_.options_.performanceScalingTimeLimit_) {
+          log_.information_('Enabling performance scaling');
+
+          this.canvasScale_ = 0.5;
+          this.performanceScaling_ = true;
+          this.onResize_(null);
+        }
+      }
+    }
+  }
+
   if (DEBUG && window['voodoo']['debug']['drawStencils']) {
     // Render just the stencils
 
@@ -532,60 +523,6 @@ ThreeJsRenderer_.prototype.render_ = function() {
 
 
 /**
- * Starts rendering frames.
- *
- * @private
- */
-ThreeJsRenderer_.prototype.run_ = function() {
-  // Tells THREE.js to continue invoking this method
-  var self = this;
-  requestAnimationFrame(function() {
-    self.run_();
-  });
-
-  this.frame_();
-};
-
-
-/**
- * Sets up the callbacks to start and stop the timer.
- *
- * This is called internally during ThreeJsRenderer_'s constructor.
- *
- * @private
- */
-ThreeJsRenderer_.prototype.setupDeltaTimer_ = function() {
-  log_.information_('Starting timers');
-
-  var self = this;
-  this.lastTicks_ = 0;
-  this.lastDeltaTime_ = 0;
-
-  // Register with the window focus event so we know when the user switches
-  // back to our tab. We will reset timing data.
-  window.addEventListener('focus', function() {
-    self.lastTicks_ = 0;
-    setTimeout(function() {
-      self.lastTicks_ = Date.now();
-    }, self.engine_.options_.timerStartOnFocusDelayMs_);
-  }, false);
-
-  // Register with the window blur event so that when the user switchs to
-  // another tab, we stop the timing so that the animations look like they
-  // paused.
-  window.addEventListener('blur', function() {
-    self.lastTicks_ = 0;
-  }, false);
-
-  // Start animations 1 second after the page loads to minimize javascript
-  // garbage collection
-  setTimeout(function() {
-    self.lastTicks_ = Date.now();
-  }, self.engine_.options_.timerStartOnLoadDelayMs_);
-};
-
-
-/**
  * Initializes a WebGL canvas to always be fullscreen.
  *
  * This is called internally during ThreeJsRenderer_'s constructor.
@@ -613,43 +550,6 @@ ThreeJsRenderer_.prototype.setupFullscreenCanvasRenderer_ =
 
   // Add the canvas to the page
   document.body.appendChild(canvas);
-};
-
-
-/**
- * Updates each model.
- *
- * @private
- */
-ThreeJsRenderer_.prototype.update_ = function() {
-  // Calculate the time delta between this frame the last in seconds
-  var deltaTime = 0;
-  var currTicks = Date.now();
-  if (this.lastTicks_ != 0) {
-    deltaTime = (currTicks - this.lastTicks_) / 1000.0;
-    this.lastTicks_ = currTicks;
-  }
-
-  // If the delta time is more than twice the last delta time,
-  // use the last delta time
-  if (deltaTime > this.lastDeltaTime_ * 2) {
-    var temp = this.lastDeltaTime_;
-    this.lastDeltaTime_ = deltaTime;
-    deltaTime = temp;
-  } else this.lastDeltaTime_ = deltaTime;
-
-  this.updateCameras_();
-
-  // Also update the HTML element tracker
-  this.engine_.tracker_.update_();
-
-  // Update each model
-  var models = this.engine_.models_;
-  for (var modelIndex = 0; modelIndex < models.length; ++modelIndex)
-    models[modelIndex].update(deltaTime);
-
-  // Tell the dispatcher to dispatch all frame-based events.
-  this.engine_.dispatcher_.update_();
 };
 
 

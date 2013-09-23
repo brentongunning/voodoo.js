@@ -24,19 +24,11 @@ RenderingEngine_.prototype.destroy_ = function() {};
 
 
 /**
- * Runs one frame of update and render.
+ * Renders one frame
  *
  * @private
  */
-RenderingEngine_.prototype.frame_ = function() {};
-
-
-/**
- * Starts rendering frames.
- *
- * @private
- */
-RenderingEngine_.prototype.run_ = function() {};
+RenderingEngine_.prototype.render_ = function() {};
 
 
 /**

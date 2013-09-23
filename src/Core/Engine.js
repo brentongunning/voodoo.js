@@ -55,6 +55,9 @@ function Engine(opt_options) {
     writeable: false
   });
 
+  // Create the timer used to measure delta times between frames.
+  this.setupDeltaTimer_();
+
   // Create the renderer
   switch (options['renderer']) {
     case Renderer['ThreeJs']:
@@ -87,7 +90,7 @@ function Engine(opt_options) {
 
   if (options['frameLoop']) {
     log_.information_('Beginning frame loop');
-    this.renderer_.run_();
+    this.run_();
   }
 }
 
@@ -125,7 +128,34 @@ Engine.prototype['destroy'] = function() {
  * @this {Engine}
  */
 Engine.prototype['frame'] = function() {
-  this.renderer_.frame_();
+  // Calculate the time delta between this frame the last in seconds
+  var deltaTime = 0;
+  var currTicks = Date.now();
+  if (this.lastTicks_ != 0) {
+    deltaTime = (currTicks - this.lastTicks_) / 1000.0;
+    this.lastTicks_ = currTicks;
+  }
+
+  // If the delta time is more than twice the last delta time,
+  // use the last delta time
+  if (deltaTime > this.lastDeltaTime_ * 2) {
+    var temp = this.lastDeltaTime_;
+    this.lastDeltaTime_ = deltaTime;
+    deltaTime = temp;
+  } else this.lastDeltaTime_ = deltaTime;
+
+  // Update the HTML element tracker
+  this.tracker_.update_();
+
+  // Update each model
+  var models = this.models_;
+  for (var modelIndex = 0; modelIndex < models.length; ++modelIndex)
+    models[modelIndex].update(deltaTime);
+
+  // Tell the dispatcher to dispatch all frame-based events.
+  this.dispatcher_.update_();
+
+  this.renderer_.render_();
 };
 
 
@@ -162,6 +192,57 @@ Engine.prototype.addModel_ = function(model) {
  */
 Engine.prototype.removeModel_ = function(model) {
   this.models_.splice(this.models_.indexOf(model), 1);
+};
+
+
+/**
+ * Starts rendering and updating in a frame loop.
+ *
+ * @private
+ */
+Engine.prototype.run_ = function() {
+  var self = this;
+  requestAnimationFrame(function() {
+    self.run_();
+  });
+
+  this['frame']();
+};
+
+
+/**
+ * Sets up the callbacks to start and stop the timer.
+ *
+ * @private
+ */
+Engine.prototype.setupDeltaTimer_ = function() {
+  log_.information_('Starting timers');
+
+  var self = this;
+  this.lastTicks_ = 0;
+  this.lastDeltaTime_ = 0;
+
+  // Register with the window focus event so we know when the user switches
+  // back to our tab. We will reset timing data.
+  window.addEventListener('focus', function() {
+    self.lastTicks_ = 0;
+    setTimeout(function() {
+      self.lastTicks_ = Date.now();
+    }, self.options_.timerStartOnFocusDelayMs_);
+  }, false);
+
+  // Register with the window blur event so that when the user switchs to
+  // another tab, we stop the timing so that the animations look like they
+  // paused.
+  window.addEventListener('blur', function() {
+    self.lastTicks_ = 0;
+  }, false);
+
+  // Start animations 1 second after the page loads to minimize javascript
+  // garbage collection
+  setTimeout(function() {
+    self.lastTicks_ = Date.now();
+  }, self.options_.timerStartOnLoadDelayMs_);
 };
 
 
