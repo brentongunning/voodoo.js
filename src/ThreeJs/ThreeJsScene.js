@@ -94,8 +94,8 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
         this.trackId_ = this.tracker_.track_(element, function(x, y, w, h) {
           self.parent_.position.x = x + w / 2.0;
           self.parent_.position.y = y + h / 2.0;
-          self.parent_.scale.x = w / 2.0;
-          self.parent_.scale.y = h / 2.0;
+          self.parent_.scale.x = w;
+          self.parent_.scale.y = h;
         });
       }
     } else {

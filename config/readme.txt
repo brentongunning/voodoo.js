@@ -45,7 +45,8 @@ Release Notes
 -------------------------------------------------------------------------------
 
 9-16-2013 - 0.8.6
-Add Scene.attach/detach for Views to automatically follow 2D HTML elements.
+Add Scene.attach/detach for Views to automatically align with 2D HTML elements.
+Add new sample for creating local coordinate systems using Scene.attach.
 Add Options.realtime to support both realtime and deferred rendering and updates.
 Add Options.performanceScaling to lower resolution when performance drops.
 More improvements to reduce jitteryness when scrolling.

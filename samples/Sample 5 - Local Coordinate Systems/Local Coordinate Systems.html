@@ -1,0 +1,78 @@
+<html>
+<head>
+  <title>Voodoo Sample - Local Coordinate Systems</title>
+</head>
+<script src="../../lib/three.min.js"></script>
+<script src="../../lib/voodoo.min.debug.js"></script>
+<style type="text/css">
+  #anchor {
+    position:absolute;
+    left:450px;
+    top:450px;
+    width:300px;
+    height:200px;
+    background-color: grey;
+  }
+</style>
+<body>
+  <center>
+    <h1>Local Coordinate Systems</h1>
+    <h3>Description</h3>
+    <p>This sample shows how to create local coordinate systems for your Views
+       that automatically align and follow 2D HTML elements.</p>
+  </center>
+  <div id="anchor"></div>
+</body>
+<script>
+
+var SampleView = voodoo.View.extend({
+  load: function() {
+  	// Create a sphere of radius 0.5. Our local coordinate system will
+  	// automatically scale it up to fit in the HTML div we attach our scene to.
+  	var geometry = new THREE.SphereGeometry(0.5, 30, 30);
+  	var material = new THREE.MeshLambertMaterial({
+  		color: 0x00FF00,
+  		ambient: 0x000000
+  	});
+  	var mesh = new THREE.Mesh(geometry, material);
+
+  	this.scene.add(mesh);
+
+  	// Call attach to set our local coordinate system. The first parameter is
+  	// the HTML element. The second parameter is whether the origin should be
+  	// the center of the DIV, or if false, the top left corner. The third
+  	// parameter defines the scale of our coordinate system. If true, one unit
+  	// is one pixel. If false, 1 unit along the x axis is the width of the
+  	// element, and 1 unit along the y axis is the height of the element. That
+  	// is why a sphere of radius 0.5 will scale to fit perfectly inside our div.
+  	this.scene.attach(this.model.element, true, false);
+
+    // The local coordinate system only works in the X and Y dimensions. We
+    // have to pick our own Z scale. Let's give our sphere a Z radius of 100.
+    mesh.scale.z = 100;
+  }
+});
+
+var SampleModel = voodoo.Model.extend({
+  name: 'SampleModel',
+  viewType: SampleView,
+  initialize: function(options) {
+  	this.element = options.element;
+  }
+});
+
+// Create a timer that changes the scale of the div automatically
+var anchorDiv = document.getElementById('anchor');
+setInterval(function() {
+  anchorDiv.style.width = Math.sin(new Date().getTime() / 1000) * 100 + 200;
+  anchorDiv.style.height = Math.cos(new Date().getTime() / 1000) * 100 + 200;
+}, 10);
+
+new SampleModel({
+  element: anchorDiv
+});
+
+
+
+</script>
+</html>
