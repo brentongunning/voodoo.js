@@ -291,6 +291,9 @@ ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer, camera) {
   if (this.isDirty_) {
     return true;
   } else {
+    if (!layer || typeof layer === 'undefined')
+      return false;
+
     var frustum = camera.frustum_;
     for (var viewIndex in layer.views_) {
       var view = layer.views_[viewIndex];
@@ -417,6 +420,8 @@ ThreeJsRenderer_.prototype.registerWindowEvents_ = function() {
  * @private
  */
 ThreeJsRenderer_.prototype.render_ = function() {
+  var rendered = false;
+
   this.updateCameras_();
 
   // Detect performance drops and drop the canvas resolution if it's bad.
@@ -454,6 +459,8 @@ ThreeJsRenderer_.prototype.render_ = function() {
         this.belowRenderer_.autoClear = true;
         this.belowRenderer_.render(this.belowStencilSceneFactory_.scene_,
             this.belowCamera_.camera_);
+
+        rendered = true;
       }
     }
     else this.belowRenderer_.clear();
@@ -490,12 +497,16 @@ ThreeJsRenderer_.prototype.render_ = function() {
 
       this.belowRenderer_.render(this.belowSceneFactory_.scene_,
           this.belowCamera_.camera_);
+
+      rendered = true;
     }
 
     if (this.engine_.options_['aboveLayer'] &&
         this.isRenderNeeded_(this.aboveLayer_, this.aboveCamera_)) {
       this.aboveRenderer_.render(this.aboveSceneFactory_.scene_,
           this.aboveCamera_.camera_);
+
+      rendered = true;
     }
 
     // Render a narrow slit along the Z axis without antialiasing
@@ -559,6 +570,8 @@ ThreeJsRenderer_.prototype.render_ = function() {
       this.seamCamera_.setZNearAndFar_(zCamera - seam, zCamera + seam);
       this.seamRenderer_.render(this.seamSceneFactory_.scene_,
           this.seamCamera_.camera_);
+
+      rendered = true;
     }
   }
 
@@ -587,6 +600,9 @@ ThreeJsRenderer_.prototype.render_ = function() {
   this.clearDirtyFlags_(this.belowStencilLayer_);
   this.clearDirtyFlags_(this.seamLayer_);
   this.clearDirtyFlags_(this.seamStencilLayer_);
+
+  if (rendered)
+    this.fpsTimer_.render_();
 };
 
 

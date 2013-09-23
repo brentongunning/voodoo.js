@@ -16,6 +16,7 @@
 function FpsTimer_() {
   this.showingFps_ = false;
   this.fpsCounter_ = 0;
+  this.rpsCounter_ = 0;
 
   this.fpsDiv_ = document.createElement('div');
   this.fpsDiv_.style.position = 'fixed';
@@ -33,7 +34,9 @@ function FpsTimer_() {
   var self = this;
   this.fpsTimerId_ = setInterval(function() {
     self.fps_ = self.fpsCounter_;
+    self.rps_ = self.rpsCounter_;
     self.fpsCounter_ = 0;
+    self.rpsCounter_ = 0;
   }, 1000);
 }
 
@@ -71,7 +74,7 @@ FpsTimer_.prototype.frame_ = function() {
       this.showingFps_ = true;
     }
 
-    this.fpsDiv_.innerHTML = 'FPS: ' + this.fps_;
+    this.fpsDiv_.innerHTML = 'FPS: ' + this.fps_ + ', RPS: ' + this.rps_;
   }
   else {
     if (this.showingFps_) {
@@ -80,6 +83,16 @@ FpsTimer_.prototype.frame_ = function() {
       this.showingFps_ = false;
     }
   }
+};
+
+
+/**
+ * Call this for each render that runs to update the rps counters.
+ *
+ * @private
+ */
+FpsTimer_.prototype.render_ = function() {
+  this.rpsCounter_++;
 };
 
 
