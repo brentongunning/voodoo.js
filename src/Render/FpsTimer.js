@@ -74,7 +74,8 @@ FpsTimer_.prototype.frame_ = function() {
       this.showingFps_ = true;
     }
 
-    this.fpsDiv_.innerHTML = 'FPS: ' + this.fps_ + ', RPS: ' + this.rps_;
+    this.fpsDiv_.innerHTML = 'Frames/second: ' + this.fps_ +
+        ', Renders/second: ' + this.rps_;
   }
   else {
     if (this.showingFps_) {
