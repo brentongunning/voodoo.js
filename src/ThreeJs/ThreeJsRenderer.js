@@ -386,9 +386,8 @@ ThreeJsRenderer_.prototype.onScroll_ = function(event) {
 
   this.isDirty_ = true;
 
-  if (this.engine_.options_['realtime'] && event) {
-    this.engine_['frame']();
-  }
+  if (this.engine_.options_['realtime'] && event)
+    this.render_();
 };
 
 
