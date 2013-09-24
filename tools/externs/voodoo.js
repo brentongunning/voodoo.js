@@ -337,6 +337,9 @@ voodoo.Options.prototype.realtime;
 /** @type {voodoo.Renderer} */
 voodoo.Options.prototype.renderer;
 
+/** @type {number} */
+voodoo.Options.prototype.renderInterval;
+
 /** @type {boolean} */
 voodoo.Options.prototype.seamLayer;
 
@@ -348,6 +351,9 @@ voodoo.Options.prototype.standardLighting;
 
 /** @type {boolean} */
 voodoo.Options.prototype.stencils;
+
+/** @type {number} */
+voodoo.Options.prototype.updateInterval;
 
 // ----------------------------------------------------------------------------
 // Renderer

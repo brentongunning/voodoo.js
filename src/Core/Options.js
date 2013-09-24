@@ -166,6 +166,19 @@ Options.prototype['renderer'] = Renderer['ThreeJs'];
 
 
 /**
+ * The number of milliseconds between render frames. For example, if this
+ * is 100, then 100ms/frame is 10 frames/second. If this is 0, then the engine
+ * will render at the maximum framerate possible. frameLoop must be set to
+ * true for this to take effect.
+ *
+ * Default is 0.
+ *
+ * @type {number}
+ */
+Options.prototype['renderInterval'] = 0;
+
+
+/**
  * Number of 'pixels' along the z axis that the buffer contains.
  * The higher we go, the less chance we have of a seam, but the more
  * we overlap the antialiased scene with an unantialised seam.
@@ -242,6 +255,19 @@ Options.prototype.timerStartOnFocusDelayMs_ = 350;
  * @type {number}
  */
 Options.prototype.timerStartOnLoadDelayMs_ = 1000;
+
+
+/**
+ * The number of milliseconds between update frames. For example, if this
+ * is 100, then 100ms/frame is 10 frames/second. If this is 0, then the engine
+ * will update at the maximum framerate possible. The frameLoop must be true
+ * for this to take effect.
+ *
+ * Default is 0.
+ *
+ * @type {number}
+ */
+Options.prototype['updateInterval'] = 0;
 
 
 /**

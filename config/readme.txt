@@ -50,6 +50,7 @@ Add View.dirty to support dirtiable-based rendering to preserve battery life.
 Add new sample for creating local coordinate systems using Scene.attach.
 Add Options.realtime to support both realtime and deferred rendering and updates.
 Add Options.performanceScaling to lower resolution when performance drops.
+Add Options.updateInterval/renderInterval to control update and render frequency.
 More improvements to reduce jitteryness when scrolling.
 Add Debug.showFPS to display the frames per second.
 Updated ThreeJs to r61.

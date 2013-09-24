@@ -88,9 +88,32 @@ function Engine(opt_options) {
     new CameraLight_({'color': 'white'});
   }
 
+  this.updateThread_ = -1;
+  this.renderThread_ = -1;
+  this.realtimeThread_ = -1;
+
+  this.realtimeUpdate_ = this.options_['updateInterval'] === 0;
+  this.realtimeRender_ = this.options_['renderInterval'] === 0;
+
   if (options['frameLoop']) {
     log_.information_('Beginning frame loop');
-    this.run_();
+
+    if (this.realtimeUpdate_ || this.realtimeRender_)
+      this.run_(this.realtimeUpdate_, this.realtimeRender_);
+
+    var self = this;
+
+    if (!this.realtimeUpdate_) {
+      this.updateThread_ = window.setInterval(function() {
+        self.update_();
+      }, this.options_['updateInterval']);
+    }
+
+    if (!this.realtimeRender_) {
+      this.renderThread_ = window.setInterval(function() {
+        self.renderer_.render_();
+      }, this.options_['renderInterval']);
+    }
   }
 }
 
@@ -103,6 +126,13 @@ function Engine(opt_options) {
  */
 Engine.prototype['destroy'] = function() {
   log_.information_('Destroying Engine');
+
+  if (this.updateThread_ !== -1)
+    window.clearInterval(this.updateThread_);
+  if (this.renderThread_ !== -1)
+    window.clearInterval(this.renderThread_);
+  if (this.realtimeThread_ !== -1)
+    window.cancelAnimationFrame(this.realtimeThread_);
 
   for (var modelIndex = 0; modelIndex < this.models_.length; ++modelIndex) {
     /** @type {Model} */
@@ -128,33 +158,7 @@ Engine.prototype['destroy'] = function() {
  * @this {Engine}
  */
 Engine.prototype['frame'] = function() {
-  // Calculate the time delta between this frame the last in seconds
-  var deltaTime = 0;
-  var currTicks = Date.now();
-  if (this.lastTicks_ != 0) {
-    deltaTime = (currTicks - this.lastTicks_) / 1000.0;
-    this.lastTicks_ = currTicks;
-  }
-
-  // If the delta time is more than twice the last delta time,
-  // use the last delta time
-  if (deltaTime > this.lastDeltaTime_ * 2) {
-    var temp = this.lastDeltaTime_;
-    this.lastDeltaTime_ = deltaTime;
-    deltaTime = temp;
-  } else this.lastDeltaTime_ = deltaTime;
-
-  // Update the HTML element tracker
-  this.tracker_.update_();
-
-  // Update each model
-  var models = this.models_;
-  for (var modelIndex = 0; modelIndex < models.length; ++modelIndex)
-    models[modelIndex].update(deltaTime);
-
-  // Tell the dispatcher to dispatch all frame-based events.
-  this.dispatcher_.update_();
-
+  this.update_();
   this.renderer_.render_();
 };
 
@@ -199,14 +203,20 @@ Engine.prototype.removeModel_ = function(model) {
  * Starts rendering and updating in a frame loop.
  *
  * @private
+ *
+ * @param {boolean} update Whether to update in the frame loop.
+ * @param {boolean} render Whether to render in the frame loop.
  */
-Engine.prototype.run_ = function() {
+Engine.prototype.run_ = function(update, render) {
   var self = this;
-  requestAnimationFrame(function() {
-    self.run_();
+  this.realtimeThread_ = requestAnimationFrame(function() {
+    self.run_(update, render);
   });
 
-  this['frame']();
+  if (update)
+    this.update_();
+  if (render)
+    this.renderer_.render_();
 };
 
 
@@ -243,6 +253,41 @@ Engine.prototype.setupDeltaTimer_ = function() {
   setTimeout(function() {
     self.lastTicks_ = Date.now();
   }, self.options_.timerStartOnLoadDelayMs_);
+};
+
+
+/**
+ * Runs one frame of update.
+ *
+ * @private
+ */
+Engine.prototype.update_ = function() {
+  // Calculate the time delta between this frame the last in seconds
+  var deltaTime = 0;
+  var currTicks = Date.now();
+  if (this.lastTicks_ != 0) {
+    deltaTime = (currTicks - this.lastTicks_) / 1000.0;
+    this.lastTicks_ = currTicks;
+  }
+
+  // If the delta time is more than twice the last delta time,
+  // use the last delta time
+  if (deltaTime > this.lastDeltaTime_ * 2) {
+    var temp = this.lastDeltaTime_;
+    this.lastDeltaTime_ = deltaTime;
+    deltaTime = temp;
+  } else this.lastDeltaTime_ = deltaTime;
+
+  // Update the HTML element tracker
+  this.tracker_.update_();
+
+  // Update each model
+  var models = this.models_;
+  for (var modelIndex = 0; modelIndex < models.length; ++modelIndex)
+    models[modelIndex].update(deltaTime);
+
+  // Tell the dispatcher to dispatch all frame-based events.
+  this.dispatcher_.update_();
 };
 
 
