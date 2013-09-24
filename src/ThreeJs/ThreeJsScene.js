@@ -93,6 +93,7 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
           self.parent_.position.x = x + w / 2.0;
           self.parent_.position.y = y + h / 2.0;
           self.parent_.scale.x = self.parent_.scale.y = 1.0;
+          self.parent_.updateMatrixWorld(true);
           self.isDirty_ = true;
         });
       } else {
@@ -101,6 +102,7 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
           self.parent_.position.y = y + h / 2.0;
           self.parent_.scale.x = w;
           self.parent_.scale.y = h;
+          self.parent_.updateMatrixWorld(true);
           self.isDirty_ = true;
         });
       }
@@ -110,6 +112,7 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
           self.parent_.position.x = x;
           self.parent_.position.y = y;
           self.parent_.scale.x = self.parent_.scale.y = 1.0;
+          self.parent_.updateMatrixWorld(true);
           self.isDirty_ = true;
         });
       } else {
@@ -118,6 +121,7 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
           self.parent_.position.y = y;
           self.parent_.scale.x = w;
           self.parent_.scale.y = h;
+          self.parent_.updateMatrixWorld(true);
           self.isDirty_ = true;
         });
       }

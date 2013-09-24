@@ -336,7 +336,8 @@ ThreeJsRenderer_.prototype.onResize_ = function(event) {
       this.canvasScale_;
 
   if (this.engine_.options_['aboveLayer']) {
-    this.aboveRenderer_.setSize(renderingCanvasWidth, renderingCanvasHeight);
+    this.aboveRenderer_.setViewport(0, 0, renderingCanvasWidth,
+        renderingCanvasHeight);
     this.aboveCanvas_.style.width = styleCanvasWidth;
     this.aboveCanvas_.style.height = styleCanvasHeight;
     this.aboveCanvas_.width = renderingCanvasWidth;
@@ -344,7 +345,8 @@ ThreeJsRenderer_.prototype.onResize_ = function(event) {
   }
 
   if (this.engine_.options_['belowLayer']) {
-    this.belowRenderer_.setSize(renderingCanvasWidth, renderingCanvasHeight);
+    this.belowRenderer_.setViewport(0, 0, renderingCanvasWidth,
+        renderingCanvasHeight);
     this.belowCanvas_.style.width = styleCanvasWidth;
     this.belowCanvas_.style.height = styleCanvasHeight;
     this.belowCanvas_.width = renderingCanvasWidth;
@@ -352,7 +354,8 @@ ThreeJsRenderer_.prototype.onResize_ = function(event) {
   }
 
   if (this.engine_.options_['seamLayer']) {
-    this.seamRenderer_.setSize(renderingCanvasWidth, renderingCanvasHeight);
+    this.seamRenderer_.setViewport(0, 0, renderingCanvasWidth,
+        renderingCanvasHeight);
     this.seamCanvas_.style.width = styleCanvasWidth;
     this.seamCanvas_.style.height = styleCanvasHeight;
     this.seamCanvas_.width = renderingCanvasWidth;

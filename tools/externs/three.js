@@ -3232,6 +3232,14 @@ THREE.Matrix4.prototype.multiplyMatrices = function(a,b){};
 THREE.Matrix4.prototype.multiplyVector3 = function(v){};
 
 /**
+ * @param {number} y
+ * @param {number} a
+ * @param {number} n
+ * @param {number} f
+ */
+THREE.Matrix4.prototype.makePerspective = function(y,a,n,f){};
+
+/**
  * @constructor
  */
 THREE.Frustum = function(){};
@@ -3360,6 +3368,7 @@ THREE.Object3D.prototype.lookAt = function(v){};
 THREE.Object3D.prototype.up = function(){};
 THREE.Object3D.prototype.scale = function(){};
 THREE.Object3D.prototype.position = function(){};
+THREE.Object3D.prototype.updateMatrix = function(){};
 
 /**
 @param {boolean} force
@@ -3370,6 +3379,7 @@ THREE.Object3D.prototype.updateMatrixWorld = function(force){};
 THREE.Object3D.prototype.matrixWorld;
 
 THREE.Object3D.prototype.visible;
+THREE.Object3D.prototype.matrixAutoUpdate;
 
 /**
 @constructor
@@ -3488,6 +3498,7 @@ THREE.WebGLRenderer.prototype.context = {};
 THREE.WebGLRenderer.prototype.render = function(s,c) {};
 THREE.WebGLRenderer.prototype.setFaceCulling = function(f,c) {};
 THREE.WebGLRenderer.prototype.setSize = function(x,y) {};
+THREE.WebGLRenderer.prototype.setViewport = function(x,y,w,h) {};
 
 /** @type {HTMLElement} */
 THREE.WebGLRenderer.prototype.domElement;
@@ -3499,8 +3510,10 @@ THREE.WebGLRenderer.prototype.domElement;
  */
 THREE.Camera = function(){};
 
-THREE.Camera.prototype.projectionMatrix = function(){};
-THREE.Camera.prototype.projectionMatrix.makePerspective = function(y,a,n,f){};
+/**
+ * @type {THREE.Matrix4}
+ */
+THREE.Camera.prototype.projectionMatrix;
 
 /**
  * Three.js's scene graph

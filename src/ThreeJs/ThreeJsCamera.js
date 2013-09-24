@@ -88,8 +88,9 @@ ThreeJsCamera_.prototype.createProperties_ = function() {
  * @private
  */
 ThreeJsCamera_.prototype.initialize_ = function() {
-  this.pendingScroll_ = false;
-  this.pendingResize_ = false;
+  this.pendingScroll_ = true;
+  this.pendingResize_ = true;
+  this.pendingFrustumUpdate_ = true;
 
   // The camera is oriented so that 0,0 is the upper-left corner
   this.camera_.up.x = 0;
@@ -153,6 +154,9 @@ ThreeJsCamera_.prototype.setZNearAndFar_ = function(zNear, zFar) {
 
   this.camera_.projectionMatrix.makePerspective(this.fovY_,
       this.aspectRatio_, this.zNear_, this.zFar_);
+
+  this.pendingFrustumUpdate_ = true;
+  this.update_();
 };
 
 
