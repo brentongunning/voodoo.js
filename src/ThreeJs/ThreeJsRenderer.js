@@ -210,11 +210,16 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
     this.layers_.push(this.belowLayer_);
 
     if (this.engine_.options_['stencils']) {
+      this.stencilCamera_ = new ThreeJsCamera_(this.belowCanvas_,
+          this.engine_.options_['fovY'],
+          this.engine_.options_.zNear_,
+          this.engine_.options_.zFar_);
+
       this.belowStencilSceneFactory_ = new ThreeJsSceneFactory_();
       this.belowStencilTriggersFactory_ = new ThreeJsTriggersFactory_();
       this.belowStencilCacheFactory_ = new CacheFactory_();
       this.belowStencilLayer_ = new Layer_(LayerPass_['BelowStencil'], renderer,
-          this.belowCamera_, this.belowStencilSceneFactory_,
+          this.stencilCamera_, this.belowStencilSceneFactory_,
           this.belowStencilTriggersFactory_, this.belowStencilCacheFactory_);
       this.layers_.push(this.belowStencilLayer_);
     }
@@ -241,11 +246,17 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
     this.layers_.push(this.seamLayer_);
 
     if (this.engine_.options_['stencils']) {
+      if (typeof this.stencilCamera_ === 'undefined')
+        this.stencilCamera_ = new ThreeJsCamera_(this.seamCanvas_,
+            this.engine_.options_['fovY'],
+            this.engine_.options_.zNear_,
+            this.engine_.options_.zFar_);
+
       this.seamStencilSceneFactory_ = new ThreeJsSceneFactory_();
       this.seamStencilTriggersFactory_ = new ThreeJsTriggersFactory_();
       this.seamStencilCacheFactory_ = new CacheFactory_();
       this.seamStencilLayer_ = new Layer_(LayerPass_['SeamStencil'], renderer,
-          this.seamCamera_, this.seamStencilSceneFactory_,
+          this.stencilCamera_, this.seamStencilSceneFactory_,
           this.seamStencilTriggersFactory_, this.seamStencilCacheFactory_);
       this.layers_.push(this.seamStencilLayer_);
     }
@@ -284,17 +295,16 @@ ThreeJsRenderer_.prototype.destroy_ = function() {
  * @private
  *
  * @param {Layer_} layer Layer to check.
- * @param {ThreeJsCamera_} camera Camera to use.
  * @return {boolean} True if a layer needs to be rendered. False if not.
  */
-ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer, camera) {
+ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer) {
   if (this.isDirty_) {
     return true;
   } else {
     if (!layer || typeof layer === 'undefined')
       return false;
 
-    var frustum = camera.frustum_;
+    var frustum = layer.camera_.frustum_;
     for (var viewIndex in layer.views_) {
       var view = layer.views_[viewIndex];
       var scene = view['scene'];
@@ -455,7 +465,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
 
     if (this.engine_.options_['stencils']) {
       if (this.engine_.options_['belowLayer'] &&
-          this.isRenderNeeded_(this.belowStencilLayer_, this.belowCamera_)) {
+          this.isRenderNeeded_(this.belowStencilLayer_)) {
         this.belowRenderer_.context.disable(
             this.belowRenderer_.context.STENCIL_TEST);
         this.belowRenderer_.autoClear = true;
@@ -473,8 +483,8 @@ ThreeJsRenderer_.prototype.render_ = function() {
     // Render normally
 
     if (this.engine_.options_['belowLayer'] &&
-        (this.isRenderNeeded_(this.belowLayer_, this.belowCamera_) ||
-        this.isRenderNeeded_(this.belowStencilLayer_, this.belowCamera_))) {
+        (this.isRenderNeeded_(this.belowLayer_) ||
+        this.isRenderNeeded_(this.belowStencilLayer_))) {
       if (!this.engine_.options_['stencils'] ||
           (DEBUG && window['voodoo']['debug']['disableStencils'])) {
         this.belowRenderer_.context.disable(
@@ -491,7 +501,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
         this.belowRenderer_.autoClear = false;
         this.belowRenderer_.clear();
         this.belowRenderer_.render(this.belowStencilSceneFactory_.scene_,
-            this.belowCamera_.camera_);
+            this.stencilCamera_.camera_);
 
         context.stencilOp(context.KEEP, context.KEEP, context.KEEP);
         context.stencilFunc(context.EQUAL, 1, 0xffffffff);
@@ -504,7 +514,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
     }
 
     if (this.engine_.options_['aboveLayer'] &&
-        this.isRenderNeeded_(this.aboveLayer_, this.aboveCamera_)) {
+        this.isRenderNeeded_(this.aboveLayer_)) {
       this.aboveRenderer_.render(this.aboveSceneFactory_.scene_,
           this.aboveCamera_.camera_);
 
@@ -516,8 +526,8 @@ ThreeJsRenderer_.prototype.render_ = function() {
     // between layers. The stencil buffer is used so we don't draw on top
     // of content mistakenly.
     if (this.engine_.options_['seamLayer'] &&
-        (this.isRenderNeeded_(this.seamLayer_, this.seamCamera_) ||
-        this.isRenderNeeded_(this.seamStencilLayer_, this.seamCamera_))) {
+        (this.isRenderNeeded_(this.seamLayer_) ||
+        this.isRenderNeeded_(this.seamStencilLayer_))) {
       var seam = this.engine_.options_.seamPixels_;
       var zCamera = this.seamCamera_['position']['z'];
 
@@ -546,10 +556,8 @@ ThreeJsRenderer_.prototype.render_ = function() {
         context.stencilOp(context.REPLACE, context.REPLACE, context.REPLACE);
         context.stencilFunc(context.NEVER, 0, 0xffffffff);
 
-        this.seamCamera_.setZNearAndFar_(this.engine_.options_.zNear_,
-            this.engine_.options_.zFar_);
         this.seamRenderer_.render(this.seamStencilSceneFactory_.scene_,
-            this.seamCamera_.camera_);
+            this.stencilCamera_.camera_);
 
         this.seamCamera_.setZNearAndFar_(zCamera - seam, zCamera);
         this.seamRenderer_.render(this.seamSceneFactory_.scene_,
@@ -652,6 +660,9 @@ ThreeJsRenderer_.prototype.updateCameras_ = function() {
     this.belowCamera_.update_();
   if (this.engine_.options_['seamLayer'])
     this.seamCamera_.update_();
+  if (this.engine_.options_['stencils'])
+    this.stencilCamera_.update_();
+
   if (this.pendingUpdateLayerZBoundaries_) {
     this.updateLayerZBoundaries_();
     this.pendingUpdateLayerZBoundaries_ = false;
@@ -663,7 +674,9 @@ ThreeJsRenderer_.prototype.updateCameras_ = function() {
       (this.engine_.options_['belowLayer'] &&
       this.belowCamera_.pendingCameraMoveEvent_) ||
       (this.engine_.options_['seamLayer'] &&
-      this.seamCamera_.pendingCameraMoveEvent_)) {
+      this.seamCamera_.pendingCameraMoveEvent_) ||
+      (this.engine_.options_['stencils'] &&
+      this.stencilCamera_.pendingCameraMoveEvent_)) {
     var models = this.engine_.models_;
     var event = new window['voodoo']['Event']('cameramove');
     for (var modelIndex = 0; modelIndex < models.length; ++modelIndex)
@@ -675,6 +688,8 @@ ThreeJsRenderer_.prototype.updateCameras_ = function() {
       this.belowCamera_.pendingCameraMoveEvent_ = false;
     if (this.engine_.options_['seamLayer'])
       this.seamCamera_.pendingCameraMoveEvent_ = false;
+    if (this.engine_.options_['stencils'])
+      this.stencilCamera_.pendingCameraMoveEvent_ = false;
   }
 };
 
