@@ -434,7 +434,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
         !this.performanceScaling_) {
       if (this.fpsTimer_.fps_ >
           this.engine_.options_.performanceScalingFpsThreshold_ ||
-          this.lastTicks_ == 0) {
+          this.engine_.lastTicks_ == 0) {
         this.lastValidFpsTime_ = new Date();
       } else {
         var now = new Date();
