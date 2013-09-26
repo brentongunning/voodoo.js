@@ -141,6 +141,7 @@ ThreeJsScene_.prototype['detach'] = function() {
 
   this.parent_.position.x = this.parent_.position.y = 0;
   this.parent_.scale.x = this.parent_.scale.y = 1;
+  this.parent_.updateMatrixWorld(true);
 };
 
 

@@ -95,7 +95,7 @@ SceneTests.prototype.testAttachTopLeftUnits = function() {
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
 
-        mesh.position.set(1, 1, 0);
+        mesh.position.set(0.5, 0.5, 0);
 
         this.scene.add(mesh);
         this.triggers.add(mesh);
