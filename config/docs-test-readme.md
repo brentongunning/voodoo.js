@@ -1,7 +1,7 @@
 Voodoo Javascript Library Test Documentation
 =================================================
 
-Version 0.8.6 (Public Beta)
+Version 0.8.7 (Public Beta)
 
 ## Overview
 
