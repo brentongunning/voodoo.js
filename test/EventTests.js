@@ -228,3 +228,26 @@ EventTests.prototype.testCameraMove = function() {
   voodoo.engine.frame();
   assertEquals('numCameraMoveEvents:', 2, numCameraMoveEvents);
 };
+
+
+/**
+ * Tests the destroy event that fires when a model is destroyed.
+ */
+EventTests.prototype.testDestroyEvent = function() {
+  var CustomModel = voodoo.Model.extend({
+    name: 'CustomModel',
+    viewType: voodoo.View.extend()
+  });
+
+  var model1 = new CustomModel();
+  var model2 = new CustomModel();
+
+  var destroyCount = 0;
+  model1.on('destroy', function() { destroyCount++; });
+  model2.on('destroy', function() { destroyCount++; });
+
+  model1.destroy();
+  voodoo.engine.destroy();
+
+  assertEquals('destroyCount:', 2, destroyCount);
+};

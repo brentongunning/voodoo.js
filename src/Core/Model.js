@@ -102,6 +102,8 @@ Model.prototype['construct'] = function(options) {
 Model.prototype['destroy'] = function() {
   log_.modelInformation_(this, 'Destroying');
 
+  this.dispatchEvent_(new window['voodoo']['Event']('destroy', this));
+
   this['tearDownViews']();
 
   // Remove this model from the engine to stop being updated
