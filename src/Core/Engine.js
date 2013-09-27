@@ -134,9 +134,9 @@ Engine.prototype['destroy'] = function() {
   if (this.realtimeThread_ !== -1)
     window.cancelAnimationFrame(this.realtimeThread_);
 
-  for (var modelIndex = 0; modelIndex < this.models_.length; ++modelIndex) {
+  while (this.models_.length > 0) {
     /** @type {Model} */
-    var model = this.models_[modelIndex];
+    var model = this.models_[0];
     model['destroy']();
   }
 
