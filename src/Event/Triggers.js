@@ -65,4 +65,4 @@ Triggers.prototype.destroy_ = function() {};
  * @private
  * @type {string}
  */
-Triggers.prototype.cursor_ = 'pointer';
+Triggers.prototype.cursor_ = 'auto';

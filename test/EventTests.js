@@ -296,7 +296,7 @@ EventTests.prototype.testCustomEvents = function() {
     name: 'CustomModel',
     viewType: voodoo.View.extend(),
     fire: function() {
-      this.dispatch(new Event('customEvent', this));
+      this.dispatch(new Event('customEvent'));
     }
   });
 

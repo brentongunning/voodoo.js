@@ -63,6 +63,9 @@ var TrafficLightView = voodoo.View.extend({
     // The triggers tells voodoo that the sphere should respond to mouse
     // events. Add it like the scene.
     this.triggers.add(this.mesh);
+
+    // Show a pointer cursor whenever the mouse is over our mesh.
+    this.triggers.cursor('pointer');
   },
 
   unload: function() {

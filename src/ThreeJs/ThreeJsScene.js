@@ -127,14 +127,18 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
                 event.object = element;
                 event['client']['x'] = x;
                 event['client']['y'] = y;
+                event['size']['x'] = w;
+                event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
               }
 
               if (resize) {
                 var event = new window['voodoo']['Event']('resize');
                 event.object = element;
-                event['client']['x'] = w;
-                event['client']['y'] = h;
+                event['client']['x'] = x;
+                event['client']['y'] = y;
+                event['size']['x'] = w;
+                event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
               }
             });
@@ -154,14 +158,18 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
                 event.object = element;
                 event['client']['x'] = x;
                 event['client']['y'] = y;
+                event['size']['x'] = w;
+                event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
               }
 
               if (resize) {
                 var event = new window['voodoo']['Event']('resize');
                 event.object = element;
-                event['client']['x'] = w;
-                event['client']['y'] = h;
+                event['client']['x'] = x;
+                event['client']['y'] = y;
+                event['size']['x'] = w;
+                event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
               }
             });
@@ -182,14 +190,18 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
                 event.object = element;
                 event['client']['x'] = x;
                 event['client']['y'] = y;
+                event['size']['x'] = w;
+                event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
               }
 
               if (resize) {
                 var event = new window['voodoo']['Event']('resize');
                 event.object = element;
-                event['client']['x'] = w;
-                event['client']['y'] = h;
+                event['client']['x'] = x;
+                event['client']['y'] = y;
+                event['size']['x'] = w;
+                event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
               }
             });
@@ -209,14 +221,18 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
                 event.object = element;
                 event['client']['x'] = x;
                 event['client']['y'] = y;
+                event['size']['x'] = w;
+                event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
               }
 
               if (resize) {
                 var event = new window['voodoo']['Event']('resize');
                 event.object = element;
-                event['client']['x'] = w;
-                event['client']['y'] = h;
+                event['client']['x'] = x;
+                event['client']['y'] = y;
+                event['size']['x'] = w;
+                event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
               }
             });

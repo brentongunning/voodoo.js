@@ -134,6 +134,7 @@ Model.prototype['destroy'] = function() {
  * @return {Model} This.
  */
 Model.prototype['dispatch'] = function(event) {
+  event['model'] = this;
   this.dispatchEvent_(event);
   return this;
 };

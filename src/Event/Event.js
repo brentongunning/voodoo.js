@@ -119,6 +119,25 @@ this.Event.prototype['model'] = null;
  */
 this.Event.prototype['object'] = null;
 
+// Size dimensions
+this.Event.prototype['size'] = {};
+
+
+/**
+ * Width.
+ *
+ * @type {number}
+ */
+this.Event.prototype['size']['width'] = Number.MAX_VALUE;
+
+
+/**
+ * Height.
+ *
+ * @type {number}
+ */
+this.Event.prototype['size']['height'] = Number.MAX_VALUE;
+
 
 /**
  * Type of event.
