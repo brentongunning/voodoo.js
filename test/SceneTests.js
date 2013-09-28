@@ -182,7 +182,7 @@ SceneTests.prototype.testDetach = function() {
 /**
  * Tests scene events.
  */
-SceneTests.prototype.testEvents = function() {
+SceneTests.prototype.testSceneEvents = function() {
   /*:DOC +=
     <div style="position:absolute; left:400px; top:400px;
         width:200px; height:200px;" id="anchor">

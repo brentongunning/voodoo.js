@@ -42,21 +42,25 @@ EventTests.prototype.testMouseEvents = function() {
     name: 'CustomModel',
     viewType: voodoo.View.extend({
       load: function() {
-        var geometry = new THREE.CubeGeometry(1000, 1000, 100);
+        var geometry = new THREE.CubeGeometry(100, 100, 100);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
 
-        mesh.position.set(500, 600, 0);
+        mesh.position.set(this.model.x, this.model.y, 0);
 
         this.scene.add(mesh);
         this.triggers.add(mesh);
       }
-    })
+    }),
+    initialize: function(options) {
+      this.x = options.x;
+      this.y = options.y;
+    }
   });
 
   var move = 0, down = 0, up = 0, click = 0, dblclick = 0;
   var dblClickEvent = null;
-  var model = new CustomModel();
+  var model = new CustomModel({x: 500, y: 600});
 
   model.on('mousemove', function(evt) {move++;});
   model.on('mousedown', function(evt) {down++;});
@@ -86,6 +90,23 @@ EventTests.prototype.testMouseEvents = function() {
   assertNotEquals('hit y:', 0, dblClickEvent.hit.y);
   assertNotEquals('hit z:', 0, dblClickEvent.hit.z);
   assertEquals('event type:', 'dblclick', dblClickEvent.type);
+
+  // Test mouse up on a different model
+  up = 0;
+  var up2 = 0;
+  var model2 = new CustomModel({x: 100, y: 100});
+  model2.on('mouseup', function(event) {
+    assertEquals('model:', model, event.model);
+    up2++;
+  });
+
+  fireMouseEvent('mousemove', 100, 100);
+  fireMouseEvent('mousedown', 100, 100);
+  fireMouseEvent('mousemove', 500, 600);
+  fireMouseEvent('mouseup', 500, 600);
+
+  assertEquals('model click events: ', 1, up);
+  assertEquals('model2 click events: ', 1, up2);
 };
 
 

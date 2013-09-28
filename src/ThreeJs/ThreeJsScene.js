@@ -37,8 +37,11 @@ function ThreeJsScene_(scene, view) {
       // them without worrying about invalidating our own list or them changing.
       var objects = [];
       var children = this.parent_.children;
-      for (var i = 0; i < children.length; ++i)
-        objects.push(children[i]);
+      for (var i = 0; i < children.length; ++i) {
+        var child = children[i];
+        if (child['addedToVoodooScene'])
+          objects.push(children[i]);
+      }
       return objects;
     },
     set: function() { log_.error_('objects is read-only'); },

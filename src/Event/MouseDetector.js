@@ -89,15 +89,19 @@ MouseDetector_.prototype.destroy_ = function() {
  * @param {string} type Type of event.
  * @param {EventTrigger_} trigger Trigger.
  * @param {number=} opt_button Optional button code.
+ * @param {EventTrigger_=} opt_target Optional target trigger.
  */
 MouseDetector_.prototype.dispatchMouseEvent_ = function(
-    type, trigger, opt_button) {
+    type, trigger, opt_button, opt_target) {
+  log_.assert_(trigger, 'trigger must not be null');
+
   var event = new window['voodoo']['Event'](type, trigger.model_,
       trigger.triggerId_);
   event.initializeMouseEvent_(this.clientX_, this.clientY_,
       this.lastHitX_, this.lastHitY_, this.lastHitZ_, opt_button);
 
-  trigger.model_.dispatchEvent_(event);
+  var target = opt_target || trigger;
+  target.model_.dispatchEvent_(event);
 };
 
 
@@ -214,6 +218,11 @@ MouseDetector_.prototype.onMouseUp_ = function(event) {
 
     var held = this.heldTrigger_[event.button];
     var lastClicked = this.lastClickedTrigger_[event.button];
+
+    // Fire a mouseup event on the trigger that caused the mousedown
+    if (held && this.hoveredTrigger_ != held)
+      this.dispatchMouseEvent_('mouseup', this.hoveredTrigger_,
+          event.button, held);
 
     // If the current trigger is the held trigger, this is a click.
     if (this.hoveredTrigger_.isEquivalentTo(held)) {
