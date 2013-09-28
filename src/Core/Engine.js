@@ -297,10 +297,10 @@ Engine.prototype.setupDeltaTimer_ = function() {
     self.lastTicks_ = 0;
   }, false);
 
-  // Start animations 1 second after the page loads to minimize javascript
-  // garbage collection
+  // Start animations 1 second after the page loads to minimize hickups
   setTimeout(function() {
-    self.lastTicks_ = Date.now();
+    if (!document.hasFocus || document.hasFocus())
+      self.lastTicks_ = Date.now();
   }, self.options_.timerStartOnLoadDelayMs_);
 };
 
