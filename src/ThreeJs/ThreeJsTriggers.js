@@ -56,7 +56,7 @@ ThreeJsTriggers_.prototype.constructor = ThreeJsTriggers_.constructor;
 ThreeJsTriggers_.prototype['add'] = function(object, opt_triggerId) {
   log_.assert_(object, 'Object must be valid');
 
-  var trigger = new EventTrigger_(this.view_, object, opt_triggerId);
+  var trigger = new EventTrigger_(this.view_, object, this, opt_triggerId);
 
   // See if this trigger already exists
   if (DEBUG) {
@@ -98,4 +98,17 @@ ThreeJsTriggers_.prototype['remove'] = function(object) {
   }
 
   object['addedToVoodooTriggers'] = false;
+};
+
+
+/**
+ * Destroys the triggers container.
+ *
+ * @private
+ * @this {ThreeJsTriggers_}
+ */
+ThreeJsTriggers_.prototype.destroy_ = function() {
+  this.triggers_ = null;
+  this.scene_ = null;
+  this.view_ = null;
 };

@@ -31,8 +31,38 @@ Triggers.prototype['add'] = function(object, opt_triggerId) {};
 
 
 /**
+ * Sets the cursor that shows when the mouse moves over a trigger.
+ *
+ * @this {ThreeJsTriggers_}
+ *
+ * @param {string} cursor CSS cursor style.
+ */
+Triggers.prototype['cursor'] = function(cursor) {
+  this.cursor_ = cursor;
+};
+
+
+/**
  * Removes a trigger.
  *
  * @param {THREE.Object3D} object Object that triggers mouse events.
  */
 Triggers.prototype['remove'] = function(object) {};
+
+
+/**
+ * Destroys the triggers container.
+ *
+ * @private
+ * @this {ThreeJsTriggers_}
+ */
+Triggers.prototype.destroy_ = function() {};
+
+
+/**
+ * The cursor displayed when the mouse is over a trigger.
+ *
+ * @private
+ * @type {string}
+ */
+Triggers.prototype.cursor_ = 'pointer';

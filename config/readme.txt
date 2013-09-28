@@ -46,6 +46,7 @@ Release Notes
 
 9-28-2013 - 0.8.7
 Add Model.dispatch for firing custom events.
+Add Triggers.cursor for setting mouse cursors.
 Add Engine.on/off and Scene.on/off
 Add Scene.objects
 Add Engine events: destroy, addmodel, removemodel.

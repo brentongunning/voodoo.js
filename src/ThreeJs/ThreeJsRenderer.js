@@ -617,6 +617,25 @@ ThreeJsRenderer_.prototype.render_ = function() {
 
 
 /**
+ * Sets the current mouse cursor on the canvases.
+ *
+ * @private
+ *
+ * @param {string} cursor CSS cursor style.
+ */
+ThreeJsRenderer_.prototype.setCursor_ = function(cursor) {
+  if (this.engine_.options_['aboveLayer'])
+    this.aboveCanvas_.style['cursor'] = cursor;
+
+  if (this.engine_.options_['belowLayer'])
+    this.belowCanvas_.style['cursor'] = cursor;
+
+  if (this.engine_.options_['seamLayer'])
+    this.seamCanvas_.style['cursor'] = cursor;
+};
+
+
+/**
  * Initializes a WebGL canvas to always be fullscreen.
  *
  * This is called internally during ThreeJsRenderer_'s constructor.

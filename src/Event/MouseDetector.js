@@ -315,4 +315,9 @@ MouseDetector_.prototype.update_ = function() {
 
   this.hoveredTrigger_ = nextTrigger;
   this.pendingMouseMove_ = false;
+
+  // Set the mouse cursor
+  if (this.hoveredTrigger_ != null)
+    this.engine_.renderer_.setCursor_(this.hoveredTrigger_.parent_.cursor_);
+  else this.engine_.renderer_.setCursor_('auto');
 };

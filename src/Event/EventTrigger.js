@@ -27,13 +27,15 @@ var defaultTriggerId_ = -1;
  *
  * @param {View} view View.
  * @param {THREE.Object3D} object Object that triggers the mouse event.
+ * @param {Triggers} parent Parent triggers object.
  * @param {string|number=} opt_triggerId Optional event identifier.
  */
-function EventTrigger_(view, object, opt_triggerId) {
+function EventTrigger_(view, object, parent, opt_triggerId) {
   this.view_ = view;
   this.object_ = object;
   this.triggerId_ = typeof opt_triggerId === 'undefined' ?
       defaultTriggerId_ : opt_triggerId;
+  this.parent_ = parent;
   this.model_ = view['model'];
 }
 
@@ -53,16 +55,7 @@ EventTrigger_.prototype.isEquivalentTo = function(other) {
 
 
 /**
- * Triggering object
- *
- * @private
- * @type {THREE.Object3D}
- */
-EventTrigger_.prototype.object_ = null;
-
-
-/**
- * Triggering model
+ * Triggering model.
  *
  * @private
  * @type {Model}
@@ -71,7 +64,25 @@ EventTrigger_.prototype.model_ = null;
 
 
 /**
- * Trigger id
+ * Triggering object.
+ *
+ * @private
+ * @type {THREE.Object3D}
+ */
+EventTrigger_.prototype.object_ = null;
+
+
+/**
+ * Parent triggers object.
+ *
+ * @private
+ * @type {Triggers}
+ */
+EventTrigger_.prototype.parent_ = null;
+
+
+/**
+ * Trigger id.
  *
  * @private
  * @type {number|string}
@@ -80,7 +91,7 @@ EventTrigger_.prototype.triggerId_ = defaultTriggerId_;
 
 
 /**
- * Triggering view
+ * Triggering view.
  *
  * @private
  * @type {View}

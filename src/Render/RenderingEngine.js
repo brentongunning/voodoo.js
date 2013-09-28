@@ -16,6 +16,20 @@ function RenderingEngine_() {}
 
 
 /**
+ * Enables or disables whether the above canvas captures mouse
+ * events or lets them fall through to the page. When the user is hovering
+ * over a 3D object, then links on the page, etc. shouldn't be selectable.
+ *
+ * This is called by the mouse detector.
+ *
+ * @private
+ *
+ * @param {boolean} capture Whether to capture mouse events or not.
+ */
+RenderingEngine_.prototype.capturePointerEvents_ = function(capture) {};
+
+
+/**
  * Shuts down the rendering engine.
  *
  * @private
@@ -29,6 +43,16 @@ RenderingEngine_.prototype.destroy_ = function() {};
  * @private
  */
 RenderingEngine_.prototype.render_ = function() {};
+
+
+/**
+ * Sets the current mouse cursor on the canvases.
+ *
+ * @private
+ *
+ * @param {string} cursor CSS cursor style.
+ */
+RenderingEngine_.prototype.setCursor_ = function(cursor) {};
 
 
 /**
