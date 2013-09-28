@@ -53,6 +53,7 @@ Add Engine events: destroy, addmodel, removemodel.
 Add Scene events: add, remove, attach, detach, move, resize
 Add Model event: destroy
 Bug Fix: Fire mouseup events on last mousedown trigger.
+Bug Fix: Performance scale only when page has focus.
 
 9-25-2013 - 0.8.6
 Add Scene.attach/detach for Views to automatically align with 2D HTML elements.
