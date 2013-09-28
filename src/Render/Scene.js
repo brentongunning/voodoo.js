@@ -71,6 +71,14 @@ Scene.prototype['remove'] = function(object) {};
 
 
 /**
+ * An array of objects contained in this View's scene.
+ *
+ * @type {Array.<THREE.Object3D>}
+ */
+Scene.prototype['objects'] = null;
+
+
+/**
  * Destroys objects associated with the scene.
  *
  * @private

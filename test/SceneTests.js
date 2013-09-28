@@ -216,12 +216,14 @@ SceneTests.prototype.testEvents = function() {
         this.triggers.add(this.mesh);
 
         this.scene.attach(this.model.element, true, false);
+        assertEquals('scene objects:', 1, this.scene.objects.length);
       },
       detach: function() {
         this.scene.detach();
       },
       unload: function() {
         this.scene.remove(this.mesh);
+        assertEquals('scene objects:', 0, this.scene.objects.length);
       }
     }),
     initialize: function(options) {

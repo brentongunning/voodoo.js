@@ -3382,6 +3382,11 @@ THREE.Object3D.prototype.visible;
 THREE.Object3D.prototype.matrixAutoUpdate;
 
 /**
+ * @type {Array.<THREE.Object3D>}
+ */
+ THREE.Object3D.prototype.children;
+
+/**
 @constructor
 @param {THREE.Geometry} g
 @param {THREE.Material|THREE.MeshFaceMaterial} m

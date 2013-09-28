@@ -30,6 +30,20 @@ function ThreeJsScene_(scene, view) {
 
   this.objects_ = [];
   this.dispatcher_ = new Dispatcher_();
+
+  Object.defineProperty(this, 'objects', {
+    get: function() {
+      // Create a copy of all the objects. A copy lets the user iterate over
+      // them without worrying about invalidating our own list or them changing.
+      var objects = [];
+      var children = this.parent_.children;
+      for (var i = 0; i < children.length; ++i)
+        objects.push(children[i]);
+      return objects;
+    },
+    set: function() { log_.error_('objects is read-only'); },
+    writeable: false
+  });
 }
 
 
