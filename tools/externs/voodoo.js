@@ -66,10 +66,10 @@ voodoo.Extendable.prototype.extend = function() {};
 /**
  * @constructor
  * @param {string} type
- * @param {voodoo.Model} model
+ * @param {voodoo.Model=} model
  * @param {string|number=} opt_triggerId
  */
-voodoo.Event = function(type, model, opt_triggerId) {};
+voodoo.Event = function(type, opt_model, opt_triggerId) {};
 
 /** @type {number} */
 voodoo.Event.prototype.button;
@@ -98,11 +98,23 @@ voodoo.Event.prototype.hit.z;
 /** @type {voodoo.Model} */
 voodoo.Event.prototype.model;
 
-/** @type {string} */
-voodoo.Event.prototype.type;
+/** @type {Object} */
+voodoo.Event.prototype.object;
+
+/** @type {Object} */
+voodoo.Event.prototype.size = {};
+
+/** @type {number} */
+voodoo.Event.prototype.size.x;
+
+/** @type {number} */
+voodoo.Event.prototype.size.y;
 
 /** @type {string|number} */
 voodoo.Event.prototype.triggerId;
+
+/** @type {string} */
+voodoo.Event.prototype.type;
 
 // ----------------------------------------------------------------------------
 // Model
@@ -124,6 +136,9 @@ voodoo.Model.prototype.initialize = function(options) {};
 
 /** @param {number} deltaTime */
 voodoo.Model.prototype.update = function(deltaTime) {};
+
+/** @param {voodoo.Event} event */
+voodoo.Model.prototype.dispatch = function(event) {};
 
 /**
  * @param {string} type
@@ -246,6 +261,21 @@ voodoo.Scene.prototype.detach = function() {};
 /** @param {THREE.Object3D} object */
 voodoo.Scene.prototype.remove = function(object) {};
 
+/**
+ * @param {string} type
+ * @param {function(voodoo.Event)} listener
+ */
+voodoo.Scene.prototype.on = function(type, listener) {};
+
+/**
+ * @param {string} type
+ * @param {function(voodoo.Event)} listener
+ */
+voodoo.Scene.prototype.off = function(type, listener) {};
+
+/** @type {Array.<THREE.Object3D>} */
+voodoo.Scene.objects;
+
 // ----------------------------------------------------------------------------
 // Triggers
 // ----------------------------------------------------------------------------
@@ -258,6 +288,9 @@ voodoo.Triggers = function() {};
  * @param {string|number=} opt_triggerId
  */
 voodoo.Triggers.prototype.add = function(object, opt_triggerId) {};
+
+/** @param {string} cursor */
+voodoo.Triggers.prototype.cursor = function(cursor) {};
 
 /** @param {THREE.Object3D} object */
 voodoo.Triggers.prototype.remove = function(object) {};
@@ -293,6 +326,18 @@ voodoo.Engine = function(options) {};
 
 voodoo.Engine.prototype.destroy = function() {};
 voodoo.Engine.prototype.frame = function() {};
+
+/**
+ * @param {string} type
+ * @param {function(voodoo.Event)} listener
+ */
+voodoo.Engine.prototype.on = function(type, listener) {};
+
+/**
+ * @param {string} type
+ * @param {function(voodoo.Event)} listener
+ */
+voodoo.Engine.prototype.off = function(type, listener) {};
 
 /** @type {Array.<voodoo.Model>} */
 voodoo.Engine.prototype.models;

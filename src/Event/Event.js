@@ -128,7 +128,7 @@ this.Event.prototype['size'] = {};
  *
  * @type {number}
  */
-this.Event.prototype['size']['width'] = Number.MAX_VALUE;
+this.Event.prototype['size']['x'] = Number.MAX_VALUE;
 
 
 /**
@@ -136,7 +136,7 @@ this.Event.prototype['size']['width'] = Number.MAX_VALUE;
  *
  * @type {number}
  */
-this.Event.prototype['size']['height'] = Number.MAX_VALUE;
+this.Event.prototype['size']['y'] = Number.MAX_VALUE;
 
 
 /**
