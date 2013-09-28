@@ -7,7 +7,7 @@
 
 
 /**
- * Voodoo's main engine. It manages the renderer, the event dispatcher, and
+ * Voodoo's main engine. It manages the renderer, the mouse detector, and
  * all of the models. There can only be one engine per page and the
  * user is responsible for creating it. If the user does not create an
  * engine and assign it to voodoo.engine, then one will be created automatically
@@ -71,8 +71,11 @@ function Engine(opt_options) {
       break;
   }
 
-  // Create the event dispatcher
-  this.dispatcher_ = new Dispatcher_(this);
+  // Create the dispatcher for engine events
+  this.dispatcher_ = new Dispatcher_();
+
+  // Create the mouse detector
+  this.mouseDetector_ = new MouseDetector_(this);
 
   // At this point we know the engine is valid. Assign it to the global.
   window['voodoo']['engine'] = this;
@@ -92,24 +95,24 @@ function Engine(opt_options) {
   this.renderThread_ = -1;
   this.realtimeThread_ = -1;
 
-  this.realtimeUpdate_ = this.options_['updateInterval'] === 0;
-  this.realtimeRender_ = this.options_['renderInterval'] === 0;
+  var realtimeUpdate = this.options_['updateInterval'] === 0;
+  var realtimeRender = this.options_['renderInterval'] === 0;
 
   if (options['frameLoop']) {
     log_.information_('Beginning frame loop');
 
-    if (this.realtimeUpdate_ || this.realtimeRender_)
-      this.run_(this.realtimeUpdate_, this.realtimeRender_);
+    if (realtimeUpdate || realtimeRender)
+      this.run_(realtimeUpdate, realtimeRender);
 
     var self = this;
 
-    if (!this.realtimeUpdate_) {
+    if (!realtimeUpdate) {
       this.updateThread_ = window.setInterval(function() {
         self.update_();
       }, this.options_['updateInterval']);
     }
 
-    if (!this.realtimeRender_) {
+    if (!realtimeRender) {
       this.renderThread_ = window.setInterval(function() {
         self.renderer_.render_();
       }, this.options_['renderInterval']);
@@ -127,6 +130,9 @@ function Engine(opt_options) {
 Engine.prototype['destroy'] = function() {
   log_.information_('Destroying Engine');
 
+  this.dispatcher_.dispatchEvent_(null, new window['voodoo']['Event'](
+      'destroy'));
+
   if (this.updateThread_ !== -1)
     window.clearInterval(this.updateThread_);
   if (this.renderThread_ !== -1)
@@ -143,9 +149,22 @@ Engine.prototype['destroy'] = function() {
   this.models_ = null;
 
   this.renderer_.destroy_();
+  this.mouseDetector_.destroy_();
+  this.dispatcher_.destroy_();
 
   if (typeof window['voodoo']['engine'] !== 'undefined')
     delete window['voodoo']['engine'];
+
+  this.renderer_ = null;
+  this.mouseDetector_ = null;
+  this.dispatcher_ = null;
+  this.models_ = null;
+  this.updateThread_ = -1;
+  this.renderThread_ = -1;
+  this.realtimeThread_ = -1;
+  this.options_ = null;
+  this.modelCacheFactory_ = null;
+  this.tracker_ = null;
 };
 
 
@@ -160,6 +179,32 @@ Engine.prototype['destroy'] = function() {
 Engine.prototype['frame'] = function() {
   this.update_();
   this.renderer_.render_();
+};
+
+
+/**
+ * Removes an event handler.
+ *
+ * @this {Engine}
+ *
+ * @param {string} type Event type.
+ * @param {function(Event)} listener Event listener.
+ */
+Engine.prototype['off'] = function(type, listener) {
+  this.dispatcher_.off_(type, listener);
+};
+
+
+/**
+ * Adds an event handler. Valid events are destroy, addmodel, and removemodel.
+ *
+ * @this {Engine}
+ *
+ * @param {string} type Event type.
+ * @param {function(Event)} listener Event listener.
+ */
+Engine.prototype['on'] = function(type, listener) {
+  this.dispatcher_.on_(type, listener);
 };
 
 
@@ -182,6 +227,8 @@ Engine.prototype['models'] = null;
  */
 Engine.prototype.addModel_ = function(model) {
   this.models_.push(model);
+  this.dispatcher_.dispatchEvent_(null, new window['voodoo']['Event'](
+      'addmodel', model));
 };
 
 
@@ -196,6 +243,8 @@ Engine.prototype.addModel_ = function(model) {
  */
 Engine.prototype.removeModel_ = function(model) {
   this.models_.splice(this.models_.indexOf(model), 1);
+  this.dispatcher_.dispatchEvent_(null, new window['voodoo']['Event'](
+      'removemodel', model));
 };
 
 
@@ -286,8 +335,8 @@ Engine.prototype.update_ = function() {
   for (var modelIndex = 0; modelIndex < models.length; ++modelIndex)
     models[modelIndex].update(deltaTime);
 
-  // Tell the dispatcher to dispatch all frame-based events.
-  this.dispatcher_.update_();
+  // Tell the mouse detector to dispatch all frame-based events.
+  this.mouseDetector_.update_();
 };
 
 
@@ -306,12 +355,12 @@ Engine.prototype.validateOptions_ = function() {
 
 
 /**
- * The main event dispatcher.
+ * The main mouse event detector.
  *
  * @private
- * @type {Dispatcher_}
+ * @type {MouseDetector_}
  */
-Engine.prototype.dispatcher_ = null;
+Engine.prototype.mouseDetector_ = null;
 
 
 /**

@@ -45,7 +45,9 @@ Release Notes
 -------------------------------------------------------------------------------
 
 9-27-2013 - 0.8.7
-Add new event: destroy
+Add Engine.on and Engine.off.
+Add Engine events: destroy, addmodel, removemodel.
+Add Model event: destroy
 
 9-25-2013 - 0.8.6
 Add Scene.attach/detach for Views to automatically align with 2D HTML elements.

@@ -9,18 +9,15 @@
 /**
  * Holds information about an event to pass to event handlers.
  *
- * Event types include cameramove, mousedown, mouseup, mouseover, mouseout,
- * mousemove, click, and dblclick. Not all properties are valid for all events.
- *
  * @constructor
  *
  * @param {string} type Type of event.
- * @param {Model} model Model from which this event fired.
+ * @param {Model=} opt_model Model from which this event fired.
  * @param {string|number=} opt_triggerId Optional trigger id.
  */
-this.Event = function(type, model, opt_triggerId) {
+this.Event = function(type, opt_model, opt_triggerId) {
   this['type'] = type;
-  this['model'] = model;
+  this['model'] = opt_model;
   this['triggerId'] = typeof opt_triggerId === 'undefined' ?
       defaultTriggerId_ : opt_triggerId;
 };

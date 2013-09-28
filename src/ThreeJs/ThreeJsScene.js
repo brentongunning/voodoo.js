@@ -13,9 +13,11 @@
  * @private
  *
  * @param {THREE.Scene} scene Three.js scene.
+ * @param {View} view Parent view.
  */
-function ThreeJsScene_(scene) {
+function ThreeJsScene_(scene, view) {
   this.scene_ = scene;
+  this.view_ = view;
 
   this.tracker_ = window['voodoo']['engine'].tracker_;
   this.trackId_ = null;
@@ -176,5 +178,6 @@ ThreeJsScene_.prototype.destroy_ = function() {
     this['detach']();
 
   this.scene_ = null;
+  this.view_ = null;
   this.parent_ = null;
 };

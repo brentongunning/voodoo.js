@@ -20,12 +20,13 @@ Render\RenderingEngine.js
 Render\TrackedElement.js
 Render\Tracker.js
 
+Event\Dispatcher.js
 Event\EventTrigger.js
 Event\Event.js
 Event\Triggers.js
 Event\TriggersFactory.js
 Event\Raycaster.js
-Event\Dispatcher.js
+Event\MouseDetector.js
 
 ThreeJs\ThreeJsCamera.js
 ThreeJS\ThreeJsRaycaster.js

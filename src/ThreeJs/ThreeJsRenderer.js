@@ -51,7 +51,7 @@ ThreeJsRenderer_.prototype.constructor = ThreeJsRenderer_.constructor;
  * events or lets them fall through to the page. When the user is hovering
  * over a 3D object, then links on the page, etc. shouldn't be selectable.
  *
- * This is called by the dispatcher.
+ * This is called by the mouse detector.
  *
  * @private
  *

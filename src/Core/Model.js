@@ -79,7 +79,7 @@ Model.prototype['construct'] = function(options) {
     window['voodoo']['engine'] = new Engine(new Options());
   }
 
-  this.eventListeners_ = {};
+  this.dispatcher_ = new Dispatcher_();
 
   this.setupCache_();
   this['initialize'](options);
@@ -115,6 +115,12 @@ Model.prototype['destroy'] = function() {
     this.stencilView_['destroy']();
 
   this['cleanUp']();
+
+  this.dispatcher_.destroy_();
+
+  this.dispatcher_ = null;
+  this.view_ = null;
+  this.stencilView_ = null;
 };
 
 
@@ -145,27 +151,6 @@ Model.prototype['initialize'] = function(options) {
 
 
 /**
- * Adds an event handler.
- *
- * @this {Model}
- *
- * @param {string} type Event type.
- * @param {function(Event)} listener Event listener.
- *
- * @return {Model} This.
- */
-Model.prototype['on'] = function(type, listener) {
-  if (!this.eventListeners_[type])
-    this.eventListeners_[type] = [];
-
-  if (this.eventListeners_[type].indexOf(listener) == -1)
-    this.eventListeners_[type].push(listener);
-
-  return this;
-};
-
-
-/**
  * Removes an event handler.
  *
  * @this {Model}
@@ -176,9 +161,25 @@ Model.prototype['on'] = function(type, listener) {
  * @return {Model} This.
  */
 Model.prototype['off'] = function(type, listener) {
-  var listeners = this.eventListeners_[type];
-  if (listeners && listeners.IndexOf(listener))
-    listeners.splice(listeners.IndexOf(listener), 1);
+  this.dispatcher_.off_(type, listener);
+
+  return this;
+};
+
+
+/**
+ * Adds an event handler. Valid events are cameramove, destroy, mousedown,
+ * mouseup, mouseover, mouseout, mousemove, click, and dblclick.
+ *
+ * @this {Model}
+ *
+ * @param {string} type Event type.
+ * @param {function(Event)} listener Event listener.
+ *
+ * @return {Model} This.
+ */
+Model.prototype['on'] = function(type, listener) {
+  this.dispatcher_.on_(type, listener);
 
   return this;
 };
@@ -250,10 +251,7 @@ Model.prototype['view'] = null;
  * @param {Event} event Event description.
  */
 Model.prototype.dispatchEvent_ = function(event) {
-  var listeners = this.eventListeners_[event['type']];
-  if (listeners)
-    for (var i = 0; i < listeners.length; ++i)
-      listeners[i].call(this, event);
+  this.dispatcher_.dispatchEvent_(this, event);
 };
 
 
