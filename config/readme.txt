@@ -45,8 +45,9 @@ Release Notes
 -------------------------------------------------------------------------------
 
 9-27-2013 - 0.8.7
-Add Engine.on and Engine.off.
+Add Engine.on/off and Scene.on/off
 Add Engine events: destroy, addmodel, removemodel.
+Add Scene events: add, remove, attach, detach, move, resize
 Add Model event: destroy
 
 9-25-2013 - 0.8.6

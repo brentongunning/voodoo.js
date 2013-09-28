@@ -30,8 +30,8 @@ function Tracker_() {
  * @private
  *
  * @param {HTMLElement} element Html DOM element to track.
- * @param {function(number, number, number, number)} callback Callback to fire
- *     when the element moves.
+ * @param {function(number, number, number, number, boolean, boolean)} callback
+ *    Callback to fire when the element moves.
  * @return {number} Track id used to release the callback.
  */
 Tracker_.prototype.track_ = function(element, callback) {

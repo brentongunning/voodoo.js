@@ -44,6 +44,25 @@ Scene.prototype['detach'] = function() {};
 
 
 /**
+ * Removes an event handler.
+ *
+ * @param {string} type Event type.
+ * @param {function(Event)} listener Event listener.
+ */
+Scene.prototype['off'] = function(type, listener) {};
+
+
+/**
+ * Adds an event handler. Valid events are add, remove,
+ * attach, detach, move, and resize.
+ *
+ * @param {string} type Event type.
+ * @param {function(Event)} listener Event listener.
+ */
+Scene.prototype['on'] = function(type, listener) {};
+
+
+/**
  * Removes a mesh from the scene graph.
  *
  * @param {THREE.Object3D} object Object to remove.

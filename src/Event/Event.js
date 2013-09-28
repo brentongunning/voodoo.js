@@ -113,6 +113,14 @@ this.Event.prototype['model'] = null;
 
 
 /**
+ * Event target or custom data.
+ *
+ * @type {Object}
+ */
+this.Event.prototype['object'] = null;
+
+
+/**
  * Type of event.
  *
  * @type {string}

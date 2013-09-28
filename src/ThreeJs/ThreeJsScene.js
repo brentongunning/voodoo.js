@@ -29,6 +29,7 @@ function ThreeJsScene_(scene, view) {
   this.scene_.add(this.parent_);
 
   this.objects_ = [];
+  this.dispatcher_ = new Dispatcher_();
 }
 
 
@@ -59,6 +60,10 @@ ThreeJsScene_.prototype['add'] = function(object) {
   object['addedToVoodooScene'] = true;
 
   this.objects_.push(object);
+
+  var event = new window['voodoo']['Event']('add');
+  event.object = object;
+  this.dispatcher_.dispatchEvent_(null, event);
 };
 
 
@@ -91,43 +96,119 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
   if (element && typeof element !== 'undefined') {
     if (center) {
       if (pixels) {
-        this.trackId_ = this.tracker_.track_(element, function(x, y, w, h) {
-          self.parent_.position.x = x + w / 2.0;
-          self.parent_.position.y = y + h / 2.0;
-          self.parent_.scale.x = self.parent_.scale.y = 1.0;
-          self.parent_.updateMatrixWorld(true);
-          self.isDirty_ = true;
-        });
+        this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
+            move, resize) {
+              self.parent_.position.x = x + w / 2.0;
+              self.parent_.position.y = y + h / 2.0;
+              self.parent_.scale.x = self.parent_.scale.y = 1.0;
+
+              self.parent_.updateMatrixWorld(true);
+              self.isDirty_ = true;
+
+              if (move) {
+                var event = new window['voodoo']['Event']('move');
+                event.object = element;
+                event['client']['x'] = x;
+                event['client']['y'] = y;
+                self.dispatcher_.dispatchEvent_(null, event);
+              }
+
+              if (resize) {
+                var event = new window['voodoo']['Event']('resize');
+                event.object = element;
+                event['client']['x'] = w;
+                event['client']['y'] = h;
+                self.dispatcher_.dispatchEvent_(null, event);
+              }
+            });
       } else {
-        this.trackId_ = this.tracker_.track_(element, function(x, y, w, h) {
-          self.parent_.position.x = x + w / 2.0;
-          self.parent_.position.y = y + h / 2.0;
-          self.parent_.scale.x = w;
-          self.parent_.scale.y = h;
-          self.parent_.updateMatrixWorld(true);
-          self.isDirty_ = true;
-        });
+        this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
+            move, resize) {
+              self.parent_.position.x = x + w / 2.0;
+              self.parent_.position.y = y + h / 2.0;
+              self.parent_.scale.x = w;
+              self.parent_.scale.y = h;
+
+              self.parent_.updateMatrixWorld(true);
+              self.isDirty_ = true;
+
+              if (move) {
+                var event = new window['voodoo']['Event']('move');
+                event.object = element;
+                event['client']['x'] = x;
+                event['client']['y'] = y;
+                self.dispatcher_.dispatchEvent_(null, event);
+              }
+
+              if (resize) {
+                var event = new window['voodoo']['Event']('resize');
+                event.object = element;
+                event['client']['x'] = w;
+                event['client']['y'] = h;
+                self.dispatcher_.dispatchEvent_(null, event);
+              }
+            });
       }
     } else {
       if (pixels) {
-        this.trackId_ = this.tracker_.track_(element, function(x, y, w, h) {
-          self.parent_.position.x = x;
-          self.parent_.position.y = y;
-          self.parent_.scale.x = self.parent_.scale.y = 1.0;
-          self.parent_.updateMatrixWorld(true);
-          self.isDirty_ = true;
-        });
+        this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
+            move, resize) {
+              self.parent_.position.x = x;
+              self.parent_.position.y = y;
+              self.parent_.scale.x = self.parent_.scale.y = 1.0;
+
+              self.parent_.updateMatrixWorld(true);
+              self.isDirty_ = true;
+
+              if (move) {
+                var event = new window['voodoo']['Event']('move');
+                event.object = element;
+                event['client']['x'] = x;
+                event['client']['y'] = y;
+                self.dispatcher_.dispatchEvent_(null, event);
+              }
+
+              if (resize) {
+                var event = new window['voodoo']['Event']('resize');
+                event.object = element;
+                event['client']['x'] = w;
+                event['client']['y'] = h;
+                self.dispatcher_.dispatchEvent_(null, event);
+              }
+            });
       } else {
-        this.trackId_ = this.tracker_.track_(element, function(x, y, w, h) {
-          self.parent_.position.x = x;
-          self.parent_.position.y = y;
-          self.parent_.scale.x = w;
-          self.parent_.scale.y = h;
-          self.parent_.updateMatrixWorld(true);
-          self.isDirty_ = true;
-        });
+        this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
+            move, resize) {
+              self.parent_.position.x = x;
+              self.parent_.position.y = y;
+              self.parent_.scale.x = w;
+              self.parent_.scale.y = h;
+
+              self.parent_.updateMatrixWorld(true);
+              self.isDirty_ = true;
+
+              if (move) {
+                var event = new window['voodoo']['Event']('move');
+                event.object = element;
+                event['client']['x'] = x;
+                event['client']['y'] = y;
+                self.dispatcher_.dispatchEvent_(null, event);
+              }
+
+              if (resize) {
+                var event = new window['voodoo']['Event']('resize');
+                event.object = element;
+                event['client']['x'] = w;
+                event['client']['y'] = h;
+                self.dispatcher_.dispatchEvent_(null, event);
+              }
+            });
       }
     }
+
+    var event = new window['voodoo']['Event']('attach');
+    event.object = element;
+    this.dispatcher_.dispatchEvent_(null, event);
   }
 };
 
@@ -138,12 +219,41 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
  * @this {ThreeJsScene_}
  */
 ThreeJsScene_.prototype['detach'] = function() {
+  var event = new window['voodoo']['Event']('detach');
+  this.dispatcher_.dispatchEvent_(null, event);
+
   this.tracker_.release_(this.trackId_);
   this.trackId_ = null;
 
   this.parent_.position.x = this.parent_.position.y = 0;
   this.parent_.scale.x = this.parent_.scale.y = 1;
   this.parent_.updateMatrixWorld(true);
+};
+
+
+/**
+ * Removes an event handler.
+ *
+ * @this {Engine}
+ *
+ * @param {string} type Event type.
+ * @param {function(Event)} listener Event listener.
+ */
+ThreeJsScene_.prototype['off'] = function(type, listener) {
+  this.dispatcher_.off_(type, listener);
+};
+
+
+/**
+ * Adds an event handler.
+ *
+ * @this {Engine}
+ *
+ * @param {string} type Event type.
+ * @param {function(Event)} listener Event listener.
+ */
+ThreeJsScene_.prototype['on'] = function(type, listener) {
+  this.dispatcher_.on_(type, listener);
 };
 
 
@@ -155,6 +265,10 @@ ThreeJsScene_.prototype['detach'] = function() {
  * @param {THREE.Object3D} object Object to remove.
  */
 ThreeJsScene_.prototype['remove'] = function(object) {
+  var event = new window['voodoo']['Event']('remove');
+  event.object = object;
+  this.dispatcher_.dispatchEvent_(null, event);
+
   if (object['addedToVoodooTriggers'])
     object.visible = false;
   else this.parent_.remove(object);
@@ -177,6 +291,8 @@ ThreeJsScene_.prototype.destroy_ = function() {
   if (this.trackId_ !== null)
     this['detach']();
 
+  this.dispatcher_.destroy_();
+  this.dispatcher_ = null;
   this.scene_ = null;
   this.view_ = null;
   this.parent_ = null;

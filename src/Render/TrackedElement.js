@@ -34,7 +34,8 @@ function TrackedElement_(element) {
  *
  * @private
  *
- * @param {function(number, number, number, number)} callback Callback to add.
+ * @param {function(number, number, number, number, boolean, boolean)} callback
+ *     Callback to add.
  * @return {number} Callback id used to release.
  */
 TrackedElement_.prototype.addCallback_ = function(callback) {
@@ -46,7 +47,7 @@ TrackedElement_.prototype.addCallback_ = function(callback) {
   // Always call the callback once immediately after it is added so that
   // the new object attaching gets the current location of the element.
   callback(this.lastX_, this.lastY_, this.lastWidth_,
-      this.lastHeight_);
+      this.lastHeight_, true, true);
 
   return id;
 };
@@ -78,10 +79,9 @@ TrackedElement_.prototype.update_ = function() {
   var width = this.element_.offsetWidth;
   var height = this.element_.offsetHeight;
 
-  if (position['x'] !== this.lastX_ ||
-      position['y'] !== this.lastY_ ||
-      width !== this.lastWidth_ ||
-      height !== this.lastHeight_) {
+  var moved = position['x'] !== this.lastX_ || position['y'] !== this.lastY_;
+  var resized = width !== this.lastWidth_ || height !== this.lastHeight_;
+  if (moved || resized) {
     // Save the new position and size
     this.lastX_ = position['x'];
     this.lastY_ = position['y'];
@@ -91,7 +91,7 @@ TrackedElement_.prototype.update_ = function() {
     // Fire callbacks
     for (var callback in this.callbacks_)
       this.callbacks_[callback].call(null, this.lastX_, this.lastY_,
-          this.lastWidth_, this.lastHeight_);
+          this.lastWidth_, this.lastHeight_, moved, resized);
   }
 };
 

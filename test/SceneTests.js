@@ -18,7 +18,13 @@ SceneTests = TestCase('SceneTests');
  * Test case initialization. Runs once before each test.
  */
 SceneTests.prototype.setUp = function() {
-  voodoo.engine = new voodoo.Engine({ frameLoop: false, stencils: false });
+  // Just create an above layer.
+  voodoo.engine = new voodoo.Engine({
+    seamLayer: false,
+    stencils: false,
+    belowLayer: false,
+    frameLoop: false
+  });
 
   enableMouseEvents();
 };
@@ -171,3 +177,72 @@ SceneTests.prototype.testDetach = function() {
   fireClick(500, 500);
   assertEquals('click events:', 1, click);
 };
+
+
+/**
+ * Tests scene events.
+ */
+SceneTests.prototype.testEvents = function() {
+  /*:DOC +=
+    <div style="position:absolute; left:400px; top:400px;
+        width:200px; height:200px;" id="anchor">
+      <p>anchor</p>
+    </div>
+  */
+
+  var sceneAdd = 0;
+  var sceneRemove = 0;
+  var sceneAttach = 0;
+  var sceneDetach = 0;
+  var sceneMove = 0;
+  var sceneResize = 0;
+
+  var CustomModel = voodoo.Model.extend({
+    name: 'CustomModel',
+    viewType: voodoo.View.extend({
+      load: function() {
+        this.scene.on('add', function() { sceneAdd++; });
+        this.scene.on('remove', function() { sceneRemove++; });
+        this.scene.on('attach', function() { sceneAttach++; });
+        this.scene.on('detach', function() { sceneDetach++; });
+        this.scene.on('move', function() { sceneMove++; });
+        this.scene.on('resize', function() { sceneResize++; });
+
+        var geometry = new THREE.CubeGeometry(1, 1, 100);
+        var material = new THREE.MeshBasicMaterial();
+        this.mesh = new THREE.Mesh(geometry, material);
+
+        this.scene.add(this.mesh);
+        this.triggers.add(this.mesh);
+
+        this.scene.attach(this.model.element, true, false);
+      },
+      detach: function() {
+        this.scene.detach();
+      },
+      unload: function() {
+        this.scene.remove(this.mesh);
+      }
+    }),
+    initialize: function(options) {
+      this.element = options.element;
+    },
+    detach: function() {
+      this.view.detach();
+    }
+  });
+
+  var anchor = document.getElementById('anchor');
+  var model = new CustomModel({element: anchor});
+  voodoo.engine.frame();
+  model.detach();
+  model.destroy();
+
+  assertEquals('sceneAdd:', 1, sceneAdd);
+  assertEquals('sceneRemove:', 1, sceneRemove);
+  assertEquals('sceneAttach:', 1, sceneAttach);
+  assertEquals('sceneDetach:', 1, sceneDetach);
+  assertEquals('sceneMove:', 1, sceneMove);
+  assertEquals('sceneResize:', 1, sceneResize);
+};
+
