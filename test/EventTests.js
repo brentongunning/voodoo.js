@@ -286,3 +286,24 @@ EventTests.prototype.testDestroyEvent = function() {
   assertEquals('modelsAdded:', 2, modelsAdded);
   assertEquals('modelsRemoved:', 2, modelsRemoved);
 };
+
+
+/**
+ * Tests that user-defined events may be fired.
+ */
+EventTests.prototype.testCustomEvents = function() {
+  var CustomModel = voodoo.Model.extend({
+    name: 'CustomModel',
+    viewType: voodoo.View.extend(),
+    fire: function() {
+      this.dispatch(new Event('customEvent', this));
+    }
+  });
+
+  var model = new CustomModel();
+
+  var customEventCount = 0;
+  model.on('customEvent', function() { customEventCount++; });
+  model.fire();
+  assertEquals('customEventCount:', 1, customEventCount);
+};

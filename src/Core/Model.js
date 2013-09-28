@@ -125,6 +125,21 @@ Model.prototype['destroy'] = function() {
 
 
 /**
+ * Dispatches a custom event to all listeners registered on this model.
+ *
+ * @this {Model}
+ *
+ * @param {Event} event Event to fire.
+ *
+ * @return {Model} This.
+ */
+Model.prototype['dispatch'] = function(event) {
+  this.dispatchEvent_(event);
+  return this;
+};
+
+
+/**
  * Derives a new Model from a base type.
  *
  * @param {Object=} opt_object Optional object to extend with.

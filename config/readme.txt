@@ -44,12 +44,14 @@ See license.txt.
 Release Notes
 -------------------------------------------------------------------------------
 
-9-27-2013 - 0.8.7
+9-28-2013 - 0.8.7
+Add Model.dispatch for firing custom events.
 Add Engine.on/off and Scene.on/off
 Add Scene.objects
 Add Engine events: destroy, addmodel, removemodel.
 Add Scene events: add, remove, attach, detach, move, resize
 Add Model event: destroy
+Bug Fix: Fire mouseup events on last mousedown trigger.
 
 9-25-2013 - 0.8.6
 Add Scene.attach/detach for Views to automatically align with 2D HTML elements.
