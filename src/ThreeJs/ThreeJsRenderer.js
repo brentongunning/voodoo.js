@@ -309,13 +309,18 @@ ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer) {
       var view = layer.views_[viewIndex];
       var scene = view['scene'];
       if (scene.isDirty_) {
-        var objects = scene.objects_;
-        for (var objectIndex in objects) {
-          var object = objects[objectIndex];
-          if (object['geometry'] && typeof object['geometry'] !== 'undefined') {
-            object.updateMatrixWorld(true);
-            if (frustum.intersectsObject(object))
-              return true;
+        if (scene.meshes_.length !== scene.objects_.length) {
+          // If a scene has any non-mesh objects, then we have to redraw.
+          return true;
+        } else {
+          var meshes = scene.meshes_;
+          for (var meshIndex in meshes) {
+            var mesh = meshes[meshIndex];
+            if (mesh['geometry'] && typeof mesh['geometry'] !== 'undefined') {
+              mesh.updateMatrixWorld(true);
+              if (frustum.intersectsObject(mesh))
+                return true;
+            }
           }
         }
       }

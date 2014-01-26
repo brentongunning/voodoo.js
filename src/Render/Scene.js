@@ -102,3 +102,12 @@ Scene.prototype.isDirty_ = true;
  * @private
  */
 Scene.prototype.objects_ = null;
+
+
+/**
+ * Array of meshes managed by this View's scene.
+ *
+ * @type {Array.<THREE.Object3D>}
+ * @private
+ */
+Scene.prototype.meshes_ = null;

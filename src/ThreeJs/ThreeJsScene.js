@@ -29,6 +29,7 @@ function ThreeJsScene_(scene, view) {
   this.scene_.add(this.parent_);
 
   this.objects_ = [];
+  this.meshes_ = [];
   this.dispatcher_ = new Dispatcher_();
 
   Object.defineProperty(this, 'objects', {
@@ -77,6 +78,9 @@ ThreeJsScene_.prototype['add'] = function(object) {
   object['addedToVoodooScene'] = true;
 
   this.objects_.push(object);
+  if (this.isMesh_(object)) {
+    this.meshes_.push(object);
+  }
 
   var event = new window['voodoo']['Event']('add');
   event.object = object;
@@ -311,6 +315,12 @@ ThreeJsScene_.prototype['remove'] = function(object) {
   var index = this.objects_.indexOf(object);
   if (index != -1)
     this.objects_.splice(index, 1);
+
+  if (this.isMesh_(object)) {
+    index = this.meshes_.indexOf(object);
+    if (index != -1)
+      this.meshes_.splice(index, 1);
+  }
 };
 
 
@@ -329,4 +339,21 @@ ThreeJsScene_.prototype.destroy_ = function() {
   this.scene_ = null;
   this.view_ = null;
   this.parent_ = null;
+};
+
+
+/**
+ * Helper function to determine if an object added to the scene
+ * is a mesh or something else (light, camera, etc.)
+ *
+ * @private
+ *
+ * @param {THREE.Object3D} object
+ * @return {boolean} True if the object is a mesh. False if not.
+ */
+ThreeJsScene_.prototype.isMesh_ = function(object) {
+  return object instanceof THREE.Mesh ||
+      object instanceof THREE.MorphAnimMesh ||
+      object instanceof THREE.SkinnedMesh ||
+      object instanceof THREE.Line;
 };

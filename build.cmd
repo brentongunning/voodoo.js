@@ -28,7 +28,7 @@ set op=%~1
 if "%op%"=="" set op=all
 
 :: Version
-set version=0.8.7
+set version=0.8.8
 set project=voodoo
 
 :: Build
