@@ -110,7 +110,8 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
   this.canvasScale_ = 1.0;
 
   var webGlOptions = {
-    antialias: this.engine_.options_['antialias']
+    antialias: this.engine_.options_['antialias'],
+    alpha: true
   };
 
   // Create the canvas for the above layer.

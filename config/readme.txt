@@ -46,6 +46,7 @@ Release Notes
 
 1-26-2014 - 0.8.8
 Bug Fix: Support dirtiable non-mesh scene objects (ie. lights)
+Updated ThreeJs to r65
 
 9-28-2013 - 0.8.7
 Add Model.dispatch for firing custom events.
