@@ -101,7 +101,7 @@ var Light_ = Model['extend']();
  *
  * @this {Light_}
  *
- * @param {{color: string}=} options Options object.
+ * @param {{color: string}} options Options object.
  */
 Light_.prototype['initialize'] = function(options) {
   if (typeof options.color !== 'undefined')
