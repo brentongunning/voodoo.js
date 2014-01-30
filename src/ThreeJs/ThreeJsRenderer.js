@@ -310,7 +310,7 @@ ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer) {
     for (var viewIndex in layer.views_) {
       var view = layer.views_[viewIndex];
       var scene = view['scene'];
-      if (scene.isDirty_) {
+      if (view.isLoaded_ && scene.isDirty_) {
         if (scene.meshes_.length !== scene.objects_.length) {
           // If a scene has any non-mesh objects, then we have to redraw.
           return true;
