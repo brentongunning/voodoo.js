@@ -82,6 +82,8 @@ Model.prototype['construct'] = function(options) {
   this.dispatcher_ = new Dispatcher_();
 
   this.setupCache_();
+  if (typeof options === 'undefined' || !options)
+    options = {};
   this['initialize'](options);
 
   this.createViews_();

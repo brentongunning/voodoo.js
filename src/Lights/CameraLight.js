@@ -12,7 +12,6 @@
  * @constructor
  * @private
  * @extends {LightView_}
- * @param {{color: string}=} opt_options Light options.
  */
 var CameraLightView_ = LightView_['extend']();
 
