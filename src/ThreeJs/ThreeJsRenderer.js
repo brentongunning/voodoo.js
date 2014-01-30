@@ -150,7 +150,8 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
   if (this.engine_.options_['seamLayer']) {
     // The seam layer always has antialiasing off to blend the layers.
     var seamWebGlOptions = {
-      antialias: false
+      antialias: false,
+      alpha: true
     };
 
     this.seamRenderer_ = new THREE.WebGLRenderer(seamWebGlOptions);
