@@ -45,16 +45,17 @@ Release Notes
 -------------------------------------------------------------------------------
 
 1-26-2014 - 0.8.8
-Bug Fix: Support dirtiable non-mesh scene objects (ie. lights)
-Updated ThreeJs to r65
+Add 'load' Model event and View.loaded to set when a View has finished loading.
+Bug Fix: Support dirtiable non-mesh scene objects (ie. lights).
+Updated ThreeJs to r65.
 
 9-28-2013 - 0.8.7
 Add Model.dispatch for firing custom events.
 Add Triggers.cursor for setting mouse cursors.
-Add Engine.on/off and Scene.on/off
-Add Scene.objects
+Add Engine.on/off and Scene.on/off.
+Add Scene.objects.
 Add Engine events: destroy, addmodel, removemodel.
-Add Scene events: add, remove, attach, detach, move, resize
+Add Scene events: add, remove, attach, detach, move, resize.
 Add Model event: destroy
 Bug Fix: Fire mouseup events on last mousedown trigger.
 Bug Fix: Performance scale only when page has focus.

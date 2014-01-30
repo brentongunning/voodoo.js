@@ -199,6 +199,9 @@ voodoo.View.prototype.cache;
 /** @type {voodoo.Camera} */
 voodoo.View.prototype.camera;
 
+/** @type {boolean} */
+voodoo.View.prototype.loaded;
+
 /** @type {voodoo.Model} */
 voodoo.View.prototype.model;
 

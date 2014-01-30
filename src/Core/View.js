@@ -63,7 +63,10 @@ View.prototype['construct'] = function(model, layer) {
   this.layer_.addView_(this);
 
   // Call the user's load function.
+  this.isLoaded_ = true;
   this['load']();
+  if (this.isLoaded_)
+    this.model_.onViewLoad_(this);
 };
 
 
@@ -171,6 +174,18 @@ View.prototype['camera'] = null;
 
 
 /**
+ * The flag indicating whether this View has finished loading. This
+ * is automatically set to true after load() unless the user sets it
+ * to false during load(). If the user sets it to false, they are responsible
+ * for setting it to true later (ex. after textures finish loading). When
+ * all views have loaded, the onload event fires from the model.
+ *
+ * @type {boolean}
+ */
+View.prototype['loaded'] = null;
+
+
+/**
  * The model for this View.
  *
  * @type {Model}
@@ -218,6 +233,16 @@ View.prototype.setupPublicProperties_ = function() {
     get: function() { return this.layer_.camera_; },
     set: function() { log_.error_('camera is read-only'); },
     writeable: false
+  });
+
+  Object.defineProperty(this, 'loaded', {
+    get: function() { return this.isLoaded_; },
+    set: function(val) {
+      this.isLoaded_ = val;
+      if (this.isLoaded_)
+        this.model_.onViewLoad_(this);
+    },
+    writeable: true
   });
 
   Object.defineProperty(this, 'model', {

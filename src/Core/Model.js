@@ -197,6 +197,12 @@ Model.prototype['off'] = function(type, listener) {
 Model.prototype['on'] = function(type, listener) {
   this.dispatcher_.on_(type, listener);
 
+  // Load is a special event since it can be dispatched before the user had time
+  // to register for the event, so we call it anyway as soon as an event
+  // listener is registered.
+  if (type == 'load' && this.numViewsLoaded_ === this.numViewsToLoad_)
+    listener.call(this, new window['voodoo']['Event']('load', this));
+
   return this;
 };
 
@@ -280,6 +286,8 @@ Model.prototype.dispatchEvent_ = function(event) {
 Model.prototype.createViews_ = function() {
   this.views_ = [];
   this.stencilViews_ = [];
+  this.numViewsLoaded_ = 0;
+  this.numViewsToLoad_ = 0;
 
   /** @type {Engine} */
   var engine = window['voodoo']['engine'];
@@ -333,6 +341,22 @@ Model.prototype.createViews_ = function() {
   this.stencilView_ = this.stencilViews_.length > 1 ?
       new Composite_(this.stencilViews_) :
       this.stencilViews_[0];
+
+  this.numViewsToLoad_ = this.views_.length + this.stencilViews_.length;
+};
+
+
+/**
+ * Called from the view when it has loaded.
+ *
+ * @private
+ *
+ * @param {View} view View that loaded.
+ */
+Model.prototype.onViewLoad_ = function(view) {
+  this.numViewsLoaded_++;
+  if (this.numViewsLoaded_ === this.numViewsToLoad_)
+    this.dispatchEvent_(new window['voodoo']['Event']('load', this));
 };
 
 
