@@ -101,11 +101,11 @@ if "%op%"=="min.debug" set lint=1
 if "%op%"=="source" set lint=1
 if %lint%==1 (
   echo [Build] Running Linter on Source Code
-  %gjslint% --strict --custom_jsdoc_tags ignore --recurse "%project_src%" --jsdoc
+  %gjslint% --strict --custom_jsdoc_tags ignore --jsdoc --recurse "%project_src%"
   echo.
   if errorlevel 1 call :error "Linting failed"
   echo [Build] Running Linter on Test Code
-  %gjslint% --strict --custom_jsdoc_tags ignore --jsdoc --recurse "%project_test%" --jsdoc
+  %gjslint% --strict --custom_jsdoc_tags ignore --jsdoc --recurse "%project_test%"
   echo.
   if errorlevel 1 call :error "Linting failed"
 )

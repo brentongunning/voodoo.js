@@ -3325,8 +3325,8 @@ THREE.Color.prototype.setRGB = function(r,g,b){};
 @param {number} v1
 @param {number} v2
 @param {number} v3
-@param {THREE.Vector3|Array.<THREE.Vector3>} n
-@param {THREE.Color|Array.<THREE.Color>} c
+@param {THREE.Vector3|Array.<THREE.Vector3>=} n
+@param {THREE.Color|Array.<THREE.Color>=} c
 */
 THREE.Face3 = function(v1,v2,v3,n,c){};
 
@@ -3410,23 +3410,24 @@ THREE.Mesh = function(g,m){};
 /** @constructor */
 THREE.Geometry = function(){};
 
-/** */
 THREE.Geometry.prototype.computeFaceNormals = function(){};
-
-/** */
+THREE.Geometry.prototype.computeVertexNormals = function(){};
+THREE.Geometry.prototype.computeMorphNormals = function(){};
 THREE.Geometry.prototype.computeCentroids = function(){};
-
-/** */
 THREE.Geometry.prototype.computeTangents = function(){};
-
-/** */
 THREE.Geometry.prototype.computeBoundingBox = function(){};
 
 /** @type {Array.<THREE.Vector2>} */
-THREE.Geometry.faceVertexUvs;
+THREE.Geometry.prototype.faceVertexUvs;
 
 /** @type {Array.<THREE.Face3>} */
-THREE.Geometry.faces;
+THREE.Geometry.prototype.faces;
+
+/** @type {Array.<THREE.Vector3>} */
+THREE.Geometry.prototype.vertices;
+
+/** @type {Array.<Object>} */
+THREE.Geometry.prototype.morphTargets;
 
 /**
 @constructor
@@ -3436,6 +3437,9 @@ THREE.Texture = function(img){};
 
 /** @type {boolean} */
 THREE.Texture.flipY;
+
+/** @type {Image} */
+THREE.Texture.image;
 
 /** @constructor */
 THREE.Material = function(){};
@@ -3453,28 +3457,28 @@ THREE.MeshFaceMaterial = function(){};
 
 /**
 @constructor
-@extends THREE.Material
+@extends {THREE.Material}
 @param {*=} p
 */
 THREE.ShaderMaterial = function(p){};
 
 /**
 @constructor
-@extends THREE.Material
+@extends {THREE.Material}
 @param {*=} p
 */
 THREE.MeshBasicMaterial = function(p){};
 
 /**
 @constructor
-@extends THREE.Material
+@extends {THREE.Material}
 @param {*=} p
 */
 THREE.MeshPhongMaterial = function(p){};
 
 /**
 @constructor
-@extends THREE.Material
+@extends {THREE.Material}
 @param {*=} p
 */
 THREE.MeshLambertMaterial = function(p){};

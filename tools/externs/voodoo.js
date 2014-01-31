@@ -51,13 +51,19 @@ voodoo.Cache.prototype.set = function(key, value, opt_name, opt_organization) {}
 // Extendable
 // ----------------------------------------------------------------------------
 
-/** @constructor */
-voodoo.Extendable = function() {};
+/**
+ * @constructor
+ * @param {Object=} opt_options
+ */
+voodoo.Extendable = function(opt_options) {};
 
 voodoo.Extendable.prototype.construct = function() {};
 
-/** @return {?} */
-voodoo.Extendable.prototype.extend = function() {};
+/**
+ * @param {Object=} opt_object
+ * @return {?}
+ */
+voodoo.Extendable.extend = function(opt_object) {};
 
 // ----------------------------------------------------------------------------
 // Event
@@ -66,7 +72,7 @@ voodoo.Extendable.prototype.extend = function() {};
 /**
  * @constructor
  * @param {string} type
- * @param {voodoo.Model=} model
+ * @param {voodoo.Model=} opt_model
  * @param {string|number=} opt_triggerId
  */
 voodoo.Event = function(type, opt_model, opt_triggerId) {};
@@ -126,6 +132,12 @@ voodoo.Event.prototype.type;
  */
 voodoo.Model = function() {};
 
+/**
+ * @param {Object=} opt_object
+ * @return {?}
+ */
+voodoo.Model.extend = function(opt_object) {};
+
 voodoo.Model.prototype.destroy = function() {};
 voodoo.Model.prototype.setUpViews = function() {};
 voodoo.Model.prototype.tearDownViews = function() {};
@@ -182,6 +194,12 @@ voodoo.Model.prototype.stencilViewType;
  * @extends {voodoo.Extendable}
  */
 voodoo.View = function() {};
+
+/**
+ * @param {Object=} opt_object
+ * @return {?}
+ */
+voodoo.View.extend = function(opt_object) {};
 
 voodoo.View.prototype.dirty = function() {};
 voodoo.View.prototype.load = function() {};
