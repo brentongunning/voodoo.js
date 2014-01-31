@@ -31,6 +31,7 @@ function ThreeJsRenderer_(engine) {
     this.lastValidFpsTime_ = new Date();
     this.performanceScaling_ = false;
   }
+  else this.fpsTimer_ = null;
 }
 
 
@@ -618,7 +619,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
   this.clearDirtyFlags_(this.seamLayer_);
   this.clearDirtyFlags_(this.seamStencilLayer_);
 
-  if (rendered)
+  if (rendered && this.fpsTimer_)
     this.fpsTimer_.render_();
 };
 
