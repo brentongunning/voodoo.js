@@ -31,11 +31,11 @@ call %~dp0user
 
 :: Check for correct number of arguments
 set invalidNumberOfArguments=0
-if "%3"=="" (
+if "%4"=="" (
   set invalidNumberOfArguments=1
 )
-if not "%3"=="" (
 if not "%4"=="" (
+if not "%5"=="" (
   set invalidNumberOfArguments=1
 ))
 if %invalidNumberOfArguments%==1 (
@@ -45,7 +45,8 @@ if %invalidNumberOfArguments%==1 (
 :: Get arguments
 set op=%~1
 set project=%~2
-set version=%~3
+set namespace=%~3
+set version=%~4
 
 echo ------------------------------------------------------------
 echo Building %project%
@@ -54,7 +55,7 @@ echo.
 
 :: Create locations from project argument
 set root=%~dp0
-set project_root=%root%..
+set project_root=%root%..\%project%
 set project_src=%project_root%\src
 set project_test=%project_root%\test
 set project_lib=%project_root%\lib
@@ -288,7 +289,7 @@ for /r "%externs_dir%" %%F in (*.js) do (
 )
 echo [Build] Compiling %compiletype% build
 call :delete "%outfile%"
-"%java%" -jar "%root%compiler-latest\compiler.jar" --compilation_level %optimizations% --js_output_file "%outfile%" --warning_level VERBOSE --js "%build_merged%" %externs% --define='DEBUG=%compiledebug%' --define='VERSION='%version%'' --define='NAMESPACE='%project%'' --language_in=ECMASCRIPT5_STRICT
+"%java%" -jar "%root%compiler-latest\compiler.jar" --compilation_level %optimizations% --js_output_file "%outfile%" --warning_level VERBOSE --js "%build_merged%" %externs% --define='DEBUG=%compiledebug%' --define='VERSION='%version%'' --define='NAMESPACE='%namespace%'' --language_in=ECMASCRIPT5_STRICT
 echo.
 endlocal
 if errorlevel 1 call :error "Compilation failed"

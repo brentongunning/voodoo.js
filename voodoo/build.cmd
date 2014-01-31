@@ -21,11 +21,13 @@
 :: Copyright (c) 2013 VoodooJs Authors
 :: ----------------------------------------------------------------------------
 
-@echo off
-
 :: Default op
 set op=%~1
 if "%op%"=="" set op=all
 
+set version=0.8.8
+set project=voodoo
+set namespace=voodoo
+
 :: Build
-call "%~dp0voodoo\build" "%op%"
+call "%~dp0..\tools\build" "%op%" "%project%" "%namespace%" "%version%"

@@ -5,18 +5,22 @@ Voodoo.js
 
 Folder structure:
 
+  * /voodoo - Voodoo project
+  * /tools - Build engine
+
+Within the voodoo project folder:
+
   * /config - Build settings
   * /samples - Examples
   * /src - Source code
   * /test - Unit tests
-  * /tools - Build engine
-  
+
 In addition, after building there will be these new folders:
 
-  * /build - Compiled source
-  * /docs - Documentation
-  * /drop - Zip file for public sharing
-  * /lib - Dependencies
+  * /drop - Zip files for public sharing
+  * /voodoo/build - Compiled Voodoo source
+  * /voodoo/docs - Voodoo documentation
+  * /voodoo/lib - Voodoo dependencies
 
 ### How to Build
 
