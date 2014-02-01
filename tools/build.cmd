@@ -4,7 +4,7 @@
 :: Desc: A general build engine. This script is capable of compiling source
 ::       and documentation, cleaning drop folders, and running tests.
 ::
-:: Usage: build [op] [project] [version]
+:: Usage: build [op] [project] [version] [optlevel]
 ::    op        Op must be one of the following values:
 ::                  all       - Compiles source and docs, tests, and drops.
 ::                              Equivalent to source|docs|test|drop.
@@ -20,6 +20,10 @@
 ::                  testdebug - Runs tests on the debug build
 ::    project   Name of the project to build.
 ::    version   Version of the project to build.
+::    optlevel  Closure compiler max optimization level. Either:
+::                  WHITESPACE_ONLY
+::                  SIMPLE_OPTIMIZATIONS
+::                  ADVANCED_OPTIMIZATIONS
 ::
 :: Copyright (c) 2014 VoodooJs Authors
 :: ----------------------------------------------------------------------------
@@ -31,11 +35,11 @@ call %~dp0user
 
 :: Check for correct number of arguments
 set invalidNumberOfArguments=0
-if "%4"=="" (
+if "%5"=="" (
   set invalidNumberOfArguments=1
 )
-if not "%4"=="" (
 if not "%5"=="" (
+if not "%6"=="" (
   set invalidNumberOfArguments=1
 ))
 if %invalidNumberOfArguments%==1 (
@@ -47,6 +51,7 @@ set op=%~1
 set project=%~2
 set namespace=%~3
 set version=%~4
+set optlevel=%~5
 
 echo ------------------------------------------------------------
 echo Building %project%
@@ -140,6 +145,9 @@ set copy_libs=0
 set compile_debug=0
 set compile_min=0
 set compile_mindebug=0
+set debug_optlevel=0
+set min_optlevel=0
+set mindebug_optlevel=0
 if "%op%"=="all" (
   set compile_debug=1
   set compile_min=1
@@ -164,9 +172,27 @@ if "%op%"=="min.debug" (
   set compile_mindebug=1
   set copy_libs=1
 )
-if %compile_debug%==1 call :compile "debug" "%build_debug%" SIMPLE_OPTIMIZATIONS true
-if %compile_min%==1 call :compile "min" "%build_min%" ADVANCED_OPTIMIZATIONS false
-if %compile_mindebug%==1 call :compile "min.debug" "%build_mindebug%" ADVANCED_OPTIMIZATIONS true
+if "%optlevel%"=="WHITESPACE_ONLY" (
+  set debug_optlevel=WHITESPACE_ONLY
+  set min_optlevel=WHITESPACE_ONLY
+  set mindebug_optlevel=WHITESPACE_ONLY
+)
+if "%optlevel%"=="SIMPLE_OPTIMIZATIONS" (
+  set debug_optlevel=WHITESPACE_ONLY
+  set min_optlevel=SIMPLE_OPTIMIZATIONS
+  set mindebug_optlevel=SIMPLE_OPTIMIZATIONS
+)
+if "%optlevel%"=="ADVANCED_OPTIMIZATIONS" (
+  set debug_optlevel=SIMPLE_OPTIMIZATIONS
+  set min_optlevel=ADVANCED_OPTIMIZATIONS
+  set mindebug_optlevel=ADVANCED_OPTIMIZATIONS
+)
+if "%debug_optlevel"=="0" (
+  call :error "Unrecognized closure compiler optimization level: %optlevel%"
+)
+if %compile_debug%==1 call :compile "debug" "%build_debug%" %debug_optlevel% true
+if %compile_min%==1 call :compile "min" "%build_min%" %min_optlevel% false
+if %compile_mindebug%==1 call :compile "min.debug" "%build_mindebug%" %mindebug_optlevel% true
 if %copy_libs%==1 (
   echo [Build] Copying dependencies
   call "%project_config%\lib.cmd"

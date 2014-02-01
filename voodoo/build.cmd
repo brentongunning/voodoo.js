@@ -28,6 +28,7 @@ if "%op%"=="" set op=all
 set version=0.8.8
 set project=voodoo
 set namespace=voodoo
+set optlevel=ADVANCED_OPTIMIZATIONS
 
 :: Build
-call "%~dp0..\tools\build" "%op%" "%project%" "%namespace%" "%version%"
+call "%~dp0..\tools\build" "%op%" "%project%" "%namespace%" "%version%" "%optlevel%"
