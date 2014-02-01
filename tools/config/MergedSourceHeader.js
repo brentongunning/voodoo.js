@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // File: MergedSourceHeader.js
 //
-// Copyright (c) 2013 VoodooJs Authors
+// Copyright (c) 2014 VoodooJs Authors
 // ----------------------------------------------------------------------------
 
 /** @define {boolean} */

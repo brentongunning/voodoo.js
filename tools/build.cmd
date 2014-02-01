@@ -21,7 +21,7 @@
 ::    project   Name of the project to build.
 ::    version   Version of the project to build.
 ::
-:: Copyright (c) 2013 VoodooJs Authors
+:: Copyright (c) 2014 VoodooJs Authors
 :: ----------------------------------------------------------------------------
 
 @echo off

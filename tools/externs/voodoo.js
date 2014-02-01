@@ -3,7 +3,7 @@
 //
 // Desc: Voodoo externs for Google's Closure Compiler.
 //
-// Copyright (c) 2013 VoodooJs Authors
+// Copyright (c) 2014 VoodooJs Authors
 // ----------------------------------------------------------------------------
 
 var voodoo = {};

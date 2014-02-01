@@ -5,7 +5,7 @@
 ::		 developer attempting to build should change the paths here to match
 :: 		 the paths on their system.
 ::
-:: Copyright (c) 2013 VoodooJs Authors
+:: Copyright (c) 2014 VoodooJs Authors
 :: ----------------------------------------------------------------------------
 
 

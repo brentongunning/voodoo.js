@@ -3,7 +3,7 @@
 ::
 :: Desc: Copies project dependencies into the lib folder.
 ::
-:: Copyright (c) 2013 VoodooJs Authors
+:: Copyright (c) 2014 VoodooJs Authors
 :: ----------------------------------------------------------------------------
 
 @echo off
