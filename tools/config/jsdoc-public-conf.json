@@ -1,7 +1,10 @@
 {
-    "templates": {
-        "default": {
-            "outputSourceFiles": false
-        }
-    },
+  "templates": {
+    "default": {
+      "outputSourceFiles": false
+    }
+  },
+  "plugins": [
+    "plugins/markdown"
+  ]
 }
