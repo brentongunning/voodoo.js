@@ -15,7 +15,17 @@ for (var i = 0; i < namespaceParts.length - 1; ++i) {
   var part = namespaceParts[i];
   currentNamespace = currentNamespace[part];
 }
-currentNamespace[namespaceParts[namespaceParts.length - 1]] = new project();
+
+if (typeof currentNamespace[namespaceParts[namespaceParts.length - 1]] === 'undefined') {
+  // The namespace does not exist. Create it.
+  currentNamespace[namespaceParts[namespaceParts.length - 1]] = new project();
+} else {
+  // The namespace already exists. Merge with it.
+  var namespace = currentNamespace[namespaceParts[namespaceParts.length - 1]];
+  var inst = new project();
+  for (var key in inst)
+    namespace[key] = inst[key];
+}
 
 
 /**

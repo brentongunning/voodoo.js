@@ -21,6 +21,8 @@
 :: Copyright (c) 2014 VoodooJs Authors
 :: ----------------------------------------------------------------------------
 
+@echo off
+
 :: Default op
 set op=%~1
 if "%op%"=="" set op=all
