@@ -1,0 +1,45 @@
+-------------------------------------------------------------------------------
+Spellbook Javascript Library - Version 0.8.0 (Public Beta)
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+Overview
+-------------------------------------------------------------------------------
+
+Spellbook is a supplementary library for Voodoo that provides simple common
+3D controls to enhance the presentation of your websites.
+
+-------------------------------------------------------------------------------
+Contents
+-------------------------------------------------------------------------------
+
+./build - Official builds of the library
+
+  spellbook-*.min.debug.js - The debug version for development
+	spellbook-*.min.js       - The release version for public use
+
+./docs - User Documentation
+
+	index.html                 - Documentation starting point
+
+./lib - External libraries required for use
+
+	three.min.js               - THREE.js graphics engine
+	voodoo.min.js               - Voodoo graphics engine
+
+./samples - Examples of usage
+
+license.txt - The legally allowed use of this library.
+
+-------------------------------------------------------------------------------
+Legal
+-------------------------------------------------------------------------------
+
+See license.txt.
+
+-------------------------------------------------------------------------------
+Release Notes
+-------------------------------------------------------------------------------
+
+1-28-2014 - 0.8.0
+This is the first public pre-release. There are no release notes.

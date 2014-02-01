@@ -1,7 +1,7 @@
 :: ----------------------------------------------------------------------------
 :: File: build.cmd
 ::
-:: Desc: Voodoo project build script.
+:: Desc: Spellbook project build script.
 ::
 :: Usage: build [op]
 ::    op        Op must be one of the following values:
@@ -27,6 +27,10 @@
 set op=%~1
 if "%op%"=="" set op=all
 
+set version=0.8.0
+set project=spellbook
+set namespace=voodoo
+set optlevel=SIMPLE_OPTIMIZATIONS
+
 :: Build
-call "%~dp0voodoo\build" "%op%"
-call "%~dp0spellbook\build" "%op%"
+call "%~dp0..\tools\build" "%op%" "%project%" "%namespace%" "%version%" "%optlevel%"

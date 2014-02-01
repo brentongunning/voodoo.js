@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Image3D Demo</title>
+</head>
+
+<style>
+	#spacer {
+		height: 500px;
+	}
+</style>
+
+<script src="../../lib/three.min.js"></script>
+<script src="../../lib/voodoo.min.js"></script>
+<script src="../../lib/spellbook.min.debug.js"></script>
+
+<body>
+	<div id="spacer"></div>
+	<center><img src="GoogleLogo.png" id="GoogleLogo"></img></center>
+	<div id="spacer"></div>
+</body>
+
+<script type="text/javascript">
+
+	new voodoo.Engine({
+		belowLayer: false,
+		seamLayer: false,
+		stencils: false,
+		performanceScaling: false,
+	});
+
+	new voodoo.Image3D({
+		element: document.getElementById('GoogleLogo'),
+		heightSrc: 'GoogleLogo-depth.png',
+		maxHeight: 400,
+		geometryStyle: voodoo.Image3D.GeometryStyle.Block,
+		lightingStyle: voodoo.Image3D.LightingStyle.Face
+	});
+
+</script>
+
+</html>
