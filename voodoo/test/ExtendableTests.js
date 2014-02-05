@@ -61,3 +61,30 @@ ExtendableTests.prototype.testExtendableTypeProperties = function() {
   assertEquals('BaseType', new BaseType().name);
   assertEquals('DerivedType', new DerivedType().name);
 };
+
+
+/**
+ * Tests that an extendable can be extended with another extendable.
+ */
+ExtendableTests.prototype.testExtendAnotherExtendable = function() {
+  Base = voodoo.Extendable.extend({
+    initialized: false,
+    construct: function() { this.initialized = true; }
+  });
+
+  A = Base.extend({
+    a: true,
+    b: false
+  });
+
+  B = Base.extend({
+    b: true
+  });
+
+  AB = A.extend(B);
+
+  var ab = new AB();
+  assertTrue('Base extended', ab.initialized);
+  assertTrue('A extended', ab.a);
+  assertTrue('B extended', ab.b);
+};

@@ -50,6 +50,18 @@ Extendable['extend'] = function(opt_object) {
   var baseType = this;
 
   /**
+    * Base type is the current type without the constructor. Extended type
+    * will set its protototype to this
+    * @constructor.
+    * @private
+    */
+  function BaseType_() {}
+  var baseTypePrototype = baseType['prototype'];
+  BaseType_.prototype = baseTypePrototype;
+
+  /**
+    * Extended type is the new type we return. It has all the same
+    * function as the base type.
     * @constructor
     * @private
     */
@@ -58,20 +70,18 @@ Extendable['extend'] = function(opt_object) {
     baseType['apply'](this, arguments);
   };
   ExtendedType_['extend'] = Extendable['extend'];
-
-  /**
-    * @constructor
-    * @private
-    */
-  function BaseTypePrototype_() {
-  }
-  BaseTypePrototype_.prototype = baseType['prototype'];
-  ExtendedType_.prototype = new BaseTypePrototype_();
+  ExtendedType_.prototype = new BaseType_();
   ExtendedType_.prototype.constructor = ExtendedType_;
 
-  // Copy each property or function from the provided object
-  for (var property in opt_object)
-    ExtendedType_.prototype[property] = opt_object[property];
+  // Append the new functions and variables from opt_object onto ExtendedType
+  if (typeof opt_object !== 'undefined') {
+    var isObject = typeof opt_object !== 'function';
+    log_.assert_(isObject || typeof opt_object['extend'] !== 'undefined',
+        'Extend must either be pased null, an object or another Extendable.');
+    var newFunctions = isObject ? opt_object : opt_object.prototype;
+    for (var key in newFunctions)
+      ExtendedType_.prototype[key] = newFunctions[key];
+  }
 
   return ExtendedType_;
 };
