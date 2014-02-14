@@ -57,6 +57,9 @@ voodoo.Cache.prototype.set = function(key, value, opt_name, opt_organization) {}
  */
 voodoo.Extendable = function(opt_options) {};
 
+/** @type {Object} */
+voodoo.Extendable.prototype.base = {};
+
 voodoo.Extendable.prototype.construct = function() {};
 
 /**

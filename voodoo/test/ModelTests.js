@@ -135,7 +135,7 @@ ModelTests.prototype.setUp = function() {
  * Shutdown the engine between test cases.
  */
 ModelTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined')
+  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
     voodoo.engine.destroy();
 };
 

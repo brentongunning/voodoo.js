@@ -46,10 +46,11 @@ Release Notes
 
 1-26-2014 - 0.8.8
 Add 'load' Model event and View.loaded to set when a View has finished loading.
+Add 'base' property for accessing methods in the parent class generically.
+Support calling extend() with another Model or View.
 Bug Fix: Support dirtiable non-mesh scene objects (ie. lights).
 Bug Fix: Fix crash when using min build and performanceScaling disabled
 Reorganize source code and improve documentation readability.
-Support calling extend() with another Model or View.
 Updated ThreeJs to r65.
 
 9-28-2013 - 0.8.7

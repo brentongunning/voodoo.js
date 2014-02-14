@@ -46,9 +46,13 @@ var Model = Extendable['extend']();
  * Cleans up resources before the model is destroyed.
  *
  * Derived classes may override this. This should never be called by the user.
+ *
+ * @this {Model}
  */
 Model.prototype['cleanUp'] = function() {
-  // No-op
+  var func = this['base']['cleanUp'];
+  if (typeof func === 'function')
+    func();
 };
 
 
@@ -161,10 +165,14 @@ Model.prototype['extend'] = function(opt_object) {
  * be called by the user. The options parameter is what the user passed to
  * the constructor when this Model was instantiated.
  *
+ * @this {Model}
+ *
  * @param {Object} options User options.
  */
 Model.prototype['initialize'] = function(options) {
-  // No-op
+  var func = this['base']['initialize'];
+  if (typeof func === 'function')
+    func();
 };
 
 
@@ -213,9 +221,13 @@ Model.prototype['on'] = function(type, listener) {
  * Initialize the view and stencilView. This is called after initialize() when
  * a model is instantiated. Derived classes may override this. This should never
  * be called by the user.
+ *
+ * @this {Model}
  */
 Model.prototype['setUpViews'] = function() {
-  // No-op
+  var func = this['base']['setUpViews'];
+  if (typeof func === 'function')
+    func();
 };
 
 
@@ -223,9 +235,13 @@ Model.prototype['setUpViews'] = function() {
  * Shuts down the views. This is called before cleanUp() when a model is
  * destroyed. Derived classes may override this. This should never be called by
  * the user.
+ *
+ * @this {Model}
  */
 Model.prototype['tearDownViews'] = function() {
-  // No-op
+  var func = this['base']['tearDownViews'];
+  if (typeof func === 'function')
+    func();
 };
 
 
@@ -236,9 +252,13 @@ Model.prototype['tearDownViews'] = function() {
  *
  * @param {number} deltaTime The time difference between this frame and last in
  * seconds. This is often used for consistent animation.
+ *
+ * @this {Model}
  */
 Model.prototype['update'] = function(deltaTime) {
-  // No-op
+  var func = this['base']['update'];
+  if (typeof func === 'function')
+    func(deltaTime);
 };
 
 
