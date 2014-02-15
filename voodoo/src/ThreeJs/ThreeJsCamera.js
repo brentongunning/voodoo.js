@@ -50,7 +50,7 @@ ThreeJsCamera_.prototype.constructor = ThreeJsCamera_.constructor;
  * @private
  */
 ThreeJsCamera_.prototype.createProperties_ = function() {
-  Object.defineProperty(this, 'fovy', {
+  Object.defineProperty(this, 'fovY', {
     get: function() { return this.fovY_; },
     set: function() { log_.error_('fovy is read-only'); },
     writeable: false

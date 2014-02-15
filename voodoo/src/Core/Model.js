@@ -46,9 +46,13 @@ var Model = Extendable['extend']();
  * Cleans up resources before the model is destroyed.
  *
  * Derived classes may override this. This should never be called by the user.
+ *
+ * @this {Model}
  */
 Model.prototype['cleanUp'] = function() {
-  // No-op
+  var func = this['base']['cleanUp'];
+  if (typeof func === 'function')
+    func();
 };
 
 
@@ -143,28 +147,19 @@ Model.prototype['dispatch'] = function(event) {
 
 
 /**
- * Derives a new Model from a base type.
- *
- * @param {Object=} opt_object Optional object to extend with.
- *
- * @return {?} Extended type.
- */
-Model.prototype['extend'] = function(opt_object) {
-  // This is not necessary. We only do this so it appears in documentation.
-  return Extendable.prototype['extend'](opt_object);
-};
-
-
-/**
  * Initialzes the model. This is the first method to be called when the
  * model is instantiated. Derived classes may override this. This should never
  * be called by the user. The options parameter is what the user passed to
  * the constructor when this Model was instantiated.
  *
+ * @this {Model}
+ *
  * @param {Object} options User options.
  */
 Model.prototype['initialize'] = function(options) {
-  // No-op
+  var func = this['base']['initialize'];
+  if (typeof func === 'function')
+    func();
 };
 
 
@@ -213,9 +208,13 @@ Model.prototype['on'] = function(type, listener) {
  * Initialize the view and stencilView. This is called after initialize() when
  * a model is instantiated. Derived classes may override this. This should never
  * be called by the user.
+ *
+ * @this {Model}
  */
 Model.prototype['setUpViews'] = function() {
-  // No-op
+  var func = this['base']['setUpViews'];
+  if (typeof func === 'function')
+    func();
 };
 
 
@@ -223,9 +222,13 @@ Model.prototype['setUpViews'] = function() {
  * Shuts down the views. This is called before cleanUp() when a model is
  * destroyed. Derived classes may override this. This should never be called by
  * the user.
+ *
+ * @this {Model}
  */
 Model.prototype['tearDownViews'] = function() {
-  // No-op
+  var func = this['base']['tearDownViews'];
+  if (typeof func === 'function')
+    func();
 };
 
 
@@ -236,9 +239,13 @@ Model.prototype['tearDownViews'] = function() {
  *
  * @param {number} deltaTime The time difference between this frame and last in
  * seconds. This is often used for consistent animation.
+ *
+ * @this {Model}
  */
 Model.prototype['update'] = function(deltaTime) {
-  // No-op
+  var func = this['base']['update'];
+  if (typeof func === 'function')
+    func(deltaTime);
 };
 
 
@@ -454,6 +461,37 @@ Model.prototype['viewType'] = null;
  * @type {View}
  */
 Model.prototype['stencilViewType'] = null;
+
+
+/**
+ * Derives a new type from a base Model. The Model's views
+ * are also automatically extended if they are defined.
+ *
+ * @param {Object=} opt_object Optional object to extend with.
+ *
+ * @return {?} Extended type.
+ */
+Model['extend'] = function(opt_object) {
+  var newType = Extendable['extend'].call(this, opt_object);
+
+  var viewType = this.prototype['viewType'];
+  var newViewType = newType.prototype['viewType'];
+  if (typeof viewType !== 'undefined' && viewType !== null &&
+      typeof newViewType !== 'undefined' && newViewType !== null &&
+      viewType != newViewType) {
+    newType.prototype['viewType'] = viewType['extend'](newViewType);
+  }
+
+  var stencil = this.prototype['stencilViewType'];
+  var newStencil = newType.prototype['stencilViewType'];
+  if (typeof stencil !== 'undefined' && stencil != null &&
+      typeof newStencil !== 'undefined' && newStencil != null &&
+      stencil != newStencil) {
+    newType.prototype['stencilViewType'] = stencil['extend'](newStencil);
+  }
+
+  return newType;
+};
 
 // Exports
 this['Model'] = Model;
