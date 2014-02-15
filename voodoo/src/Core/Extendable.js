@@ -16,106 +16,114 @@
  * @ignore
  */
 function Extendable() {
-  var ancestors = this.constructor['ancestors'];
-  var bases = [];
   var self = this;
+  this.base_ = null;
 
-  function createBase(index) {
-    var base = {};
-    var type = ancestors[index];
-    var proto = type.prototype;
+  function createBases() {
+    var ancestors = self.constructor['ancestors'];
+    var bases = [];
 
-    for (var key in proto) {
-      var val = proto[key];
-      if (typeof val !== 'function')
-        continue;
+    function createBase(index) {
+      var base = {};
+      var type = ancestors[index];
+      var proto = type.prototype;
 
-      // The most recent function is a special case if it was not overridden
-      // in the last item in the chain. We must detect it and make sure we
-      // don't mistakenly think our function in the chain is unique when it
-      // isn't.
-      if (val === self[key]) {
-        // Make sure there are no differences from this base up the chain.
-        // This ensures we don't think A->B->A->B, that the first B is the
-        // latest.
-        var differences = false;
-        for (var j = index + 1; j < ancestors.length; ++j) {
-          if (ancestors[j].prototype[key] !== val) {
-            differences = true;
-            break;
-          }
-        }
-        if (!differences) {
-          // Change our function we're going to run when called to be
-          // the next one in the chain that we would call.
-          var found = false;
-          for (var j = index - 1; j >= 0; --j) {
+      for (var key in proto) {
+        var val = proto[key];
+        if (typeof val !== 'function')
+          continue;
+
+        // The most recent function is a special case if it was not overridden
+        // in the last item in the chain. We must detect it and make sure we
+        // don't mistakenly think our function in the chain is unique when it
+        // isn't.
+        if (val === self[key]) {
+          // Make sure there are no differences from this base up the chain.
+          // This ensures we don't think A->B->A->B, that the first B is the
+          // latest.
+          var differences = false;
+          for (var j = index + 1; j < ancestors.length; ++j) {
             if (ancestors[j].prototype[key] !== val) {
-              val = function(j, key) {
-                return function() {
-                  bases[j][key].apply(self, arguments);
-                }
-              }(j, key);
-              found = true;
+              differences = true;
               break;
             }
           }
-          if (!found)
-            continue;
-        }
-      }
-
-      // Find this function's parent base. The parent base is the first up
-      // the inheritance chain whose function is different than this one,
-      // meaning it was specifically overridden.
-      var parentBase = {};
-      for (var j = index - 1; j >= 0; --j) {
-        if (ancestors[j].prototype[key] !== val) {
-          parentBase = bases[j];
-          break;
-        }
-      }
-
-      // Wrapped the function so that when it's called, this.base
-      // obtains its new meaning inside it and all the functions are
-      // those at that inheritance level.
-      base[key] = function(key, val, proto, parentBase) {
-        return function() {
-          // Save the current base to set back later.
-          var storedBase = self.base_;
-          self.base_ = parentBase;
-
-          // Set all functions at this level. Save the old ones.
-          var saved = {};
-          for (var protoKey in proto) {
-            var protoVal = proto[protoKey];
-            if (typeof protoVal !== 'function')
+          if (!differences) {
+            // Change our function we're going to run when called to be
+            // the next one in the chain that we would call.
+            var found = false;
+            for (var j = index - 1; j >= 0; --j) {
+              if (ancestors[j].prototype[key] !== val) {
+                val = function(j, key) {
+                  return function() {
+                    bases[j][key].apply(self, arguments);
+                  }
+                }(j, key);
+                found = true;
+                break;
+              }
+            }
+            if (!found)
               continue;
-            saved[protoKey] = self[protoKey];
-            self[protoKey] = protoVal;
           }
-
-          // Call the function.
-          val.apply(self, arguments);
-
-          // Set back the old functions and base.
-          for (var savedKey in saved) {
-            self[savedKey] = saved[savedKey];
-          }
-          self.base_ = storedBase;
         }
-      }(key, val, proto, parentBase);
+
+        // Find this function's parent base. The parent base is the first up
+        // the inheritance chain whose function is different than this one,
+        // meaning it was specifically overridden.
+        var parentBase = {};
+        for (var j = index - 1; j >= 0; --j) {
+          if (ancestors[j].prototype[key] !== val) {
+            parentBase = bases[j];
+            break;
+          }
+        }
+
+        // Wrapped the function so that when it's called, this.base
+        // obtains its new meaning inside it and all the functions are
+        // those at that inheritance level.
+        base[key] = function(key, val, proto, parentBase) {
+          return function() {
+            // Save the current base to set back later.
+            var storedBase = self.base_;
+            self.base_ = parentBase;
+
+            // Set all functions at this level. Save the old ones.
+            var saved = {};
+            for (var protoKey in proto) {
+              var protoVal = proto[protoKey];
+              if (typeof protoVal !== 'function')
+                continue;
+              saved[protoKey] = self[protoKey];
+              self[protoKey] = protoVal;
+            }
+
+            // Call the function.
+            val.apply(self, arguments);
+
+            // Set back the old functions and base.
+            for (var savedKey in saved) {
+              self[savedKey] = saved[savedKey];
+            }
+            self.base_ = storedBase;
+          }
+        }(key, val, proto, parentBase);
+      }
+
+      bases.push(base);
     }
 
-    bases.push(base);
+    for (var i = 0; i < ancestors.length; ++i)
+      createBase(i);
+    self.base_ = bases.length > 0 ? bases[bases.length - 1] : {};
   }
 
-  for (var i = 0; i < ancestors.length; ++i)
-    createBase(i);
-  this.base_ = bases.length > 0 ? bases[bases.length - 1] : {};
-
   Object.defineProperty(this, 'base', {
-    get: function() { return this.base_; },
+    get: function() {
+      if (!self.base_)
+        createBases();
+      return self.base_;
+    },
     set: function() { log_.error_('base is read-only'); },
     writeable: false
   });
