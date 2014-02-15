@@ -53,7 +53,8 @@ function Extendable() {
             // the next one in the chain that we would call.
             var found = false;
             for (var j = index - 1; j >= 0; --j) {
-              if (ancestors[j].prototype[key] !== val) {
+              var ancFunc = ancestors[j].prototype[key];
+              if (ancFunc !== val && typeof ancFunc !== 'undefined') {
                 val = function(j, key) {
                   return function() {
                     bases[j][key].apply(self, arguments);
@@ -167,6 +168,7 @@ Extendable.prototype['base'] = {};
  * @return {?} Extended type.
  */
 Extendable['extend'] = function(opt_object) {
+  log_.assert_(typeof this === 'function', 'Invalid Extendable.');
   var baseType = this;
 
   /**
@@ -189,7 +191,7 @@ Extendable['extend'] = function(opt_object) {
     // Pass arguments up the chain and then to construct
     baseType['apply'](this, arguments);
   };
-  ExtendedType_['extend'] = Extendable['extend'];
+  ExtendedType_['extend'] = baseType['extend'];
   ExtendedType_.prototype = new BaseType_();
 
   // Append opt_object's properties onto ExtendedType

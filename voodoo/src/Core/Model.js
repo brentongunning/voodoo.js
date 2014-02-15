@@ -147,19 +147,6 @@ Model.prototype['dispatch'] = function(event) {
 
 
 /**
- * Derives a new Model from a base type.
- *
- * @param {Object=} opt_object Optional object to extend with.
- *
- * @return {?} Extended type.
- */
-Model.prototype['extend'] = function(opt_object) {
-  // This is not necessary. We only do this so it appears in documentation.
-  return Extendable.prototype['extend'](opt_object);
-};
-
-
-/**
  * Initialzes the model. This is the first method to be called when the
  * model is instantiated. Derived classes may override this. This should never
  * be called by the user. The options parameter is what the user passed to
@@ -474,6 +461,37 @@ Model.prototype['viewType'] = null;
  * @type {View}
  */
 Model.prototype['stencilViewType'] = null;
+
+
+/**
+ * Derives a new type from a base Model. The Model's views
+ * are also automatically extended if they are defined.
+ *
+ * @param {Object=} opt_object Optional object to extend with.
+ *
+ * @return {?} Extended type.
+ */
+Model['extend'] = function(opt_object) {
+  var newType = Extendable['extend'].call(this, opt_object);
+
+  var viewType = this.prototype['viewType'];
+  var newViewType = newType.prototype['viewType'];
+  if (typeof viewType !== 'undefined' && viewType !== null &&
+      typeof newViewType !== 'undefined' && newViewType !== null &&
+      viewType != newViewType) {
+    newType.prototype['viewType'] = viewType['extend'](newViewType);
+  }
+
+  var stencil = this.prototype['stencilViewType'];
+  var newStencil = newType.prototype['stencilViewType'];
+  if (typeof stencil !== 'undefined' && stencil != null &&
+      typeof newStencil !== 'undefined' && newStencil != null &&
+      stencil != newStencil) {
+    newType.prototype['stencilViewType'] = stencil['extend'](newStencil);
+  }
+
+  return newType;
+};
 
 // Exports
 this['Model'] = Model;

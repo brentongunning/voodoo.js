@@ -103,19 +103,6 @@ View.prototype['dirty'] = function() {
 
 
 /**
- * Derives a new View from a base type.
- *
- * @param {Object=} opt_object Optional object to extend with.
- *
- * @return {?} Extended type.
- */
-View.prototype['extend'] = function(opt_object) {
-  // This is not necessary. We only do this so it appears in documentation.
-  return Extendable.prototype['extend'](opt_object);
-};
-
-
-/**
  * Creates the View's 3D meshes and adds them to the scene.
  *
  * Derived classes may override this. This should never be called by the user.
@@ -278,6 +265,20 @@ View.prototype.setupPublicProperties_ = function() {
     set: function() { log_.error_('triggers is read-only'); },
     writeable: false
   });
+};
+
+
+/**
+ * Derives a new type from a base View.
+ *
+ * @this {View}
+ *
+ * @param {Object=} opt_object Optional object to extend with.
+ *
+ * @return {?} Extended type.
+ */
+View['extend'] = function(opt_object) {
+  return Extendable['extend'].call(this, opt_object);
 };
 
 // Exports

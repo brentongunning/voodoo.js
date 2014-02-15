@@ -235,3 +235,68 @@ ModelTests.prototype.testDestroyViews = function() {
   assertEquals(2, globalCounters.viewUnload);
   assertEquals(1, globalCounters.stencilViewUnload);
 };
+
+
+/**
+ * Tests that when a model is extended wtih another model
+ * that has a view, that the views are extended automatically.
+ */
+ModelTests.prototype.testExtendWithView = function() {
+  voodoo.engine = new voodoo.Engine({
+    standardLighting: false,
+    aboveLayer: false,
+    seamLayer: false
+  });
+
+  var viewCallers = [];
+  var AView = voodoo.View.extend({
+    foo: function() {
+      viewCallers.push('A');
+    }
+  });
+  var BView = voodoo.View.extend({
+    foo: function() {
+      this.base.foo(); viewCallers.push('B');
+    }
+  });
+
+  var stencilViewCallers = [];
+  var AStencilView = voodoo.View.extend({
+    foo: function() {
+      stencilViewCallers.push('A');
+    }
+  });
+  var BStencilView = voodoo.View.extend({
+    foo: function() {
+      this.base.foo(); stencilViewCallers.push('B');
+    }
+  });
+
+  var A = voodoo.Model.extend({
+    name: 'A',
+    viewType: AView,
+    stencilViewType: AStencilView
+  });
+
+  var B = voodoo.Model.extend({
+    name: 'B',
+    viewType: BView,
+    stencilViewType: BStencilView,
+    setUpViews: function() {
+      this.view.foo();
+      this.stencilView.foo();
+    }
+  });
+
+
+  var AB = A.extend(B);
+  new AB();
+
+  assertEquals(2, viewCallers.length);
+  assertEquals('A', viewCallers[0]);
+  assertEquals('B', viewCallers[1]);
+
+  assertEquals(2, stencilViewCallers.length);
+  assertEquals('A', stencilViewCallers[0]);
+  assertEquals('B', stencilViewCallers[1]);
+};
