@@ -84,7 +84,7 @@ ThreeJsScene_.prototype['add'] = function(object) {
 
   var event = new window['voodoo']['Event']('add');
   event.object = object;
-  this.dispatcher_.dispatchEvent_(null, event);
+  this.dispatcher_.dispatchEvent_(this.view_, event);
 };
 
 
@@ -245,7 +245,7 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
 
     var event = new window['voodoo']['Event']('attach');
     event.object = element;
-    this.dispatcher_.dispatchEvent_(null, event);
+    this.dispatcher_.dispatchEvent_(this.view_, event);
   }
 };
 
@@ -304,7 +304,7 @@ ThreeJsScene_.prototype['on'] = function(type, listener) {
 ThreeJsScene_.prototype['remove'] = function(object) {
   var event = new window['voodoo']['Event']('remove');
   event.object = object;
-  this.dispatcher_.dispatchEvent_(null, event);
+  this.dispatcher_.dispatchEvent_(this.view_, event);
 
   if (object['addedToVoodooTriggers'])
     object.visible = false;

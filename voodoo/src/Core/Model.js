@@ -159,7 +159,7 @@ Model.prototype['dispatch'] = function(event) {
 Model.prototype['initialize'] = function(options) {
   var func = this['base']['initialize'];
   if (typeof func === 'function')
-    func();
+    func(options);
 };
 
 
