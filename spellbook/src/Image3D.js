@@ -478,14 +478,14 @@ var Image3DView_ = voodoo.View.extend({
  * Options are:
  *   element {HTMLElement} HTML element to attach to.
  *   imageSrc {string=} Optional image source.
- *   heightSrc {string} Initial heightmap image path.
- *   heightSrc2 {string=} Optional second heightmap path.
- *   heightSrc3 {string=} Optional third heightmap path.
- *   heightSrc4 {string=} Optional fourth heightmap path.
+ *   heightmap {string} Initial heightmap image path.
+ *   heightmap2 {string=} Optional second heightmap path.
+ *   heightmap3 {string=} Optional third heightmap path.
+ *   heightmap4 {string=} Optional fourth heightmap path.
  *   maxHeight {number=} Optional maximum depth of the heightmap.
  *   geometryStyle {Image3D.GeometryStyle=} Optional geometry style.
  *   lightingStyle {Image3D.LightingStyle=} Optional lighting style.
- *   transparent {boolean=} Optional flag for whether to allow transparency.
+ *   transparent {boolean=} Whether to allow in-between transparency.
  *
  * @constructor
  * @extends {voodoo.Model}
@@ -507,14 +507,14 @@ var Image3D = this.Image3D = voodoo.Model.extend({
 
     this.imageSrc = options.imageSrc || options.element.src;
     this.heightSources = [
-      typeof options.heightSrc !== 'undefined' ? options.heightSrc : '',
-      typeof options.heightSrc2 !== 'undefined' ? options.heightSrc2 : '',
-      typeof options.heightSrc3 !== 'undefined' ? options.heightSrc3 : '',
-      typeof options.heightSrc4 !== 'undefined' ? options.heightSrc4 : ''
+      typeof options.heightmap !== 'undefined' ? options.heightmap : '',
+      typeof options.heightmap2 !== 'undefined' ? options.heightmap2 : '',
+      typeof options.heightmap3 !== 'undefined' ? options.heightmap3 : '',
+      typeof options.heightmap4 !== 'undefined' ? options.heightmap4 : ''
     ];
 
-    if (typeof options.heightSrc === 'undefined')
-      throw '[Image3D] heightSrc must be defined';
+    if (typeof options.heightmap === 'undefined')
+      throw '[Image3D] heightmap must be defined';
 
     this.maxHeight = typeof options.maxHeight !== 'undefined' ?
         options.maxHeight : 200;
