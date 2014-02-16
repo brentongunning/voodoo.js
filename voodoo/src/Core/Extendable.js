@@ -57,7 +57,7 @@ function Extendable() {
               if (ancFunc !== val && typeof ancFunc !== 'undefined') {
                 val = function(j, key) {
                   return function() {
-                    bases[j][key].apply(self, arguments);
+                    return bases[j][key].apply(self, arguments);
                   }
                 }(j, key);
                 found = true;
@@ -100,13 +100,15 @@ function Extendable() {
             }
 
             // Call the function.
-            val.apply(self, arguments);
+            var retVal = val.apply(self, arguments);
 
             // Set back the old functions and base.
             for (var savedKey in saved) {
               self[savedKey] = saved[savedKey];
             }
             self.base_ = storedBase;
+
+            return retVal;
           }
         }(key, val, proto, parentBase);
       }

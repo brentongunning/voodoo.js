@@ -30,12 +30,17 @@
 		performanceScaling: false,
 	});
 
-	new voodoo.Image3D({
+	var FadingImage3D = voodoo.Image3D.extend(voodoo.Fader);
+	new FadingImage3D({
 		element: document.getElementById('GoogleLogo'),
 		heightSrc: 'GoogleLogo-depth.png',
 		maxHeight: 400,
 		geometryStyle: voodoo.Image3D.GeometryStyle.Block,
 		lightingStyle: voodoo.Image3D.LightingStyle.Face
+	}).on('load', function() {
+		this.fadeIn(3);
+	}).on('fadeEnd', function() {
+		this.fadeTo(1 - this.targetAlpha, 3);
 	});
 
 </script>

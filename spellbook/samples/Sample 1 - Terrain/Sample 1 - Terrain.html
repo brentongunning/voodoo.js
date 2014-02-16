@@ -33,7 +33,8 @@
 
 	new voodoo.MouseLight();
 
-	new voodoo.Image3D({
+	var FadingImage3D = voodoo.Fader.extend(voodoo.Image3D);
+	new FadingImage3D({
 		element: document.getElementById('GoogleLogo'),
 		heightSrc: 'black.jpg',
 		maxHeight: 200,
@@ -42,7 +43,8 @@
 		heightSrc2: 'Italy-depth.jpg',
 		heightSrc3: 'white.jpg'
 	}).on('load', function() {
-		this.morph(2, 5);
+		//this.morph(2, 5);
+		this.fadeIn(3);
 	});
 
 </script>

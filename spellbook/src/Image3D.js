@@ -18,6 +18,8 @@ var Image3DView_ = voodoo.View.extend({
   below: false,
 
   load: function() {
+    this.base.load();
+
     var self = this;
     this.loadHeightmaps(function() {
       self.loadTexture(function() {
@@ -471,7 +473,7 @@ var Image3DView_ = voodoo.View.extend({
 
 
 /**
- * A image shown in 3D using heightmaps
+ * A image shown in 3D using heightmaps.
  *
  * Options are:
  *   element {HTMLElement} HTML element to attach to.
@@ -497,6 +499,8 @@ var Image3D = this.Image3D = voodoo.Model.extend({
   viewType: Image3DView_,
 
   initialize: function(options) {
+    this.base.initialize(options);
+
     this.element = options.element;
     if (typeof options.element === 'undefined')
       throw '[Image3D] element must be defined';
@@ -530,6 +534,8 @@ var Image3D = this.Image3D = voodoo.Model.extend({
   },
 
   update: function(deltaTime) {
+    this.base.update(deltaTime);
+
     if (this.animating) {
       var now = new Date().getTime();
       var delta = now - this.startTime;
@@ -549,31 +555,42 @@ var Image3D = this.Image3D = voodoo.Model.extend({
         this.view.setMorphTargetInfluences(this.currentMorphTargets);
       }
     }
-  },
-
-  morph: function(index, seconds) {
-    var morphTargetInfluences = [0, 0, 0];
-    if (index > 0)
-      morphTargetInfluences[index - 2] = 1;
-
-    if (seconds > 0) {
-      // Animate over time
-      this.startMorphTargets = this.currentMorphTargets.slice(0);
-      this.endMorphTargets = morphTargetInfluences.slice(0);
-      this.animationLength = seconds * 1000;
-      this.startTime = new Date().getTime();
-      this.animating = true;
-    } else {
-      // Animate immediately
-      this.startMorphTargets = morphTargetInfluences.slice(0);
-      this.endMorphTargets = morphTargetInfluences.slice(0);
-      this.currentMorphTargets = morphTargetInfluences.slice(0);
-      this.view.setMorphTargetInfluences(morphTargetInfluences);
-      this.animating = false;
-    }
   }
 
 });
+
+
+/**
+ * Animates the geometry from one heightmap to another.
+ *
+ * @param {number} index Heightmap index from 1-4.
+ * @param {number} seconds Animation duration.
+ *
+ * @return {Image3D}
+ */
+Image3D.prototype.morph = function(index, seconds) {
+  var morphTargetInfluences = [0, 0, 0];
+  if (index > 0)
+    morphTargetInfluences[index - 2] = 1;
+
+  if (seconds > 0) {
+    // Animate over time
+    this.startMorphTargets = this.currentMorphTargets.slice(0);
+    this.endMorphTargets = morphTargetInfluences.slice(0);
+    this.animationLength = seconds * 1000;
+    this.startTime = new Date().getTime();
+    this.animating = true;
+  } else {
+    // Animate immediately
+    this.startMorphTargets = morphTargetInfluences.slice(0);
+    this.endMorphTargets = morphTargetInfluences.slice(0);
+    this.currentMorphTargets = morphTargetInfluences.slice(0);
+    this.view.setMorphTargetInfluences(morphTargetInfluences);
+    this.animating = false;
+  }
+
+  return this;
+};
 
 
 /**
