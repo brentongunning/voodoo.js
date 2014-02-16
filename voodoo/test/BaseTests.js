@@ -207,6 +207,24 @@ BaseTests.prototype.testBaseArguments = function() {
 
 
 /**
+ * Tests return values from this.base functions.
+ */
+BaseTests.prototype.testBaseReturnValue = function() {
+  Base = voodoo.Extendable.extend({
+    construct: function() {},
+    foo: function() { return 'Base'; }
+  });
+
+  A = Base.extend({
+    foo: function() { return this.base.foo() + 'A'; }
+  });
+
+  var a = new A();
+  assertEquals('BaseA', a.foo());
+};
+
+
+/**
  * Tests that other functions at the base level are called.
  */
 BaseTests.prototype.testBaseOverriddenFunctions = function() {
