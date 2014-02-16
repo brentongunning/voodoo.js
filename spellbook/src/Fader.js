@@ -121,7 +121,9 @@ Fader.prototype.fadeOut = function(seconds) {
    * @return {Fader}
    */
 Fader.prototype.fadeTo = function(alpha, seconds) {
-  if (this.alpha != alpha) {
+  if (seconds == 0) {
+    this.setAlpha(alpha);
+  } else if (this.alpha != alpha) {
     this.startAlpha = this.alpha;
     this.targetAlpha = alpha;
     this.fadeStartTime = new Date();

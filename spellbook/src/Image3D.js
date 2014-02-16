@@ -525,9 +525,9 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     this.transparent = typeof options.transparent !== 'undefined' ?
         options.transparent : true;
 
-    this.animating = false;
-    this.startTime = 0;
-    this.animationLength = 1;
+    this.morphing = false;
+    this.startMorphTime = 0;
+    this.morphAnimationLength = 1;
     this.startMorphTargets = [0, 0, 0];
     this.currentMorphTargets = [0, 0, 0];
     this.endMorphTargets = [0, 0, 0];
@@ -536,16 +536,18 @@ var Image3D = this.Image3D = voodoo.Model.extend({
   update: function(deltaTime) {
     this.base.update(deltaTime);
 
-    if (this.animating) {
+    if (this.morphing) {
       var now = new Date().getTime();
-      var delta = now - this.startTime;
-      var time = delta / this.animationLength;
+      var delta = now - this.startMorphTime;
+      var time = delta / this.morphAnimationLength;
 
       if (time > 1) {
         // Finish animations
-        this.animating = false;
+        this.morphing = false;
         this.view.setMorphTargetInfluences(this.endMorphTargets);
         this.currentMorphTargets = this.endMorphTargets.slice(0);
+
+        this.dispatch(new voodoo.Event('morphEnd', this));
       } else {
         for (var i = 0; i < this.endMorphTargets.length; ++i) {
           this.currentMorphTargets[i] =
@@ -577,16 +579,18 @@ Image3D.prototype.morph = function(index, seconds) {
     // Animate over time
     this.startMorphTargets = this.currentMorphTargets.slice(0);
     this.endMorphTargets = morphTargetInfluences.slice(0);
-    this.animationLength = seconds * 1000;
-    this.startTime = new Date().getTime();
-    this.animating = true;
+    this.morphAnimationLength = seconds * 1000;
+    this.startMorphTime = new Date().getTime();
+    this.morphing = true;
+
+    this.dispatch(new voodoo.Event('morphBegin', this));
   } else {
     // Animate immediately
     this.startMorphTargets = morphTargetInfluences.slice(0);
     this.endMorphTargets = morphTargetInfluences.slice(0);
     this.currentMorphTargets = morphTargetInfluences.slice(0);
     this.view.setMorphTargetInfluences(morphTargetInfluences);
-    this.animating = false;
+    this.morphing = false;
   }
 
   return this;
