@@ -31,7 +31,8 @@
 	});
 
 	var FadingImage3D = voodoo.Image3D.extend(voodoo.Fader);
-	new FadingImage3D({
+	FadingImage3D = FadingImage3D.extend(voodoo.Hider);
+	var img3d = new FadingImage3D({
 		element: document.getElementById('GoogleLogo'),
 		heightmap: 'GoogleLogo-depth.png',
 		maxHeight: 400,

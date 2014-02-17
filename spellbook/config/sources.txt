@@ -8,3 +8,5 @@ MouseLight.js
 Image3D.js
 
 Fader.js
+Hider.js
+Scaler.js
