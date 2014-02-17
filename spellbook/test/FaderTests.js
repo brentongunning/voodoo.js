@@ -83,8 +83,8 @@ FaderTests.prototype.testFaderEvents = function() {
   while (!fadeOutEnd && new Date() - start < 1000)
     voodoo.engine.frame();
 
-  assert('Did not start fading in', fadeInBegin);
-  assert('Did not start fading out', fadeOutBegin);
-  assert('Did not finish fading in', fadeInEnd);
-  assert('Did not finish fading out', fadeOutEnd);
+  assert('Fade In Begin', fadeInBegin);
+  assert('Fade Out Begin', fadeOutBegin);
+  assert('Fade In End', fadeInEnd);
+  assert('Fade Out End', fadeOutEnd);
 };

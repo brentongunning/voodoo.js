@@ -1,0 +1,131 @@
+// ----------------------------------------------------------------------------
+// File: Image3DTests.js
+//
+// Copyright (c) 2014 VoodooJs Authors
+// ----------------------------------------------------------------------------
+
+
+
+/**
+ * Test cases to make sure the Image3D class works as expected.
+ *
+ * @constructor
+ */
+Image3DTests = AsyncTestCase('Image3DTests');
+
+
+/**
+ * Shutdown the engine between test cases.
+ */
+Image3DTests.prototype.tearDown = function() {
+  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
+    voodoo.engine.destroy();
+};
+
+
+/**
+ * Tests that the Image3D class can be created on a div.
+ *
+ * @param {Object} queue Async queue.
+ */
+Image3DTests.prototype.testImage3DCreateOnDiv = function(queue) {
+  /*:DOC +=
+    <div style="position:absolute; left:400px; top:400px;
+        width:400px; height:300px;" id="anchor"></div>
+  */
+
+  var loaded = false;
+
+  queue.call(function(callbacks) {
+    new voodoo.Image3D({
+      element: document.getElementById('anchor'),
+      imageSrc: '/test/test/Layers.jpg',
+      heightmap: '/test/test/Black.jpg',
+      maxHeight: 200,
+      geometryStyle: voodoo.Image3D.GeometryStyle.Block,
+      lightingStyle: voodoo.Image3D.LightingStyle.Vertex,
+      transparent: true
+    }).on('load', callbacks.add(function() {
+      loaded = true;
+    }));
+  });
+
+  queue.call(function() {
+    assert('Images loaded:', loaded);
+  });
+};
+
+
+/**
+ * Tests that the Image3D class can be created on an image.
+ *
+ * @param {Object} queue Async queue.
+ */
+Image3DTests.prototype.testImage3DCreateOnImg = function(queue) {
+  /*:DOC +=
+    <img style="position:absolute; left:400px; top:400px;
+        width:400px; height:300px;" id="img"
+        src="/test/test/Layers.jpg"></div>
+  */
+
+  var loaded = false;
+
+  queue.call(function(callbacks) {
+    new voodoo.Image3D({
+      element: document.getElementById('img'),
+      heightmap: '/test/test/Black.jpg',
+      geometryStyle: voodoo.Image3D.GeometryStyle.Float,
+      lightingStyle: voodoo.Image3D.LightingStyle.Face
+    }).on('load', callbacks.add(function() {
+      loaded = true;
+    }));
+  });
+
+  queue.call(function() {
+    assert('Images loaded:', loaded);
+  });
+};
+
+
+/**
+ * Tests that the morphBegin and morphEnd events work.
+ *
+ * @param {Object} queue Async queue.
+ */
+Image3DTests.prototype.testImage3DEvents = function(queue) {
+  /*:DOC +=
+    <img style="position:absolute; left:400px; top:400px;
+        width:400px; height:300px;" id="anchor"></div>
+  */
+
+  var loaded = false;
+  var morphBegin = false;
+  var morphEnd = false;
+
+  queue.call(function(callbacks) {
+    img3d = new voodoo.Image3D({
+      element: document.getElementById('anchor'),
+      imageSrc: '/test/test/Layers.jpg',
+      heightmap: '/test/test/Black.jpg',
+      heightmap2: '/test/test/Layers.jpg'
+    }).on('load', callbacks.add(function() {
+      loaded = true;
+    })).on('morphBegin', function() {
+      morphBegin = true;
+    }).on('morphEnd', function() {
+      morphEnd = true;
+    });
+  });
+
+  queue.call(function() {
+    assert('Images loaded:', loaded);
+    img3d.morph(2, 0.25);
+
+    var start = new Date;
+    while (!morphEnd && new Date() - start < 1000)
+      voodoo.engine.frame();
+
+    assert('Morph Begin:', morphBegin);
+    assert('Morph End:', morphEnd);
+  });
+};
