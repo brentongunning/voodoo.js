@@ -27,8 +27,9 @@ var AmbientLightView_ = LightView_.extend({
  * A light that illuminates the scene uniformly and has no specific origin or
  * direction.
  *
- * Options are:
- *   color {string} CSS color string.
+ * Options:
+ * 
+ * - color {string} CSS color string.
  *
  * @constructor
  * @extends {Light_}

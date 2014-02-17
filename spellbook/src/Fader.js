@@ -72,8 +72,14 @@ var FaderStencilView_ = voodoo.View.extend({
 /**
  * Adds functions to fade in and out meshes.
  *
- * Options are:
- *   alpha {number} Initial alpha value. Default is 0.
+ * Options:
+ *
+ * - alpha {number} Initial alpha value. Default is 0.
+ *
+ * Events:
+ *
+ * - fadeBegin
+ * - fadeEnd
  *
  * @constructor
  * @extends {voodoo.Model}

@@ -38,8 +38,9 @@ var CameraLightView_ = LightView_.extend({
 /**
  * An point light with no attenuation that is always positioned at the camera.
  *
- * Options are:
- *   color {string} CSS color string.
+ * Options:
+ *
+ * - color {string} CSS color string.
  *
  * @constructor
  * @extends {Light_}

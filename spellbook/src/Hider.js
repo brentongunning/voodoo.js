@@ -38,8 +38,14 @@ var HiderView_ = voodoo.View.extend({
 /**
  * Adds functions to show and hide meshes.
  *
- * Options are:
- *   visible {boolean} Initial visibility. Default is true.
+ * Options:
+ *
+ * - visible {boolean} Initial visibility. Default is true.
+ *
+ * Events:
+ *
+ * - show
+ * - hide
  *
  * @constructor
  * @extends {voodoo.Model}
@@ -62,10 +68,16 @@ var Hider = this.Hider = voodoo.Model.extend({
     Object.defineProperty(this, 'visible', {
       get: function() { return this.visible_; },
       set: function(visible) {
-        this.visible_ = visible;
-        this.view.setVisible(visible);
-        if (typeof this.stencilView !== 'undefined' && this.stencilView)
-          this.stencilView.setVisible(visible);
+        if (visible != this.visible_) {
+          this.visible_ = visible;
+          this.view.setVisible(visible);
+          if (typeof this.stencilView !== 'undefined' && this.stencilView)
+            this.stencilView.setVisible(visible);
+
+          if (visible)
+            this.dispatch(new voodoo.Event('show', this));
+          else this.dispatch(new voodoo.Event('hide', this));
+        }
       },
       writeable: false
     });

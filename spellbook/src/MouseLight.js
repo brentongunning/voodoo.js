@@ -47,9 +47,10 @@ var MouseLightView_ = LightView_.extend({
 /**
  * A point that light follows the mouse cursor.
  *
- * Options are:
- *   color {string} CSS color string.
- *   height {number} Height of the point light. A value <= 0 means to use the
+ * Options:
+ *
+ * - color {string} CSS color string.
+ * - height {number} Height of the point light. A value <= 0 means to use the
  *     camera height.
  *
  * @constructor

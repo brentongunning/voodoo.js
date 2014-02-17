@@ -475,17 +475,23 @@ var Image3DView_ = voodoo.View.extend({
 /**
  * A image shown in 3D using heightmaps.
  *
- * Options are:
- *   element {HTMLElement} HTML element to attach to.
- *   imageSrc {string=} Optional image source.
- *   heightmap {string} Initial heightmap image path.
- *   heightmap2 {string=} Optional second heightmap path.
- *   heightmap3 {string=} Optional third heightmap path.
- *   heightmap4 {string=} Optional fourth heightmap path.
- *   maxHeight {number=} Optional maximum depth of the heightmap.
- *   geometryStyle {Image3D.GeometryStyle=} Optional geometry style.
- *   lightingStyle {Image3D.LightingStyle=} Optional lighting style.
- *   transparent {boolean=} Whether to allow in-between transparency.
+ * Options:
+ *
+ * - element {HTMLElement} HTML element to attach to.
+ * - imageSrc {string=} Optional image source.
+ * - heightmap {string} Initial heightmap image path.
+ * - heightmap2 {string=} Optional second heightmap path.
+ * - heightmap3 {string=} Optional third heightmap path.
+ * - heightmap4 {string=} Optional fourth heightmap path.
+ * - maxHeight {number=} Optional maximum depth of the heightmap.
+ * - geometryStyle {Image3D.GeometryStyle=} Optional geometry style.
+ * - lightingStyle {Image3D.LightingStyle=} Optional lighting style.
+ * - transparent {boolean=} Whether to allow in-between transparency.
+ *
+ * Events:
+ *
+ * - morphBegin
+ * - morphEnd
  *
  * @constructor
  * @extends {voodoo.Model}
