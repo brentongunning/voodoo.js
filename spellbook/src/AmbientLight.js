@@ -28,7 +28,7 @@ var AmbientLightView_ = LightView_.extend({
  * direction.
  *
  * Options:
- * 
+ *
  * - color {string} CSS color string.
  *
  * @constructor

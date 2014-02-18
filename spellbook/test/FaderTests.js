@@ -88,3 +88,29 @@ FaderTests.prototype.testFaderEvents = function() {
   assert('Fade In End', fadeInEnd);
   assert('Fade Out End', fadeOutEnd);
 };
+
+
+/**
+ * Tests that alpha values can be changed immediately.
+ */
+FaderTests.prototype.testFaderSetAlpha = function() {
+  var Base = voodoo.Model.extend({
+    name: 'Base',
+    viewType: voodoo.View.extend({
+      load: function() {
+        var geometry = new THREE.CubeGeometry(1, 1, 1);
+        var material = new THREE.MeshBasicMaterial();
+        var mesh = new THREE.Mesh(geometry, material);
+        this.scene.add(mesh);
+      }
+    })
+  });
+
+  var FadedBase = Base.extend(voodoo.Fader);
+  var instance = new FadedBase();
+
+  instance.setAlpha(0.5);
+  assertEquals(0.5, instance.alpha);
+  instance.alpha = 0.8;
+  assertEquals(0.8, instance.alpha);
+};
