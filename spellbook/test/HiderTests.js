@@ -67,10 +67,10 @@ HiderTests.prototype.testHiderEvents = function() {
     hide++;
   });
 
-  instance.visible = true;
   instance.visible = false;
   instance.show();
   instance.hide();
+  instance.visible = true;
 
   assertEquals(2, show);
   assertEquals(2, hide);
