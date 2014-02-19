@@ -20,6 +20,7 @@ var HiderView_ = voodoo.View.extend({
 
     this.scene.on('add', function(e) {
       e.object.visible = this.model.visible;
+      this.dirty();
     });
   },
 

@@ -21,6 +21,7 @@ var FaderView_ = voodoo.View.extend({
     this.scene.on('add', function(e) {
       if (typeof e.object.material !== 'undefined')
         e.object.material.opacity = this.model.alpha;
+      this.dirty();
     });
   },
 
@@ -104,9 +105,7 @@ var Fader = this.Fader = voodoo.Model.extend({
 
     Object.defineProperty(this, 'alpha', {
       get: function() { return this.alpha_; },
-      set: function(alpha) {
-        this.setAlpha(alpha);
-      },
+      set: function(alpha) { this.setAlpha(alpha); },
       writeable: false
     });
   },

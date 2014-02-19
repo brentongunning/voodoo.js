@@ -32,6 +32,7 @@
 
 	var FadingImage3D = voodoo.Image3D.extend(voodoo.Fader);
 	FadingImage3D = FadingImage3D.extend(voodoo.Hider);
+	FadingImage3D = FadingImage3D.extend(voodoo.Scaler);
 	var img3d = new FadingImage3D({
 		element: document.getElementById('GoogleLogo'),
 		heightmap: 'GoogleLogo-depth.png',
