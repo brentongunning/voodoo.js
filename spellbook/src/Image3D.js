@@ -20,6 +20,8 @@ var Image3DView_ = voodoo.View.extend({
   load: function() {
     this.base.load();
 
+    this.loaded = false;
+
     var self = this;
     this.loadHeightmaps(function() {
       self.loadTexture(function() {
@@ -27,8 +29,6 @@ var Image3DView_ = voodoo.View.extend({
         self.loaded = true;
       });
     });
-
-    this.loaded = false;
   },
 
   loadHeightmaps: function(callback) {

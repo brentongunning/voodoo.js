@@ -6,6 +6,7 @@ CameraLight.js
 MouseLight.js
 
 Image3D.js
+Mesh.js
 
 Fader.js
 Hider.js

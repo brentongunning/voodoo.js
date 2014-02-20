@@ -3451,9 +3451,10 @@ THREE.Material.bumpMap;
 THREE.Material.normalMap;
 
 /**
-@constructor
-*/
-THREE.MeshFaceMaterial = function(){};
+ * @constructor
+ * @param {Array.<Object>=} materials
+ */
+THREE.MeshFaceMaterial = function(materials){};
 
 /**
 @constructor
