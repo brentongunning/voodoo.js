@@ -39,8 +39,8 @@ Image3DTests.prototype.testImage3DCreateOnDiv = function(queue) {
   queue.call(function(callbacks) {
     new voodoo.Image3D({
       element: document.getElementById('anchor'),
-      imageSrc: '/test/test/Layers.jpg',
-      heightmap: '/test/test/Black.jpg',
+      imageSrc: '/test/test/assets/Layers.jpg',
+      heightmap: '/test/test/assets/Black.jpg',
       maxHeight: 200,
       geometryStyle: voodoo.Image3D.GeometryStyle.Block,
       lightingStyle: voodoo.Image3D.LightingStyle.Vertex,
@@ -65,7 +65,7 @@ Image3DTests.prototype.testImage3DCreateOnImg = function(queue) {
   /*:DOC +=
     <img style="position:absolute; left:400px; top:400px;
         width:400px; height:300px;" id="img"
-        src="/test/test/Layers.jpg"></div>
+        src="/test/test/assets/Layers.jpg"></div>
   */
 
   var loaded = false;
@@ -73,7 +73,7 @@ Image3DTests.prototype.testImage3DCreateOnImg = function(queue) {
   queue.call(function(callbacks) {
     new voodoo.Image3D({
       element: document.getElementById('img'),
-      heightmap: '/test/test/Black.jpg',
+      heightmap: '/test/test/assets/Black.jpg',
       geometryStyle: voodoo.Image3D.GeometryStyle.Float,
       lightingStyle: voodoo.Image3D.LightingStyle.Face
     }).on('load', callbacks.add(function() {
@@ -105,9 +105,9 @@ Image3DTests.prototype.testImage3DEvents = function(queue) {
   queue.call(function(callbacks) {
     img3d = new voodoo.Image3D({
       element: document.getElementById('anchor'),
-      imageSrc: '/test/test/Layers.jpg',
-      heightmap: '/test/test/Black.jpg',
-      heightmap2: '/test/test/Layers.jpg'
+      imageSrc: '/test/test/assets/Layers.jpg',
+      heightmap: '/test/test/assets/Black.jpg',
+      heightmap2: '/test/test/assets/Layers.jpg'
     }).on('load', callbacks.add(function() {
       loaded = true;
     })).on('morphBegin', function() {
