@@ -258,6 +258,14 @@ Model.prototype['cache'] = null;
 
 
 /**
+ * Indicates whether all views have finished loading.
+ *
+ * @type {boolean}
+ */
+Model.prototype['loaded'] = false;
+
+
+/**
  * The composite stencil view for this model.
  *
  * @type {Object}
@@ -301,6 +309,12 @@ Model.prototype.createViews_ = function() {
   /** @type {Engine} */
   var engine = window['voodoo']['engine'];
   var layers = engine.renderer_.layers_;
+
+  Object.defineProperty(this, 'loaded', {
+    get: function() { return this.numViewsLoaded_ === this.numViewsToLoad_; },
+    set: function() { log_.error_('loaded is read-only'); },
+    writeable: false
+  });
 
   // Create the views, one for each layer and one additional for the
   // stencil layer.

@@ -176,6 +176,9 @@ voodoo.Model.prototype.stencilView;
 /** @type {voodoo.Cache} */
 voodoo.Model.prototype.cache;
 
+/** @type {boolean} */
+voodoo.Model.prototype.loaded;
+
 /** @type {string} */
 voodoo.Model.prototype.name;
 
