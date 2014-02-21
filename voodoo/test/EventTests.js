@@ -307,3 +307,50 @@ EventTests.prototype.testCustomEvents = function() {
   model.fire();
   assertEquals('customEventCount:', 1, customEventCount);
 };
+
+
+/**
+ * Tests that the load event fires once all views load.
+ */
+EventTests.prototype.testLoadEvent = function() {
+  var CustomView = voodoo.View.extend({
+    load: function() {
+      this.loaded = false;
+    },
+    finishLoading: function() {
+      this.loaded = true;
+    }
+  });
+
+  var CustomStencilView = voodoo.View.extend({
+    load: function() {
+      this.loaded = false;
+    },
+    finishLoading: function() {
+      this.loaded = true;
+    }
+  });
+
+  var CustomModel = voodoo.Model.extend({
+    name: 'CustomModel',
+    viewType: CustomView,
+    stencilViewType: CustomStencilView,
+    finishLoading: function() {
+      this.view.finishLoading();
+      this.stencilView.finishLoading();
+    }
+  });
+
+  var model = new CustomModel();
+
+  assertTrue('Model not loaded: ', !model.loaded);
+
+  var finishedLoading = false;
+  model.on('load', function() {
+    finishedLoading = true;
+  });
+
+  model.finishLoading();
+  assertTrue('Model loaded: ', model.loaded);
+  assertTrue('Load event fired: ', finishedLoading);
+};
