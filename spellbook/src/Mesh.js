@@ -218,6 +218,9 @@ Mesh.prototype.play = function(name) {
   if (typeof this.stencilView !== 'undefined' && this.stencilView)
     this.stencilView.playAnimation(animation);
 
+  if (!this.playing)
+    this.dispatch(new voodoo.Event('play', this));
+
   this.playing = true;
   this.looping = animation.loop;
   this.lastTime = 0;
@@ -232,6 +235,7 @@ Mesh.prototype.play = function(name) {
  * @return {Mesh}
  */
 Mesh.prototype.stop = function() {
+  this.dispatch(new voodoo.Event('stop', this));
   this.playing = false;
   return this;
 };
