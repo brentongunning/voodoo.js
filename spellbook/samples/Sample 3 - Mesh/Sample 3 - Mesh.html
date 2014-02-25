@@ -43,12 +43,12 @@
 		element: document.getElementById('mesh'),
 		format: voodoo.Mesh.Format.JSON,
 		mesh: 'monster.js',
-		animated: false,
+		animated: true,
 		center: false,
 		pixelScale: false
 	}).setScale(0.0005).on('load', function() {
 		window.console.log('loaded');
-	});
+	}).animation('walk', 0, 23, 1, true).animation('walk2', 0, 23, 1, false).play('walk');
 
 </script>
 

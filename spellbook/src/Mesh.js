@@ -19,6 +19,7 @@ var MeshView_ = voodoo.View.extend({
     this.base.load();
 
     this.loaded = false;
+    this.pendingAnimation = null;
 
     if (this.model.format === Mesh.Format.JSON)
       this.loadJson();
@@ -30,9 +31,17 @@ var MeshView_ = voodoo.View.extend({
     loader.load(this.model.mesh, function(geometry, materials) {
       var mesh;
 
+      for (var i = 0; i < materials.length; ++i) {
+        var material = materials[i];
+        if (material && typeof material.map !== 'undefined' &&
+            material.map !== null)
+          materials.map.flipY = false;
+      }
+
       if (self.model.animated) {
         var material = materials[0];
         material.morphTargets = true;
+        material.map.flipY = false;
         var faceMaterial = new THREE.MeshFaceMaterial(materials);
         mesh = new THREE.MorphAnimMesh(geometry, faceMaterial);
       } else {
@@ -40,11 +49,51 @@ var MeshView_ = voodoo.View.extend({
         mesh = new THREE.Mesh(geometry, faceMaterial);
       }
 
+      self.mesh = mesh;
       self.scene.add(mesh);
       self.scene.attach(self.model.element, self.model.center,
           self.model.pixelScale);
       self.loaded = true;
     });
+  },
+
+  playAnimation: function(animation) {
+    if (!this.loaded) {
+      this.pendingAnimation = animation;
+      return;
+    }
+
+    this.mesh.time = 0;
+    this.mesh.duration = animation.duration;
+
+    if (animation.forward)
+      this.mesh.setDirectionForward();
+    else this.mesh.setDirectionBackward();
+
+    this.mesh.setFrameRange(animation.start, animation.end);
+  },
+
+  updateAnimation: function(deltaTimeMs) {
+    if (!this.loaded)
+      return;
+
+    if (this.pendingAnimation !== null) {
+      this.playAnimation(this.pendingAnimation);
+      this.pendingAnimation = null;
+    }
+
+    this.mesh.updateAnimation(deltaTimeMs);
+    this.dirty();
+  },
+
+  getLastTime: function() {
+    return this.loaded ? this.mesh.time : 0;
+  },
+
+  setToLastFrame: function() {
+    this.mesh.time = 1;
+    this.mesh.updateAnimation(0);
+    this.dirty();
   }
 
 });
@@ -64,6 +113,11 @@ var MeshView_ = voodoo.View.extend({
  *     true.
  * - pixelScale {boolean} Whether the unit's scale is pixels or units that
  *     scale with the element. Default is true.
+ *
+ * Events:
+ *
+ * - play
+ * - stop
  *
  * @constructor
  * @extends {voodoo.Model}
@@ -95,9 +149,92 @@ var Mesh = this.Mesh = voodoo.Model.extend({
         options.center : true;
     this.pixelScale = typeof options.pixelScale !== 'undefined' ?
         options.pixelScale : true;
+
+    this.animations = {};
+    this.playing = false;
+    this.looping = false;
+  },
+
+  update: function(deltaTime) {
+    if (this.playing) {
+      var deltaTimeMs = deltaTime * 1000;
+      this.view.updateAnimation(deltaTimeMs);
+      if (typeof this.stencilView !== 'undefined' && this.stencilView)
+        this.stencilView.updateAnimation(deltaTimeMs);
+
+      if (!this.looping) {
+        var lastTime = this.view.getLastTime();
+        if (lastTime < this.lastTime) {
+          this.view.setToLastFrame();
+          if (typeof this.stencilView !== 'undefined' && this.stencilView)
+            this.stencilView.setToLastFrame();
+          this.stop();
+        } else this.lastTime = lastTime;
+      }
+    }
   }
 
 });
+
+
+/**
+ * Defines an animation.
+ *
+ * @param {string} name Name of the animation.
+ * @param {number} start Start frame.
+ * @param {number} end End frame.
+ * @param {number} seconds Duration in seconds.
+ * @param {boolean=} opt_loop Whether to loop the animation. Default is true.
+ * @param {boolean=} opt_forward Whether to play forward, or backward. Default
+ *     is true.
+ *
+ * @return {Mesh}
+ */
+Mesh.prototype.animation = function(name, start, end, seconds, opt_loop,
+    opt_forward) {
+  this.animations[name] = {
+    start: start,
+    end: end,
+    duration: seconds * 1000,
+    loop: typeof opt_loop !== 'undefined' ? opt_loop : true,
+    forward: typeof opt_forward === 'undefined' ? true : opt_forward
+  };
+
+  return this;
+};
+
+
+/**
+ * Plays or resumes an animation.
+ *
+ * @param {string} name Name of the animation.
+ *
+ * @return {Mesh}
+ */
+Mesh.prototype.play = function(name) {
+  var animation = this.animations[name];
+
+  this.view.playAnimation(animation);
+  if (typeof this.stencilView !== 'undefined' && this.stencilView)
+    this.stencilView.playAnimation(animation);
+
+  this.playing = true;
+  this.looping = animation.loop;
+  this.lastTime = 0;
+
+  return this;
+};
+
+
+/**
+ * Pauses an animation.
+ *
+ * @return {Mesh}
+ */
+Mesh.prototype.stop = function() {
+  this.playing = false;
+  return this;
+};
 
 
 /**
