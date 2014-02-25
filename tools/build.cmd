@@ -178,7 +178,7 @@ if "%optlevel%"=="WHITESPACE_ONLY" (
   set mindebug_optlevel=WHITESPACE_ONLY
 )
 if "%optlevel%"=="SIMPLE_OPTIMIZATIONS" (
-  set debug_optlevel=WHITESPACE_ONLY
+  set debug_optlevel=SIMPLE_OPTIMIZATIONS
   set min_optlevel=SIMPLE_OPTIMIZATIONS
   set mindebug_optlevel=SIMPLE_OPTIMIZATIONS
 )
