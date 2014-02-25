@@ -3368,6 +3368,7 @@ THREE.Object3D.prototype.lookAt = function(v){};
 THREE.Object3D.prototype.up = function(){};
 THREE.Object3D.prototype.scale = function(){};
 THREE.Object3D.prototype.position = function(){};
+THREE.Object3D.prototype.rotation = function(){};
 THREE.Object3D.prototype.updateMatrix = function(){};
 
 /**
@@ -3388,10 +3389,20 @@ THREE.Object3D.prototype.matrixAutoUpdate;
 
 /**
 @constructor
+@extends {THREE.Object3D}
 @param {THREE.Geometry} g
 @param {THREE.Material|THREE.MeshFaceMaterial} m
 */
 THREE.MorphAnimMesh = function(g,m){};
+
+THREE.MorphAnimMesh.prototype.setDirectionForward = function() {};
+THREE.MorphAnimMesh.prototype.setDirectionBackward = function() {};
+
+/**
+ * @param {number} start
+ * @param {number} end
+ */
+THREE.MorphAnimMesh.prototype.setFrameRange = function(start, end) {};
 
 /**
 @constructor
@@ -3402,6 +3413,7 @@ THREE.SkinnedMesh = function(g,m){};
 
 /**
 @constructor
+@extends {THREE.Object3D}
 @param {THREE.Geometry} g
 @param {THREE.Material|THREE.MeshFaceMaterial} m
 */
@@ -3451,9 +3463,10 @@ THREE.Material.bumpMap;
 THREE.Material.normalMap;
 
 /**
-@constructor
-*/
-THREE.MeshFaceMaterial = function(){};
+ * @constructor
+ * @param {Array.<Object>=} materials
+ */
+THREE.MeshFaceMaterial = function(materials){};
 
 /**
 @constructor
