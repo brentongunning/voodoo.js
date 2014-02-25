@@ -151,18 +151,33 @@ var Mesh = this.Mesh = voodoo.Model.extend({
         options.pixelScale : true;
 
     this.animations = {};
-    this.playing = false;
-    this.looping = false;
+    this.playing_ = false;
+    this.looping_ = false;
+
+    Object.defineProperty(this, 'looping', {
+      get: function() { return this.looping_; },
+      writeable: false
+    });
+
+    Object.defineProperty(this, 'playing', {
+      get: function() { return this.playing_; },
+      set: function(playing) {
+        if (playing)
+          throw 'Cannot set playing to true. Call play()';
+        else this.stop();
+      },
+      writeable: false
+    });
   },
 
   update: function(deltaTime) {
-    if (this.playing) {
+    if (this.playing_) {
       var deltaTimeMs = deltaTime * 1000;
       this.view.updateAnimation(deltaTimeMs);
       if (typeof this.stencilView !== 'undefined' && this.stencilView)
         this.stencilView.updateAnimation(deltaTimeMs);
 
-      if (!this.looping) {
+      if (!this.looping_) {
         var lastTime = this.view.getLastTime();
         if (lastTime < this.lastTime) {
           this.view.setToLastFrame();
@@ -218,11 +233,11 @@ Mesh.prototype.play = function(name) {
   if (typeof this.stencilView !== 'undefined' && this.stencilView)
     this.stencilView.playAnimation(animation);
 
-  if (!this.playing)
+  if (!this.playing_)
     this.dispatch(new voodoo.Event('play', this));
 
-  this.playing = true;
-  this.looping = animation.loop;
+  this.playing_ = true;
+  this.looping_ = animation.loop;
   this.lastTime = 0;
 
   return this;
@@ -236,9 +251,25 @@ Mesh.prototype.play = function(name) {
  */
 Mesh.prototype.stop = function() {
   this.dispatch(new voodoo.Event('stop', this));
-  this.playing = false;
+  this.playing_ = false;
   return this;
 };
+
+
+/**
+ * Gets whether the mesh animation is looping.
+ *
+ * @type {boolean}
+ */
+Mesh.prototype.looping = false;
+
+
+/**
+ * Gets or sets whether the mesh is playing an animation.
+ *
+ * @type {boolean}
+ */
+Mesh.prototype.playing = false;
 
 
 /**
