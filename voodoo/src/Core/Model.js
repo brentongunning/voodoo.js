@@ -504,6 +504,13 @@ Model['extend'] = function(opt_object) {
     newType.prototype['stencilViewType'] = stencil['extend'](newStencil);
   }
 
+  var oldName = this.prototype['name'];
+  var newName = newType.prototype['name'];
+  if (typeof oldName !== 'undefined' && oldName !== null &&
+      typeof newName !== 'undefined' && newName !== null &&
+      newName !== oldName)
+    newType.prototype['name'] = oldName + '.' + newName;
+
   return newType;
 };
 

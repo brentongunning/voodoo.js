@@ -299,4 +299,6 @@ ModelTests.prototype.testExtendWithView = function() {
   assertEquals(2, stencilViewCallers.length);
   assertEquals('A', stencilViewCallers[0]);
   assertEquals('B', stencilViewCallers[1]);
+
+  assertEquals('A.B', AB.prototype.name);
 };
