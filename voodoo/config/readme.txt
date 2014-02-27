@@ -44,8 +44,9 @@ See license.txt.
 Release Notes
 -------------------------------------------------------------------------------
 
-2-21-2014 - 0.8.9
+2-25-2014 - 0.8.9
 Added Model.loaded property.
+Bug Fix: Adding/removing to the scene makes it dirty.
 
 2-19-2014 - 0.8.8
 Add 'load' Model event and View.loaded to set when a View has finished loading.
