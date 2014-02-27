@@ -258,7 +258,7 @@ Model.prototype['cache'] = null;
 
 
 /**
- * Indicates whether all views have finished loading.
+ * Readonly property indicating whether all views have finished loading.
  *
  * @type {boolean}
  */
