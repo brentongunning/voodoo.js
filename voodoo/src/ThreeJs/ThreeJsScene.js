@@ -82,6 +82,8 @@ ThreeJsScene_.prototype['add'] = function(object) {
     this.meshes_.push(object);
   }
 
+  this.isDirty_ = true;
+
   var event = new window['voodoo']['Event']('add');
   event.object = object;
   this.dispatcher_.dispatchEvent_(this.view_, event);
@@ -321,6 +323,8 @@ ThreeJsScene_.prototype['remove'] = function(object) {
     if (index != -1)
       this.meshes_.splice(index, 1);
   }
+
+  this.isDirty_ = true;
 };
 
 
