@@ -51,6 +51,7 @@ var MeshView_ = voodoo.View.extend({
 
       self.mesh = mesh;
       self.scene.add(mesh);
+      self.triggers.add(mesh);
       self.scene.attach(self.model.element, self.model.center,
           self.model.pixelScale);
       self.loaded = true;

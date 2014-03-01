@@ -458,6 +458,7 @@ var Image3DView_ = voodoo.View.extend({
     this.mesh.morphTargetInfluences = this.model.currentMorphTargets;
 
     this.scene.add(this.mesh);
+    this.triggers.add(this.mesh);
     this.scene.attach(this.model.element, false, false);
   },
 
