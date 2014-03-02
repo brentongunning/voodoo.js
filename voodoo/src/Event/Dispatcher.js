@@ -14,6 +14,7 @@
  */
 function Dispatcher_() {
   this.eventListeners_ = {};
+  this.numMouseEventListeners_ = 0;
 }
 
 
@@ -24,6 +25,7 @@ function Dispatcher_() {
  * @private
  */
 Dispatcher_.prototype.destroy_ = function() {
+  EventHelpers_.totalNumMouseEventListeners_ -= this.numMouseEventListeners_;
   this.eventListeners_ = null;
 };
 
@@ -55,6 +57,11 @@ Dispatcher_.prototype.dispatchEvent_ = function(thisArg, event) {
  * @param {function(Event)} listener Event listener.
  */
 Dispatcher_.prototype.off_ = function(type, listener) {
+  if (EventHelpers_.isMouseEvent_(type)) {
+    EventHelpers_.totalNumMouseEventListeners_--;
+    this.numMouseEventListeners_--;
+  }
+
   var listeners = this.eventListeners_[type];
   if (listeners && listeners.IndexOf(listener))
     listeners.splice(listeners.IndexOf(listener), 1);
@@ -71,6 +78,11 @@ Dispatcher_.prototype.off_ = function(type, listener) {
  * @param {function(Event)} listener Event listener.
  */
 Dispatcher_.prototype.on_ = function(type, listener) {
+  if (EventHelpers_.isMouseEvent_(type)) {
+    EventHelpers_.totalNumMouseEventListeners_++;
+    this.numMouseEventListeners_++;
+  }
+
   if (!this.eventListeners_[type])
     this.eventListeners_[type] = [];
 
