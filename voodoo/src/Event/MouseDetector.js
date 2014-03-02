@@ -286,6 +286,9 @@ MouseDetector_.prototype.update_ = function() {
     this.engine_.raycaster_.setMouse_(
         new Vector2_(this.clientX_, this.clientY_));
 
+  if (EventHelpers_.totalNumMouseEventListeners_ <= 0)
+    return;
+
   // We raycast every frame because objects may be moving under the mouse.
   var nextTrigger = this.raycast_();
 

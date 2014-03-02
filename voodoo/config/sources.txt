@@ -23,6 +23,7 @@ Render\Tracker.js
 Event\Dispatcher.js
 Event\EventTrigger.js
 Event\Event.js
+Event\EventHelpers.js
 Event\Triggers.js
 Event\TriggersFactory.js
 Event\Raycaster.js
