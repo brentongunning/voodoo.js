@@ -206,7 +206,7 @@ var Mesh = this.Mesh = voodoo.Model.extend({
  *
  * @return {Mesh}
  */
-Mesh.prototype.animation = function(name, start, end, seconds, opt_loop,
+Mesh.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
     opt_forward) {
   this.animations[name] = {
     start: start,

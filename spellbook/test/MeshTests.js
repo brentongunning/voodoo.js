@@ -71,7 +71,7 @@ MeshTests.prototype.testMeshLoopAnimations = function() {
     animated: true,
     center: false,
     pixelScale: false
-  }).animation('walk', 0, 23, 0.01, true).play('walk');
+  }).setAnimation('walk', 0, 23, 0.01, true).play('walk');
 
   assert('Playing', mesh.playing);
 
@@ -113,7 +113,7 @@ MeshTests.prototype.testMeshNonLoopAnimations = function(queue) {
   });
 
   queue.call(function(callbacks) {
-    mesh.animation('walk', 0, 23, 0.01, false).play('walk');
+    mesh.setAnimation('walk', 0, 23, 0.01, false).play('walk');
     assert('Looping', !mesh.looping);
 
     var start = new Date();
@@ -150,7 +150,7 @@ MeshTests.prototype.testMeshEvents = function(queue) {
   mesh.on('play', function() { play = true; });
   mesh.on('stop', function() { stop = true; });
 
-  mesh.animation('walk', 0, 23, 0.01, false).play('walk');
+  mesh.setAnimation('walk', 0, 23, 0.01, false).play('walk');
   mesh.playing = false;
 
   assert('Play Event', play);
