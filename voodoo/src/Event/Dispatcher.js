@@ -63,8 +63,8 @@ Dispatcher_.prototype.off_ = function(type, listener) {
   }
 
   var listeners = this.eventListeners_[type];
-  if (listeners && listeners.IndexOf(listener))
-    listeners.splice(listeners.IndexOf(listener), 1);
+  if (listeners && listeners.indexOf(listener))
+    listeners.splice(listeners.indexOf(listener), 1);
 };
 
 
