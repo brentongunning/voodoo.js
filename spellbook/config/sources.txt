@@ -1,13 +1,13 @@
-NullView.js
+Helpers\NullView.js
 
-Light.js
-AmbientLight.js
-CameraLight.js
-MouseLight.js
+Lights\Light.js
+Lights\AmbientLight.js
+Lights\CameraLight.js
+Lights\MouseLight.js
 
-Image3D.js
-Mesh.js
+Geometry\Image3D.js
+Geometry\Mesh.js
 
-Fader.js
-Hider.js
-Scaler.js
+Modifiers\Fader.js
+Modifiers\Hider.js
+Modifiers\Scaler.js
