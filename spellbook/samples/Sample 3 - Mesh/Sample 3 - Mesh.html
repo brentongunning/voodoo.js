@@ -39,7 +39,8 @@
 	});
 
 	var ScaledMesh = voodoo.Mesh.extend(voodoo.Scaler);
-	var mesh = new ScaledMesh({
+	var ScaledRotatedMesh = ScaledMesh.extend(voodoo.Rotator);
+	var mesh = new ScaledRotatedMesh({
 		element: document.getElementById('mesh'),
 		format: voodoo.Mesh.Format.JSON,
 		mesh: 'monster.js',
@@ -48,7 +49,9 @@
 		pixelScale: false
 	}).setScale(0.0005).on('load', function() {
 		window.console.log('loaded');
-	}).animation('walk', 0, 23, 1, true).animation('walk2', 0, 23, 1, false).play('walk');
+	}).setAnimation('walk', 0, 23, 1, true).setAnimation('walk2', 0, 23, 1, false).play('walk');
+
+	mesh.rotateTo(100, 0, 0, 5);
 
 </script>
 

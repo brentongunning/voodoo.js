@@ -10,4 +10,5 @@ Geometry\Mesh.js
 
 Modifiers\Fader.js
 Modifiers\Hider.js
+Modifiers\Rotator.js
 Modifiers\Scaler.js

@@ -20,9 +20,10 @@ var ScalerView_ = voodoo.View.extend({
 
     this.scene.on('add', function(e) {
       var scale = this.model.scale_;
-      e.object.scale.x = scale.x;
-      e.object.scale.y = scale.y;
-      e.object.scale.z = scale.z;
+      var objectScale = e.object.scale;
+      objectScale.x = scale.x;
+      objectScale.y = scale.y;
+      objectScale.z = scale.z;
       this.dirty();
     });
   },
@@ -49,8 +50,8 @@ var ScalerView_ = voodoo.View.extend({
  *
  * Options:
  *
- * - scale {number} Initial scale. This can be a scalar number, a array of
- *     length 3, or an object with x, y, and z properties.
+ * - scale {Object|number} Initial scale. This can be a scalar number, a array
+ *     of length 3, or an object with x, y, and z properties.
  *
  * Events:
  *
@@ -195,7 +196,7 @@ Scaler.prototype.scaleTo = function(scale, seconds) {
   * Immediately changes the scale of all scene meshes.
   *
   * scale can also be specified as separate components:
-  *    scaleTo(x, y, z, seconds)
+  *    setScale(x, y, z)
   *
   * @param {Object|number} scale Scale.
   *
@@ -223,7 +224,7 @@ Scaler.prototype.setScale = function(scale) {
 /**
  * Get or set the scale of all scene meshes.
  *
- * Setting the scale may be done in one of three ways:
+ * Setting the scale may be done in one of four ways:
  *
  * 1. Scalar: object.scale = 1;
  * 2. Array: object.scale = [1, 1, 0.5];
