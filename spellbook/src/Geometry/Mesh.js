@@ -106,14 +106,9 @@ var MeshView_ = voodoo.View.extend({
  *
  * Options:
  *
- * - element {HTMLElement} HTML element to attach to.
  * - mesh {string}  3D mesh file to load.
  * - format {Mesh.Format} Mesh file format. Default is JSON.
  * - animated {boolean} Whether the mesh supports animations. Default is true.
- * - center {boolean} Whether to center the mesh in the element. Default is
- *     true.
- * - pixelScale {boolean} Whether the unit's scale is pixels or units that
- *     scale with the element. Default is true.
  *
  * Events:
  *
@@ -121,15 +116,16 @@ var MeshView_ = voodoo.View.extend({
  * - stop
  *
  * @constructor
- * @extends {voodoo.Model}
+ * @extends {Positioner}
  *
  * @param {Object=} opt_options Options object.
  */
-var Mesh = this.Mesh = voodoo.Model.extend({
+var Mesh = this.Mesh = Positioner.extend({
 
   name: 'Mesh',
   organization: 'spellbook',
   viewType: MeshView_,
+  stencilViewType: MeshView_,
 
   initialize: function(options) {
     this.base.initialize(options);

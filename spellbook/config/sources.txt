@@ -1,5 +1,11 @@
 Helpers\NullView.js
 
+Modifiers\Fader.js
+Modifiers\Hider.js
+Modifiers\Positioner.js
+Modifiers\Rotator.js
+Modifiers\Scaler.js
+
 Lights\Light.js
 Lights\AmbientLight.js
 Lights\CameraLight.js
@@ -7,8 +13,3 @@ Lights\MouseLight.js
 
 Geometry\Image3D.js
 Geometry\Mesh.js
-
-Modifiers\Fader.js
-Modifiers\Hider.js
-Modifiers\Rotator.js
-Modifiers\Scaler.js

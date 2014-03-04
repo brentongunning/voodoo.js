@@ -238,7 +238,7 @@ Rotator.prototype.rotate = function(deltaRotation) {
   * Immediately changes the rotation of all scene meshes.
   *
   * rotation can also be specified as separate components:
-  *    setRotation(x, y, z, seconds)
+  *    setRotation(x, y, z)
   *
   * @param {Object} rotation Rotation.
   *
@@ -274,7 +274,7 @@ Rotator.prototype.setRotation = function(rotation) {
  * As a getter, this object will always return an
  * object with x, y, and z properties.
  *
- * @type {Object|number}
+ * @type {Object}
  */
 Rotator.prototype.rotation = null;
 

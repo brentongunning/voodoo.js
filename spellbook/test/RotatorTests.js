@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-RotatorTests = TestCase('RotatorTests');
+RotatorTests = AsyncTestCase('RotatorTests');
 
 
 /**
@@ -102,24 +102,32 @@ RotatorTests.prototype.testRotatorSetRotation = function() {
 /**
  * Tests that the rotate() changes the mesh continuously.
  */
-RotatorTests.prototype.testRotatorRotate = function() {
+RotatorTests.prototype.testRotatorRotate = function(queue) {
   var instance = new voodoo.Rotator({
     rotation: [0, 0, 0]
   });
 
-  instance.rotate([0.5, 0.4, 0.3]);
+  queue.call(function(callbacks) {
+    // Focus on the window to start the delta timer.
+    window.focus();
+    setTimeout(callbacks.add(function() {
+      instance.rotate(0.5, 0.4, 0.3);
+    }), 1100);
+  });
 
-  var start = new Date;
-  while (new Date() - start < 100)
-    voodoo.engine.frame();
+  queue.call(function(callbacks) {
+    var start = new Date();
+    while (new Date() - start < 1000)
+      voodoo.engine.frame();
 
-  assertNotEquals(0, instance.rotation.x);
-  assertNotEquals(0, instance.rotation.y);
-  assertNotEquals(0, instance.rotation.z);
+    assertNotEquals(0, instance.rotation.x);
+    assertNotEquals(0, instance.rotation.y);
+    assertNotEquals(0, instance.rotation.z);
 
-  assertNotEquals(0.5, instance.rotation.x);
-  assertNotEquals(0.4, instance.rotation.y);
-  assertNotEquals(0.3, instance.rotation.z);
+    assertNotEquals(0.5, instance.rotation.x);
+    assertNotEquals(0.4, instance.rotation.y);
+    assertNotEquals(0.3, instance.rotation.z);
+  });
 };
 
 
