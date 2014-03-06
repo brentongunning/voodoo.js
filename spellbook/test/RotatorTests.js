@@ -101,6 +101,8 @@ RotatorTests.prototype.testRotatorSetRotation = function() {
 
 /**
  * Tests that the rotate() changes the mesh continuously.
+ *
+ * @param {Object} queue Async queue.
  */
 RotatorTests.prototype.testRotatorRotate = function(queue) {
   var instance = new voodoo.Rotator({
@@ -111,7 +113,7 @@ RotatorTests.prototype.testRotatorRotate = function(queue) {
     // Focus on the window to start the delta timer.
     window.focus();
     setTimeout(callbacks.add(function() {
-      instance.rotate(0.5, 0.4, 0.3);
+      instance.rotate(0.5, 0.4, 0.3, true);
     }), 1100);
   });
 

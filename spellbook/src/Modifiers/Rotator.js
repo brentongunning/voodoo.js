@@ -209,17 +209,19 @@ Rotator.prototype.rotateTo = function(rotation, seconds) {
 
 
 /**
-  * Rotates all scene meshes over time continuously.
+  * Rotates all scene meshes from their current orientation.
   *
   * deltaRotation can also be specified as separate components:
   *    rotate(x, y, z)
   *
-  * @param {Object} deltaRotation Amount to rotate per second.
+  * @param {Object} deltaRotation Amount to rotate, either instantaniously or
+  *     per second depending on the continuous parameter.
+  * @param {boolean} continuous Whether to rotate continuously over time, or
+  *     instantly if false. Default is false.
   *
   * @return {Rotator}
   */
-Rotator.prototype.rotate = function(deltaRotation) {
-  this.deltaRotating_ = true;
+Rotator.prototype.rotate = function(deltaRotation, continuous) {
   if (arguments.length > 1) {
     this.deltaRotation_ = {
       x: arguments[0],
@@ -228,7 +230,19 @@ Rotator.prototype.rotate = function(deltaRotation) {
     };
   } else this.deltaRotation_ = this.parseRotation_(deltaRotation);
 
-  this.dispatch(new voodoo.Event('rotateBegin', this));
+  if (typeof continuous !== 'undefined' && continuous) {
+    this.deltaRotating_ = true;
+    this.dispatch(new voodoo.Event('rotateBegin', this));
+  } else {
+    var rotation = {
+      x: this.rotation_.x + this.deltaRotation_.x,
+      y: this.rotation_.y + this.deltaRotation_.y,
+      z: this.rotation_.z + this.deltaRotation_.z
+    };
+
+    rotation = this.clampRotation_(rotation);
+    this.setRotation(rotation);
+  }
 
   return this;
 };
