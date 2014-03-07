@@ -141,8 +141,10 @@ RotatorTests.prototype.testRotatorEvents = function() {
 
   var rotateBegin = false;
   var rotateEnd = false;
+  var rotate = false;
   instance.on('rotateBegin', function() { rotateBegin = true; });
   instance.on('rotateEnd', function() { rotateEnd = true; });
+  instance.on('rotate', function() { rotate = true; });
 
   instance.rotateTo(0.5, 0.4, 0.3, 0.0001);
 
@@ -152,6 +154,7 @@ RotatorTests.prototype.testRotatorEvents = function() {
 
   assert('Rotate Begin', rotateBegin);
   assert('Rotate End', rotateEnd);
+  assert('Rotate', rotate);
 
   assertEquals(0.5, instance.rotation.x);
   assertEquals(0.4, instance.rotation.y);

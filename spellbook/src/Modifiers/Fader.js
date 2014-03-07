@@ -81,6 +81,7 @@ var FaderStencilView_ = voodoo.View.extend({
  *
  * - fadeBegin
  * - fadeEnd
+ * - alphaChange
  *
  * @constructor
  * @extends {voodoo.Model}
@@ -121,6 +122,7 @@ var Fader = this.Fader = voodoo.Model.extend({
       if (t < 1.0)
         this.alpha_ = this.startAlpha * (1 - t) + this.targetAlpha * t;
       else this.alpha_ = this.targetAlpha;
+      this.dispatch(new voodoo.Event('alphaChange', this));
 
       if (this.alpha_ === this.targetAlpha)
         this.dispatch(new voodoo.Event('fadeEnd', this));
@@ -192,6 +194,7 @@ Fader.prototype.fadeTo = function(alpha, seconds) {
 Fader.prototype.setAlpha = function(alpha) {
   this.alpha_ = alpha;
   this.targetAlpha = alpha;
+  this.dispatch(new voodoo.Event('alphaChange', this));
 
   this.view.setAlpha(alpha);
   if (typeof this.stencilView !== 'undefined' && this.stencilView)

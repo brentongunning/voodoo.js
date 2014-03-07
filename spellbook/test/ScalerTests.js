@@ -109,8 +109,10 @@ ScalerTests.prototype.testScalerEvents = function() {
 
   var scaleBegin = false;
   var scaleEnd = false;
+  var scale = false;
   instance.on('scaleBegin', function() { scaleBegin = true; });
   instance.on('scaleEnd', function() { scaleEnd = true; });
+  instance.on('scale', function() { scale = true; });
 
   instance.scaleTo(0.5, 0.4, 0.3, 0.0001);
 
@@ -120,6 +122,7 @@ ScalerTests.prototype.testScalerEvents = function() {
 
   assert('Scale Begin', scaleBegin);
   assert('Scale End', scaleEnd);
+  assert('Scale', scale);
 
   assertEquals(0.5, instance.scale.x);
   assertEquals(0.4, instance.scale.y);

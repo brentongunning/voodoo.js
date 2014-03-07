@@ -60,6 +60,7 @@ FaderTests.prototype.testFaderEvents = function() {
   var fadeInEnd = false;
   var fadeOutBegin = false;
   var fadeOutEnd = false;
+  var alphaChange = false;
 
   instance.on('fadeBegin', function() {
     if (instance.alpha === 0)
@@ -77,6 +78,10 @@ FaderTests.prototype.testFaderEvents = function() {
     }
   });
 
+  instance.on('alphaChange', function() {
+    alphaChange = true;
+  });
+
   instance.fadeIn(0.0001);
 
   var start = new Date;
@@ -87,6 +92,7 @@ FaderTests.prototype.testFaderEvents = function() {
   assert('Fade Out Begin', fadeOutBegin);
   assert('Fade In End', fadeInEnd);
   assert('Fade Out End', fadeOutEnd);
+  assert('Alpha change', alphaChange);
 };
 
 

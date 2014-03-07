@@ -107,8 +107,10 @@ PositionerTests.prototype.testPositionerMoveEvents = function() {
 
   var moveBegin = false;
   var moveEnd = false;
+  var move = false;
   instance.on('moveBegin', function() { moveBegin = true; });
   instance.on('moveEnd', function() { moveEnd = true; });
+  instance.on('move', function() { move = true; });
 
   instance.moveTo(0.5, 0.4, 0.3, 0.0001);
 
@@ -118,6 +120,7 @@ PositionerTests.prototype.testPositionerMoveEvents = function() {
 
   assert('Move Begin', moveBegin);
   assert('Move End', moveEnd);
+  assert('Move', moveEnd);
 
   assertEquals(0.5, instance.position.x);
   assertEquals(0.4, instance.position.y);

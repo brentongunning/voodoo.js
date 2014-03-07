@@ -57,6 +57,7 @@ var ScalerView_ = voodoo.View.extend({
  *
  * - scaleBegin
  * - scaleEnd
+ * - scale
  *
  * @constructor
  * @extends {voodoo.Model}
@@ -137,6 +138,8 @@ var Scaler = this.Scaler = voodoo.Model.extend({
         this.scale_.z = this.targetScale.z;
       }
 
+      this.dispatch(new voodoo.Event('scale', this));
+
       if (this.scale_.x === this.targetScale.x &&
           this.scale_.y === this.targetScale.y &&
           this.scale_.z === this.targetScale.z)
@@ -212,6 +215,8 @@ Scaler.prototype.setScale = function(scale) {
   this.targetScale.x = this.scale_.x;
   this.targetScale.y = this.scale_.y;
   this.targetScale.z = this.scale_.z;
+
+  this.dispatch(new voodoo.Event('scale', this));
 
   this.view.setScale(this.scale_);
   if (typeof this.stencilView !== 'undefined' && this.stencilView)

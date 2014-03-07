@@ -70,6 +70,7 @@ var PositionerView_ = voodoo.View.extend({
  * - detach
  * - moveBegin
  * - moveEnd
+ * - move
  *
  * @constructor
  * @extends {voodoo.Model}
@@ -165,6 +166,7 @@ var Positioner = this.Positioner = voodoo.Model.extend({
         this.position_.y = this.targetPosition.y;
         this.position_.z = this.targetPosition.z;
       }
+      this.dispatch(new voodoo.Event('move', this));
 
       if (this.position_.x === this.targetPosition.x &&
           this.position_.y === this.targetPosition.y &&
@@ -273,6 +275,8 @@ Positioner.prototype.setPosition = function(position) {
   this.targetPosition.x = this.position_.x;
   this.targetPosition.y = this.position_.y;
   this.targetPosition.z = this.position_.z;
+
+  this.dispatch(new voodoo.Event('move', this));
 
   this.view.setPosition(this.position_);
   if (typeof this.stencilView !== 'undefined' && this.stencilView)
