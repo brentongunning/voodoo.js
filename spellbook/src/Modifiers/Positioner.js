@@ -26,6 +26,7 @@ var PositionerView_ = voodoo.View.extend({
       objectPosition.z = position.z;
       this.dirty();
     });
+    this.setPosition(this.model.position_);
   },
 
   setPosition: function(position) {

@@ -23,6 +23,7 @@ var FaderView_ = voodoo.View.extend({
         e.object.material.opacity = this.model.alpha;
       this.dirty();
     });
+    this.setAlpha(this.model.alpha);
   },
 
   setAlpha: function(alpha) {

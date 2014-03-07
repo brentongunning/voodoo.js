@@ -40,7 +40,9 @@
 
 	var ScaledMesh = voodoo.Mesh.extend(voodoo.Scaler);
 	var ScaledRotatedMesh = ScaledMesh.extend(voodoo.Rotator);
-	var mesh = new ScaledRotatedMesh({
+	var Mesh2 = ScaledRotatedMesh.extend(voodoo.Colorer);
+
+	var mesh = new Mesh2({
 		element: document.getElementById('mesh'),
 		format: voodoo.Mesh.Format.JSON,
 		mesh: 'monster.js',

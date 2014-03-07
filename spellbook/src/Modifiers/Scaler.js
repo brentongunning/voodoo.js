@@ -26,6 +26,7 @@ var ScalerView_ = voodoo.View.extend({
       objectScale.z = scale.z;
       this.dirty();
     });
+    this.setScale(this.model.scale_);
   },
 
   setScale: function(scale) {

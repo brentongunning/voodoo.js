@@ -1,5 +1,6 @@
 Helpers\NullView.js
 
+Modifiers\Colorer.js
 Modifiers\Fader.js
 Modifiers\Hider.js
 Modifiers\Positioner.js

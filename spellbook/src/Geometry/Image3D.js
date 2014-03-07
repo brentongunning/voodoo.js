@@ -504,6 +504,7 @@ var Image3D = this.Image3D = voodoo.Model.extend({
   name: 'Image3D',
   organization: 'spellbook',
   viewType: Image3DView_,
+  stencilViewType: Image3DView_,
 
   initialize: function(options) {
     this.base.initialize(options);

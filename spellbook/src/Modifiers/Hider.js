@@ -22,6 +22,7 @@ var HiderView_ = voodoo.View.extend({
       e.object.visible = this.model.visible;
       this.dirty();
     });
+    this.setVisible(this.model.visible);
   },
 
   setVisible: function(visible) {

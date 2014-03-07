@@ -26,6 +26,7 @@ var RotatorView_ = voodoo.View.extend({
       objectRotation.z = rotation.z;
       this.dirty();
     });
+    this.setRotation(this.model.rotation_);
   },
 
   setRotation: function(rotation) {

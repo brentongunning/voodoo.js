@@ -3419,6 +3419,9 @@ THREE.SkinnedMesh = function(g,m){};
 */
 THREE.Mesh = function(g,m){};
 
+THREE.Mesh.prototype.material;
+THREE.Mesh.prototype.geometry;
+
 /** @constructor */
 THREE.Geometry = function(){};
 
