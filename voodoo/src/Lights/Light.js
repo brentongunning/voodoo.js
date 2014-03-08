@@ -109,13 +109,13 @@ Light_.prototype['initialize'] = function(options) {
   else this.color_ = null;
 
   // Create the color property
+  var self = this;
   Object.defineProperty(this, 'color', {
-    get: function() { return this.color_; },
+    get: function() { return self.color_; },
     set: function(value) {
-      this['view']['setColor'](value);
-      this.color_ = value;
-    },
-    writeable: true
+      self['view']['setColor'](value);
+      self.color_ = value;
+    }
   });
 };
 

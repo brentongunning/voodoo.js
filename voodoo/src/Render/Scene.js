@@ -44,6 +44,19 @@ Scene.prototype['detach'] = function() {};
 
 
 /**
+ * Converts a coordinate from local-space to page-space
+ * when the scene is attached to an HTML element.
+ *
+ * @param {Object|Array.<number>} coordinate Local space xyz coordinate.
+ *
+ * @return {Object|Array.<number>} Page-space coordinate.
+ */
+Scene.prototype['localToPage'] = function(coordinate) {
+  return {};
+};
+
+
+/**
  * Removes an event handler.
  *
  * @param {string} type Event type.
@@ -60,6 +73,19 @@ Scene.prototype['off'] = function(type, listener) {};
  * @param {function(Event)} listener Event listener.
  */
 Scene.prototype['on'] = function(type, listener) {};
+
+
+/**
+ * Converts a coordinate from page-space to local-space
+ * when the scene is attached to an HTML element.
+ *
+ * @param {Object|Array.<number>} coordinate Page-space xyz coordinate.
+ *
+ * @return {Object|Array.<number>} Local coordinate.
+ */
+Scene.prototype['pageToLocal'] = function(coordinate) {
+  return {};
+};
 
 
 /**

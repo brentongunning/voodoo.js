@@ -42,17 +42,17 @@ function Engine(opt_options) {
 
   // Setup models property
   this.models_ = [];
+  var self = this;
   Object.defineProperty(this, 'models', {
     get: function() {
       // Create a copy of all the models. A copy lets the user iterate over
       // and delete models without worrying about invalidating our own list.
       var models = [];
-      for (var i = 0; i < this.models_.length; ++i)
-        models.push(this.models_[i]);
+      for (var i = 0; i < self.models_.length; ++i)
+        models.push(self.models_[i]);
       return models;
     },
-    set: function() { log_.error_('models is read-only'); },
-    writeable: false
+    enumerable: true
   });
 
   // Create the timer used to measure delta times between frames.
@@ -103,8 +103,6 @@ function Engine(opt_options) {
 
     if (realtimeUpdate || realtimeRender)
       this.run_(realtimeUpdate, realtimeRender);
-
-    var self = this;
 
     if (!realtimeUpdate) {
       this.updateThread_ = window.setInterval(function() {

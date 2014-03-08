@@ -310,10 +310,10 @@ Model.prototype.createViews_ = function() {
   var engine = window['voodoo']['engine'];
   var layers = engine.renderer_.layers_;
 
+  var self = this;
   Object.defineProperty(this, 'loaded', {
-    get: function() { return this.numViewsLoaded_ === this.numViewsToLoad_; },
-    set: function() { log_.error_('loaded is read-only'); },
-    writeable: false
+    get: function() { return self.numViewsLoaded_ === self.numViewsToLoad_; },
+    enumerable: true
   });
 
   // Create the views, one for each layer and one additional for the
@@ -408,10 +408,10 @@ Model.prototype.setupCache_ = function() {
   this.cache_ = window['voodoo']['engine'].modelCacheFactory_.createCache_(
       this);
 
+  var self = this;
   Object.defineProperty(this, 'cache', {
-    get: function() { return this.cache_; },
-    set: function() { log_.error_('cache is read-only'); },
-    writeable: false
+    get: function() { return self.cache_; },
+    enumerable: true
   });
 };
 
@@ -422,16 +422,16 @@ Model.prototype.setupCache_ = function() {
  * @private
  */
 Model.prototype.setupViewProperties_ = function() {
+  var self = this;
+
   Object.defineProperty(this, 'view', {
-    get: function() { return this.view_; },
-    set: function() { log_.error_('view is read-only'); },
-    writeable: false
+    get: function() { return self.view_; },
+    enumerable: true
   });
 
   Object.defineProperty(this, 'stencilView', {
-    get: function() { return this.stencilView_; },
-    set: function() { log_.error_('stencilView is read-only'); },
-    writeable: false
+    get: function() { return self.stencilView_; },
+    enumerable: true
   });
 };
 
@@ -481,6 +481,8 @@ Model.prototype['stencilViewType'] = null;
  * Derives a new type from a base Model. The Model's views
  * are also automatically extended if they are defined.
  *
+ * @this {?}
+ *
  * @param {Object=} opt_object Optional object to extend with.
  *
  * @return {?} Extended type.
@@ -504,12 +506,13 @@ Model['extend'] = function(opt_object) {
     newType.prototype['stencilViewType'] = stencil['extend'](newStencil);
   }
 
-  var oldName = this.prototype['name'];
+  var name = this.prototype['name'];
   var newName = newType.prototype['name'];
-  if (typeof oldName !== 'undefined' && oldName !== null &&
+  if (typeof name !== 'undefined' && name !== null &&
       typeof newName !== 'undefined' && newName !== null &&
-      newName !== oldName)
-    newType.prototype['name'] = oldName + '.' + newName;
+      newName !== name) {
+    newType.prototype['name'] = name + '.' + newName;
+  }
 
   return newType;
 };

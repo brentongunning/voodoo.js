@@ -32,12 +32,14 @@ function ThreeJsScene_(scene, view) {
   this.meshes_ = [];
   this.dispatcher_ = new Dispatcher_();
 
+  var sef = this;
+
   Object.defineProperty(this, 'objects', {
     get: function() {
       // Create a copy of all the objects. A copy lets the user iterate over
       // them without worrying about invalidating our own list or them changing.
       var objects = [];
-      var children = this.parent_.children;
+      var children = sef.parent_.children;
       for (var i = 0; i < children.length; ++i) {
         var child = children[i];
         if (child['addedToVoodooScene'])
@@ -45,8 +47,7 @@ function ThreeJsScene_(scene, view) {
       }
       return objects;
     },
-    set: function() { log_.error_('objects is read-only'); },
-    writeable: false
+    enumerable: true
   });
 }
 
@@ -271,6 +272,35 @@ ThreeJsScene_.prototype['detach'] = function() {
 
 
 /**
+ * Converts a coordinate from local-space to page-space
+ * when the scene is attached to an HTML element.
+ *
+ * @this {ThreeJsScene_}
+ *
+ * @param {Object|Array.<number>} coordinate Local space xyz coordinate.
+ *
+ * @return {Object|Array.<number>} Page-space coordinate.
+ */
+ThreeJsScene_.prototype['localToPage'] = function(coordinate) {
+  if (typeof coordinate.x !== 'undefined') {
+    // Object with XYZ
+    return {
+      x: coordinate.x * this.parent_.scale.x + this.parent_.position.x,
+      y: coordinate.y * this.parent_.scale.y + this.parent_.position.y,
+      z: coordinate.z * this.parent_.scale.z + this.parent_.position.z
+    };
+  } else {
+    // Array
+    return [
+      coordinate[0] * this.parent_.scale.x + this.parent_.position.x,
+      coordinate[1] * this.parent_.scale.y + this.parent_.position.y,
+      coordinate[2] * this.parent_.scale.z + this.parent_.position.z
+    ];
+  }
+};
+
+
+/**
  * Removes an event handler.
  *
  * @this {Engine}
@@ -293,6 +323,35 @@ ThreeJsScene_.prototype['off'] = function(type, listener) {
  */
 ThreeJsScene_.prototype['on'] = function(type, listener) {
   this.dispatcher_.on_(type, listener);
+};
+
+
+/**
+ * Converts a coordinate from page-space to local-space
+ * when the scene is attached to an HTML element.
+ *
+ * @this {ThreeJsScene_}
+ *
+ * @param {Object|Array.<number>} coordinate Page-space xyz coordinate.
+ *
+ * @return {Object|Array.<number>} Local coordinate.
+ */
+ThreeJsScene_.prototype['pageToLocal'] = function(coordinate) {
+  if (typeof coordinate.x !== 'undefined') {
+    // Object with XYZ
+    return {
+      x: (coordinate.x - this.parent_.position.x) / this.parent_.scale.x,
+      y: (coordinate.y - this.parent_.position.y) / this.parent_.scale.y,
+      z: (coordinate.z - this.parent_.position.z) / this.parent_.scale.z
+    };
+  } else {
+    // Array
+    return [
+      (coordinate[0] - this.parent_.position.x) / this.parent_.scale.x,
+      (coordinate[1] - this.parent_.position.y) / this.parent_.scale.y,
+      (coordinate[2] - this.parent_.position.z) / this.parent_.scale.z
+    ];
+  }
 };
 
 

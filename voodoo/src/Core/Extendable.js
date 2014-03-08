@@ -126,9 +126,7 @@ function Extendable() {
       if (!self.base_)
         createBases();
       return self.base_;
-    },
-    set: function() { log_.error_('base is read-only'); },
-    writeable: false
+    }
   });
 
   // Call the one and only construct function
@@ -162,7 +160,7 @@ Extendable.prototype['base'] = {};
 /**
  * Derives a new type from a base type. Both the Model and View are base types.
  *
- * @this {Extendable}
+ * @this {?}
  * @ignore
  *
  * @param {Object=} opt_object Optional object to extend with.
@@ -213,11 +211,11 @@ Extendable['extend'] = function(opt_object) {
   var ancestors = typeof baseType['ancestors'] === 'undefined' ?
       [] : baseType['ancestors'].slice(0);
 
-  /** @type {Object} */
+  /** @type {?} */
   var self = this;
-
   if (self !== Extendable)
     ancestors.push(baseType);
+
   if (isExtended) {
     ancestors = ancestors.concat(opt_object['ancestors']);
     ancestors.push(opt_object);
