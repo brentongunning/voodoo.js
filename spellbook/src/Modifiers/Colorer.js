@@ -37,6 +37,8 @@ var ColorerView_ = voodoo.View.extend({
   /**
    * Sets a color on a mesh.
    *
+   * @private
+   *
    * @param {THREE.Mesh} mesh Mesh.
    * @param {THREE.Color} color Color.
    */

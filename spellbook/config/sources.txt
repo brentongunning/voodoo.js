@@ -7,6 +7,8 @@ Modifiers\Positioner.js
 Modifiers\Rotator.js
 Modifiers\Scaler.js
 
+Controllers\Arcball.js
+
 Lights\Light.js
 Lights\AmbientLight.js
 Lights\CameraLight.js
