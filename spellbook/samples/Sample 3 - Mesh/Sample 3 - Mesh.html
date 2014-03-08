@@ -38,11 +38,11 @@
 		performanceScaling: false
 	});
 
-	var ScaledMesh = voodoo.Mesh.extend(voodoo.Scaler);
-	var ScaledRotatedMesh = ScaledMesh.extend(voodoo.Rotator);
-	var Mesh2 = ScaledRotatedMesh.extend(voodoo.Colorer);
+	var Mesh = voodoo.Mesh.extend(voodoo.Scaler);
+	var Mesh2 = Mesh.extend(voodoo.Colorer);
+	var Mesh3 = Mesh2.extend(voodoo.Arcball);
 
-	var mesh = new Mesh2({
+	var mesh = new Mesh3({
 		element: document.getElementById('mesh'),
 		format: voodoo.Mesh.Format.JSON,
 		mesh: 'monster.js',
@@ -52,8 +52,6 @@
 	}).setScale(0.0005).on('load', function() {
 		window.console.log('loaded');
 	}).setAnimation('walk', 0, 23, 1, true).setAnimation('walk2', 0, 23, 1, false).play('walk');
-
-	mesh.rotateTo(100, 0, 0, 5);
 
 </script>
 
