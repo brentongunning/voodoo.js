@@ -118,7 +118,7 @@ var ArcballView_ = voodoo.View.extend({
  *
  *
  * @constructor
- * @extends {Rotator}
+ * @extends {voodoo.Model}
  *
  * @param {Object=} opt_options Options object.
  */
