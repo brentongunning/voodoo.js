@@ -285,8 +285,11 @@ voodoo.Scene.prototype.attach = function(element, center, pixels) {};
 
 voodoo.Scene.prototype.detach = function() {};
 
-/** @param {THREE.Object3D} object */
-voodoo.Scene.prototype.remove = function(object) {};
+/**
+ * @param {Object|Array.<number>} coordinate
+ * @return {Object|Array.<number>}
+ */
+voodoo.Scene.prototype.localToPage = function(coordinate) {};
 
 /**
  * @param {string} type
@@ -299,6 +302,15 @@ voodoo.Scene.prototype.on = function(type, listener) {};
  * @param {function(voodoo.Event)} listener
  */
 voodoo.Scene.prototype.off = function(type, listener) {};
+
+/**
+ * @param {Object|Array.<number>} coordinate
+ * @return {Object|Array.<number>}
+ */
+voodoo.Scene.prototype.pageToLoca = function(coordinate) {};
+
+/** @param {THREE.Object3D} object */
+voodoo.Scene.prototype.remove = function(object) {};
 
 /** @type {Array.<THREE.Object3D>} */
 voodoo.Scene.objects;
