@@ -99,25 +99,25 @@ var Rotator = this.Rotator = voodoo.Model.extend({
       get: function() { return self.rotation_.x; },
       set: function(x) { self.setRotation(x, self.rotation_.y,
           self.rotation_.z); },
-      writeable: false
+      enumerable: false
     });
     Object.defineProperty(proxy, 'y', {
       get: function() { return self.rotation_.y; },
       set: function(y) { self.setRotation(self.rotation_.x, y,
           self.rotation_.z); },
-      writeable: false
+      enumerable: false
     });
     Object.defineProperty(proxy, 'z', {
       get: function() { return self.rotation_.z; },
       set: function(z) { self.setRotation(self.rotation_.x,
           self.rotation_.y, z); },
-      writeable: false
+      enumerable: false
     });
 
     Object.defineProperty(this, 'rotation', {
       get: function() { return proxy; },
-      set: function(rotation) { this.setRotation(rotation); },
-      writeable: false
+      set: function(rotation) { self.setRotation(rotation); },
+      enumerable: false
     });
   },
 

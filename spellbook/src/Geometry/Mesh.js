@@ -151,19 +151,21 @@ var Mesh = this.Mesh = Positioner.extend({
     this.playing_ = false;
     this.looping_ = false;
 
+    var self = this;
+
     Object.defineProperty(this, 'looping', {
-      get: function() { return this.looping_; },
-      writeable: false
+      get: function() { return self.looping_; },
+      enumerable: false
     });
 
     Object.defineProperty(this, 'playing', {
-      get: function() { return this.playing_; },
+      get: function() { return self.playing_; },
       set: function(playing) {
         if (playing)
           throw 'Cannot set playing to true. Call play()';
-        else this.stop();
+        else self.stop();
       },
-      writeable: false
+      enumerable: false
     });
   },
 

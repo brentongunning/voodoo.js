@@ -67,21 +67,22 @@ var Hider = this.Hider = voodoo.Model.extend({
     this.visible_ = typeof options.visible !== 'undefined' ?
         options.visible : true;
 
+    var self = this;
     Object.defineProperty(this, 'visible', {
       get: function() { return this.visible_; },
       set: function(visible) {
-        if (visible != this.visible_) {
-          this.visible_ = visible;
-          this.view.setVisible(visible);
-          if (typeof this.stencilView !== 'undefined' && this.stencilView)
-            this.stencilView.setVisible(visible);
+        if (visible != self.visible_) {
+          self.visible_ = visible;
+          self.view.setVisible(visible);
+          if (typeof self.stencilView !== 'undefined' && self.stencilView)
+            self.stencilView.setVisible(visible);
 
           if (visible)
-            this.dispatch(new voodoo.Event('show', this));
-          else this.dispatch(new voodoo.Event('hide', this));
+            self.dispatch(new voodoo.Event('show', self));
+          else self.dispatch(new voodoo.Event('hide', self));
         }
       },
-      writeable: false
+      enumerable: false
     });
   }
 

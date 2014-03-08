@@ -115,25 +115,25 @@ var Positioner = this.Positioner = voodoo.Model.extend({
       get: function() { return self.position_.x; },
       set: function(x) { self.setPosition(x, self.position_.y,
           self.position_.z); },
-      writeable: false
+      enumerable: false
     });
     Object.defineProperty(proxy, 'y', {
       get: function() { return self.position_.y; },
       set: function(y) { self.setPosition(self.position_.x, y,
           self.position_.z); },
-      writeable: false
+      enumerable: false
     });
     Object.defineProperty(proxy, 'z', {
       get: function() { return self.position_.z; },
       set: function(z) { self.setPosition(self.position_.x,
           self.position_.y, z); },
-      writeable: false
+      enumerable: false
     });
 
     Object.defineProperty(this, 'position', {
       get: function() { return proxy; },
-      set: function(position) { this.setPosition(position); },
-      writeable: false
+      set: function(position) { self.setPosition(position); },
+      enumerable: false
     });
   },
 

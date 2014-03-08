@@ -55,14 +55,15 @@ var Light_ = voodoo.Model.extend({
     else this.color_ = null;
 
     // Create the color property
+    var self = this;
     Object.defineProperty(this, 'color', {
-      get: function() { return this.color_; },
+      get: function() { return self.color_; },
       set: function(color) {
         var threeJsColor = voodoo.utility.convertCssColorToThreeJsColor(color);
         this.view.setColor(threeJsColor);
-        this.color_ = color;
+        self.color_ = color;
       },
-      writeable: true
+      enumerable: true
     });
   },
 

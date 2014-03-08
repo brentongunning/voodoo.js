@@ -105,10 +105,11 @@ var Fader = this.Fader = voodoo.Model.extend({
     this.fadeStartTime = null;
     this.fadeDuration = 0;
 
+    var self = this;
     Object.defineProperty(this, 'alpha', {
-      get: function() { return this.alpha_; },
-      set: function(alpha) { this.setAlpha(alpha); },
-      writeable: false
+      get: function() { return self.alpha_; },
+      set: function(alpha) { self.setAlpha(alpha); },
+      enumerable: false
     });
   },
 

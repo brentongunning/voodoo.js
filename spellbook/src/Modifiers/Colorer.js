@@ -94,10 +94,11 @@ var Colorer = this.Colorer = voodoo.Model.extend({
     this.threeJsColor_ =
         voodoo.utility.convertCssColorToThreeJsColor(this.color_);
 
+    var self = this;
     Object.defineProperty(this, 'color', {
-      get: function() { return this.color_; },
-      set: function(color) { this.setColor(color); },
-      writeable: false
+      get: function() { return self.color_; },
+      set: function(color) { self.setColor(color); },
+      enumerable: false
     });
   }
 

@@ -98,23 +98,23 @@ var Scaler = this.Scaler = voodoo.Model.extend({
     Object.defineProperty(proxy, 'x', {
       get: function() { return self.scale_.x; },
       set: function(x) { self.setScale(x, self.scale_.y, self.scale_.z); },
-      writeable: false
+      enumerable: false
     });
     Object.defineProperty(proxy, 'y', {
       get: function() { return self.scale_.y; },
       set: function(y) { self.setScale(self.scale_.x, y, self.scale_.z); },
-      writeable: false
+      enumerable: false
     });
     Object.defineProperty(proxy, 'z', {
       get: function() { return self.scale_.z; },
       set: function(z) { self.setScale(self.scale_.x, self.scale_.y, z); },
-      writeable: false
+      enumerable: false
     });
 
     Object.defineProperty(this, 'scale', {
       get: function() { return proxy; },
-      set: function(scale) { this.setScale(scale); },
-      writeable: false
+      set: function(scale) { self.setScale(scale); },
+      enumerable: false
     });
   },
 
