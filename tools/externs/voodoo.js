@@ -307,7 +307,7 @@ voodoo.Scene.prototype.off = function(type, listener) {};
  * @param {Object|Array.<number>} coordinate
  * @return {Object|Array.<number>}
  */
-voodoo.Scene.prototype.pageToLoca = function(coordinate) {};
+voodoo.Scene.prototype.pageToLocal = function(coordinate) {};
 
 /** @param {THREE.Object3D} object */
 voodoo.Scene.prototype.remove = function(object) {};
