@@ -19,15 +19,8 @@ var ArcballView_ = voodoo.View.extend({
     this.base.load();
   },
 
-  beginArcballRotation: function(x, y) {
-    this.computeArcballSphere();
-  },
-
-  rotateArcball: function(x, y) {
-  },
-
   computeArcballSphere: function() {
-    if (this.model.arcballCenter && this.model.arcballRadius) {
+    if (this.model.arcballCenter !== null && this.model.arcballRadius !== 0) {
       // The arcball sphere is fully defined. use t.
       this.arcballCenter_ = this.model.arcballCenter;
       this.arcballRadius_ = this.model.arcballRadius;
@@ -43,9 +36,12 @@ var ArcballView_ = voodoo.View.extend({
         var geometry = sceneObject['geometry'];
 
         if (geometry && typeof geometry !== 'undefined') {
-          var px = sceneObject.position.x * sceneObject.scale.x;
-          var py = sceneObject.position.y * sceneObject.scale.y;
-          var pz = sceneObject.position.z * sceneObject.scale.z;
+          var px = sceneObject.position.x * sceneObject.scale.x +
+              geometry.boundingSphere.center.x * sceneObject.scale.x;
+          var py = sceneObject.position.y * sceneObject.scale.y +
+              geometry.boundingSphere.center.y * sceneObject.scale.y;
+          var pz = sceneObject.position.z * sceneObject.scale.z +
+              geometry.boundingSphere.center.z * sceneObject.scale.z;
 
           this.arcballCenter_.x += px;
           this.arcballCenter_.y += py;
@@ -67,9 +63,12 @@ var ArcballView_ = voodoo.View.extend({
         var geometry = sceneObject['geometry'];
 
         if (geometry && typeof geometry !== 'undefined') {
-          var px = sceneObject.position.x * sceneObject.scale.x;
-          var py = sceneObject.position.y * sceneObject.scale.y;
-          var pz = sceneObject.position.z * sceneObject.scale.z;
+          var px = sceneObject.position.x * sceneObject.scale.x +
+              geometry.boundingSphere.center.x * sceneObject.scale.x;
+          var py = sceneObject.position.y * sceneObject.scale.y +
+              geometry.boundingSphere.center.y * sceneObject.scale.y;
+          var pz = sceneObject.position.z * sceneObject.scale.z +
+              geometry.boundingSphere.center.z * sceneObject.scale.z;
 
           var dx = px - this.arcballCenter_.x;
           var dy = py - this.arcballCenter_.y;
@@ -84,13 +83,20 @@ var ArcballView_ = voodoo.View.extend({
             this.arcballRadius_ = radius;
         }
       }
+
+      if (this.model.arcballCenter !== null)
+        this.arcballCenter_ = this.model.arcballCenter;
+      if (this.model.arcballRadius !== 0)
+        this.arcballRadius_ = this.model.arcballRadius;
     }
 
-    this.screenCenter_ = this.scene.localToPage(this.arcballCenter_);
-
-    this.screenRadius_ = this.scene.localToPage(
-        [this.arcballCenter_.x - this.arcballRadius_, 0, 0])[0] -
-        this.screenCenter_.x;
+    var center = this.scene.localToPage(this.arcballCenter_);
+    return {
+      center: center,
+      radius: Math.abs(this.scene.localToPage(
+          [this.arcballCenter_.x - this.arcballRadius_, 0, 0])[0] -
+          center.x)
+    };
   }
 
 });
@@ -121,7 +127,7 @@ var Arcball = this.Arcball = Rotator.extend({
   name: 'Arcball',
   organization: 'spellbook',
   viewType: ArcballView_,
-  stencilViewType: ArcballView_,
+  stencilViewType: NullView,
 
   initialize: function(options) {
     this.base.initialize(options);
@@ -129,9 +135,10 @@ var Arcball = this.Arcball = Rotator.extend({
     this.arcballCenter = typeof options.arcballCenter !== 'undefined' ?
         options.arcballCenter : null;
     this.arcballRadius = typeof options.arcballRadius !== 'undefined' ?
-        options.arcballRadius : null;
+        options.arcballRadius : 0;
 
     this.rotatingArcball = false;
+    this.startArcballRotation_ = new THREE.Quaternion(0, 0, 0, 1);
   },
 
   setUpViews: function() {
@@ -141,22 +148,61 @@ var Arcball = this.Arcball = Rotator.extend({
 
     this.on('mousemove', function(e) {
       if (self.rotatingArcball) {
-        self.view.rotateArcball(e.page.x, e.page.y);
-        if (typeof self.stencilView !== 'undefined' && self.stencilView)
-          self.stencilView.rotateArcball(e.page.x, e.page.y);
+        var p = self.mapOntoSphere_(e.page.x, e.page.y);
+
+        var a = new THREE.Vector3(self.arcballAnchorPoint_.x,
+            self.arcballAnchorPoint_.y, self.arcballAnchorPoint_.z);
+        var b = new THREE.Vector3(p.x, p.y, p.z);
+        var axis = new THREE.Vector3();
+        axis.crossVectors(a, b);
+        axis.normalize();
+        var dot = a.dot(b);
+        var angle = Math.acos(dot);
+
+        var q = new THREE.Quaternion(0, 0, 0, 0);
+        q.setFromAxisAngle(axis, angle * 2);
+        q.normalize();
+
+        self.currentArcballRotation_ = new THREE.Quaternion(0, 0, 0, 1);
+        self.currentArcballRotation_.multiplyQuaternions(
+            q, self.startArcballRotation_);
+
+        var eulerAngles = new THREE.Euler(0, 0, 0, 'XYZ');
+        eulerAngles.setFromQuaternion(self.currentArcballRotation_, 'XYZ');
+        self.setRotation(eulerAngles.x, eulerAngles.y, eulerAngles.z);
       }
     });
 
     this.on('mousedown', function(e) {
-      self.view.beginArcballRotation(e.client.x, e.client.y);
-      if (typeof self.stencilView !== 'undefined' && self.stencilView)
-        self.stencilView.beginArcballRotation(e.client.x, e.client.y);
+      self.arcballSphere_ = self.view.computeArcballSphere();
+      self.arcballAnchorPoint_ = self.mapOntoSphere_(e.page.x, e.page.y);
       self.rotatingArcball = true;
     });
 
     this.on('mouseup', function() {
       self.rotatingArcball = false;
+      self.startArcballRotation_ = self.currentArcballRotation_;
     });
+  },
+
+  mapOntoSphere_: function(x, y) {
+    var dx = x - this.arcballSphere_.center.x;
+    var dy = y - this.arcballSphere_.center.y;
+
+    var length2 = dx * dx + dy * dy;
+    var radius2 = this.arcballSphere_.radius * this.arcballSphere_.radius;
+
+    if (length2 < radius2) {
+      var dz = Math.sqrt(radius2 - length2);
+    } else {
+      var length = Math.sqrt(length2);
+      dx *= this.arcballSphere_.radius / length2;
+      dy *= this.arcballSphere_.radius / length2;
+      var dz = 0;
+    }
+
+    length = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    return { x: dx / length, y: dy / length, z: dz / length };
   }
 
 });

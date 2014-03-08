@@ -245,6 +245,7 @@ Rotator.prototype.rotate = function(deltaRotation, continuous) {
       y: this.rotation_.y + this.deltaRotation_.y,
       z: this.rotation_.z + this.deltaRotation_.z
     };
+    this.deltaRotating_ = false;
 
     rotation = this.clampRotation_(rotation);
     this.setRotation(rotation);

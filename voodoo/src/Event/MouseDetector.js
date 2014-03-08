@@ -251,6 +251,10 @@ MouseDetector_.prototype.onMouseUp_ = function(event) {
         this.lastClickClientY_[event.button] = event.clientY;
       }
     }
+  } else {
+    var held = this.heldTrigger_[event.button];
+    if (held)
+      this.dispatchMouseEvent_('mouseup', null, event.button, held);
   }
 
   this.heldTrigger_[event.button] = null;
