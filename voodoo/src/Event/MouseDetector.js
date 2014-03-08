@@ -93,12 +93,16 @@ MouseDetector_.prototype.destroy_ = function() {
  */
 MouseDetector_.prototype.dispatchMouseEvent_ = function(
     type, trigger, opt_button, opt_target) {
-  log_.assert_(trigger, 'trigger must not be null');
+  if (trigger === null) {
+    var event = new window['voodoo']['Event'](type, null);
+  } else {
+    var event = new window['voodoo']['Event'](type, trigger.model_,
+        trigger.triggerId_);
+  }
 
-  var event = new window['voodoo']['Event'](type, trigger.model_,
-      trigger.triggerId_);
-  event.initializeMouseEvent_(this.clientX_, this.clientY_,
-      this.lastHitX_, this.lastHitY_, this.lastHitZ_, opt_button);
+  event.initializeMouseEvent_(this.clientX_ + window.pageXOffset,
+      this.clientY_ + window.pageYOffset, this.lastHitX_, this.lastHitY_,
+      this.lastHitZ_, opt_button);
 
   var target = opt_target || trigger;
   target.model_.dispatchEvent_(event);
@@ -292,11 +296,20 @@ MouseDetector_.prototype.update_ = function() {
   // We raycast every frame because objects may be moving under the mouse.
   var nextTrigger = this.raycast_();
 
+  // Fire mousemove on currently held models.
+  for (var button = 0; button < 3; ++button) {
+    var held = this.heldTrigger_[button];
+    if (held && nextTrigger != held)
+      this.dispatchMouseEvent_('mousemove', nextTrigger, button, held);
+  }
+
   if (nextTrigger != null) {
     // Mouse move events are only sent on update to boost performance
-    if (this.pendingMouseMove_)
+    if (this.pendingMouseMove_) {
       this.dispatchMouseEvent_('mousemove', nextTrigger);
+    }
 
+    // Fire a mouseup event on the trigger that caused the mousedown
     if (!nextTrigger.isEquivalentTo(this.hoveredTrigger_)) {
       // Mouse leave the old trigger
       if (this.hoveredTrigger_ != null)

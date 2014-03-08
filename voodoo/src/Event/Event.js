@@ -28,17 +28,17 @@ this.Event = function(type, opt_model, opt_triggerId) {
  *
  * @private
  *
- * @param {number} clientX Client X mouse coordinate.
- * @param {number} clientY Client Y mouse coordinate.
+ * @param {number} pageX Page X mouse coordinate.
+ * @param {number} pageY Page Y mouse coordinate.
  * @param {number} hitX Intersections point X coordinate.
  * @param {number} hitY Intersections point Y coordinate.
  * @param {number} hitZ Intersections point Z coordinate.
  * @param {number=} opt_button Mouse button identifier.
  */
-this.Event.prototype.initializeMouseEvent_ = function(clientX, clientY,
+this.Event.prototype.initializeMouseEvent_ = function(pageX, pageY,
     hitX, hitY, hitZ, opt_button) {
-  this['client']['x'] = clientX;
-  this['client']['y'] = clientY;
+  this['page']['x'] = pageX;
+  this['page']['y'] = pageY;
   this['hit']['x'] = hitX;
   this['hit']['y'] = hitY;
   this['hit']['z'] = hitZ;
@@ -57,24 +57,6 @@ this.Event.prototype.initializeMouseEvent_ = function(clientX, clientY,
  */
 this.Event.prototype['button'] = 0;
 
-// Client hit coordinate
-this.Event.prototype['client'] = {};
-
-
-/**
- * Client mouse x coordinate.
- *
- * @type {number}
- */
-this.Event.prototype['client']['x'] = Number.MAX_VALUE;
-
-
-/**
- * Client mouse y coordinate.
- *
- * @type {number}
- */
-this.Event.prototype['client']['y'] = Number.MAX_VALUE;
 
 // Intersection point
 this.Event.prototype['hit'] = {};
@@ -118,6 +100,25 @@ this.Event.prototype['model'] = null;
  * @type {Object}
  */
 this.Event.prototype['object'] = null;
+
+// Page hit coordinate
+this.Event.prototype['page'] = {};
+
+
+/**
+ * Page mouse x coordinate.
+ *
+ * @type {number}
+ */
+this.Event.prototype['page']['x'] = Number.MAX_VALUE;
+
+
+/**
+ * Page mouse y coordinate.
+ *
+ * @type {number}
+ */
+this.Event.prototype['page']['y'] = Number.MAX_VALUE;
 
 // Size dimensions
 this.Event.prototype['size'] = {};

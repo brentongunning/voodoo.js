@@ -47,9 +47,11 @@ Release Notes
 3-8-2014 - 0.8.9
 Added Model.loaded property.
 Added Scene.localToPage and Scene.pageToLocal coordinate change functions.
+Change Event to store page coordinates instead of client coordinates.
 Bug Fix: Adding/removing to the scene makes it dirty.
 Bug Fix: Error when removing event listeners.
 Bug Fix: Crash in min builds on engine initialization.
+Bug Fix: Fire mousemove events outside model when user is click-dragging.
 Optimization: Only raycast when there are mouse listeners.
 
 2-19-2014 - 0.8.8

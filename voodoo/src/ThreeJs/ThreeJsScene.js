@@ -132,8 +132,8 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
               if (move) {
                 var event = new window['voodoo']['Event']('move');
                 event.object = element;
-                event['client']['x'] = x;
-                event['client']['y'] = y;
+                event['page']['x'] = x;
+                event['page']['y'] = y;
                 event['size']['x'] = w;
                 event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
@@ -142,8 +142,8 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
               if (resize) {
                 var event = new window['voodoo']['Event']('resize');
                 event.object = element;
-                event['client']['x'] = x;
-                event['client']['y'] = y;
+                event['page']['x'] = x;
+                event['page']['y'] = y;
                 event['size']['x'] = w;
                 event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
@@ -163,8 +163,8 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
               if (move) {
                 var event = new window['voodoo']['Event']('move');
                 event.object = element;
-                event['client']['x'] = x;
-                event['client']['y'] = y;
+                event['page']['x'] = x;
+                event['page']['y'] = y;
                 event['size']['x'] = w;
                 event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
@@ -173,8 +173,8 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
               if (resize) {
                 var event = new window['voodoo']['Event']('resize');
                 event.object = element;
-                event['client']['x'] = x;
-                event['client']['y'] = y;
+                event['page']['x'] = x;
+                event['page']['y'] = y;
                 event['size']['x'] = w;
                 event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
@@ -195,8 +195,8 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
               if (move) {
                 var event = new window['voodoo']['Event']('move');
                 event.object = element;
-                event['client']['x'] = x;
-                event['client']['y'] = y;
+                event['page']['x'] = x;
+                event['page']['y'] = y;
                 event['size']['x'] = w;
                 event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
@@ -205,8 +205,8 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
               if (resize) {
                 var event = new window['voodoo']['Event']('resize');
                 event.object = element;
-                event['client']['x'] = x;
-                event['client']['y'] = y;
+                event['page']['x'] = x;
+                event['page']['y'] = y;
                 event['size']['x'] = w;
                 event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
@@ -226,8 +226,8 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
               if (move) {
                 var event = new window['voodoo']['Event']('move');
                 event.object = element;
-                event['client']['x'] = x;
-                event['client']['y'] = y;
+                event['page']['x'] = x;
+                event['page']['y'] = y;
                 event['size']['x'] = w;
                 event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
@@ -236,8 +236,8 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
               if (resize) {
                 var event = new window['voodoo']['Event']('resize');
                 event.object = element;
-                event['client']['x'] = x;
-                event['client']['y'] = y;
+                event['page']['x'] = x;
+                event['page']['y'] = y;
                 event['size']['x'] = w;
                 event['size']['y'] = h;
                 self.dispatcher_.dispatchEvent_(null, event);
