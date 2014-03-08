@@ -50,34 +50,32 @@ ThreeJsCamera_.prototype.constructor = ThreeJsCamera_.constructor;
  * @private
  */
 ThreeJsCamera_.prototype.createProperties_ = function() {
+  var self = this;
+
   Object.defineProperty(this, 'fovY', {
-    get: function() { return this.fovY_; },
-    set: function() { log_.error_('fovy is read-only'); },
-    writeable: false
+    get: function() { return self.fovY_; },
+    enumerable: true
   });
 
   Object.defineProperty(this, 'position', {
     get: function() {
       return {
-        'x': this.camera_.position.x,
-        'y': this.camera_.position.y,
-        'z': this.camera_.position.z
+        'x': self.camera_.position.x,
+        'y': self.camera_.position.y,
+        'z': self.camera_.position.z
       };
     },
-    set: function() { log_.error_('position is read-only'); },
-    writeable: false
+    enumerable: true
   });
 
   Object.defineProperty(this, 'zNear', {
-    get: function() { return this.zNear_; },
-    set: function() { log_.error_('zNear is read-only'); },
-    writeable: false
+    get: function() { return self.zNear_; },
+    enumerable: true
   });
 
   Object.defineProperty(this, 'zFar', {
     get: function() { return this.zFar_; },
-    set: function() { log_.error_('zFar is read-only'); },
-    writeable: false
+    enumerable: true
   });
 };
 

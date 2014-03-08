@@ -220,50 +220,46 @@ View.prototype['triggers'] = null;
  * @private
  */
 View.prototype.setupPublicProperties_ = function() {
+  var self = this;
+
   Object.defineProperty(this, 'cache', {
-    get: function() { return this.cache_; },
-    set: function() { log_.error_('cache is read-only'); },
-    writeable: false
+    get: function() { return self.cache_; },
+    enumerable: true
   });
 
   Object.defineProperty(this, 'camera', {
-    get: function() { return this.layer_.camera_; },
-    set: function() { log_.error_('camera is read-only'); },
-    writeable: false
+    get: function() { return self.layer_.camera_; },
+    enumerable: true
   });
 
   Object.defineProperty(this, 'loaded', {
-    get: function() { return this.isLoaded_; },
+    get: function() { return self.isLoaded_; },
     set: function(val) {
-      this.isLoaded_ = val;
-      if (this.isLoaded_)
-        this.model_.onViewLoad_(this);
+      self.isLoaded_ = val;
+      if (self.isLoaded_)
+        self.model_.onViewLoad_(self);
     },
-    writeable: true
+    enumerable: true
   });
 
   Object.defineProperty(this, 'model', {
-    get: function() { return this.model_; },
-    set: function() { log_.error_('model is read-only'); },
-    writeable: false
+    get: function() { return self.model_; },
+    enumerable: true
   });
 
   Object.defineProperty(this, 'renderer', {
-    get: function() { return this.layer_.renderer_; },
-    set: function() { log_.error_('renderer is read-only'); },
-    writeable: false
+    get: function() { return self.layer_.renderer_; },
+    enumerable: true
   });
 
   Object.defineProperty(this, 'scene', {
-    get: function() { return this.scene_; },
-    set: function() { log_.error_('scene is read-only'); },
-    writeable: false
+    get: function() { return self.scene_; },
+    enumerable: true
   });
 
   Object.defineProperty(this, 'triggers', {
-    get: function() { return this.triggers_; },
-    set: function() { log_.error_('triggers is read-only'); },
-    writeable: false
+    get: function() { return self.triggers_; },
+    enumerable: true
   });
 };
 

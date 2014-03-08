@@ -44,10 +44,12 @@ See license.txt.
 Release Notes
 -------------------------------------------------------------------------------
 
-2-25-2014 - 0.8.9
+3-8-2014 - 0.8.9
 Added Model.loaded property.
+Added Scene.localToPage and Scene.pageToLocal coordinate change functions.
 Bug Fix: Adding/removing to the scene makes it dirty.
 Bug Fix: Error when removing event listeners.
+Bug Fix: Crash in min builds on engine initialization.
 Optimization: Only raycast when there are mouse listeners.
 
 2-19-2014 - 0.8.8
