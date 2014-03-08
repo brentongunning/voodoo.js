@@ -84,8 +84,8 @@ EventTests.prototype.testMouseEvents = function() {
   assertEquals('click events: ', 2, click);
   assertEquals('dblclick events: ', 1, dblclick);
 
-  assertEquals('client x:', 500, dblClickEvent.client.x);
-  assertEquals('client y:', 600, dblClickEvent.client.y);
+  assertEquals('page x:', 500, dblClickEvent.page.x);
+  assertEquals('page y:', 600, dblClickEvent.page.y);
   assertNotEquals('hit x:', 0, dblClickEvent.hit.x);
   assertNotEquals('hit y:', 0, dblClickEvent.hit.y);
   assertNotEquals('hit z:', 0, dblClickEvent.hit.z);

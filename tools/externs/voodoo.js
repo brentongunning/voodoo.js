@@ -84,15 +84,6 @@ voodoo.Event = function(type, opt_model, opt_triggerId) {};
 voodoo.Event.prototype.button;
 
 /** @type {Object} */
-voodoo.Event.prototype.client = {};
-
-/** @type {number} */
-voodoo.Event.prototype.client.x;
-
-/** @type {number} */
-voodoo.Event.prototype.client.y;
-
-/** @type {Object} */
 voodoo.Event.prototype.hit = {};
 
 /** @type {number} */
@@ -109,6 +100,15 @@ voodoo.Event.prototype.model;
 
 /** @type {Object} */
 voodoo.Event.prototype.object;
+
+/** @type {Object} */
+voodoo.Event.prototype.page = {};
+
+/** @type {number} */
+voodoo.Event.prototype.page.x;
+
+/** @type {number} */
+voodoo.Event.prototype.page.y;
 
 /** @type {Object} */
 voodoo.Event.prototype.size = {};

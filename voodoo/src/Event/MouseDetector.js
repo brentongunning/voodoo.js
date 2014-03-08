@@ -97,8 +97,9 @@ MouseDetector_.prototype.dispatchMouseEvent_ = function(
 
   var event = new window['voodoo']['Event'](type, trigger.model_,
       trigger.triggerId_);
-  event.initializeMouseEvent_(this.clientX_, this.clientY_,
-      this.lastHitX_, this.lastHitY_, this.lastHitZ_, opt_button);
+  event.initializeMouseEvent_(this.clientX_ + window.pageXOffset,
+      this.clientY_ + window.pageYOffset, this.lastHitX_, this.lastHitY_,
+      this.lastHitZ_, opt_button);
 
   var target = opt_target || trigger;
   target.model_.dispatchEvent_(event);
