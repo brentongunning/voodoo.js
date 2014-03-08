@@ -51,6 +51,7 @@ Change Event to store page coordinates instead of client coordinates.
 Bug Fix: Adding/removing to the scene makes it dirty.
 Bug Fix: Error when removing event listeners.
 Bug Fix: Crash in min builds on engine initialization.
+Bug Fix: Fire mouseup events when release outside model.
 Bug Fix: Fire mousemove events outside model when user is click-dragging.
 Optimization: Only raycast when there are mouse listeners.
 

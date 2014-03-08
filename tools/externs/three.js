@@ -3296,6 +3296,58 @@ THREE.Vector3.prototype.addSelf = function(v){};
 THREE.Vector3.prototype.sub = function(v) {};
 
 /**
+ * @param {THREE.Vector3} a
+ * @param {THREE.Vector3} b
+ */
+THREE.Vector3.prototype.crossVectors = function(a, b) {};
+
+/**
+ * @param {THREE.Vector3} v
+ * @return {number}
+ */
+THREE.Vector3.prototype.dot = function(v) {};
+
+THREE.Vector3.prototype.normalize = function() {};
+
+/**
+ * @constructor
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @param {number} w
+ */
+THREE.Quaternion = function(x, y, z, w) {};
+
+/**
+ * @param {THREE.Vector3} axis
+ * @param {number} angle
+ */
+THREE.Quaternion.prototype.setFromAxisAngle = function(axis, angle) {};
+
+THREE.Quaternion.prototype.normalize = function() {};
+
+/**
+ * @param {THREE.Quaternion} a
+ * @param {THREE.Quaternion} b
+ */
+THREE.Quaternion.prototype.multiplyQuaternions = function(a, b) {};
+
+/**
+ * @constructor
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @param {string} order
+ */
+THREE.Euler = function(x, y, z, order) {};
+
+/**
+ * @param {THREE.Quaternion} q
+ * @param {string} order
+ */
+THREE.Euler.prototype.setFromQuaternion = function(q, order) {};
+
+/**
 @constructor
 @param {?number=} x
 @param {?number=} y
