@@ -7,6 +7,7 @@ Modifiers\Positioner.js
 Modifiers\Rotator.js
 Modifiers\Scaler.js
 Modifiers\Shader.js
+Modifiers\Wireframe.js
 
 Controllers\Arcball.js
 

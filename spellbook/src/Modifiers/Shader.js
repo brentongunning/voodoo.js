@@ -65,13 +65,12 @@ var ShaderView_ = voodoo.View.extend({
       if (typeof materials !== 'undefined' && materials) {
         for (var i in materials) {
           var subMaterial = materials[i];
-          if (typeof subMaterial.ambient !== 'undefined' &&
-              subMaterial.ambient)
+          if (typeof subMaterial.ambient !== 'undefined')
             subMaterial.ambient.copy(ambient);
         }
       }
 
-      if (typeof material.ambient !== 'undefined' && material.ambient)
+      if (typeof material.ambient !== 'undefined')
         material.ambient.copy(ambient);
     }
   },
@@ -83,13 +82,12 @@ var ShaderView_ = voodoo.View.extend({
       if (typeof materials !== 'undefined' && materials) {
         for (var i in materials) {
           var subMaterial = materials[i];
-          if (typeof subMaterial.emissive !== 'undefined' &&
-              subMaterial.emissive)
+          if (typeof subMaterial.emissive !== 'undefined')
             subMaterial.emissive.copy(emissive);
         }
       }
 
-      if (typeof material.emissive !== 'undefined' && material.emissive)
+      if (typeof material.emissive !== 'undefined')
         material.emissive.copy(emissive);
     }
   },
@@ -107,13 +105,12 @@ var ShaderView_ = voodoo.View.extend({
       if (typeof materials !== 'undefined' && materials) {
         for (var i in materials) {
           var subMaterial = materials[i];
-          if (typeof subMaterial.shading !== 'undefined' &&
-              subMaterial.shading)
+          if (typeof subMaterial.shading !== 'undefined')
             subMaterial.shading = threeJsShading;
         }
       }
 
-      if (typeof material.shading !== 'undefined' && material.shading)
+      if (typeof material.shading !== 'undefined')
         material.shading = threeJsShading;
     }
   }

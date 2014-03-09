@@ -49,12 +49,12 @@ var ColorerView_ = voodoo.View.extend({
       if (typeof materials !== 'undefined' && materials) {
         for (var i in materials) {
           var subMaterial = materials[i];
-          if (typeof subMaterial.color !== 'undefined' && subMaterial.color)
+          if (typeof subMaterial.color !== 'undefined')
             subMaterial.color.copy(color);
         }
       }
 
-      if (typeof material.color !== 'undefined' && material.color)
+      if (typeof material.color !== 'undefined')
         material.color.copy(color);
     }
   }

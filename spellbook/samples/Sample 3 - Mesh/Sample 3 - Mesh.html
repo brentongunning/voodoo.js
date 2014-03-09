@@ -39,9 +39,10 @@
 	});
 
 	var Mesh = voodoo.Mesh.extend(voodoo.Scaler);
-	var Mesh2 = Mesh.extend(voodoo.Colorer);
+	Mesh = Mesh.extend(voodoo.Colorer);
+	Mesh = Mesh.extend(voodoo.Wireframe);
 
-	var mesh = new Mesh2({
+	var mesh = new Mesh({
 		element: document.getElementById('mesh'),
 		format: voodoo.Mesh.Format.JSON,
 		mesh: 'monster.js',
