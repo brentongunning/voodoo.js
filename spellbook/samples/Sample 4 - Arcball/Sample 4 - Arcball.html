@@ -57,8 +57,11 @@
 		})
 	});
 
+	Cube = Cube.extend(voodoo.Shader);
+
 	var cube = new Cube({
-		element: document.getElementById('mesh')
+		element: document.getElementById('mesh'),
+		ambient: 'blue'
 	});
 
 </script>

@@ -6,6 +6,7 @@ Modifiers\Hider.js
 Modifiers\Positioner.js
 Modifiers\Rotator.js
 Modifiers\Scaler.js
+Modifiers\Shader.js
 
 Controllers\Arcball.js
 
