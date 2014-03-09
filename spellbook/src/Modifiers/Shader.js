@@ -173,12 +173,12 @@ var Shader = this.Shader = voodoo.Model.extend({
       enumerable: false
     });
     Object.defineProperty(this, 'emissive', {
-      get: function() { return self.ambient_; },
+      get: function() { return self.emissive_; },
       set: function(emissive) { self.setEmissive(emissive); },
       enumerable: false
     });
     Object.defineProperty(this, 'shading', {
-      get: function() { return self.ambient_; },
+      get: function() { return self.shading_; },
       set: function(shading) { self.setShading(shading); },
       enumerable: false
     });
