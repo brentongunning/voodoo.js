@@ -104,6 +104,7 @@ var Fader = this.Fader = voodoo.Model.extend({
     this.targetAlpha = this.alpha_;
     this.fadeStartTime = null;
     this.fadeDuration = 0;
+    this.fading = false;
 
     var self = this;
     Object.defineProperty(this, 'alpha', {
@@ -116,18 +117,21 @@ var Fader = this.Fader = voodoo.Model.extend({
   update: function(deltaTime) {
     this.base.update(deltaTime);
 
-    if (this.alpha_ !== this.targetAlpha) {
+    if (this.fading) {
       var now = new Date();
       var duration = now - this.fadeStartTime;
       var t = duration / this.fadeDuration;
 
-      if (t < 1.0)
-        this.alpha_ = this.startAlpha * (1 - t) + this.targetAlpha * t;
-      else this.alpha_ = this.targetAlpha;
+      if (t < 1.0) {
+        var i = this.fadeEasing(t);
+        this.alpha_ = this.startAlpha * (1 - i) + this.targetAlpha * i;
+      } else this.alpha_ = this.targetAlpha;
       this.dispatch(new voodoo.Event('alphaChange', this));
 
-      if (this.alpha_ === this.targetAlpha)
+      if (t >= 1.0) {
+        this.fading = false;
         this.dispatch(new voodoo.Event('fadeEnd', this));
+      }
 
       this.view.setAlpha(this.alpha_);
       if (typeof this.stencilView !== 'undefined' && this.stencilView)
@@ -167,10 +171,12 @@ Fader.prototype.fadeOut = function(seconds) {
   *
   * @param {number} alpha Alpha value from 0-1.
   * @param {number} seconds Animation duration.
+  * @param {function(number):number=} opt_easing Optional easing function.
+  *     Default is easing.easeInOutQuad.
   *
   * @return {Fader}
   */
-Fader.prototype.fadeTo = function(alpha, seconds) {
+Fader.prototype.fadeTo = function(alpha, seconds, opt_easing) {
   if (seconds == 0) {
     this.setAlpha(alpha);
   } else if (this.alpha_ != alpha) {
@@ -178,6 +184,9 @@ Fader.prototype.fadeTo = function(alpha, seconds) {
     this.targetAlpha = alpha;
     this.fadeStartTime = new Date();
     this.fadeDuration = seconds * 1000;
+    this.fading = true;
+    this.fadeEasing = typeof opt_easing === 'undefined' ?
+        Easing.prototype.easeInOutQuad : opt_easing;
 
     this.dispatch(new voodoo.Event('fadeBegin', this));
   }
@@ -196,6 +205,7 @@ Fader.prototype.fadeTo = function(alpha, seconds) {
 Fader.prototype.setAlpha = function(alpha) {
   this.alpha_ = alpha;
   this.targetAlpha = alpha;
+  this.fading = false;
   this.dispatch(new voodoo.Event('alphaChange', this));
 
   this.view.setAlpha(alpha);

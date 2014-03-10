@@ -91,6 +91,7 @@ var Rotator = this.Rotator = voodoo.Model.extend({
     };
     this.rotationStartTime = null;
     this.deltaRotating_ = false;
+    this.rotating = false;
     this.rotationDuration = 0;
 
     var self = this;
@@ -136,21 +137,20 @@ var Rotator = this.Rotator = voodoo.Model.extend({
       if (typeof this.stencilView !== 'undefined' && this.stencilView)
         this.stencilView.setRotation(this.rotation_);
     } else {
-      if (this.rotation_.x !== this.targetRotation.x ||
-          this.rotation_.y !== this.targetRotation.y ||
-          this.rotation_.z !== this.targetRotation.z) {
+      if (this.rotating) {
         var now = new Date();
         var duration = now - this.rotationStartTime;
         var t = duration / this.rotationDuration;
 
         if (t < 1.0) {
-          var invT = 1 - t;
-          this.rotation_.x = this.startRotation.x * invT +
-              this.targetRotation.x * t;
-          this.rotation_.y = this.startRotation.y * invT +
-              this.targetRotation.y * t;
-          this.rotation_.z = this.startRotation.z * invT +
-              this.targetRotation.z * t;
+          var i = this.rotationEasing(t);
+          var invI = 1 - i;
+          this.rotation_.x = this.startRotation.x * invI +
+              this.targetRotation.x * i;
+          this.rotation_.y = this.startRotation.y * invI +
+              this.targetRotation.y * i;
+          this.rotation_.z = this.startRotation.z * invI +
+              this.targetRotation.z * i;
         } else {
           this.rotation_.x = this.targetRotation.x;
           this.rotation_.y = this.targetRotation.y;
@@ -159,10 +159,10 @@ var Rotator = this.Rotator = voodoo.Model.extend({
 
         this.dispatch(new voodoo.Event('rotate', this));
 
-        if (this.rotation_.x === this.targetRotation.x &&
-            this.rotation_.y === this.targetRotation.y &&
-            this.rotation_.z === this.targetRotation.z)
+        if (t >= 1.0) {
+          this.rotating = false;
           this.dispatch(new voodoo.Event('rotateEnd', this));
+        }
 
         this.view.setRotation(this.rotation_);
         if (typeof this.stencilView !== 'undefined' && this.stencilView)
@@ -182,14 +182,17 @@ var Rotator = this.Rotator = voodoo.Model.extend({
   *
   * @param {Object} rotation Target rotation.
   * @param {number} seconds Animation duration.
+  * @param {function(number):number=} opt_easing Optional easing function.
+  *     Default is easing.easeInOutQuad.
   *
   * @return {Rotator}
   */
-Rotator.prototype.rotateTo = function(rotation, seconds) {
+Rotator.prototype.rotateTo = function(rotation, seconds, opt_easing) {
   var endRotation;
-  if (arguments.length > 2) {
+  if (arguments.length > 2 && typeof arguments[2] === 'number') {
     endRotation = { x: arguments[0], y: arguments[1], z: arguments[2] };
     seconds = arguments[3];
+    opt_easing = arguments[4];
   } else endRotation = this.parseRotation_(rotation);
 
   if (seconds == 0) {
@@ -205,7 +208,10 @@ Rotator.prototype.rotateTo = function(rotation, seconds) {
     this.targetRotation.z = endRotation.z;
     this.rotationStartTime = new Date();
     this.deltaRotating_ = false;
+    this.rotating = true;
     this.rotationDuration = seconds * 1000;
+    this.rotationEasing = typeof opt_easing === 'undefined' ?
+        Easing.prototype.easeInOutQuad : opt_easing;
 
     this.dispatch(new voodoo.Event('rotateBegin', this));
   }
@@ -238,6 +244,7 @@ Rotator.prototype.rotate = function(deltaRotation, continuous) {
 
   if (typeof continuous !== 'undefined' && continuous) {
     this.deltaRotating_ = true;
+    this.rotating = false;
     this.dispatch(new voodoo.Event('rotateBegin', this));
   } else {
     var rotation = {
@@ -274,6 +281,7 @@ Rotator.prototype.setRotation = function(rotation) {
   this.targetRotation.y = this.rotation_.y;
   this.targetRotation.z = this.rotation_.z;
   this.deltaRotating_ = false;
+  this.rotating = false;
 
   this.dispatch(new voodoo.Event('rotate', this));
 

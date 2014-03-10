@@ -108,6 +108,7 @@ var Positioner = this.Positioner = voodoo.Model.extend({
     };
     this.moveStartTime = null;
     this.moveDuration = 0;
+    this.moving = false;
 
     var self = this;
     var proxy = {};
@@ -147,21 +148,20 @@ var Positioner = this.Positioner = voodoo.Model.extend({
   update: function(deltaTime) {
     this.base.update(deltaTime);
 
-    if (this.position_.x !== this.targetPosition.x ||
-        this.position_.y !== this.targetPosition.y ||
-        this.position_.z !== this.targetPosition.z) {
+    if (this.moving) {
       var now = new Date();
       var duration = now - this.moveStartTime;
       var t = duration / this.moveDuration;
 
       if (t < 1.0) {
-        var invT = 1 - t;
-        this.position_.x = this.startPosition.x * invT +
-            this.targetPosition.x * t;
-        this.position_.y = this.startPosition.y * invT +
-            this.targetPosition.y * t;
-        this.position_.z = this.startPosition.z * invT +
-            this.targetPosition.z * t;
+        var i = this.moveEasing(t);
+        var invI = 1 - i;
+        this.position_.x = this.startPosition.x * invI +
+            this.targetPosition.x * i;
+        this.position_.y = this.startPosition.y * invI +
+            this.targetPosition.y * i;
+        this.position_.z = this.startPosition.z * invI +
+            this.targetPosition.z * i;
       } else {
         this.position_.x = this.targetPosition.x;
         this.position_.y = this.targetPosition.y;
@@ -169,10 +169,10 @@ var Positioner = this.Positioner = voodoo.Model.extend({
       }
       this.dispatch(new voodoo.Event('move', this));
 
-      if (this.position_.x === this.targetPosition.x &&
-          this.position_.y === this.targetPosition.y &&
-          this.position_.z === this.targetPosition.z)
+      if (t >= 1.0) {
+        this.moving = false;
         this.dispatch(new voodoo.Event('moveEnd', this));
+      }
 
       this.view.setPosition(this.position_);
       if (typeof this.stencilView !== 'undefined' && this.stencilView)
@@ -227,14 +227,17 @@ Positioner.prototype.detach = function() {
   *
   * @param {Object} position Target position.
   * @param {number} seconds Animation duration.
+  * @param {function(number):number=} opt_easing Optional easing function.
+  *     Default is easing.easeInOutQuad.
   *
   * @return {Positioner}
   */
-Positioner.prototype.moveTo = function(position, seconds) {
+Positioner.prototype.moveTo = function(position, seconds, opt_easing) {
   var endPosition;
-  if (arguments.length > 2) {
+  if (arguments.length > 2 && typeof arguments[2] === 'number') {
     endPosition = { x: arguments[0], y: arguments[1], z: arguments[2] };
     seconds = arguments[3];
+    opt_easing = arguments[4];
   } else endPosition = this.parsePosition_(position);
 
   if (seconds == 0) {
@@ -250,6 +253,9 @@ Positioner.prototype.moveTo = function(position, seconds) {
     this.targetPosition.z = endPosition.z;
     this.moveStartTime = new Date();
     this.moveDuration = seconds * 1000;
+    this.moving = true;
+    this.moveEasing = typeof opt_easing === 'undefined' ?
+        Easing.prototype.easeInOutQuad : opt_easing;
 
     this.dispatch(new voodoo.Event('moveBegin', this));
   }
@@ -276,6 +282,8 @@ Positioner.prototype.setPosition = function(position) {
   this.targetPosition.x = this.position_.x;
   this.targetPosition.y = this.position_.y;
   this.targetPosition.z = this.position_.z;
+
+  this.moving = false;
 
   this.dispatch(new voodoo.Event('move', this));
 

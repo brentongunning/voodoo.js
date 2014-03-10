@@ -92,7 +92,7 @@ PositionerTests.prototype.testPositionerSetPosition = function() {
   assertEquals(3, instance.position.y);
   assertEquals(4, instance.position.z);
 
-  instance.moveTo(0.1, 0.2, 0.3, 0);
+  instance.moveTo(0.1, 0.2, 0.3, 0, voodoo.easing.easeOutBounce);
 
   assertEquals(0.1, instance.position.x);
   assertEquals(0.2, instance.position.y);

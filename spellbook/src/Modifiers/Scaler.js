@@ -92,6 +92,7 @@ var Scaler = this.Scaler = voodoo.Model.extend({
     };
     this.scaleStartTime = null;
     this.scaleDuration = 0;
+    this.scaling = false;
 
     var self = this;
     var proxy = {};
@@ -121,18 +122,17 @@ var Scaler = this.Scaler = voodoo.Model.extend({
   update: function(deltaTime) {
     this.base.update(deltaTime);
 
-    if (this.scale_.x !== this.targetScale.x ||
-        this.scale_.y !== this.targetScale.y ||
-        this.scale_.z !== this.targetScale.z) {
+    if (this.scaling) {
       var now = new Date();
       var duration = now - this.scaleStartTime;
       var t = duration / this.scaleDuration;
 
       if (t < 1.0) {
-        var invT = 1 - t;
-        this.scale_.x = this.startScale.x * invT + this.targetScale.x * t;
-        this.scale_.y = this.startScale.y * invT + this.targetScale.y * t;
-        this.scale_.z = this.startScale.z * invT + this.targetScale.z * t;
+        var i = this.scaleEasing(t);
+        var invI = 1 - i;
+        this.scale_.x = this.startScale.x * invI + this.targetScale.x * i;
+        this.scale_.y = this.startScale.y * invI + this.targetScale.y * i;
+        this.scale_.z = this.startScale.z * invI + this.targetScale.z * i;
       } else {
         this.scale_.x = this.targetScale.x;
         this.scale_.y = this.targetScale.y;
@@ -141,10 +141,10 @@ var Scaler = this.Scaler = voodoo.Model.extend({
 
       this.dispatch(new voodoo.Event('scale', this));
 
-      if (this.scale_.x === this.targetScale.x &&
-          this.scale_.y === this.targetScale.y &&
-          this.scale_.z === this.targetScale.z)
+      if (t >= 1.0) {
+        this.scaling = false;
         this.dispatch(new voodoo.Event('scaleEnd', this));
+      }
 
       this.view.setScale(this.scale_);
       if (typeof this.stencilView !== 'undefined' && this.stencilView)
@@ -163,14 +163,17 @@ var Scaler = this.Scaler = voodoo.Model.extend({
   *
   * @param {number} scale Target scale.
   * @param {number} seconds Animation duration.
+  * @param {function(number):number=} opt_easing Optional easing function.
+  *     Default is easing.easeInOutQuad.
   *
   * @return {Scaler}
   */
-Scaler.prototype.scaleTo = function(scale, seconds) {
+Scaler.prototype.scaleTo = function(scale, seconds, opt_easing) {
   var endScale;
-  if (arguments.length > 2) {
+  if (arguments.length > 2 && typeof arguments[2] === 'number') {
     endScale = { x: arguments[0], y: arguments[1], z: arguments[2] };
     seconds = arguments[3];
+    opt_easing = arguments[4];
   } else endScale = this.parseScale_(scale);
 
   endScale = this.fixScale_(endScale);
@@ -188,6 +191,9 @@ Scaler.prototype.scaleTo = function(scale, seconds) {
     this.targetScale.z = endScale.z;
     this.scaleStartTime = new Date();
     this.scaleDuration = seconds * 1000;
+    this.scaling = true;
+    this.scaleEasing = typeof opt_easing === 'undefined' ?
+        Easing.prototype.easeInOutQuad : opt_easing;
 
     this.dispatch(new voodoo.Event('scaleBegin', this));
   }
@@ -216,6 +222,8 @@ Scaler.prototype.setScale = function(scale) {
   this.targetScale.x = this.scale_.x;
   this.targetScale.y = this.scale_.y;
   this.targetScale.z = this.scale_.z;
+
+  this.scaling = false;
 
   this.dispatch(new voodoo.Event('scale', this));
 

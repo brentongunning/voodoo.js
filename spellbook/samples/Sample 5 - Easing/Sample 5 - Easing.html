@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Easing Demo</title>
+</head>
+
+<script src="../../lib/three.min.js"></script>
+<script src="../../lib/voodoo.min.js"></script>
+<script src="../../lib/spellbook.min.debug.js"></script>
+
+<body>
+	<select id="funcType">
+    <option>Linear</option>
+    <option>Quadratic</option>
+    <option>Cubic</option>
+    <option>Quartic</option>
+    <option>Quintic</option>
+    <option>Sine</option>
+    <option>Exponential</option>
+    <option>Circular</option>
+    <option>Elastic</option>
+    <option>Back</option>
+    <option>Bounce</option>
+	</select>
+
+	<select id="easeType">
+    <option>Ease In</option>
+    <option>Ease Out</option>
+    <option>Ease In and Out</option>
+	</select>
+
+	<button onClick="go();">Go!</button>
+</body>
+
+<script type="text/javascript">
+  function getEasing() {
+  	var func = document.getElementById('funcType').value;
+  	var ease = document.getElementById('easeType').value;
+  	switch (func) {
+  		case 'Linear':
+  			switch(ease) {
+  				case 'Ease In': return voodoo.easing.linear;
+  				case 'Ease Out': return voodoo.easing.linear;
+  				case 'Ease In and Out': return voodoo.easing.linear;
+  			}
+  		case 'Quadratic':
+  			switch(ease) {
+  				case 'Ease In': return voodoo.easing.easeInQuad;
+  				case 'Ease Out': return voodoo.easing.easeOutQuad;
+  				case 'Ease In and Out': return voodoo.easing.easeInOutQuad;
+  			}
+  		case 'Cubic':
+  			switch(ease) {
+  				case 'Ease In': return voodoo.easing.easeInCubic;
+  				case 'Ease Out': return voodoo.easing.easeOutCubic;
+  				case 'Ease In and Out': return voodoo.easing.easeInOutCubic;
+  			}
+  		case 'Quartic':
+  			switch(ease) {
+  				case 'Ease In': return voodoo.easing.easeInQuart;
+  				case 'Ease Out': return voodoo.easing.easeOutQuart;
+  				case 'Ease In and Out': return voodoo.easing.easeInOutQuart;
+  			}
+  		case 'Quintic':
+  			switch(ease) {
+  				case 'Ease In': return voodoo.easing.easeInQuint;
+  				case 'Ease Out': return voodoo.easing.easeOutQuint;
+  				case 'Ease In and Out': return voodoo.easing.easeInOutQuint;
+  			}
+  		case 'Sine':
+  			switch(ease) {
+  				case 'Ease In': return voodoo.easing.easeInSine;
+  				case 'Ease Out': return voodoo.easing.easeOutSine;
+  				case 'Ease In and Out': return voodoo.easing.easeInOutSine;
+  			}
+  		case 'Exponential':
+  			switch(ease) {
+  				case 'Ease In': return voodoo.easing.easeInExpo;
+  				case 'Ease Out': return voodoo.easing.easeOutExpo;
+  				case 'Ease In and Out': return voodoo.easing.easeInOutExpo;
+  			}
+  		case 'Circular':
+  			switch(ease) {
+  				case 'Ease In': return voodoo.easing.easeInCirc;
+  				case 'Ease Out': return voodoo.easing.easeOutCirc;
+  				case 'Ease In and Out': return voodoo.easing.easeInOutCirc;
+  			}
+  		case 'Elastic':
+  			switch(ease) {
+  				case 'Ease In': return voodoo.easing.easeInElastic;
+  				case 'Ease Out': return voodoo.easing.easeOutElastic;
+  				case 'Ease In and Out': return voodoo.easing.easeInOutElastic;
+  			}
+  		case 'Back':
+  			switch(ease) {
+  				case 'Ease In': return voodoo.easing.easeInBack;
+  				case 'Ease Out': return voodoo.easing.easeOutBack;
+  				case 'Ease In and Out': return voodoo.easing.easeInOutBack;
+  			}
+  		case 'Bounce':
+  			switch(ease) {
+  				case 'Ease In': return voodoo.easing.easeInBounce;
+  				case 'Ease Out': return voodoo.easing.easeOutBounce;
+  				case 'Ease In and Out': return voodoo.easing.easeInOutBounce;
+  			}
+  	}
+  }
+
+	var Cube = voodoo.Positioner.extend({
+		viewType: voodoo.View.extend({
+		  load: function() {
+		  	this.base.load();
+		  	var geometry = new THREE.CubeGeometry(200, 200, 200);
+		  	var material = new THREE.MeshLambertMaterial({color: 0xFF0000, ambient: 0x000000});
+		  	this.scene.add(new THREE.Mesh(geometry, material));
+		  }
+		})
+	});
+
+  var left, right;
+
+  function calculatePositions() {
+		left = [window.innerWidth / 5, window.innerHeight / 2, 0];
+		right = [4 * window.innerWidth / 5, window.innerHeight / 2, 0];
+	}
+	calculatePositions();
+
+	var cube = new Cube();
+	cube.position = left;
+
+  var directionToggle = true;
+
+  function go() {
+  	calculatePositions();
+  	var easingFunction = getEasing();
+
+  	if (directionToggle)
+	  	cube.moveTo(right, 1, easingFunction);
+	  else cube.moveTo(left, 1, easingFunction);
+
+	  directionToggle = !directionToggle;
+  }
+</script>
+
+</html>
