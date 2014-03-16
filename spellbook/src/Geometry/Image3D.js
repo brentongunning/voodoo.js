@@ -26,12 +26,12 @@ var Image3DView_ = voodoo.View.extend({
   },
 
   createMaterial: function() {
-    if (this.model.lightingStyle !== Image3D.LightingStyle.None) {
+    if (this.model.lightingStyle_ !== Image3D.LightingStyle.None) {
       return new THREE.MeshLambertMaterial({
         color: 0xFFFFFF,
         ambient: 0x000000,
         map: this.texture,
-        transparent: this.model.transparent,
+        transparent: this.model.transparent_,
         morphTargets: this.anyMorphTargets,
         morphNormals: this.anyMorphTargets
       });
@@ -39,13 +39,13 @@ var Image3DView_ = voodoo.View.extend({
       return new THREE.MeshBasicMaterial({
         color: 0xFFFFFF,
         map: this.texture,
-        transparent: this.model.transparent
+        transparent: this.model.transparent_
       });
     }
   },
 
   computeNormals: function(geometry, anyMorphTargets) {
-    switch (this.model.lightingStyle) {
+    switch (this.model.lightingStyle_) {
       case Image3D.LightingStyle.Vertex:
         geometry.computeFaceNormals();
         geometry.computeVertexNormals();
@@ -66,7 +66,7 @@ var Image3DView_ = voodoo.View.extend({
     var g = data[i + 1];
     var b = data[i + 2];
     var avg = (r + g + b) / 3.0;
-    return avg / 255.0 * this.model.maxHeight;
+    return avg / 255.0 * this.model.maxHeight_;
   },
 
   createSmoothGeometry: function(geometry, vertices, data, createFaces) {
@@ -334,7 +334,7 @@ var Image3DView_ = voodoo.View.extend({
 
   createHeightmapGeometry: function(data, geometry, vertices, index,
       isPrimary) {
-    switch (this.model.geometryStyle) {
+    switch (this.model.geometryStyle_) {
       case Image3D.GeometryStyle.Smooth:
         this.createSmoothGeometry(geometry, vertices, data, isPrimary);
         break;
@@ -355,7 +355,7 @@ var Image3DView_ = voodoo.View.extend({
 
     // Morph targets are not supported for the block style.
     this.anyMorphTargets = false;
-    if (this.model.geometryStyle !== Image3D.GeometryStyle.Block) {
+    if (this.model.geometryStyle_ !== Image3D.GeometryStyle.Block) {
       for (var i = 1; i < 4; ++i) {
         if (this.model.heightmaps[i]) {
           var morphTarget = {
@@ -374,7 +374,7 @@ var Image3DView_ = voodoo.View.extend({
 
     // Make sure there are no morph targets for block geometry
     if (this.anyMorphTargets &&
-        this.model.geometryStyle == Image3D.GeometryStyle.Block)
+        this.model.geometryStyle_ == Image3D.GeometryStyle.Block)
       throw '[Image3D] Block geometry does not support alternate heightmaps';
 
     return geometry;
@@ -446,9 +446,13 @@ var Image3DView_ = voodoo.View.extend({
  * - heightmap3 {string=} Optional third heightmap path.
  * - heightmap4 {string=} Optional fourth heightmap path.
  * - maxHeight {number=} Optional maximum depth of the heightmap.
+ *     Default is 200.
  * - geometryStyle {Image3D.GeometryStyle=} Optional geometry style.
+ *     Default is smooth.
  * - lightingStyle {Image3D.LightingStyle=} Optional lighting style.
+ *     Default is face.
  * - transparent {boolean=} Whether to allow in-between transparency.
+ *     Default is true.
  *
  * Events:
  *
@@ -491,13 +495,13 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     if (typeof options.heightmap === 'undefined')
       throw '[Image3D] heightmap must be defined';
 
-    this.maxHeight = typeof options.maxHeight !== 'undefined' ?
+    this.maxHeight_ = typeof options.maxHeight !== 'undefined' ?
         options.maxHeight : 200;
-    this.geometryStyle = typeof options.geometryStyle !== 'undefined' ?
+    this.geometryStyle_ = typeof options.geometryStyle !== 'undefined' ?
         options.geometryStyle : Image3D.GeometryStyle.Smooth;
-    this.lightingStyle = typeof options.lightingStyle !== 'undefined' ?
+    this.lightingStyle_ = typeof options.lightingStyle !== 'undefined' ?
         options.lightingStyle : Image3D.LightingStyle.Face;
-    this.transparent = typeof options.transparent !== 'undefined' ?
+    this.transparent_ = typeof options.transparent !== 'undefined' ?
         options.transparent : true;
 
     this.morphing = false;
@@ -562,9 +566,9 @@ var Image3D = this.Image3D = voodoo.Model.extend({
   createPublicProperties: function() {
     var self = this;
 
-    Object.defineProperty(this, 'imageSrc', {
-      get: function() { return self.imageSrc_; },
-      set: function(imageSrc) { self.setImageSrc(imageSrc); },
+    Object.defineProperty(this, 'geometryStyle', {
+      get: function() { return self.geometryStyle_; },
+      set: function(geometryStyle) { self.setGeometryStyle(geometryStyle); },
       enumerable: true
     });
 
@@ -589,6 +593,30 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     Object.defineProperty(this, 'heightmap4', {
       get: function() { return self.heightSources[3]; },
       set: function(heightmap) { self.setHeightmap(heightmap, 4); },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'imageSrc', {
+      get: function() { return self.imageSrc_; },
+      set: function(imageSrc) { self.setImageSrc(imageSrc); },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'lightingStyle', {
+      get: function() { return self.lightingStyle_; },
+      set: function(lightingStyle) { self.setLightingStyle(lightingStyle); },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'maxHeight', {
+      get: function() { return self.maxHeight_; },
+      set: function(maxHeight) { self.setMaxHeight(maxHeight); },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'transparent', {
+      get: function() { return self.transparent_; },
+      set: function(transparent) { self.setTransparent(transparent); },
       enumerable: true
     });
   },
@@ -694,32 +722,20 @@ Image3D.prototype.morph = function(index, seconds) {
 
 
 /**
- * Sets the texture.
+ * Sets the geometry style.
  *
- * @param {string} imageSrc Texture filename.
+ * @param {Image3D.GeometryStyle} geometryStyle Geometry style.
  *
  * @return {Image3D}
  */
-Image3D.prototype.setImageSrc = function(imageSrc) {
-  imageSrc = getAbsoluteUrl(imageSrc);
+Image3D.prototype.setGeometryStyle = function(geometryStyle) {
+  if (this.geometryStyle_ !== geometryStyle) {
+    this.geometryStyle_ = geometryStyle;
 
-  if (this.imageSrc_ === imageSrc)
-    return this;
-
-  this.imageSrc_ = imageSrc;
-
-  if (this.element.tagName.toLowerCase() === 'img')
-    this.element.src = imageSrc;
-
-  function onLoad(index) {
-    this.view.setImage(this.image, this.imageSrc_);
-    if (typeof this.stencilView !== 'undefined' && this.stencilView)
-      this.stencilView.setImage(this.image, this.imageSrc_);
+    this.view.rebuildGeometry();
+    if (typeof self.stencilView !== 'undefined' && self.stencilView)
+      self.stencilView.rebuildGeometry();
   }
-
-  this.image = new Image();
-  this.image.onload = onLoad.bind(this);
-  this.image.src = imageSrc;
 
   return this;
 };
@@ -758,11 +774,127 @@ Image3D.prototype.setHeightmap = function(heightmap, opt_index) {
 
 
 /**
- * Gets or sets the source file for the texture.
+ * Sets the texture.
  *
- * @type {string}
+ * @param {string} imageSrc Texture filename.
+ *
+ * @return {Image3D}
  */
-Image3D.prototype.imageSrc = '';
+Image3D.prototype.setImageSrc = function(imageSrc) {
+  imageSrc = getAbsoluteUrl(imageSrc);
+
+  if (this.imageSrc_ === imageSrc)
+    return this;
+
+  this.imageSrc_ = imageSrc;
+
+  if (this.element.tagName.toLowerCase() === 'img')
+    this.element.src = imageSrc;
+
+  function onLoad(index) {
+    this.view.setImage(this.image, this.imageSrc_);
+    if (typeof this.stencilView !== 'undefined' && this.stencilView)
+      this.stencilView.setImage(this.image, this.imageSrc_);
+  }
+
+  this.image = new Image();
+  this.image.onload = onLoad.bind(this);
+  this.image.src = imageSrc;
+
+  return this;
+};
+
+
+/**
+ * Sets the lighting style.
+ *
+ * @param {Image3D.LightingStyle} lightingStyle Lighting style.
+ *
+ * @return {Image3D}
+ */
+Image3D.prototype.setLightingStyle = function(lightingStyle) {
+  if (this.lightingStyle_ !== lightingStyle) {
+    this.lightingStyle_ = lightingStyle;
+
+    this.view.rebuildGeometry();
+    if (typeof self.stencilView !== 'undefined' && self.stencilView)
+      self.stencilView.rebuildGeometry();
+  }
+
+  return this;
+};
+
+
+/**
+ * Sets the maximum height of the image.
+ *
+ * @param {number} maxHeight Maximum Z height.
+ *
+ * @return {Image3D}
+ */
+Image3D.prototype.setMaxHeight = function(maxHeight) {
+  if (this.maxHeight_ !== maxHeight) {
+    this.maxHeight_ = maxHeight;
+
+    this.view.rebuildGeometry();
+    if (typeof self.stencilView !== 'undefined' && self.stencilView)
+      self.stencilView.rebuildGeometry();
+  }
+
+  return this;
+};
+
+
+/**
+ * Sets whether the texture may be transparent.
+ *
+ * @param {boolean} transparent Enable transparency.
+ *
+ * @return {Image3D}
+ */
+Image3D.prototype.setTransparent = function(transparent) {
+  if (this.transparent_ !== transparent) {
+    this.transparent_ = transparent;
+
+    this.view.rebuildGeometry();
+    if (typeof self.stencilView !== 'undefined' && self.stencilView)
+      self.stencilView.rebuildGeometry();
+  }
+
+  return this;
+};
+
+
+/**
+ * Enumeration for the different ways of building the geometry.
+ *
+ * @enum {number}
+ */
+Image3D.GeometryStyle = {
+  Smooth: 1,
+  Block: 2,
+  Float: 3
+};
+
+
+/**
+ * Enumeration for the lighting style.
+ *
+ * @enum {number}
+ */
+Image3D.LightingStyle = {
+  Vertex: 1,
+  Face: 2,
+  None: 3
+};
+
+
+/**
+ * Gets or sets the geometry style. Default is smooth.
+ *
+ * @type {Image3D.GeometryStyle}
+ */
+Image3D.prototype.geometryStyle = Image3D.GeometryStyle.Smooth;
 
 
 /**
@@ -798,24 +930,32 @@ Image3D.prototype.heightmap4 = '';
 
 
 /**
- * Enumeration for the different ways of building the geometry.
+ * Gets or sets the source file for the texture.
  *
- * @enum {number}
+ * @type {string}
  */
-Image3D.GeometryStyle = {
-  Smooth: 1,
-  Block: 2,
-  Float: 3
-};
+Image3D.prototype.imageSrc = '';
 
 
 /**
- * Enumeration for the lighting style.
+ * Gets or sets the lighting style. Default is face.
  *
- * @enum {number}
+ * @type {Image3D.LightingStyle}
  */
-Image3D.LightingStyle = {
-  Vertex: 1,
-  Face: 2,
-  None: 3
-};
+Image3D.prototype.lightingStyle = Image3D.LightingStyle.Face;
+
+
+/**
+ * Gets or sets the maximum z-height. Default is 200.
+ *
+ * @type {number}
+ */
+Image3D.prototype.maxHeight = 200;
+
+
+/**
+ * Gets or sets whether the texture may be transparent. Default is true.
+ *
+ * @type {boolean}
+ */
+Image3D.prototype.transparent = true;
