@@ -20,71 +20,9 @@ var Image3DView_ = voodoo.View.extend({
   load: function() {
     this.base.load();
 
+    this.scene.attach(this.model.element, false, false);
+
     this.loaded = false;
-
-    var self = this;
-    this.loadHeightmaps(function() {
-      self.loadTexture(function() {
-        self.createMesh();
-        self.loaded = true;
-      });
-    });
-  },
-
-  loadHeightmaps: function(callback) {
-    this.heightmapWidth = 0;
-    this.heightmapHeight = 0;
-
-    var numLoaded = 0;
-    var numToLoad = 0;
-    function onLoad(heightmap) {
-      // Ensure all heightmaps are the same size
-      if (numLoaded == 0) {
-        this.heightmapWidth = heightmap.width;
-        this.heightmapHeight = heightmap.height;
-      } else {
-        if (this.heightmapWidth != heightmap.width ||
-            this.heightmapHeight != heightmap.height)
-          throw '[Image3D]: All heightmaps must be the same size';
-      }
-
-      numLoaded++;
-      if (numLoaded == numToLoad) {
-        callback();
-      }
-    }
-
-    this.heightmaps = [];
-    for (var i = 0; i < 4; ++i) {
-      if (this.model.heightSources[i] !== '') {
-        var heightmap = new Image();
-        heightmap.onload = onLoad.bind(this, heightmap);
-        numToLoad++;
-        this.heightmaps.push(heightmap);
-      }
-      else this.heightmaps.push(null);
-    }
-
-    for (var i = 0; i < 4; ++i) {
-      var heightmap = this.heightmaps[i];
-      if (heightmap != null)
-        heightmap.src = this.model.heightSources[i];
-    }
-  },
-
-  loadTexture: function(callback) {
-    var self = this;
-    this.texture = THREE.ImageUtils.loadTexture(this.model.imageSrc, {},
-        function() {
-          self.initializeTexture();
-          callback();
-        });
-  },
-
-  initializeTexture: function(texture) {
-    this.texture.flipY = false;
-    this.texture.miFilter = THREE.NearestFilter;
-    this.texture.magFilter = THREE.NearestFilter;
   },
 
   createMaterial: function() {
@@ -133,8 +71,8 @@ var Image3DView_ = voodoo.View.extend({
 
   createSmoothGeometry: function(geometry, vertices, data, createFaces) {
     // Constants
-    var width = this.heightmapWidth;
-    var height = this.heightmapHeight;
+    var width = this.model.heightmapWidth;
+    var height = this.model.heightmapHeight;
     var invWidthMinusOne = 1.0 / (width - 1);
     var invHeightMinusOne = 1.0 / (height - 1);
     var stride = width * 4;
@@ -185,8 +123,8 @@ var Image3DView_ = voodoo.View.extend({
 
   createBlockGeometry: function(geometry, data) {
     // Constants
-    var width = this.heightmapWidth;
-    var height = this.heightmapHeight;
+    var width = this.model.heightmapWidth;
+    var height = this.model.heightmapHeight;
     var invWidth = 1.0 / width;
     var invHeight = 1.0 / height;
     var widthRatio = this.texture.image.width / width;
@@ -342,8 +280,8 @@ var Image3DView_ = voodoo.View.extend({
 
   createFloatGeometry: function(geometry, vertices, data, createFaces) {
     // Constants
-    var width = this.heightmapWidth;
-    var height = this.heightmapHeight;
+    var width = this.model.heightmapWidth;
+    var height = this.model.heightmapHeight;
     var invWidth = 1.0 / width;
     var invHeight = 1.0 / height;
     var widthRatio = this.texture.image.width / width;
@@ -394,12 +332,8 @@ var Image3DView_ = voodoo.View.extend({
     }
   },
 
-  createHeightmapGeometry: function(geometry, vertices, index, isPrimary) {
-    this.context.drawImage(this.heightmaps[index], 0, 0,
-        this.heightmapWidth, this.heightmapHeight);
-    var data = this.context.getImageData(0, 0,
-        this.heightmapWidth, this.heightmapHeight).data;
-
+  createHeightmapGeometry: function(data, geometry, vertices, index,
+      isPrimary) {
     switch (this.model.geometryStyle) {
       case Image3D.GeometryStyle.Smooth:
         this.createSmoothGeometry(geometry, vertices, data, isPrimary);
@@ -416,24 +350,20 @@ var Image3DView_ = voodoo.View.extend({
   createGeometry: function() {
     var geometry = new THREE.Geometry();
 
-    var canvas = document.createElement('canvas');
-    canvas.width = this.heightmapWidth;
-    canvas.height = this.heightmapHeight;
-    this.context = canvas.getContext('2d');
-
-    this.createHeightmapGeometry(geometry, geometry.vertices, 0, true);
+    this.createHeightmapGeometry(this.model.heightmapData[0], geometry,
+        geometry.vertices, 0, true);
 
     // Morph targets are not supported for the block style.
     this.anyMorphTargets = false;
     if (this.model.geometryStyle !== Image3D.GeometryStyle.Block) {
       for (var i = 1; i < 4; ++i) {
-        if (this.heightmaps[i]) {
+        if (this.model.heightmaps[i]) {
           var morphTarget = {
             name: 'target' + i.toString(),
             vertices: []
           };
-          this.createHeightmapGeometry(geometry, morphTarget.vertices,
-              i, false);
+          this.createHeightmapGeometry(this.model.heightmapData[i],
+              geometry, morphTarget.vertices, i, false);
           geometry.morphTargets.push(morphTarget);
           this.anyMorphTargets = true;
         }
@@ -451,6 +381,9 @@ var Image3DView_ = voodoo.View.extend({
   },
 
   createMesh: function() {
+    if (typeof this.texture === 'undefined' || !this.texture)
+      return;
+
     var geometry = this.createGeometry();
     var material = this.createMaterial();
     this.mesh = new THREE.Mesh(geometry, material);
@@ -459,7 +392,13 @@ var Image3DView_ = voodoo.View.extend({
 
     this.scene.add(this.mesh);
     this.triggers.add(this.mesh);
-    this.scene.attach(this.model.element, false, false);
+
+    this.loaded = true;
+  },
+
+  destroyMesh: function() {
+    this.scene.remove(this.mesh);
+    this.triggers.remove(this.mesh);
   },
 
   setMorphTargetInfluences: function(influences) {
@@ -467,6 +406,28 @@ var Image3DView_ = voodoo.View.extend({
       this.mesh.morphTargetInfluences = influences;
       this.dirty();
     }
+  },
+
+  setImage: function(image, imageSrc) {
+    if (typeof this.texture === 'undefined' || !this.texture) {
+      this.texture = new THREE.Texture(undefined);
+
+      this.texture.flipY = false;
+      this.texture.miFilter = THREE.NearestFilter;
+      this.texture.magFilter = THREE.NearestFilter;
+    }
+
+    this.texture.needsUpdate = true;
+    this.texture.image = image;
+    this.texture.sourceFile = imageSrc;
+
+    this.rebuildGeometry();
+  },
+
+  rebuildGeometry: function() {
+    if (typeof this.mesh !== 'undefined' && this.mesh)
+      this.destroyMesh();
+    this.createMesh();
   }
 
 });
@@ -513,12 +474,18 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     if (typeof options.element === 'undefined')
       throw '[Image3D] element must be defined';
 
-    this.imageSrc = options.imageSrc || options.element.src;
+    this.imageSrc_ = typeof options.imageSrc !== 'undefined' ?
+        getAbsoluteUrl(options.imageSrc) :
+        getAbsoluteUrl(options.element.src);
     this.heightSources = [
-      typeof options.heightmap !== 'undefined' ? options.heightmap : '',
-      typeof options.heightmap2 !== 'undefined' ? options.heightmap2 : '',
-      typeof options.heightmap3 !== 'undefined' ? options.heightmap3 : '',
-      typeof options.heightmap4 !== 'undefined' ? options.heightmap4 : ''
+      typeof options.heightmap !== 'undefined' ?
+          getAbsoluteUrl(options.heightmap) : '',
+      typeof options.heightmap2 !== 'undefined' ?
+          getAbsoluteUrl(options.heightmap2) : '',
+      typeof options.heightmap3 !== 'undefined' ?
+          getAbsoluteUrl(options.heightmap3) : '',
+      typeof options.heightmap4 !== 'undefined' ?
+          getAbsoluteUrl(options.heightmap4) : ''
     ];
 
     if (typeof options.heightmap === 'undefined')
@@ -539,10 +506,30 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     this.startMorphTargets = [0, 0, 0];
     this.currentMorphTargets = [0, 0, 0];
     this.endMorphTargets = [0, 0, 0];
+
+    this.createPublicProperties();
+  },
+
+  setUpViews: function() {
+    this.base.setUpViews();
+
+    var self = this;
+    this.loadHeightmaps(function() {
+      var src = self.imageSrc_;
+      self.imageSrc_ = null;
+      self.setImageSrc(src);
+    });
   },
 
   update: function(deltaTime) {
     this.base.update(deltaTime);
+
+    if (!this.loaded)
+      return;
+
+    if (this.element.tagName.toLowerCase() === 'img' &&
+        this.element.src !== this.imageSrc_)
+      this.setImageSrc(this.element.src);
 
     if (this.morphing) {
       var now = new Date().getTime();
@@ -553,6 +540,9 @@ var Image3D = this.Image3D = voodoo.Model.extend({
         // Finish animations
         this.morphing = false;
         this.view.setMorphTargetInfluences(this.endMorphTargets);
+        if (typeof this.stencilView !== 'undefined' && this.stencilView)
+          this.stencilView.setMorphTargetInfluences(this.endMorphTargets);
+
         this.currentMorphTargets = this.endMorphTargets.slice(0);
 
         this.dispatch(new voodoo.Event('morphEnd', this));
@@ -563,10 +553,106 @@ var Image3D = this.Image3D = voodoo.Model.extend({
               this.endMorphTargets[i] * time;
         }
         this.view.setMorphTargetInfluences(this.currentMorphTargets);
+        if (typeof this.stencilView !== 'undefined' && this.stencilView)
+          this.stencilView.setMorphTargetInfluences(this.currentMorphTargets);
       }
     }
-  }
+  },
 
+  createPublicProperties: function() {
+    var self = this;
+
+    Object.defineProperty(this, 'imageSrc', {
+      get: function() { return self.imageSrc_; },
+      set: function(imageSrc) { self.setImageSrc(imageSrc); },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'heightmap', {
+      get: function() { return self.heightSources[0]; },
+      set: function(heightmap) { self.setHeightmap(heightmap, 1); },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'heightmap2', {
+      get: function() { return self.heightSources[1]; },
+      set: function(heightmap) { self.setHeightmap(heightmap, 2); },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'heightmap3', {
+      get: function() { return self.heightSources[2]; },
+      set: function(heightmap) { self.setHeightmap(heightmap, 3); },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'heightmap4', {
+      get: function() { return self.heightSources[3]; },
+      set: function(heightmap) { self.setHeightmap(heightmap, 4); },
+      enumerable: true
+    });
+  },
+
+  loadHeightmap: function(heightmapSrc, index, callback) {
+    if (!heightmapSrc)
+      return;
+
+    function onLoad(index) {
+      var heightmapWidth = this.heightmaps[index].width;
+      var heightmapHeight = this.heightmaps[index].height;
+
+      var canvas = document.createElement('canvas');
+      canvas.width = heightmapWidth;
+      canvas.height = heightmapHeight;
+
+      var context = canvas.getContext('2d');
+      context.drawImage(this.heightmaps[index], 0, 0, heightmapWidth,
+          heightmapHeight);
+      this.heightmapData[index] = context.getImageData(0, 0,
+          heightmapWidth, heightmapHeight).data;
+
+      callback();
+    }
+
+    var heightmap = new Image();
+    heightmap.onload = onLoad.bind(this, index);
+    this.heightmaps[index] = heightmap;
+    heightmap.src = heightmapSrc;
+  },
+
+  loadHeightmaps: function(callback) {
+    this.heightmapWidth = 0;
+    this.heightmapHeight = 0;
+
+    var numLoaded = 0;
+    var numToLoad = 0;
+    function onLoad(index) {
+      var heightmap = this.heightmaps[index];
+
+      // Ensure all heightmaps are the same size
+      if (numLoaded == 0) {
+        this.heightmapWidth = heightmap.width;
+        this.heightmapHeight = heightmap.height;
+      } else {
+        if (this.heightmapWidth != heightmap.width ||
+            this.heightmapHeight != heightmap.height)
+          throw '[Image3D]: All heightmaps must be the same size';
+      }
+
+      numLoaded++;
+      if (numLoaded === numToLoad)
+        callback();
+    }
+
+    this.heightmaps = [];
+    this.heightmapData = [];
+    for (var i = 0; i < 4; ++i) {
+      if (this.heightSources[i] !== '')
+        numToLoad++;
+    }
+    for (var i = 0; i < 4; ++i)
+      this.loadHeightmap(this.heightSources[i], i, onLoad.bind(this, i));
+  }
 });
 
 
@@ -598,11 +684,117 @@ Image3D.prototype.morph = function(index, seconds) {
     this.endMorphTargets = morphTargetInfluences.slice(0);
     this.currentMorphTargets = morphTargetInfluences.slice(0);
     this.view.setMorphTargetInfluences(morphTargetInfluences);
+    if (typeof this.stencilView !== 'undefined' && this.stencilView)
+      this.stencilView.setMorphTargetInfluences(morphTargetInfluences);
     this.morphing = false;
   }
 
   return this;
 };
+
+
+/**
+ * Sets the texture.
+ *
+ * @param {string} imageSrc Texture filename.
+ *
+ * @return {Image3D}
+ */
+Image3D.prototype.setImageSrc = function(imageSrc) {
+  imageSrc = getAbsoluteUrl(imageSrc);
+
+  if (this.imageSrc_ === imageSrc)
+    return this;
+
+  this.imageSrc_ = imageSrc;
+
+  if (this.element.tagName.toLowerCase() === 'img')
+    this.element.src = imageSrc;
+
+  function onLoad(index) {
+    this.view.setImage(this.image, this.imageSrc_);
+    if (typeof this.stencilView !== 'undefined' && this.stencilView)
+      this.stencilView.setImage(this.image, this.imageSrc_);
+  }
+
+  this.image = new Image();
+  this.image.onload = onLoad.bind(this);
+  this.image.src = imageSrc;
+
+  return this;
+};
+
+
+/**
+ * Sets a heightmap.
+ *
+ * @param {string} heightmap Heightmap filename.
+ * @param {number=} opt_index Heightmap number. Default is 1, the main
+ *   heightmap.
+ *
+ * @return {Image3D}
+ */
+Image3D.prototype.setHeightmap = function(heightmap, opt_index) {
+  heightmap = getAbsoluteUrl(heightmap);
+
+  var index = typeof opt_index === 'undefined' ? 0 : opt_index - 1;
+
+  if (this.heightSources[index] === heightmap)
+    return this;
+
+  this.heightSources[index] = heightmap;
+
+  /** @type {?} */
+  var self = this;
+
+  self.loadHeightmap(heightmap, index, function() {
+    self.view.rebuildGeometry();
+    if (typeof self.stencilView !== 'undefined' && self.stencilView)
+      self.stencilView.rebuildGeometry();
+  });
+
+  return this;
+};
+
+
+/**
+ * Gets or sets the source file for the texture.
+ *
+ * @type {string}
+ */
+Image3D.prototype.imageSrc = '';
+
+
+/**
+ * Gets or sets the source file for the primary heightmap.
+ *
+ * @type {string}
+ */
+Image3D.prototype.heightmap = '';
+
+
+/**
+ * Gets or sets the source file for the second heightmap.
+ *
+ * @type {string}
+ */
+Image3D.prototype.heightmap2 = '';
+
+
+/**
+ * Gets or sets the source file for the third heightmap.
+ *
+ * @type {string}
+ */
+Image3D.prototype.heightmap3 = '';
+
+
+/**
+ * Gets or sets the source file for the fourth heightmap.
+ *
+ * @type {string}
+ */
+Image3D.prototype.heightmap4 = '';
 
 
 /**

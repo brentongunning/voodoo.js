@@ -129,3 +129,46 @@ Image3DTests.prototype.testImage3DEvents = function(queue) {
     assert('Morph End:', morphEnd);
   });
 };
+
+
+/**
+ * Tests that image and height sources can be changed.
+ *
+ * @param {Object} queue Async queue.
+ */
+Image3DTests.prototype.testImage3DChangeSources = function(queue) {
+  /*:DOC +=
+    <img style="position:absolute; left:400px; top:400px;
+        width:400px; height:300px;" id="anchor"></div>
+  */
+
+  var anchor = document.getElementById('anchor');
+  var layers = '/test/test/assets/Layers.jpg';
+  var black = '/test/test/assets/Black.jpg';
+
+  queue.call(function(callbacks) {
+    img3d = new voodoo.Image3D({
+      element: anchor,
+      imageSrc: layers,
+      heightmap: black,
+      heightmap2: layers
+    }).on('load', callbacks.add(function() {}));
+  });
+
+  queue.call(function() {
+    img3d.imageSrc = black;
+    assert('ImageSrc:', img3d.imageSrc.indexOf(black) !== -1);
+    assert('img.src:', anchor.src.indexOf(black) !== -1);
+
+    img3d.heightmap = layers;
+    assert('Heightmap:', img3d.heightmap.indexOf(layers) !== -1);
+
+    img3d.heightmap3 = black;
+    assert('Heightmap3:', img3d.heightmap3.indexOf(black) !== -1);
+
+    anchor.src = layers;
+    voodoo.engine.frame();
+    assert('ImageSrc (2):', img3d.imageSrc.indexOf(layers) !== -1);
+  });
+};
+

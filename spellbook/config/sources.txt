@@ -1,4 +1,5 @@
 Helpers\Easing.js
+Helpers\Helpers.js
 Helpers\NullView.js
 
 Modifiers\Colorer.js
