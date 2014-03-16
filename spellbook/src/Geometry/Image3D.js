@@ -428,6 +428,11 @@ var Image3DView_ = voodoo.View.extend({
     if (typeof this.mesh !== 'undefined' && this.mesh)
       this.destroyMesh();
     this.createMesh();
+  },
+
+  setTransparent: function(transparent) {
+    if (typeof this.mesh !== 'undefined' && this.mesh)
+      this.mesh.material.transparent = transparent;
   }
 
 });
@@ -856,9 +861,9 @@ Image3D.prototype.setTransparent = function(transparent) {
   if (this.transparent_ !== transparent) {
     this.transparent_ = transparent;
 
-    this.view.rebuildGeometry();
+    this.view.setTransparent(transparent);
     if (typeof self.stencilView !== 'undefined' && self.stencilView)
-      self.stencilView.rebuildGeometry();
+      self.stencilView.setTransparent(transparent);
   }
 
   return this;
