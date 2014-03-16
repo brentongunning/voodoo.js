@@ -447,9 +447,9 @@ var Image3DView_ = voodoo.View.extend({
  * - heightmap4 {string=} Optional fourth heightmap path.
  * - maxHeight {number=} Optional maximum depth of the heightmap.
  *     Default is 200.
- * - geometryStyle {Image3D.GeometryStyle=} Optional geometry style.
+ * - geometryStyle {(Image3D.GeometryStyle|string)=} Optional geometry style.
  *     Default is smooth.
- * - lightingStyle {Image3D.LightingStyle=} Optional lighting style.
+ * - lightingStyle {(Image3D.LightingStyle|string)=} Optional lighting style.
  *     Default is face.
  * - transparent {boolean=} Whether to allow in-between transparency.
  *     Default is true.
@@ -724,7 +724,7 @@ Image3D.prototype.morph = function(index, seconds) {
 /**
  * Sets the geometry style.
  *
- * @param {Image3D.GeometryStyle} geometryStyle Geometry style.
+ * @param {Image3D.GeometryStyle|string} geometryStyle Geometry style.
  *
  * @return {Image3D}
  */
@@ -808,7 +808,7 @@ Image3D.prototype.setImageSrc = function(imageSrc) {
 /**
  * Sets the lighting style.
  *
- * @param {Image3D.LightingStyle} lightingStyle Lighting style.
+ * @param {Image3D.LightingStyle|string} lightingStyle Lighting style.
  *
  * @return {Image3D}
  */
@@ -868,31 +868,31 @@ Image3D.prototype.setTransparent = function(transparent) {
 /**
  * Enumeration for the different ways of building the geometry.
  *
- * @enum {number}
+ * @enum {string}
  */
 Image3D.GeometryStyle = {
-  Smooth: 1,
-  Block: 2,
-  Float: 3
+  Smooth: 'smooth',
+  Block: 'block',
+  Float: 'float'
 };
 
 
 /**
  * Enumeration for the lighting style.
  *
- * @enum {number}
+ * @enum {string}
  */
 Image3D.LightingStyle = {
-  Vertex: 1,
-  Face: 2,
-  None: 3
+  Vertex: 'vertex',
+  Face: 'face',
+  None: 'none'
 };
 
 
 /**
  * Gets or sets the geometry style. Default is smooth.
  *
- * @type {Image3D.GeometryStyle}
+ * @type {Image3D.GeometryStyle|string}
  */
 Image3D.prototype.geometryStyle = Image3D.GeometryStyle.Smooth;
 
@@ -940,7 +940,7 @@ Image3D.prototype.imageSrc = '';
 /**
  * Gets or sets the lighting style. Default is face.
  *
- * @type {Image3D.LightingStyle}
+ * @type {Image3D.LightingStyle|string}
  */
 Image3D.prototype.lightingStyle = Image3D.LightingStyle.Face;
 
