@@ -463,6 +463,15 @@ var Image3DView_ = voodoo.View.extend({
  *
  * - morphBegin
  * - morphEnd
+ * - changeImageSrc
+ * - chamgeHeightmap
+ * - changeHeightmap2
+ * - changeHeightmap3
+ * - changeHeightmap4
+ * - changeGeometryStyle
+ * - changeLightingStyle
+ * - changeMaxHeight
+ * - changeTransparent
  *
  * @constructor
  * @extends {voodoo.Model}
@@ -737,6 +746,8 @@ Image3D.prototype.setGeometryStyle = function(geometryStyle) {
   if (this.geometryStyle_ !== geometryStyle) {
     this.geometryStyle_ = geometryStyle;
 
+    this.dispatch(new voodoo.Event('changeGeometryStyle', this));
+
     this.view.rebuildGeometry();
     if (typeof self.stencilView !== 'undefined' && self.stencilView)
       self.stencilView.rebuildGeometry();
@@ -765,6 +776,10 @@ Image3D.prototype.setHeightmap = function(heightmap, opt_index) {
 
   this.heightSources[index] = heightmap;
 
+  if (index === 0)
+    this.dispatch(new voodoo.Event('changeHeightmap', this));
+  else this.dispatch(new voodoo.Event('changeHeightmap' + (index + 1), this));
+
   /** @type {?} */
   var self = this;
 
@@ -791,10 +806,14 @@ Image3D.prototype.setImageSrc = function(imageSrc) {
   if (this.imageSrc_ === imageSrc)
     return this;
 
+  var initialized = this.imageSrc_ !== null;
   this.imageSrc_ = imageSrc;
 
   if (this.element.tagName.toLowerCase() === 'img')
     this.element.src = imageSrc;
+
+  if (initialized)
+    this.dispatch(new voodoo.Event('changeImageSrc', this));
 
   function onLoad(index) {
     this.view.setImage(this.image, this.imageSrc_);
@@ -821,6 +840,8 @@ Image3D.prototype.setLightingStyle = function(lightingStyle) {
   if (this.lightingStyle_ !== lightingStyle) {
     this.lightingStyle_ = lightingStyle;
 
+    this.dispatch(new voodoo.Event('changeLightingStyle', this));
+
     this.view.rebuildGeometry();
     if (typeof self.stencilView !== 'undefined' && self.stencilView)
       self.stencilView.rebuildGeometry();
@@ -841,6 +862,8 @@ Image3D.prototype.setMaxHeight = function(maxHeight) {
   if (this.maxHeight_ !== maxHeight) {
     this.maxHeight_ = maxHeight;
 
+    this.dispatch(new voodoo.Event('changeMaxHeight', this));
+
     this.view.rebuildGeometry();
     if (typeof self.stencilView !== 'undefined' && self.stencilView)
       self.stencilView.rebuildGeometry();
@@ -860,6 +883,8 @@ Image3D.prototype.setMaxHeight = function(maxHeight) {
 Image3D.prototype.setTransparent = function(transparent) {
   if (this.transparent_ !== transparent) {
     this.transparent_ = transparent;
+
+    this.dispatch(new voodoo.Event('changeTransparent', this));
 
     this.view.setTransparent(transparent);
     if (typeof self.stencilView !== 'undefined' && self.stencilView)

@@ -146,6 +146,10 @@ Image3DTests.prototype.testImage3DChangeSources = function(queue) {
   var layers = '/test/test/assets/Layers.jpg';
   var black = '/test/test/assets/Black.jpg';
 
+  var changeImageSrc = 0;
+  var changeHeightmap = 0;
+  var changeHeightmap3 = 0;
+
   queue.call(function(callbacks) {
     img3d = new voodoo.Image3D({
       element: anchor,
@@ -153,6 +157,10 @@ Image3DTests.prototype.testImage3DChangeSources = function(queue) {
       heightmap: black,
       heightmap2: layers
     }).on('load', callbacks.add(function() {}));
+
+    img3d.on('changeImageSrc', function() { ++changeImageSrc; });
+    img3d.on('changeHeightmap', function() { ++changeHeightmap; });
+    img3d.on('changeHeightmap3', function() { ++changeHeightmap3; });
   });
 
   queue.call(function() {
@@ -169,6 +177,62 @@ Image3DTests.prototype.testImage3DChangeSources = function(queue) {
     anchor.src = layers;
     voodoo.engine.frame();
     assert('ImageSrc (2):', img3d.imageSrc.indexOf(layers) !== -1);
+
+    assertEquals('changeImageSrc', 2, changeImageSrc);
+    assertEquals('changeHeightmap', 1, changeHeightmap);
+    assertEquals('changeHeightmap3', 1, changeHeightmap3);
   });
 };
 
+
+/**
+ * Tests that image and height sources can be changed.
+ */
+Image3DTests.prototype.testImage3DProperties = function() {
+  /*:DOC +=
+    <img style="position:absolute; left:400px; top:400px;
+        width:400px; height:300px;" id="anchor"></div>
+  */
+
+  var anchor = document.getElementById('anchor');
+  var layers = '/test/test/assets/Layers.jpg';
+  var black = '/test/test/assets/Black.jpg';
+
+  var img3d = new voodoo.Image3D({
+    element: anchor,
+    imageSrc: layers,
+    heightmap: black,
+    heightmap2: layers
+  });
+
+  var changeGeometryStyle = 0;
+  var changeLightingStyle = 0;
+  var changeMaxHeight = 0;
+  var changeTransparent = 0;
+
+  img3d.on('changeGeometryStyle', function() { ++changeGeometryStyle; });
+  img3d.on('changeLightingStyle', function() { ++changeLightingStyle; });
+  img3d.on('changeMaxHeight', function() { ++changeMaxHeight; });
+  img3d.on('changeTransparent', function() { ++changeTransparent; });
+
+  img3d.geometryStyle = 'smooth';
+  img3d.setGeometryStyle('block');
+  img3d.geometryStyle = voodoo.Image3D.GeometryStyle.Smooth;
+
+  img3d.lightingStyle = 'vertex';
+  img3d.lightingStyle = 'none';
+  img3d.setLightingStyle(voodoo.Image3D.LightingStyle.Vertex);
+
+  img3d.maxHeight = 200;
+  img3d.setMaxHeight(500);
+  img3d.maxHeight = 1000;
+
+  img3d.setTransparent(true);
+  img3d.setTransparent(false);
+  img3d.transparent = true;
+
+  assertEquals('changeGeometryStyle', 2, changeGeometryStyle);
+  assertEquals('changeLightingStyle', 3, changeLightingStyle);
+  assertEquals('changeMaxHeight', 2, changeMaxHeight);
+  assertEquals('changeTransparent', 2, changeTransparent);
+};
