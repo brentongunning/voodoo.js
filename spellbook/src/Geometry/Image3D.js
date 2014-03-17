@@ -26,39 +26,20 @@ var Image3DView_ = voodoo.View.extend({
   },
 
   createMaterial: function() {
-    if (this.model.lightingStyle_ !== Image3D.LightingStyle.None) {
-      return new THREE.MeshLambertMaterial({
-        color: 0xFFFFFF,
-        ambient: 0x000000,
-        map: this.texture,
-        transparent: this.model.transparent_,
-        morphTargets: this.anyMorphTargets,
-        morphNormals: this.anyMorphTargets
-      });
-    } else {
-      return new THREE.MeshBasicMaterial({
-        color: 0xFFFFFF,
-        map: this.texture,
-        transparent: this.model.transparent_
-      });
-    }
+    return new THREE.MeshLambertMaterial({
+      color: 0xFFFFFF,
+      ambient: 0x000000,
+      map: this.texture,
+      transparent: this.model.transparent_,
+      morphTargets: true,
+      morphNormals: true
+    });
   },
 
-  computeNormals: function(geometry, anyMorphTargets) {
-    switch (this.model.lightingStyle_) {
-      case Image3D.LightingStyle.Vertex:
-        geometry.computeFaceNormals();
-        geometry.computeVertexNormals();
-        break;
-      case Image3D.LightingStyle.Face:
-        geometry.computeFaceNormals();
-        break;
-      case Image3D.LightingStyle.None:
-        break;
-    }
-
-    if (anyMorphTargets)
-      geometry.computeMorphNormals();
+  computeNormals: function(geometry) {
+    geometry.computeFaceNormals();
+    geometry.computeVertexNormals();
+    geometry.computeMorphNormals();
   },
 
   getDepth: function(data, i) {
@@ -121,7 +102,7 @@ var Image3DView_ = voodoo.View.extend({
     }
   },
 
-  createBlockGeometry: function(geometry, data) {
+  createBlockGeometry: function(geometry, vertices, data, createFaces) {
     // Constants
     var width = this.model.heightmapWidth;
     var height = this.model.heightmapHeight;
@@ -165,114 +146,125 @@ var Image3DView_ = voodoo.View.extend({
         var v1 = (yr + 0.5) * invTextureHeight;
         var v2 = (yr + heightRatio - 0.5) * invTextureHeight;
 
-        var j = v;
-        geometry.vertices.push(new THREE.Vector3(x1, y1, depth));
-        geometry.vertices.push(new THREE.Vector3(x2, y1, depth));
-        geometry.vertices.push(new THREE.Vector3(x2, y2, depth));
-        geometry.vertices.push(new THREE.Vector3(x1, y2, depth));
-        v += 4;
-
         // Front
 
-        geometry.faces.push(new THREE.Face3(j, j + 1, j + 2));
-        geometry.faces.push(new THREE.Face3(j, j + 2, j + 3));
-        geometry.faceVertexUvs[0].push([
-          new THREE.Vector2(u1, v1),
-          new THREE.Vector2(u2, v1),
-          new THREE.Vector2(u2, v2)
-        ]);
-        geometry.faceVertexUvs[0].push([
-          new THREE.Vector2(u1, v1),
-          new THREE.Vector2(u2, v2),
-          new THREE.Vector2(u1, v2)
-        ]);
+        var j = v;
+        vertices.push(new THREE.Vector3(x1, y1, depth));
+        vertices.push(new THREE.Vector3(x2, y1, depth));
+        vertices.push(new THREE.Vector3(x2, y2, depth));
+        vertices.push(new THREE.Vector3(x1, y2, depth));
+
+        if (createFaces) {
+          v += 4;
+
+          geometry.faces.push(new THREE.Face3(j, j + 1, j + 2));
+          geometry.faces.push(new THREE.Face3(j, j + 2, j + 3));
+          geometry.faceVertexUvs[0].push([
+            new THREE.Vector2(u1, v1),
+            new THREE.Vector2(u2, v1),
+            new THREE.Vector2(u2, v2)
+          ]);
+          geometry.faceVertexUvs[0].push([
+            new THREE.Vector2(u1, v1),
+            new THREE.Vector2(u2, v2),
+            new THREE.Vector2(u1, v2)
+          ]);
+        }
 
         // Left
 
         if (depth > depthLeft) {
-          geometry.vertices.push(new THREE.Vector3(x1, y1, depthLeft));
-          geometry.vertices.push(new THREE.Vector3(x1, y2, depthLeft));
+          vertices.push(new THREE.Vector3(x1, y1, depthLeft));
+          vertices.push(new THREE.Vector3(x1, y2, depthLeft));
 
-          geometry.faces.push(new THREE.Face3(j, j + 3, v + 1));
-          geometry.faces.push(new THREE.Face3(j, v + 1, v));
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u1, v1),
-            new THREE.Vector2(u1, v2),
-            new THREE.Vector2(u1, v2)
-          ]);
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u1, v1),
-            new THREE.Vector2(u1, v2),
-            new THREE.Vector2(u1, v1)
-          ]);
+          if (createFaces) {
+            geometry.faces.push(new THREE.Face3(j, j + 3, v + 1));
+            geometry.faces.push(new THREE.Face3(j, v + 1, v));
+            geometry.faceVertexUvs[0].push([
+              new THREE.Vector2(u1, v1),
+              new THREE.Vector2(u1, v2),
+              new THREE.Vector2(u1, v2)
+            ]);
+            geometry.faceVertexUvs[0].push([
+              new THREE.Vector2(u1, v1),
+              new THREE.Vector2(u1, v2),
+              new THREE.Vector2(u1, v1)
+            ]);
 
-          v += 2;
+            v += 2;
+          }
         }
 
         // Right
 
         if (depth > depthRight) {
-          geometry.vertices.push(new THREE.Vector3(x2, y1, depthRight));
-          geometry.vertices.push(new THREE.Vector3(x2, y2, depthRight));
+          vertices.push(new THREE.Vector3(x2, y1, depthRight));
+          vertices.push(new THREE.Vector3(x2, y2, depthRight));
 
-          geometry.faces.push(new THREE.Face3(j + 2, j + 1, v + 0));
-          geometry.faces.push(new THREE.Face3(j + 2, v + 0, v + 1));
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u2, v2),
-            new THREE.Vector2(u2, v1),
-            new THREE.Vector2(u2, v1)
-          ]);
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u2, v2),
-            new THREE.Vector2(u2, v1),
-            new THREE.Vector2(u2, v2)
-          ]);
+          if (createFaces) {
+            geometry.faces.push(new THREE.Face3(j + 2, j + 1, v + 0));
+            geometry.faces.push(new THREE.Face3(j + 2, v + 0, v + 1));
+            geometry.faceVertexUvs[0].push([
+              new THREE.Vector2(u2, v2),
+              new THREE.Vector2(u2, v1),
+              new THREE.Vector2(u2, v1)
+            ]);
+            geometry.faceVertexUvs[0].push([
+              new THREE.Vector2(u2, v2),
+              new THREE.Vector2(u2, v1),
+              new THREE.Vector2(u2, v2)
+            ]);
 
-          v += 2;
+            v += 2;
+          }
         }
 
         // Top
 
         if (depth > depthTop) {
-          geometry.vertices.push(new THREE.Vector3(x1, y1, depthTop));
-          geometry.vertices.push(new THREE.Vector3(x2, y1, depthTop));
+          vertices.push(new THREE.Vector3(x1, y1, depthTop));
+          vertices.push(new THREE.Vector3(x2, y1, depthTop));
 
-          geometry.faces.push(new THREE.Face3(j + 1, j, v));
-          geometry.faces.push(new THREE.Face3(j + 1, v, v + 1));
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u2, v1),
-            new THREE.Vector2(u1, v1),
-            new THREE.Vector2(u1, v1)
-          ]);
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u2, v1),
-            new THREE.Vector2(u1, v1),
-            new THREE.Vector2(u2, v1)
-          ]);
+          if (createFaces) {
+            geometry.faces.push(new THREE.Face3(j + 1, j, v));
+            geometry.faces.push(new THREE.Face3(j + 1, v, v + 1));
+            geometry.faceVertexUvs[0].push([
+              new THREE.Vector2(u2, v1),
+              new THREE.Vector2(u1, v1),
+              new THREE.Vector2(u1, v1)
+            ]);
+            geometry.faceVertexUvs[0].push([
+              new THREE.Vector2(u2, v1),
+              new THREE.Vector2(u1, v1),
+              new THREE.Vector2(u2, v1)
+            ]);
 
-          v += 2;
+            v += 2;
+          }
         }
 
         // Bottom
 
         if (depth > depthBottom) {
-          geometry.vertices.push(new THREE.Vector3(x1, y2, depthBottom));
-          geometry.vertices.push(new THREE.Vector3(x2, y2, depthBottom));
+          vertices.push(new THREE.Vector3(x1, y2, depthBottom));
+          vertices.push(new THREE.Vector3(x2, y2, depthBottom));
 
-          geometry.faces.push(new THREE.Face3(j + 3, j + 2, v + 1));
-          geometry.faces.push(new THREE.Face3(j + 3, v + 1, v));
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u1, v2),
-            new THREE.Vector2(u2, v2),
-            new THREE.Vector2(u2, v2)
-          ]);
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u1, v2),
-            new THREE.Vector2(u2, v2),
-            new THREE.Vector2(u1, v2)
-          ]);
+          if (createFaces) {
+            geometry.faces.push(new THREE.Face3(j + 3, j + 2, v + 1));
+            geometry.faces.push(new THREE.Face3(j + 3, v + 1, v));
+            geometry.faceVertexUvs[0].push([
+              new THREE.Vector2(u1, v2),
+              new THREE.Vector2(u2, v2),
+              new THREE.Vector2(u2, v2)
+            ]);
+            geometry.faceVertexUvs[0].push([
+              new THREE.Vector2(u1, v2),
+              new THREE.Vector2(u2, v2),
+              new THREE.Vector2(u1, v2)
+            ]);
 
-          v += 2;
+            v += 2;
+          }
         }
       }
     }
@@ -304,7 +296,14 @@ var Image3DView_ = voodoo.View.extend({
         vertices.push(new THREE.Vector3(x2, y2, depth));
         vertices.push(new THREE.Vector3(x1, y2, depth));
 
-        if (createFaces) {
+        i += 4;
+      }
+    }
+
+    if (createFaces) {
+      i = 0;
+      for (var y = 0; y < height; ++y) {
+        for (var x = 0; x < width; ++x) {
           var xr = x * widthRatio;
           var yr = y * heightRatio;
           var u1 = (xr + 0.5) * invTextureWidth;
@@ -325,24 +324,23 @@ var Image3DView_ = voodoo.View.extend({
             new THREE.Vector2(u2, v2),
             new THREE.Vector2(u1, v2)
           ]);
-        }
 
-        i += 4;
+          i += 4;
+        }
       }
     }
   },
 
-  createHeightmapGeometry: function(data, geometry, vertices, index,
-      isPrimary) {
+  createHeightmapGeometry: function(data, geometry, vertices, createFaces) {
     switch (this.model.geometryStyle_) {
       case Image3D.GeometryStyle.Smooth:
-        this.createSmoothGeometry(geometry, vertices, data, isPrimary);
+        this.createSmoothGeometry(geometry, vertices, data, createFaces);
         break;
       case Image3D.GeometryStyle.Block:
-        this.createBlockGeometry(geometry, data);
+        this.createBlockGeometry(geometry, vertices, data, createFaces);
         break;
       case Image3D.GeometryStyle.Float:
-        this.createFloatGeometry(geometry, vertices, data, isPrimary);
+        this.createFloatGeometry(geometry, vertices, data, createFaces);
         break;
     }
   },
@@ -350,32 +348,37 @@ var Image3DView_ = voodoo.View.extend({
   createGeometry: function() {
     var geometry = new THREE.Geometry();
 
-    this.createHeightmapGeometry(this.model.heightmapData[0], geometry,
-        geometry.vertices, 0, true);
-
-    // Morph targets are not supported for the block style.
-    this.anyMorphTargets = false;
-    if (this.model.geometryStyle_ !== Image3D.GeometryStyle.Block) {
-      for (var i = 1; i < 4; ++i) {
-        if (this.model.heightmaps[i]) {
-          var morphTarget = {
-            name: 'target' + i.toString(),
-            vertices: []
-          };
-          this.createHeightmapGeometry(this.model.heightmapData[i],
-              geometry, morphTarget.vertices, i, false);
-          geometry.morphTargets.push(morphTarget);
-          this.anyMorphTargets = true;
-        }
-      }
+    var numValidHeightmaps = 0;
+    for (var i = 0; i < 4; ++i) {
+      if (this.model.heightmaps[i])
+        ++numValidHeightmaps;
     }
 
-    this.computeNormals(geometry, this.anyMorphTargets);
+    this.createHeightmapGeometry(this.model.heightmapData[0],
+        geometry, geometry.vertices, true);
 
     // Make sure there are no morph targets for block geometry
-    if (this.anyMorphTargets &&
-        this.model.geometryStyle_ == Image3D.GeometryStyle.Block)
-      throw '[Image3D] Block geometry does not support alternate heightmaps';
+    if (numValidHeightmaps > 1 &&
+        this.model.geometryStyle_ === Image3D.GeometryStyle.Block)
+      throw '[Image3D] Block geometry does not support multiple heightmaps';
+
+    for (var i = 0; i < 4; ++i) {
+      var morphTarget = {
+        name: 'target' + i.toString(),
+        vertices: []
+      };
+
+      if (!this.model.heightmaps[i] || i == 0) {
+        morphTarget.vertices = geometry.vertices;
+      } else {
+        this.createHeightmapGeometry(this.model.heightmapData[i], geometry,
+            morphTarget.vertices, false);
+      }
+
+      geometry.morphTargets.push(morphTarget);
+    }
+
+    this.computeNormals(geometry);
 
     return geometry;
   },
@@ -454,8 +457,6 @@ var Image3DView_ = voodoo.View.extend({
  *     Default is 200.
  * - geometryStyle {(Image3D.GeometryStyle|string)=} Optional geometry style.
  *     Default is smooth.
- * - lightingStyle {(Image3D.LightingStyle|string)=} Optional lighting style.
- *     Default is face.
  * - transparent {boolean=} Whether to allow in-between transparency.
  *     Default is true.
  *
@@ -469,7 +470,6 @@ var Image3DView_ = voodoo.View.extend({
  * - changeHeightmap3
  * - changeHeightmap4
  * - changeGeometryStyle
- * - changeLightingStyle
  * - changeMaxHeight
  * - changeTransparent
  *
@@ -513,17 +513,15 @@ var Image3D = this.Image3D = voodoo.Model.extend({
         options.maxHeight : 200;
     this.geometryStyle_ = typeof options.geometryStyle !== 'undefined' ?
         options.geometryStyle : Image3D.GeometryStyle.Smooth;
-    this.lightingStyle_ = typeof options.lightingStyle !== 'undefined' ?
-        options.lightingStyle : Image3D.LightingStyle.Face;
     this.transparent_ = typeof options.transparent !== 'undefined' ?
         options.transparent : true;
 
     this.morphing = false;
     this.startMorphTime = 0;
     this.morphAnimationLength = 1;
-    this.startMorphTargets = [0, 0, 0];
-    this.currentMorphTargets = [0, 0, 0];
-    this.endMorphTargets = [0, 0, 0];
+    this.startMorphTargets = [1, 0, 0, 0];
+    this.currentMorphTargets = [1, 0, 0, 0];
+    this.endMorphTargets = [1, 0, 0, 0];
 
     this.createPublicProperties();
   },
@@ -565,9 +563,10 @@ var Image3D = this.Image3D = voodoo.Model.extend({
 
         this.dispatch(new voodoo.Event('morphEnd', this));
       } else {
+        var invTime = 1.0 - time;
         for (var i = 0; i < this.endMorphTargets.length; ++i) {
           this.currentMorphTargets[i] =
-              this.startMorphTargets[i] * (1.0 - time) +
+              this.startMorphTargets[i] * invTime +
               this.endMorphTargets[i] * time;
         }
         this.view.setMorphTargetInfluences(this.currentMorphTargets);
@@ -613,12 +612,6 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     Object.defineProperty(this, 'imageSrc', {
       get: function() { return self.imageSrc_; },
       set: function(imageSrc) { self.setImageSrc(imageSrc); },
-      enumerable: true
-    });
-
-    Object.defineProperty(this, 'lightingStyle', {
-      get: function() { return self.lightingStyle_; },
-      set: function(lightingStyle) { self.setLightingStyle(lightingStyle); },
       enumerable: true
     });
 
@@ -707,9 +700,8 @@ var Image3D = this.Image3D = voodoo.Model.extend({
  * @return {Image3D}
  */
 Image3D.prototype.morph = function(index, seconds) {
-  var morphTargetInfluences = [0, 0, 0];
-  if (index > 0)
-    morphTargetInfluences[index - 2] = 1;
+  var morphTargetInfluences = [0, 0, 0, 0];
+  morphTargetInfluences[index - 1] = 1;
 
   if (seconds > 0) {
     // Animate over time
@@ -830,28 +822,6 @@ Image3D.prototype.setImageSrc = function(imageSrc) {
 
 
 /**
- * Sets the lighting style.
- *
- * @param {Image3D.LightingStyle|string} lightingStyle Lighting style.
- *
- * @return {Image3D}
- */
-Image3D.prototype.setLightingStyle = function(lightingStyle) {
-  if (this.lightingStyle_ !== lightingStyle) {
-    this.lightingStyle_ = lightingStyle;
-
-    this.dispatch(new voodoo.Event('changeLightingStyle', this));
-
-    this.view.rebuildGeometry();
-    if (typeof self.stencilView !== 'undefined' && self.stencilView)
-      self.stencilView.rebuildGeometry();
-  }
-
-  return this;
-};
-
-
-/**
  * Sets the maximum height of the image.
  *
  * @param {number} maxHeight Maximum Z height.
@@ -908,18 +878,6 @@ Image3D.GeometryStyle = {
 
 
 /**
- * Enumeration for the lighting style.
- *
- * @enum {string}
- */
-Image3D.LightingStyle = {
-  Vertex: 'vertex',
-  Face: 'face',
-  None: 'none'
-};
-
-
-/**
  * Gets or sets the geometry style. Default is smooth.
  *
  * @type {Image3D.GeometryStyle|string}
@@ -965,14 +923,6 @@ Image3D.prototype.heightmap4 = '';
  * @type {string}
  */
 Image3D.prototype.imageSrc = '';
-
-
-/**
- * Gets or sets the lighting style. Default is face.
- *
- * @type {Image3D.LightingStyle|string}
- */
-Image3D.prototype.lightingStyle = Image3D.LightingStyle.Face;
 
 
 /**

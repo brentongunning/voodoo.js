@@ -33,18 +33,16 @@
 
 	new voodoo.MouseLight();
 
-	var FadingImage3D = voodoo.Fader.extend(voodoo.Image3D);
-	var img3d = new FadingImage3D({
+	var img3d = new voodoo.Image3D({
 		element: document.getElementById('GoogleLogo'),
 		heightmap: 'black.jpg',
 		maxHeight: 200,
-		geometryStyle: voodoo.Image3D.GeometryStyle.Smooth,
-		lightingStyle: voodoo.Image3D.LightingStyle.Vertex,
+		geometryStyle: 'smooth',
 		heightmap2: 'Italy-depth.jpg',
-		heightmap3: 'white.jpg'
+		heightmap3: 'white.jpg',
+		heightmap4: 'Italy-low.jpg'
 	}).on('load', function() {
-		//this.morph(2, 5);
-		this.fadeIn(3);
+		this.morph(2, 3);
 	});
 
 </script>

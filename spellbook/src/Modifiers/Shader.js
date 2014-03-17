@@ -19,9 +19,9 @@ var ShaderView_ = voodoo.View.extend({
     this.base.load();
 
     this.scene.on('add', function(e) {
-      this.setAmbientToMesh(this.model.threeJsAmbient_);
-      this.setEmissiveToMesh(this.model.threeJsEmissive_);
-      this.setShadingToMesh(this.model.shading_);
+      this.setAmbientToMesh(e.object, this.model.threeJsAmbient_);
+      this.setEmissiveToMesh(e.object, this.model.threeJsEmissive_);
+      this.setShadingToMesh(e.object, this.model.shading_);
 
       this.dirty();
     });
@@ -37,6 +37,7 @@ var ShaderView_ = voodoo.View.extend({
       var sceneObject = sceneObjects[i];
       this.setAmbientToMesh(sceneObject, ambient);
     }
+
     this.dirty();
   },
 
@@ -46,6 +47,7 @@ var ShaderView_ = voodoo.View.extend({
       var sceneObject = sceneObjects[i];
       this.setEmissiveToMesh(sceneObject, emissive);
     }
+
     this.dirty();
   },
 
@@ -55,6 +57,7 @@ var ShaderView_ = voodoo.View.extend({
       var sceneObject = sceneObjects[i];
       this.setShadingToMesh(sceneObject, shading);
     }
+
     this.dirty();
   },
 
@@ -113,6 +116,12 @@ var ShaderView_ = voodoo.View.extend({
       if (typeof material.shading !== 'undefined')
         material.shading = threeJsShading;
     }
+
+    var geometry = mesh.geometry;
+    if (typeof geometry !== 'undefined' && geometry) {
+      geometry.morphTargetsNeedUpdate = true;
+      geometry.normalsNeedUpdate = true;
+    }
   }
 
 });
@@ -124,10 +133,10 @@ var ShaderView_ = voodoo.View.extend({
  *
  * Options:
  *
- * - ambient {string} Initial ambient using CSS notation. Default is black.
- * - emissive {string} Initial emissive using CSS notation. Default is black.
- * - shading {Shader.ShadingStyle} Initial shading type. Default is
- *     Shader.ShadingStyle.Smooth.
+ * - ambient {string=} Initial ambient using CSS notation. Default is black.
+ * - emissive {string=} Initial emissive using CSS notation. Default is black.
+ * - shading {(Shader.ShadingStyle|string)=} Initial shading type. Default is
+ *     smooth.
  *
  * Events:
  *
@@ -235,7 +244,7 @@ Shader.prototype.setEmissive = function(emissive) {
 /**
   * Immediately changes the shading style of all scene meshes.
   *
-  * @param {Shader.ShadingStyle} shading Shading style.
+  * @param {Shader.ShadingStyle|string} shading Shading style.
   *
   * @return {Shader}
   */
@@ -273,18 +282,18 @@ Shader.prototype.emissive = 'black';
 /**
  * Enumeration for the different ways of shading the geometry.
  *
- * @enum {number}
+ * @enum {string}
  */
 Shader.ShadingStyle = {
-  Smooth: 1,
-  Flat: 2,
-  None: 3
+  Smooth: 'smooth',
+  Flat: 'flat',
+  None: 'none'
 };
 
 
 /**
  * Get or set the ambient color of all scene meshes. Default is smooth.
  *
- * @type {Shader.ShadingStyle}
+ * @type {Shader.ShadingStyle|string}
  */
-Shader.prototype.shading = Shader.ShadingStyle.Smooth;
+Shader.prototype.shading = 'smooth;';

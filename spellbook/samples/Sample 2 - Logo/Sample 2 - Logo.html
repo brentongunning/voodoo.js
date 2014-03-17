@@ -30,15 +30,16 @@
 		performanceScaling: false
 	});
 
-	var FadingImage3D = voodoo.Image3D.extend(voodoo.Fader);
-	FadingImage3D = FadingImage3D.extend(voodoo.Hider);
-	FadingImage3D = FadingImage3D.extend(voodoo.Scaler);
-	var img3d = new FadingImage3D({
+	var CustomType = voodoo.Image3D.extend(voodoo.Fader);
+	CustomType = CustomType.extend(voodoo.Hider);
+	CustomType = CustomType.extend(voodoo.Scaler);
+	CustomType = CustomType.extend(voodoo.Shader);
+	var img3d = new CustomType({
 		element: document.getElementById('GoogleLogo'),
 		heightmap: 'GoogleLogo-depth.png',
 		maxHeight: 400,
 		geometryStyle: voodoo.Image3D.GeometryStyle.Block,
-		lightingStyle: voodoo.Image3D.LightingStyle.Face
+		shading: 'flat'
 	}).on('load', function() {
 		this.fadeIn(3);
 	}).on('fadeEnd', function() {

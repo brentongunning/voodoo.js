@@ -42,8 +42,7 @@ Image3DTests.prototype.testImage3DCreateOnDiv = function(queue) {
       imageSrc: '/test/test/assets/Layers.jpg',
       heightmap: '/test/test/assets/Black.jpg',
       maxHeight: 200,
-      geometryStyle: voodoo.Image3D.GeometryStyle.Block,
-      lightingStyle: voodoo.Image3D.LightingStyle.Vertex,
+      geometryStyle: 'block',
       transparent: true
     }).on('load', callbacks.add(function() {
       loaded = true;
@@ -74,8 +73,7 @@ Image3DTests.prototype.testImage3DCreateOnImg = function(queue) {
     new voodoo.Image3D({
       element: document.getElementById('img'),
       heightmap: '/test/test/assets/Black.jpg',
-      geometryStyle: voodoo.Image3D.GeometryStyle.Float,
-      lightingStyle: voodoo.Image3D.LightingStyle.Face
+      geometryStyle: voodoo.Image3D.GeometryStyle.Float
     }).on('load', callbacks.add(function() {
       loaded = true;
     }));
@@ -206,22 +204,16 @@ Image3DTests.prototype.testImage3DProperties = function() {
   });
 
   var changeGeometryStyle = 0;
-  var changeLightingStyle = 0;
   var changeMaxHeight = 0;
   var changeTransparent = 0;
 
   img3d.on('changeGeometryStyle', function() { ++changeGeometryStyle; });
-  img3d.on('changeLightingStyle', function() { ++changeLightingStyle; });
   img3d.on('changeMaxHeight', function() { ++changeMaxHeight; });
   img3d.on('changeTransparent', function() { ++changeTransparent; });
 
   img3d.geometryStyle = 'smooth';
   img3d.setGeometryStyle('block');
   img3d.geometryStyle = voodoo.Image3D.GeometryStyle.Smooth;
-
-  img3d.lightingStyle = 'vertex';
-  img3d.lightingStyle = 'none';
-  img3d.setLightingStyle(voodoo.Image3D.LightingStyle.Vertex);
 
   img3d.maxHeight = 200;
   img3d.setMaxHeight(500);
@@ -232,7 +224,6 @@ Image3DTests.prototype.testImage3DProperties = function() {
   img3d.transparent = true;
 
   assertEquals('changeGeometryStyle', 2, changeGeometryStyle);
-  assertEquals('changeLightingStyle', 3, changeLightingStyle);
   assertEquals('changeMaxHeight', 2, changeMaxHeight);
   assertEquals('changeTransparent', 2, changeTransparent);
 };
