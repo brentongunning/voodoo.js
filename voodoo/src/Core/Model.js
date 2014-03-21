@@ -514,6 +514,8 @@ Model['extend'] = function(opt_object) {
     newType.prototype['name'] = name + '.' + newName;
   }
 
+  newType['extend'] = Model['extend'];
+
   return newType;
 };
 

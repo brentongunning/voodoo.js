@@ -228,20 +228,22 @@ BaseTests.prototype.testBaseReturnValue = function() {
  * Tests that other functions at the base level are called.
  */
 BaseTests.prototype.testBaseOverriddenFunctions = function() {
-  var called = false;
+  var baseCalled = false;
+  var aCalled = false;
 
   Base = voodoo.Extendable.extend({
     construct: function() {},
     foo: function() { this.bar(); },
-    bar: function() { called = true; }
+    bar: function() { baseCalled = true; }
   });
 
   A = Base.extend({
     foo: function() { this.base.foo(); },
-    bar: function() {}
+    bar: function() { aCalled = true; }
   });
 
   new A().foo();
 
-  assert(called == true);
+  assert(baseCalled === false);
+  assert(aCalled === true);
 };
