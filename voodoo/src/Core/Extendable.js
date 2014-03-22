@@ -9,8 +9,15 @@
 /**
  * Creates an extendable type.
  *
- * Both the Model and View extend this base Extendable type. Derived
- * models and views must inherit from those base classes via extend.
+ * Extendable provides some aspects of a classical inheritance system in
+ * javascript. Each extended object:
+ *
+ *   1) Inherits all methods and variables from its parent.
+ *   2) Automatically call construct() when instantiated via new.
+ *   3) Enable calling overridden parent methods via this.base.
+ *
+ * Both Model and View derive from Extendable and override construct to perform
+ * custom initialization. User models and views must inherit from them.
  *
  * @constructor
  * @ignore
@@ -50,7 +57,7 @@ Extendable.prototype['construct'] = function() {
 
 
 /**
- * Parent function accessor.
+ * Parent method accessor. This work like base in C# or super in Java.
  *
  * @type {Object}
  */
