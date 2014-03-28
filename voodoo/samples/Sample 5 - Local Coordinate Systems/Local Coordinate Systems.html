@@ -64,8 +64,11 @@ var SampleModel = voodoo.Model.extend({
 // Create a timer that changes the scale of the div automatically
 var anchorDiv = document.getElementById('anchor');
 setInterval(function() {
-  anchorDiv.style.width = Math.sin(new Date().getTime() / 1000) * 100 + 200;
-  anchorDiv.style.height = Math.cos(new Date().getTime() / 1000) * 100 + 200;
+  var anchorDivStyle = anchorDiv.style;
+  var time = new Date().getTime() / 1000;
+
+  anchorDivStyle.width = Math.sin(time) * 100 + 200;
+  anchorDivStyle.height = Math.cos(time) * 100 + 200;
 }, 10);
 
 new SampleModel({

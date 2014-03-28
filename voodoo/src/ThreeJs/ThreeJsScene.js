@@ -40,10 +40,10 @@ function ThreeJsScene_(scene, view) {
       // them without worrying about invalidating our own list or them changing.
       var objects = [];
       var children = sef.parent_.children;
-      for (var i = 0; i < children.length; ++i) {
+      for (var i = 0, numChildren = children.length; i < numChildren; ++i) {
         var child = children[i];
         if (child['addedToVoodooScene'])
-          objects.push(children[i]);
+          objects.push(child);
       }
       return objects;
     },
@@ -115,6 +115,8 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
   if (this.trackId_ !== null)
     this['detach']();
 
+  var voodooEvent = window['voodoo']['Event'];
+
   // Attach to the new element and setup the callbacks.
   var self = this;
   if (element && typeof element !== 'undefined') {
@@ -122,61 +124,89 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
       if (pixels) {
         this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
             move, resize) {
-              self.parent_.position.x = x + w / 2.0;
-              self.parent_.position.y = y + h / 2.0;
-              self.parent_.scale.x = self.parent_.scale.y = 1.0;
+              var parent = self.parent_;
+              var parentPosition = parent.position;
+              var parentScale = parent.scale;
+
+              parentPosition.x = x + w / 2.0;
+              parentPosition.y = y + h / 2.0;
+              parentScale.x = parentScale.y = 1.0;
 
               self.parent_.updateMatrixWorld(true);
               self.isDirty_ = true;
 
               if (move) {
-                var event = new window['voodoo']['Event']('move');
+                var event = new voodooEvent('move');
                 event.object = element;
-                event['page']['x'] = x;
-                event['page']['y'] = y;
-                event['size']['x'] = w;
-                event['size']['y'] = h;
+
+                var eventPage = event['page'];
+                eventPage['x'] = x;
+                eventPage['y'] = y;
+
+                var eventSize = event['size'];
+                eventSize['x'] = w;
+                eventSize['y'] = h;
+
                 self.dispatcher_.dispatchEvent_(null, event);
               }
 
               if (resize) {
-                var event = new window['voodoo']['Event']('resize');
+                var event = new voodooEvent('resize');
                 event.object = element;
-                event['page']['x'] = x;
-                event['page']['y'] = y;
-                event['size']['x'] = w;
-                event['size']['y'] = h;
+
+                var eventPage = event['page'];
+                eventPage['x'] = x;
+                eventPage['y'] = y;
+
+                var eventSize = event['size'];
+                eventSize['x'] = w;
+                eventSize['y'] = h;
+
                 self.dispatcher_.dispatchEvent_(null, event);
               }
             });
       } else {
         this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
             move, resize) {
-              self.parent_.position.x = x + w / 2.0;
-              self.parent_.position.y = y + h / 2.0;
-              self.parent_.scale.x = w;
-              self.parent_.scale.y = h;
+              var parent = self.parent_;
+              var parentPosition = parent.position;
+              var parentScale = parent.scale;
+
+              parentPosition.x = x + w / 2.0;
+              parentPosition.y = y + h / 2.0;
+              parentScale.x = w;
+              parentScale.y = h;
 
               self.parent_.updateMatrixWorld(true);
               self.isDirty_ = true;
 
               if (move) {
-                var event = new window['voodoo']['Event']('move');
+                var event = new voodooEvent('move');
                 event.object = element;
-                event['page']['x'] = x;
-                event['page']['y'] = y;
-                event['size']['x'] = w;
-                event['size']['y'] = h;
+
+                var eventPage = event['page'];
+                eventPage['x'] = x;
+                eventPage['y'] = y;
+
+                var eventSize = event['size'];
+                eventSize['x'] = w;
+                eventSize['y'] = h;
+
                 self.dispatcher_.dispatchEvent_(null, event);
               }
 
               if (resize) {
-                var event = new window['voodoo']['Event']('resize');
+                var event = new voodooEvent('resize');
                 event.object = element;
-                event['page']['x'] = x;
-                event['page']['y'] = y;
-                event['size']['x'] = w;
-                event['size']['y'] = h;
+
+                var eventPage = event['page'];
+                eventPage['x'] = x;
+                eventPage['y'] = y;
+
+                var eventSize = event['size'];
+                eventSize['x'] = w;
+                eventSize['y'] = h;
+
                 self.dispatcher_.dispatchEvent_(null, event);
               }
             });
@@ -185,68 +215,96 @@ ThreeJsScene_.prototype['attach'] = function(element, center, pixels) {
       if (pixels) {
         this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
             move, resize) {
-              self.parent_.position.x = x;
-              self.parent_.position.y = y;
-              self.parent_.scale.x = self.parent_.scale.y = 1.0;
+              var parent = self.parent_;
+              var parentPosition = parent.position;
+              var parentScale = parent.scale;
+
+              parentPosition.x = x;
+              parentPosition.y = y;
+              parentScale.x = parentScale.y = 1.0;
 
               self.parent_.updateMatrixWorld(true);
               self.isDirty_ = true;
 
               if (move) {
-                var event = new window['voodoo']['Event']('move');
+                var event = new voodooEvent('move');
                 event.object = element;
-                event['page']['x'] = x;
-                event['page']['y'] = y;
-                event['size']['x'] = w;
-                event['size']['y'] = h;
+
+                var eventPage = event['page'];
+                eventPage['x'] = x;
+                eventPage['y'] = y;
+
+                var eventSize = event['size'];
+                eventSize['x'] = w;
+                eventSize['y'] = h;
+
                 self.dispatcher_.dispatchEvent_(null, event);
               }
 
               if (resize) {
-                var event = new window['voodoo']['Event']('resize');
+                var event = new voodooEvent('resize');
                 event.object = element;
-                event['page']['x'] = x;
-                event['page']['y'] = y;
-                event['size']['x'] = w;
-                event['size']['y'] = h;
+
+                var eventPage = event['page'];
+                eventPage['x'] = x;
+                eventPage['y'] = y;
+
+                var eventSize = event['size'];
+                eventSize['x'] = w;
+                eventSize['y'] = h;
+
                 self.dispatcher_.dispatchEvent_(null, event);
               }
             });
       } else {
         this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
             move, resize) {
-              self.parent_.position.x = x;
-              self.parent_.position.y = y;
-              self.parent_.scale.x = w;
-              self.parent_.scale.y = h;
+              var parent = self.parent_;
+              var parentPosition = parent.position;
+              var parentScale = parent.scale;
+
+              parentPosition.x = x;
+              parentPosition.y = y;
+              parentScale.x = w;
+              parentScale.y = h;
 
               self.parent_.updateMatrixWorld(true);
               self.isDirty_ = true;
 
               if (move) {
-                var event = new window['voodoo']['Event']('move');
+                var event = new voodooEvent('move');
                 event.object = element;
-                event['page']['x'] = x;
-                event['page']['y'] = y;
-                event['size']['x'] = w;
-                event['size']['y'] = h;
+
+                var eventPage = event['page'];
+                eventPage['x'] = x;
+                eventPage['y'] = y;
+
+                var eventSize = event['size'];
+                eventSize['x'] = w;
+                eventSize['y'] = h;
+
                 self.dispatcher_.dispatchEvent_(null, event);
               }
 
               if (resize) {
-                var event = new window['voodoo']['Event']('resize');
+                var event = new voodooEvent('resize');
                 event.object = element;
-                event['page']['x'] = x;
-                event['page']['y'] = y;
-                event['size']['x'] = w;
-                event['size']['y'] = h;
+
+                var eventPage = event['page'];
+                eventPage['x'] = x;
+                eventPage['y'] = y;
+
+                var eventSize = event['size'];
+                eventSize['x'] = w;
+                eventSize['y'] = h;
+
                 self.dispatcher_.dispatchEvent_(null, event);
               }
             });
       }
     }
 
-    var event = new window['voodoo']['Event']('attach');
+    var event = new voodooEvent('attach');
     event.object = element;
     this.dispatcher_.dispatchEvent_(this.view_, event);
   }
@@ -265,8 +323,12 @@ ThreeJsScene_.prototype['detach'] = function() {
   this.tracker_.release_(this.trackId_);
   this.trackId_ = null;
 
-  this.parent_.position.x = this.parent_.position.y = 0;
-  this.parent_.scale.x = this.parent_.scale.y = 1;
+  var parentPosition = this.parent_.position;
+  var parentScale = this.parent_.scale;
+
+  parentPosition.x = parentPosition.y = 0;
+  parentScale.x = parentScale.y = 1;
+
   this.parent_.updateMatrixWorld(true);
 };
 
@@ -282,19 +344,22 @@ ThreeJsScene_.prototype['detach'] = function() {
  * @return {Object|Array.<number>} Page-space coordinate.
  */
 ThreeJsScene_.prototype['localToPage'] = function(coordinate) {
+  var parentPosition = this.parent_.position;
+  var parentScale = this.parent_.scale;
+
   if (typeof coordinate.x !== 'undefined') {
     // Object with XYZ
     return {
-      x: coordinate.x * this.parent_.scale.x + this.parent_.position.x,
-      y: coordinate.y * this.parent_.scale.y + this.parent_.position.y,
-      z: coordinate.z * this.parent_.scale.z + this.parent_.position.z
+      x: coordinate.x * parentScale.x + parentPosition.x,
+      y: coordinate.y * parentScale.y + parentPosition.y,
+      z: coordinate.z * parentScale.z + parentPosition.z
     };
   } else {
     // Array
     return [
-      coordinate[0] * this.parent_.scale.x + this.parent_.position.x,
-      coordinate[1] * this.parent_.scale.y + this.parent_.position.y,
-      coordinate[2] * this.parent_.scale.z + this.parent_.position.z
+      coordinate[0] * parentScale.x + parentPosition.x,
+      coordinate[1] * parentScale.y + parentPosition.y,
+      coordinate[2] * parentScale.z + parentPosition.z
     ];
   }
 };
@@ -337,19 +402,22 @@ ThreeJsScene_.prototype['on'] = function(type, listener) {
  * @return {Object|Array.<number>} Local coordinate.
  */
 ThreeJsScene_.prototype['pageToLocal'] = function(coordinate) {
+  var parentPosition = this.parent_.position;
+  var parentScale = this.parent_.scale;
+
   if (typeof coordinate.x !== 'undefined') {
     // Object with XYZ
     return {
-      x: (coordinate.x - this.parent_.position.x) / this.parent_.scale.x,
-      y: (coordinate.y - this.parent_.position.y) / this.parent_.scale.y,
-      z: (coordinate.z - this.parent_.position.z) / this.parent_.scale.z
+      x: (coordinate.x - parentPosition.x) / parentScale.x,
+      y: (coordinate.y - parentPosition.y) / parentScale.y,
+      z: (coordinate.z - parentPosition.z) / parentScale.z
     };
   } else {
     // Array
     return [
-      (coordinate[0] - this.parent_.position.x) / this.parent_.scale.x,
-      (coordinate[1] - this.parent_.position.y) / this.parent_.scale.y,
-      (coordinate[2] - this.parent_.position.z) / this.parent_.scale.z
+      (coordinate[0] - parentPosition.x) / parentScale.x,
+      (coordinate[1] - parentPosition.y) / parentScale.y,
+      (coordinate[2] - parentPosition.z) / parentScale.z
     ];
   }
 };
@@ -394,6 +462,7 @@ ThreeJsScene_.prototype['remove'] = function(object) {
  */
 ThreeJsScene_.prototype.destroy_ = function() {
   this.scene_.remove(this.parent_);
+
   if (this.trackId_ !== null)
     this['detach']();
 

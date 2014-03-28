@@ -18,7 +18,7 @@ BaseTests = TestCase('BaseTests');
  * Shuts down the engine between test cases.
  */
 BaseTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
+  if (voodoo.engine)
     voodoo.engine.destroy();
 };
 

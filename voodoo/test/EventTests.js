@@ -29,7 +29,7 @@ EventTests.prototype.setUp = function() {
  */
 EventTests.prototype.tearDown = function() {
   // Shutdown the engine between test cases.
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
+  if (voodoo.engine)
     voodoo.engine.destroy();
 };
 
@@ -84,11 +84,14 @@ EventTests.prototype.testMouseEvents = function() {
   assertEquals('click events: ', 2, click);
   assertEquals('dblclick events: ', 1, dblclick);
 
-  assertEquals('page x:', 500, dblClickEvent.page.x);
-  assertEquals('page y:', 600, dblClickEvent.page.y);
-  assertNotEquals('hit x:', 0, dblClickEvent.hit.x);
-  assertNotEquals('hit y:', 0, dblClickEvent.hit.y);
-  assertNotEquals('hit z:', 0, dblClickEvent.hit.z);
+  var page = dblClickEvent.page;
+  var hit = dblClickEvent.hit;
+
+  assertEquals('page x:', 500, page.x);
+  assertEquals('page y:', 600, page.y);
+  assertNotEquals('hit x:', 0, hit.x);
+  assertNotEquals('hit y:', 0, hit.y);
+  assertNotEquals('hit z:', 0, hit.z);
   assertEquals('event type:', 'dblclick', dblClickEvent.type);
 
   // Test mouse up on a different model

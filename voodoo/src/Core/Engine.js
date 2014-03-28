@@ -20,7 +20,7 @@
 function Engine(opt_options) {
   var options = new Options(opt_options);
 
-  log_.assert_(options['renderer'] == Renderer['ThreeJs'],
+  log_.assert_(options['renderer'] === Renderer['ThreeJs'],
       'Only ThreeJs is supported');
 
   log_.information_('Creating Engine');
@@ -47,10 +47,7 @@ function Engine(opt_options) {
     get: function() {
       // Create a copy of all the models. A copy lets the user iterate over
       // and delete models without worrying about invalidating our own list.
-      var models = [];
-      for (var i = 0; i < self.models_.length; ++i)
-        models.push(self.models_[i]);
-      return models;
+      return self.models_.slice(0);
     },
     enumerable: true
   });
@@ -330,7 +327,8 @@ Engine.prototype.update_ = function() {
 
   // Update each model
   var models = this.models_;
-  for (var modelIndex = 0; modelIndex < models.length; ++modelIndex)
+  for (var modelIndex = 0, numModels = models.length; modelIndex < numModels;
+      ++modelIndex)
     models[modelIndex].update(deltaTime);
 
   // Tell the mouse detector to dispatch all frame-based events.

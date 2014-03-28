@@ -60,10 +60,10 @@ ThreeJsTriggers_.prototype['add'] = function(object, opt_triggerId) {
 
   // See if this trigger already exists
   if (DEBUG) {
-    for (var i = 0; i < this.triggers_.length; ++i) {
-      if (this.triggers_[i].object_ == trigger.object_) {
+    for (var i = 0, numTriggers = this.triggers_.length; i < numTriggers;
+        ++i) {
+      if (this.triggers_[i].object_ == trigger.object_)
         log_.error_('Trigger already exists');
-      }
     }
   }
 
@@ -87,10 +87,9 @@ ThreeJsTriggers_.prototype['add'] = function(object, opt_triggerId) {
  * @param {THREE.Object3D} object Object that triggers mouse events.
  */
 ThreeJsTriggers_.prototype['remove'] = function(object) {
-  for (var i = 0; i < this.triggers_.length; ++i) {
-    if (this.triggers_[i].object_ == object) {
+  for (var i = 0, numTriggers = this.triggers_.length; i < numTriggers; ++i) {
+    if (this.triggers_[i].object_ == object)
       this.triggers_.splice(i, 1);
-    }
   }
 
   if (object['addedToVoodooScene']) {

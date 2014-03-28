@@ -42,7 +42,7 @@ Dispatcher_.prototype.destroy_ = function() {
 Dispatcher_.prototype.dispatchEvent_ = function(thisArg, event) {
   var listeners = this.eventListeners_[event['type']];
   if (listeners)
-    for (var i = 0; i < listeners.length; ++i)
+    for (var i = 0, len = listeners.length; i < len; ++i)
       listeners[i].call(thisArg, event);
 };
 
@@ -83,9 +83,11 @@ Dispatcher_.prototype.on_ = function(type, listener) {
     this.numMouseEventListeners_++;
   }
 
-  if (!this.eventListeners_[type])
-    this.eventListeners_[type] = [];
+  var eventListeners = this.eventListeners_[type];
 
-  if (this.eventListeners_[type].indexOf(listener) == -1)
-    this.eventListeners_[type].push(listener);
+  if (!eventListeners)
+    eventListeners = this.eventListeners_[type] = [];
+
+  if (eventListeners.indexOf(listener) === -1)
+    eventListeners.push(listener);
 };

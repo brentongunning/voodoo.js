@@ -34,7 +34,8 @@ function Composite_(objects) {
           // Create a function that wraps calls to all object
           return function() {
             var returnVal;
-            for (var index = 0; index < objects.length; ++index) {
+            for (var index = 0, numObjects = objects.length;
+                index < numObjects; ++index) {
               var object = objects[index];
               returnVal = object[property].apply(object, arguments);
             }

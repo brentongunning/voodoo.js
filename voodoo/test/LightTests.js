@@ -26,7 +26,7 @@ LightTests.prototype.setUp = function() {
  * Shuts down the engine between test cases.
  */
 LightTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
+  if (voodoo.engine)
     voodoo.engine.destroy();
 };
 
@@ -39,15 +39,19 @@ LightTests.prototype.tearDown = function() {
 LightTests.prototype.testEnableStandardLighting = function(queue) {
   var cameraLight = null, ambientLight = null;
 
-  voodoo.engine = new voodoo.Engine({});
+  var engine = voodoo.engine = new voodoo.Engine({});
+  var models = engine.models;
 
-  assertEquals(2, voodoo.engine.models.length);
+  assertEquals(2, models.length);
 
-  for (var i = 0; i < voodoo.engine.models.length; ++i) {
-    if (voodoo.engine.models[i].name === 'CameraLight') {
-      cameraLight = voodoo.engine.models[i];
-    } else if (voodoo.engine.models[i].name === 'AmbientLight') {
-      ambientLight = voodoo.engine.models[i];
+  for (var i = 0, len = models.length; i < len; ++i) {
+    var model = models[i];
+    var modelName = model.name;
+
+    if (modelName === 'CameraLight') {
+      cameraLight = model;
+    } else if (modelName === 'AmbientLight') {
+      ambientLight = model;
     }
   }
 
@@ -67,7 +71,7 @@ LightTests.prototype.testDisableStandardLighting = function() {
 
   var options = new voodoo.Options();
   options.standardLighting = false;
-  voodoo.engine = new voodoo.Engine(options);
+  var engine = voodoo.engine = new voodoo.Engine(options);
 
-  assertEquals(0, voodoo.engine.models.length);
+  assertEquals(0, engine.models.length);
 };

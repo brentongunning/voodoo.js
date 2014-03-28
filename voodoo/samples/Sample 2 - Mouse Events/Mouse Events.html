@@ -51,21 +51,24 @@
 var TrafficLightView = voodoo.View.extend({
   load: function() {
     // Create a sphere
-    this.material = new THREE.MeshLambertMaterial();
-    this.material.ambient.copy(this.model.ambient);
-    this.material.color.copy(this.model.color);
-    this.geometry = new THREE.SphereGeometry(0.5, 40, 40);
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    var material = new THREE.MeshLambertMaterial();
+    material.ambient.copy(this.model.ambient);
+    material.color.copy(this.model.color);
+    var geometry = new THREE.SphereGeometry(0.5, 40, 40);
+    var mesh = new THREE.Mesh(geometry, material);
 
     // Add the sphere to the scene
-    this.scene.add(this.mesh);
+    this.scene.add(mesh);
 
     // The triggers tells voodoo that the sphere should respond to mouse
     // events. Add it like the scene.
-    this.triggers.add(this.mesh);
+    this.triggers.add(mesh);
 
     // Show a pointer cursor whenever the mouse is over our mesh.
     this.triggers.cursor('pointer');
+
+    this.material = material;
+    this.mesh = mesh;
   },
 
   unload: function() {
@@ -78,11 +81,15 @@ var TrafficLightView = voodoo.View.extend({
 
   // Called from the model each update to position the ball over the div.
   move: function(x, y, w, h) {
-    this.mesh.position.x = x + w / 2;
-    this.mesh.position.y = y + h / 2;
-    this.mesh.scale.x = w;
-    this.mesh.scale.y = h;
-    this.mesh.scale.z = (w + h) / 2;
+    var meshPosition = this.mesh.position;
+    var meshScale = this.mesh.scale;
+
+    meshPosition.x = x + w / 2;
+    meshPosition.y = y + h / 2;
+    
+    meshScale.x = w;
+    meshScale.y = h;
+    meshScale.z = (w + h) / 2;
 
     this.dirty();
   },

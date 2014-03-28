@@ -26,7 +26,7 @@ ThreeJsTests.prototype.setUp = function() {
  * Shuts down the engine between test cases.
  */
 ThreeJsTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
+  if (voodoo.engine)
     voodoo.engine.destroy();
 };
 

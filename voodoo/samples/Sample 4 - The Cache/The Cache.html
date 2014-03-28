@@ -41,15 +41,18 @@ var CachingBoxView = voodoo.View.extend({
     
     // We have to create a new mesh and position it individually each time.
     // Can't use the cache for this.
-    this.mesh = new THREE.Mesh(geometry, material);
+    var mesh = new THREE.Mesh(geometry, material);
 
-    this.scene.add(this.mesh);
+    this.scene.add(mesh);
 
-    this.mesh.position.x = this.model.x;
-    this.mesh.position.y = this.model.y;
-    this.mesh.position.z = 50;
+    var meshPosition = mesh.position;
+    meshPosition.x = this.model.x;
+    meshPosition.y = this.model.y;
+    meshPosition.z = 50;
 
-    this.mesh.rotation.z = this.model.rotation;
+    mesh.rotation.z = this.model.rotation;
+
+    this.mesh = mesh;
   },
 
   unload: function() {

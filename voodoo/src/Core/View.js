@@ -274,7 +274,7 @@ View.prototype.setupPublicProperties_ = function() {
  * @return {?} Extended type.
  */
 View['extend'] = function(opt_object) {
-  return Extendable['extend'].call(this, opt_object);
+  return Extendable['extend'].apply(this, arguments);
 };
 
 // Exports

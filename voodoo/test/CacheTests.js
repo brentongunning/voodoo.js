@@ -73,7 +73,7 @@ CacheTests.prototype.setUp = function() {
  */
 CacheTests.prototype.tearDown = function() {
   // Shutdown the engine between test cases.
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
+  if (voodoo.engine)
     voodoo.engine.destroy();
 };
 

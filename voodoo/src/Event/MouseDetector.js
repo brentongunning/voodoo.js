@@ -169,19 +169,21 @@ MouseDetector_.prototype.onMouseDown_ = function(event) {
   if (this.hoveredTrigger_ != null) {
     event.preventDefault();
 
-    var lastClicked = this.lastClickedTrigger_[event.button];
-    var interval = new Date() - this.lastClickTime_[event.button];
-    this.heldTrigger_[event.button] = this.hoveredTrigger_;
+    var button = event.button;
 
-    this.dispatchMouseEvent_('mousedown', this.hoveredTrigger_, event.button);
+    var lastClicked = this.lastClickedTrigger_[button];
+    var interval = new Date() - this.lastClickTime_[button];
+    var held = this.heldTrigger_[button] = this.hoveredTrigger_;
+
+    this.dispatchMouseEvent_('mousedown', this.hoveredTrigger_, button);
 
     // Detect a double click
-    if (this.heldTrigger_[event.button].isEquivalentTo(lastClicked) &&
-        this.lastClickClientX_[event.button] == event.clientX &&
-        this.lastClickClientY_[event.button] == event.clientY &&
+    if (held.isEquivalentTo(lastClicked) &&
+        this.lastClickClientX_[button] == event.clientX &&
+        this.lastClickClientY_[button] == event.clientY &&
         interval <= this.engine_.options_.doubleClickInterval_) {
 
-      this.pendingDoubleClickEvent_[event.button] = true;
+      this.pendingDoubleClickEvent_[button] = true;
     }
   }
 };
@@ -215,49 +217,50 @@ MouseDetector_.prototype.onMouseMove_ = function(event) {
  * @param {Event} event Event data.
  */
 MouseDetector_.prototype.onMouseUp_ = function(event) {
-  if (this.hoveredTrigger_ != null) {
+  var button = event.button;
+
+  if (this.hoveredTrigger_) {
     event.preventDefault();
 
-    this.dispatchMouseEvent_('mouseup', this.hoveredTrigger_, event.button);
+    this.dispatchMouseEvent_('mouseup', this.hoveredTrigger_, button);
 
-    var held = this.heldTrigger_[event.button];
-    var lastClicked = this.lastClickedTrigger_[event.button];
+    var held = this.heldTrigger_[button];
+    var lastClicked = this.lastClickedTrigger_[button];
 
     // Fire a mouseup event on the trigger that caused the mousedown
     if (held && this.hoveredTrigger_ != held)
       this.dispatchMouseEvent_('mouseup', this.hoveredTrigger_,
-          event.button, held);
+          button, held);
 
     // If the current trigger is the held trigger, this is a click.
     if (this.hoveredTrigger_.isEquivalentTo(held)) {
 
-      this.dispatchMouseEvent_('click', this.heldTrigger_[event.button],
-          event.button);
+      this.dispatchMouseEvent_('click', held, button);
 
       // Send double clicks
-      if (this.pendingDoubleClickEvent_[event.button] &&
+      if (this.pendingDoubleClickEvent_[button] &&
           held.isEquivalentTo(lastClicked)) {
 
-        this.lastClickedTrigger_[event.button] = null;
-        this.pendingDoubleClickEvent_[event.button] = false;
+        this.lastClickedTrigger_[button] = null;
+        this.pendingDoubleClickEvent_[button] = false;
 
-        this.dispatchMouseEvent_('dblclick', held, event.button);
+        this.dispatchMouseEvent_('dblclick', held, button);
       }
       else {
         // Not a double click. Store the click info for later.
-        this.lastClickedTrigger_[event.button] = held;
-        this.lastClickTime_[event.button] = new Date();
-        this.lastClickClientX_[event.button] = event.clientX;
-        this.lastClickClientY_[event.button] = event.clientY;
+        this.lastClickedTrigger_[button] = held;
+        this.lastClickTime_[button] = new Date();
+        this.lastClickClientX_[button] = event.clientX;
+        this.lastClickClientY_[button] = event.clientY;
       }
     }
   } else {
-    var held = this.heldTrigger_[event.button];
+    var held = this.heldTrigger_[button];
     if (held)
-      this.dispatchMouseEvent_('mouseup', null, event.button, held);
+      this.dispatchMouseEvent_('mouseup', null, button, held);
   }
 
-  this.heldTrigger_[event.button] = null;
+  this.heldTrigger_[button] = null;
 };
 
 
@@ -287,12 +290,15 @@ MouseDetector_.prototype.raycast_ = function() {
  * @private
  */
 MouseDetector_.prototype.update_ = function() {
+  var engine = this.engine_;
+  var raycaster = engine.raycaster_;
+  var renderer = engine.renderer_;
+
   // Whenever the mouse moves, we need to update the raycaster with the
   // new coordinates. We do this whenever the update runs
   // each frame instead of on mouse moves for performance.
   if (this.pendingMouseMove_)
-    this.engine_.raycaster_.setMouse_(
-        new Vector2_(this.clientX_, this.clientY_));
+    raycaster.setMouse_(new Vector2_(this.clientX_, this.clientY_));
 
   if (EventHelpers_.totalNumMouseEventListeners_ <= 0)
     return;
@@ -323,14 +329,14 @@ MouseDetector_.prototype.update_ = function() {
       this.dispatchMouseEvent_('mouseover', nextTrigger);
     }
 
-    this.engine_.renderer_.capturePointerEvents_(true);
+    renderer.capturePointerEvents_(true);
   }
   else {
     // Mouse leave the old trigger
     if (this.hoveredTrigger_ != null)
       this.dispatchMouseEvent_('mouseout', this.hoveredTrigger_);
 
-    this.engine_.renderer_.capturePointerEvents_(false);
+    renderer.capturePointerEvents_(false);
   }
 
   this.hoveredTrigger_ = nextTrigger;
@@ -338,6 +344,6 @@ MouseDetector_.prototype.update_ = function() {
 
   // Set the mouse cursor
   if (this.hoveredTrigger_ != null)
-    this.engine_.renderer_.setCursor_(this.hoveredTrigger_.parent_.cursor_);
-  else this.engine_.renderer_.setCursor_('auto');
+    renderer.setCursor_(this.hoveredTrigger_.parent_.cursor_);
+  else renderer.setCursor_('auto');
 };
