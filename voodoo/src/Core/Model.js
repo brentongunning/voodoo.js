@@ -75,7 +75,7 @@ Model.prototype['construct'] = function(opt_options) {
   this['stencilViewType'] = this['stencilViewType'] || this['viewType'];
 
   this.setId_();
-  log_.modelInformation_(this, 'Constructing');
+  log_.model_(this, 'Constructing');
 
   // If no engine has been created, create one with default options.
   var voodoo = window['voodoo'];
@@ -104,7 +104,7 @@ Model.prototype['construct'] = function(opt_options) {
  * @this {Model}
  */
 Model.prototype['destroy'] = function() {
-  log_.modelInformation_(this, 'Destroying');
+  log_.model_(this, 'Destroying');
 
   var voodoo = window['voodoo'];
   this.dispatchEvent_(new voodoo['Event']('destroy', this));
@@ -309,9 +309,9 @@ Model.prototype.createViews_ = function() {
   var engine = window['voodoo']['engine'];
   var layers = engine.renderer_.layers_;
 
-  var self = this;
+  var that = this;
   Object.defineProperty(this, 'loaded', {
-    get: function() { return self.numViewsLoaded_ === self.numViewsToLoad_; },
+    get: function() { return that.numViewsLoaded_ === that.numViewsToLoad_; },
     enumerable: true
   });
 
@@ -412,9 +412,9 @@ Model.prototype.setupCache_ = function() {
   this.cache_ = window['voodoo']['engine'].modelCacheFactory_.createCache_(
       this);
 
-  var self = this;
+  var that = this;
   Object.defineProperty(this, 'cache', {
-    get: function() { return self.cache_; },
+    get: function() { return that.cache_; },
     enumerable: true
   });
 };
@@ -426,15 +426,15 @@ Model.prototype.setupCache_ = function() {
  * @private
  */
 Model.prototype.setupViewProperties_ = function() {
-  var self = this;
+  var that = this;
 
   Object.defineProperty(this, 'view', {
-    get: function() { return self.view_; },
+    get: function() { return that.view_; },
     enumerable: true
   });
 
   Object.defineProperty(this, 'stencilView', {
-    get: function() { return self.stencilView_; },
+    get: function() { return that.stencilView_; },
     enumerable: true
   });
 };

@@ -13,7 +13,7 @@
  * @private
  */
 function ThreeJsTriggersFactory_() {
-  log_.information_('Creating ThreeJs Triggers Factory');
+  log_.info_('Creating ThreeJs Triggers Factory');
 
   this.triggers_ = [];
 }

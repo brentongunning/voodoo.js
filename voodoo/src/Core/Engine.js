@@ -23,11 +23,11 @@ function Engine(opt_options) {
   log_.assert_(options['renderer'] === Renderer['ThreeJs'],
       'Only ThreeJs is supported');
 
-  log_.information_('Creating Engine');
-  log_.information_('   version: ' + VERSION);
-  log_.information_('   userAgent: ' + navigator.userAgent);
+  log_.info_('Creating Engine');
+  log_.info_('   version: ' + VERSION);
+  log_.info_('   userAgent: ' + navigator.userAgent);
   for (var property in options)
-    log_.information_('   options.' + property + ': ' + options[property]);
+    log_.info_('   options.' + property + ': ' + options[property]);
 
   // Check for WebGL support
   if (DEBUG && !window['WebGLRenderingContext']) {
@@ -42,12 +42,12 @@ function Engine(opt_options) {
 
   // Setup models property
   this.models_ = [];
-  var self = this;
+  var that = this;
   Object.defineProperty(this, 'models', {
     get: function() {
       // Create a copy of all the models. A copy lets the user iterate over
       // and delete models without worrying about invalidating our own list.
-      return self.models_.slice(0);
+      return that.models_.slice(0);
     },
     enumerable: true
   });
@@ -83,7 +83,7 @@ function Engine(opt_options) {
   // We must set voodoo.engine because AmbientLight_ and CameraLight_ are both
   // models that will try to create voodoo.engine if it isn't already set.
   if (options['standardLighting']) {
-    log_.information_('Creating standard lights');
+    log_.info_('Creating standard lights');
     new AmbientLight_({'color': 'white'});
     new CameraLight_({'color': 'white'});
   }
@@ -96,20 +96,20 @@ function Engine(opt_options) {
   var realtimeRender = this.options_['renderInterval'] === 0;
 
   if (options['frameLoop']) {
-    log_.information_('Beginning frame loop');
+    log_.info_('Beginning frame loop');
 
     if (realtimeUpdate || realtimeRender)
       this.run_(realtimeUpdate, realtimeRender);
 
     if (!realtimeUpdate) {
       this.updateThread_ = window.setInterval(function() {
-        self.update_();
+        that.update_();
       }, this.options_['updateInterval']);
     }
 
     if (!realtimeRender) {
       this.renderThread_ = window.setInterval(function() {
-        self.renderer_.render_();
+        that.renderer_.render_();
       }, this.options_['renderInterval']);
     }
   }
@@ -123,7 +123,7 @@ function Engine(opt_options) {
  * @this {Engine}
  */
 Engine.prototype['destroy'] = function() {
-  log_.information_('Destroying Engine');
+  log_.info_('Destroying Engine');
 
   this.dispatcher_.dispatchEvent_(null, new window['voodoo']['Event'](
       'destroy'));
@@ -252,9 +252,9 @@ Engine.prototype.removeModel_ = function(model) {
  * @param {boolean} render Whether to render in the frame loop.
  */
 Engine.prototype.run_ = function(update, render) {
-  var self = this;
+  var that = this;
   this.realtimeThread_ = requestAnimationFrame(function() {
-    self.run_(update, render);
+    that.run_(update, render);
   });
 
   if (update)
@@ -270,33 +270,33 @@ Engine.prototype.run_ = function(update, render) {
  * @private
  */
 Engine.prototype.setupDeltaTimer_ = function() {
-  log_.information_('Starting timers');
+  log_.info_('Starting timers');
 
-  var self = this;
+  var that = this;
   this.lastTicks_ = 0;
   this.lastDeltaTime_ = 0;
 
   // Register with the window focus event so we know when the user switches
   // back to our tab. We will reset timing data.
   window.addEventListener('focus', function() {
-    self.lastTicks_ = 0;
+    that.lastTicks_ = 0;
     setTimeout(function() {
-      self.lastTicks_ = Date.now();
-    }, self.options_.timerStartOnFocusDelayMs_);
+      that.lastTicks_ = Date.now();
+    }, that.options_.timerStartOnFocusDelayMs_);
   }, false);
 
   // Register with the window blur event so that when the user switchs to
   // another tab, we stop the timing so that the animations look like they
   // paused.
   window.addEventListener('blur', function() {
-    self.lastTicks_ = 0;
+    that.lastTicks_ = 0;
   }, false);
 
   // Start animations 1 second after the page loads to minimize hickups
   setTimeout(function() {
     if (!document.hasFocus || document.hasFocus())
-      self.lastTicks_ = Date.now();
-  }, self.options_.timerStartOnLoadDelayMs_);
+      that.lastTicks_ = Date.now();
+  }, that.options_.timerStartOnLoadDelayMs_);
 };
 
 

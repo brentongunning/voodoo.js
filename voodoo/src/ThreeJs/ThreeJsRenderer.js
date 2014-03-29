@@ -109,7 +109,7 @@ ThreeJsRenderer_.prototype.clearDirtyFlags_ = function(layer) {
  * @private
  */
 ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
-  log_.information_('Creating WebGL renderers');
+  log_.info_('Creating WebGL renderers');
 
   // This reduced by 1/2 when the FPS drops below 45 for a few frames.
   this.canvasScale_ = 1.0;
@@ -181,7 +181,7 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
  * @private
  */
 ThreeJsRenderer_.prototype.createLayers_ = function() {
-  log_.information_('Creating layers');
+  log_.info_('Creating layers');
 
   var engineOptions = this.engine_.options_;
   var renderer = engineOptions['renderer'];
@@ -268,9 +268,9 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
 
   this.pendingUpdateLayerZBoundaries_ = false;
   this.updateLayerZBoundaries_();
-  var self = this;
+  var that = this;
   window.addEventListener('resize', function() {
-    self.pendingUpdateLayerZBoundaries_ = true;
+    that.pendingUpdateLayerZBoundaries_ = true;
   }, false);
 };
 
@@ -440,16 +440,16 @@ ThreeJsRenderer_.prototype.onScroll_ = function(event) {
  * @private
  */
 ThreeJsRenderer_.prototype.registerWindowEvents_ = function() {
-  log_.information_('Registering for window events');
+  log_.info_('Registering for window events');
 
   // Register the canvasRenderer's onScroll and onResize events with the
   // window so we can adjust our canvas size
-  var self = this;
+  var that = this;
   window.addEventListener('scroll', function(event) {
-    self.onScroll_.call(self, event);
+    that.onScroll_.call(that, event);
   }, false);
   window.addEventListener('resize', function(event) {
-    self.onResize_.call(self, event);
+    that.onResize_.call(that, event);
   }, false);
 };
 
@@ -492,7 +492,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
         var now = new Date();
         var seconds = (now - this.lastValidFpsTime_) / 1000;
         if (seconds > engineOptions.performanceScalingTimeLimit_) {
-          log_.information_('Enabling performance scaling');
+          log_.info_('Enabling performance scaling');
 
           this.canvasScale_ = 0.5;
           this.performanceScaling_ = true;
@@ -832,7 +832,7 @@ ThreeJsRenderer_.prototype.updateViewportSize_ = function() {
  * @private
  */
 ThreeJsRenderer_.prototype.validateAndPrepareWebpage_ = function() {
-  log_.information_('Validating and preparing webpage for use');
+  log_.info_('Validating and preparing webpage for use');
 
   // Set the body dimensions to 100% so the canvas sizes can be set to 100%
   // and there will be no scroll bars.

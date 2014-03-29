@@ -23,24 +23,24 @@ function MouseDetector_(engine) {
   // Adds the main mouse event listeners.
   this.addGlobalMouseEventListeners_();
 
-  var self = this;
+  var that = this;
   this.engine_['on']('removemodel', function(event) {
-    if (self.hoveredTrigger_ && event['model'] === self.hoveredTrigger_.model_)
-      self.hoveredTrigger_ = null;
+    if (that.hoveredTrigger_ && event['model'] === that.hoveredTrigger_.model_)
+      that.hoveredTrigger_ = null;
 
-    if (self.heldTrigger_) {
+    if (that.heldTrigger_) {
       for (var buttonIndex = 0; buttonIndex < 3; ++buttonIndex) {
-        var trigger = self.heldTrigger_[buttonIndex];
+        var trigger = that.heldTrigger_[buttonIndex];
         if (trigger && event['model'] === trigger.model_)
-          self.heldTrigger_[buttonIndex] = null;
+          that.heldTrigger_[buttonIndex] = null;
       }
     }
 
-    if (self.lastClickedTrigger_) {
+    if (that.lastClickedTrigger_) {
       for (var buttonIndex = 0; buttonIndex < 3; ++buttonIndex) {
-        var trigger = self.lastClickedTrigger_[buttonIndex];
+        var trigger = that.lastClickedTrigger_[buttonIndex];
         if (trigger && event['model'] === trigger.model_)
-          self.lastClickedTrigger_[buttonIndex] = null;
+          that.lastClickedTrigger_[buttonIndex] = null;
       }
     }
   });
@@ -53,18 +53,18 @@ function MouseDetector_(engine) {
  * @private
  */
 MouseDetector_.prototype.addGlobalMouseEventListeners_ = function() {
-  var self = this;
+  var that = this;
 
   document.addEventListener('mousemove', function(event) {
-    self.onMouseMove_(event);
+    that.onMouseMove_(event);
   }, false);
 
   document.addEventListener('mousedown', function(event) {
-    self.onMouseDown_(event);
+    that.onMouseDown_(event);
   }, false);
 
   document.addEventListener('mouseup', function(event) {
-    self.onMouseUp_(event);
+    that.onMouseUp_(event);
   }, false);
 };
 

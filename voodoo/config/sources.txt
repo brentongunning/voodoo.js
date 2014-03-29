@@ -1,3 +1,5 @@
+..\..\common\src\Log.js
+
 Core\Log.js
 Core\Types.js
 Core\Debug.js

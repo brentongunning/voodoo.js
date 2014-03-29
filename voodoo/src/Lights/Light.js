@@ -108,12 +108,12 @@ Light_.prototype['initialize'] = function(options) {
   this.color_ = options.color || 'white';
 
   // Create the color property
-  var self = this;
+  var that = this;
   Object.defineProperty(this, 'color', {
-    get: function() { return self.color_; },
+    get: function() { return that.color_; },
     set: function(value) {
-      self['view']['setColor'](value);
-      self.color_ = value;
+      that['view']['setColor'](value);
+      that.color_ = value;
     }
   });
 };

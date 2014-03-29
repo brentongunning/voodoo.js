@@ -14,7 +14,7 @@
  * @private
  */
 function Tracker_() {
-  log_.information_('Creating Tracker');
+  log_.info_('Creating Tracker');
 
   this.trackedElements_ = {};
   this.nextTrackedElementId_ = 0;

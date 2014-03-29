@@ -13,7 +13,7 @@
  * @private
  */
 function ThreeJsSceneFactory_() {
-  log_.information_('Creating ThreeJs Scene Factory');
+  log_.info_('Creating ThreeJs Scene Factory');
 
   this.scene_ = new THREE.Scene();
 }

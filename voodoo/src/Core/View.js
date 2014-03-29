@@ -220,45 +220,45 @@ View.prototype['triggers'] = null;
  * @private
  */
 View.prototype.setupPublicProperties_ = function() {
-  var self = this;
+  var that = this;
 
   Object.defineProperty(this, 'cache', {
-    get: function() { return self.cache_; },
+    get: function() { return that.cache_; },
     enumerable: true
   });
 
   Object.defineProperty(this, 'camera', {
-    get: function() { return self.layer_.camera_; },
+    get: function() { return that.layer_.camera_; },
     enumerable: true
   });
 
   Object.defineProperty(this, 'loaded', {
-    get: function() { return self.isLoaded_; },
+    get: function() { return that.isLoaded_; },
     set: function(val) {
-      self.isLoaded_ = val;
-      if (self.isLoaded_)
-        self.model_.onViewLoad_(self);
+      that.isLoaded_ = val;
+      if (that.isLoaded_)
+        that.model_.onViewLoad_(that);
     },
     enumerable: true
   });
 
   Object.defineProperty(this, 'model', {
-    get: function() { return self.model_; },
+    get: function() { return that.model_; },
     enumerable: true
   });
 
   Object.defineProperty(this, 'renderer', {
-    get: function() { return self.layer_.renderer_; },
+    get: function() { return that.layer_.renderer_; },
     enumerable: true
   });
 
   Object.defineProperty(this, 'scene', {
-    get: function() { return self.scene_; },
+    get: function() { return that.scene_; },
     enumerable: true
   });
 
   Object.defineProperty(this, 'triggers', {
-    get: function() { return self.triggers_; },
+    get: function() { return that.triggers_; },
     enumerable: true
   });
 };

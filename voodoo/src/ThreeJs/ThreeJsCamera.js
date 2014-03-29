@@ -18,7 +18,7 @@
  * @param {number} zFar Maximum z distance rendered.
  */
 function ThreeJsCamera_(canvas, fovY, zNear, zFar) {
-  log_.information_('Creating ThreeJs Camera');
+  log_.info_('Creating ThreeJs Camera');
   this.camera_ = new THREE.Camera();
   this.frustum_ = new THREE.Frustum();
 
@@ -50,16 +50,16 @@ ThreeJsCamera_.prototype.constructor = ThreeJsCamera_.constructor;
  * @private
  */
 ThreeJsCamera_.prototype.createProperties_ = function() {
-  var self = this;
+  var that = this;
 
   Object.defineProperty(this, 'fovY', {
-    get: function() { return self.fovY_; },
+    get: function() { return that.fovY_; },
     enumerable: true
   });
 
   Object.defineProperty(this, 'position', {
     get: function() {
-      var cameraPosition = self.camera_.position;
+      var cameraPosition = that.camera_.position;
       return {
         'x': cameraPosition.x,
         'y': cameraPosition.y,
@@ -70,7 +70,7 @@ ThreeJsCamera_.prototype.createProperties_ = function() {
   });
 
   Object.defineProperty(this, 'zNear', {
-    get: function() { return self.zNear_; },
+    get: function() { return that.zNear_; },
     enumerable: true
   });
 
@@ -101,14 +101,14 @@ ThreeJsCamera_.prototype.initialize_ = function() {
   this.update_();
 
   // Register the renderer's onScroll and onResize events with the window
-  var self = this;
+  var that = this;
 
   window.addEventListener('scroll', function() {
-    self.onScroll_();
+    that.onScroll_();
   }, false);
 
   window.addEventListener('resize', function() {
-    self.onResize_();
+    that.onResize_();
   }, false);
 
   this.pendingCameraMoveEvent_ = true;

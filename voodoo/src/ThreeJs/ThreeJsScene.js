@@ -116,13 +116,13 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
   var voodooEvent = window['voodoo']['Event'];
 
   // Attach to the new element and setup the callbacks.
-  var self = this;
+  var that = this;
   if (element) {
     if (center) {
       if (pixels) {
         this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
             move, resize) {
-              var parent = self.parent_;
+              var parent = that.parent_;
               var parentPosition = parent.position;
               var parentScale = parent.scale;
 
@@ -130,8 +130,8 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
               parentPosition.y = y + h / 2.0;
               parentScale.x = parentScale.y = 1.0;
 
-              self.parent_.updateMatrixWorld(true);
-              self.isDirty_ = true;
+              that.parent_.updateMatrixWorld(true);
+              that.isDirty_ = true;
 
               if (move) {
                 var event = new voodooEvent('move');
@@ -145,7 +145,7 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
                 eventSize['x'] = w;
                 eventSize['y'] = h;
 
-                self.dispatcher_.dispatchEvent_(null, event);
+                that.dispatcher_.dispatchEvent_(null, event);
               }
 
               if (resize) {
@@ -160,13 +160,13 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
                 eventSize['x'] = w;
                 eventSize['y'] = h;
 
-                self.dispatcher_.dispatchEvent_(null, event);
+                that.dispatcher_.dispatchEvent_(null, event);
               }
             });
       } else {
         this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
             move, resize) {
-              var parent = self.parent_;
+              var parent = that.parent_;
               var parentPosition = parent.position;
               var parentScale = parent.scale;
 
@@ -175,8 +175,8 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
               parentScale.x = w;
               parentScale.y = h;
 
-              self.parent_.updateMatrixWorld(true);
-              self.isDirty_ = true;
+              that.parent_.updateMatrixWorld(true);
+              that.isDirty_ = true;
 
               if (move) {
                 var event = new voodooEvent('move');
@@ -190,7 +190,7 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
                 eventSize['x'] = w;
                 eventSize['y'] = h;
 
-                self.dispatcher_.dispatchEvent_(null, event);
+                that.dispatcher_.dispatchEvent_(null, event);
               }
 
               if (resize) {
@@ -205,7 +205,7 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
                 eventSize['x'] = w;
                 eventSize['y'] = h;
 
-                self.dispatcher_.dispatchEvent_(null, event);
+                that.dispatcher_.dispatchEvent_(null, event);
               }
             });
       }
@@ -213,7 +213,7 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
       if (pixels) {
         this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
             move, resize) {
-              var parent = self.parent_;
+              var parent = that.parent_;
               var parentPosition = parent.position;
               var parentScale = parent.scale;
 
@@ -221,8 +221,8 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
               parentPosition.y = y;
               parentScale.x = parentScale.y = 1.0;
 
-              self.parent_.updateMatrixWorld(true);
-              self.isDirty_ = true;
+              that.parent_.updateMatrixWorld(true);
+              that.isDirty_ = true;
 
               if (move) {
                 var event = new voodooEvent('move');
@@ -236,7 +236,7 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
                 eventSize['x'] = w;
                 eventSize['y'] = h;
 
-                self.dispatcher_.dispatchEvent_(null, event);
+                that.dispatcher_.dispatchEvent_(null, event);
               }
 
               if (resize) {
@@ -251,13 +251,13 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
                 eventSize['x'] = w;
                 eventSize['y'] = h;
 
-                self.dispatcher_.dispatchEvent_(null, event);
+                that.dispatcher_.dispatchEvent_(null, event);
               }
             });
       } else {
         this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
             move, resize) {
-              var parent = self.parent_;
+              var parent = that.parent_;
               var parentPosition = parent.position;
               var parentScale = parent.scale;
 
@@ -266,8 +266,8 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
               parentScale.x = w;
               parentScale.y = h;
 
-              self.parent_.updateMatrixWorld(true);
-              self.isDirty_ = true;
+              that.parent_.updateMatrixWorld(true);
+              that.isDirty_ = true;
 
               if (move) {
                 var event = new voodooEvent('move');
@@ -281,7 +281,7 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
                 eventSize['x'] = w;
                 eventSize['y'] = h;
 
-                self.dispatcher_.dispatchEvent_(null, event);
+                that.dispatcher_.dispatchEvent_(null, event);
               }
 
               if (resize) {
@@ -296,7 +296,7 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
                 eventSize['x'] = w;
                 eventSize['y'] = h;
 
-                self.dispatcher_.dispatchEvent_(null, event);
+                that.dispatcher_.dispatchEvent_(null, event);
               }
             });
       }

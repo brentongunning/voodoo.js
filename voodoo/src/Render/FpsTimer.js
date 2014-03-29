@@ -32,12 +32,12 @@ function FpsTimer_() {
   this.fpsDiv_.display = 'none';
 
   // Create a timer that runs every second
-  var self = this;
+  var that = this;
   this.fpsTimerId_ = setInterval(function() {
-    self.fps_ = self.fpsCounter_;
-    self.rps_ = self.rpsCounter_;
-    self.fpsCounter_ = 0;
-    self.rpsCounter_ = 0;
+    that.fps_ = that.fpsCounter_;
+    that.rps_ = that.rpsCounter_;
+    that.fpsCounter_ = 0;
+    that.rpsCounter_ = 0;
   }, 1000);
 }
 
