@@ -26,7 +26,8 @@ var LightView_ = View['extend']();
  * @return {THREE.Light} Custom light.
  */
 LightView_.prototype['createLight'] = function() {
-  throw 'createLight_() undefined.';
+  log_.error_('createLight_() undefined.');
+  return null;
 };
 
 

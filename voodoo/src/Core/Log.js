@@ -92,11 +92,14 @@ Log_.prototype.warning_ = function(message) {
  *
  * @this {Log_}
  *
- * @param {string} message Text to log.
+ * @param {string} msg Text to log.
  */
-Log_.prototype.error_ = function(message) {
-  this.consoleMessage_('**ERROR** ' + message);
-  throw 'Voodoo Exception: ' + message;
+Log_.prototype.error_ = function(msg) {
+  this.consoleMessage_('**ERROR** ' + msg);
+  throw {
+    name: 'Voodoo Exception',
+    message: msg
+  };
 };
 
 

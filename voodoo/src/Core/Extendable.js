@@ -52,7 +52,7 @@ function Extendable() {
  * @ignore
  */
 Extendable.prototype['construct'] = function() {
-  throw 'Extendable::construct not implemented';
+  log_.error_('Extendable::construct not implemented');
 };
 
 
