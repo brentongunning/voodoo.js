@@ -24,7 +24,7 @@ var CameraLightView_ = LightView_['extend']();
  * @return {THREE.Light} Custom light.
  */
 CameraLightView_.prototype['createLight'] = function() {
-  log_.assert_(this['renderer'] == Renderer['ThreeJs'],
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
       'Only ThreeJs is supported');
 
   return new THREE.PointLight();
@@ -51,7 +51,7 @@ CameraLightView_.prototype['load'] = function() {
  * @this {CameraLightView_}
  */
 CameraLightView_.prototype['updatePosition'] = function() {
-  log_.assert_(this['renderer'] == Renderer['ThreeJs'],
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
       'Only ThreeJs is supported');
 
   var lightPosition = this.light['position'];

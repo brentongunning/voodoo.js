@@ -309,7 +309,7 @@ Engine.prototype.update_ = function() {
   // Calculate the time delta between this frame the last in seconds
   var deltaTime = 0;
   var currTicks = Date.now();
-  if (this.lastTicks_ != 0) {
+  if (this.lastTicks_ !== 0) {
     deltaTime = (currTicks - this.lastTicks_) / 1000.0;
     this.lastTicks_ = currTicks;
   }

@@ -62,7 +62,7 @@ ThreeJsTriggers_.prototype['add'] = function(object, opt_triggerId) {
   if (DEBUG) {
     for (var i = 0, numTriggers = this.triggers_.length; i < numTriggers;
         ++i) {
-      if (this.triggers_[i].object_ == trigger.object_)
+      if (this.triggers_[i].object_ === trigger.object_)
         log_.error_('Trigger already exists');
     }
   }
@@ -88,7 +88,7 @@ ThreeJsTriggers_.prototype['add'] = function(object, opt_triggerId) {
  */
 ThreeJsTriggers_.prototype['remove'] = function(object) {
   for (var i = 0, numTriggers = this.triggers_.length; i < numTriggers; ++i) {
-    if (this.triggers_[i].object_ == object)
+    if (this.triggers_[i].object_ === object)
       this.triggers_.splice(i, 1);
   }
 

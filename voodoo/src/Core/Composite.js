@@ -39,7 +39,7 @@ function Composite_(objects) {
               var object = objects[index];
               returnVal = object[property].apply(object, arguments);
             }
-            return returnVal == objects[objects.length - 1] ?
+            return returnVal === objects[objects.length - 1] ?
                 composite : returnVal;
           };
         })(property, objects);

@@ -180,35 +180,35 @@ Utility.prototype['convertCssColorToThreeJsColor'] = function(cssColor) {
   cssColor = cssColor.toLowerCase();
 
   // Check for hex color (ie. #AA0055)
-  if (cssColor[0] == '#') {
+  if (cssColor[0] === '#') {
     return this.convertHexStringToThreeJsColor_(cssColor);
   }
 
   // Check for rgb color (ie. rgb(255, 0, 0))
-  if (cssColor.indexOf('rgb(') == 0) {
+  if (cssColor.indexOf('rgb(') === 0) {
     var colors = cssColor.substring(4, cssColor.length - 1).split(',');
-    log_.assert_(colors.length == 3, 'Invalid rgb color');
+    log_.assert_(colors.length === 3, 'Invalid rgb color');
     return this.convertRGBColorToThreeJsColor_(colors[0], colors[1], colors[2]);
   }
 
   // Check for rgba color (ie. rgba(255, 0, 0, 0.5))
-  if (cssColor.indexOf('rgba(') == 0) {
+  if (cssColor.indexOf('rgba(') === 0) {
     var colors = cssColor.substring(5, cssColor.length - 1).split(',');
-    log_.assert_(colors.length == 4, 'Invalid rgba color');
+    log_.assert_(colors.length === 4, 'Invalid rgba color');
     return this.convertRGBColorToThreeJsColor_(colors[0], colors[1], colors[2]);
   }
 
   // Parse HSL color (ie. hsl(120, 65%, 45%))
-  if (cssColor.indexOf('hsl(') == 0) {
+  if (cssColor.indexOf('hsl(') === 0) {
     var parts = cssColor.substring(4, cssColor.length - 1).split(',');
-    log_.assert_(parts.length == 3, 'Invalid hsl color');
+    log_.assert_(parts.length === 3, 'Invalid hsl color');
     return this.convertHSLColorToThreeJsColor_(parts[0], parts[1], parts[2]);
   }
 
   // Parse HSLA color (ie. hsla(120, 65%, 45%, 0.5))
-  if (cssColor.indexOf('hsla(') == 0) {
+  if (cssColor.indexOf('hsla(') === 0) {
     var parts = cssColor.substring(5, cssColor.length - 1).split(',');
-    log_.assert_(parts.length == 4, 'Invalid hsla color');
+    log_.assert_(parts.length === 4, 'Invalid hsla color');
     return this.convertHSLColorToThreeJsColor_(parts[0], parts[1], parts[2]);
   }
 

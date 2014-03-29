@@ -442,12 +442,12 @@ ThreeJsScene_.prototype['remove'] = function(object) {
   object['addedToVoodooScene'] = false;
 
   var index = this.objects_.indexOf(object);
-  if (index != -1)
+  if (index !== -1)
     this.objects_.splice(index, 1);
 
   if (this.isMesh_(object)) {
     index = this.meshes_.indexOf(object);
-    if (index != -1)
+    if (index !== -1)
       this.meshes_.splice(index, 1);
   }
 

@@ -91,7 +91,7 @@ Tracker_.prototype.release_ = function(trackId) {
   // Release the callback from the tracked element
   trackedElement.releaseCallback_(callbackId);
 
-  if (trackedElement.numCallbacks_ == 0) {
+  if (trackedElement.numCallbacks_ === 0) {
     delete this.trackedElements_[trackedElementId];
     delete trackedElement.element_['VoodooTrackedElementId'];
   }

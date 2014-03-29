@@ -85,7 +85,7 @@ ThreeJsRaycaster_.prototype.findClosestAboveLayerIntersection_ = function(
         intersectionPoint['z'] < 0 &&
         trigger.view_['below'] &&
         engineOptions['stencils'] &&
-        model['viewType'] != model['stencilViewType'] &&
+        model['viewType'] !== model['stencilViewType'] &&
         stencilIntersections.indexOf(model) === -1)
       continue;
 
@@ -146,7 +146,7 @@ ThreeJsRaycaster_.prototype.findClosestBelowLayerIntersection_ =
 
     // Look for a stencil intersection
     if (engineOptions['stencils'] &&
-        model['viewType'] != model['stencilViewType'] &&
+        model['viewType'] !== model['stencilViewType'] &&
         stencilIntersections.indexOf(model) === -1)
       continue;
 

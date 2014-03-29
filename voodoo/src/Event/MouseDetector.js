@@ -166,7 +166,7 @@ MouseDetector_.prototype.initState_ = function() {
  * @param {Event} event Event data.
  */
 MouseDetector_.prototype.onMouseDown_ = function(event) {
-  if (this.hoveredTrigger_ != null) {
+  if (this.hoveredTrigger_ !== null) {
     event.preventDefault();
 
     var button = event.button;
@@ -179,8 +179,8 @@ MouseDetector_.prototype.onMouseDown_ = function(event) {
 
     // Detect a double click
     if (held.isEquivalentTo(lastClicked) &&
-        this.lastClickClientX_[button] == event.clientX &&
-        this.lastClickClientY_[button] == event.clientY &&
+        this.lastClickClientX_[button] === event.clientX &&
+        this.lastClickClientY_[button] === event.clientY &&
         interval <= this.engine_.options_.doubleClickInterval_) {
 
       this.pendingDoubleClickEvent_[button] = true;
@@ -197,7 +197,7 @@ MouseDetector_.prototype.onMouseDown_ = function(event) {
  * @param {Event} event Event data.
  */
 MouseDetector_.prototype.onMouseMove_ = function(event) {
-  if (this.hoveredTrigger_ != null)
+  if (this.hoveredTrigger_ !== null)
     event.preventDefault();
 
   this.clientX_ = event.clientX;
@@ -228,7 +228,7 @@ MouseDetector_.prototype.onMouseUp_ = function(event) {
     var lastClicked = this.lastClickedTrigger_[button];
 
     // Fire a mouseup event on the trigger that caused the mousedown
-    if (held && this.hoveredTrigger_ != held)
+    if (held && this.hoveredTrigger_ !== held)
       this.dispatchMouseEvent_('mouseup', this.hoveredTrigger_,
           button, held);
 
@@ -309,11 +309,11 @@ MouseDetector_.prototype.update_ = function() {
   // Fire mousemove on currently held models.
   for (var button = 0; button < 3; ++button) {
     var held = this.heldTrigger_[button];
-    if (held && nextTrigger != held)
+    if (held && nextTrigger !== held)
       this.dispatchMouseEvent_('mousemove', nextTrigger, button, held);
   }
 
-  if (nextTrigger != null) {
+  if (nextTrigger !== null) {
     // Mouse move events are only sent on update to boost performance
     if (this.pendingMouseMove_) {
       this.dispatchMouseEvent_('mousemove', nextTrigger);
@@ -322,7 +322,7 @@ MouseDetector_.prototype.update_ = function() {
     // Fire a mouseup event on the trigger that caused the mousedown
     if (!nextTrigger.isEquivalentTo(this.hoveredTrigger_)) {
       // Mouse leave the old trigger
-      if (this.hoveredTrigger_ != null)
+      if (this.hoveredTrigger_ !== null)
         this.dispatchMouseEvent_('mouseout', this.hoveredTrigger_);
 
       // Mouse enter the new trigger
@@ -333,7 +333,7 @@ MouseDetector_.prototype.update_ = function() {
   }
   else {
     // Mouse leave the old trigger
-    if (this.hoveredTrigger_ != null)
+    if (this.hoveredTrigger_ !== null)
       this.dispatchMouseEvent_('mouseout', this.hoveredTrigger_);
 
     renderer.capturePointerEvents_(false);
@@ -343,7 +343,7 @@ MouseDetector_.prototype.update_ = function() {
   this.pendingMouseMove_ = false;
 
   // Set the mouse cursor
-  if (this.hoveredTrigger_ != null)
+  if (this.hoveredTrigger_ !== null)
     renderer.setCursor_(this.hoveredTrigger_.parent_.cursor_);
   else renderer.setCursor_('auto');
 };

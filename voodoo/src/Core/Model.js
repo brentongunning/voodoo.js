@@ -318,7 +318,7 @@ Model.prototype.createViews_ = function() {
 
   // Create the views, one for each layer and one additional for the
   // stencil layer.
-  var nonuniqueStencilView = this['stencilViewType'] == this['viewType'];
+  var nonuniqueStencilView = this['stencilViewType'] === this['viewType'];
   var viewPrototype = this['viewType'].prototype;
   var viewSupportsAbove = viewPrototype['above'];
   var viewSupportsBelow = viewPrototype['below'];
@@ -501,15 +501,15 @@ Model['extend'] = function(opt_object) {
   var newViewType = newTypePrototype['viewType'];
   if (typeof viewType !== 'undefined' && viewType !== null &&
       typeof newViewType !== 'undefined' && newViewType !== null &&
-      viewType != newViewType) {
+      viewType !== newViewType) {
     newTypePrototype['viewType'] = viewType['extend'](newViewType);
   }
 
   var stencil = thisPrototype['stencilViewType'];
   var newStencil = newTypePrototype['stencilViewType'];
-  if (typeof stencil !== 'undefined' && stencil != null &&
-      typeof newStencil !== 'undefined' && newStencil != null &&
-      stencil != newStencil) {
+  if (typeof stencil !== 'undefined' && stencil !== null &&
+      typeof newStencil !== 'undefined' && newStencil !== null &&
+      stencil !== newStencil) {
     newTypePrototype['stencilViewType'] = stencil['extend'](newStencil);
   }
 

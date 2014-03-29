@@ -38,7 +38,7 @@ LightView_.prototype['createLight'] = function() {
  * @this {LightView_}
  */
 LightView_.prototype['load'] = function() {
-  log_.assert_(this['renderer'] == Renderer['ThreeJs'],
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
       'Only ThreeJs is supported');
 
   this.light = this['createLight']();
@@ -54,7 +54,7 @@ LightView_.prototype['load'] = function() {
  * @this {LightView_}
  */
 LightView_.prototype['unload'] = function() {
-  log_.assert_(this['renderer'] == Renderer['ThreeJs'],
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
       'Only ThreeJs is supported');
 
   this['scene']['remove'](this.light);
@@ -69,7 +69,7 @@ LightView_.prototype['unload'] = function() {
  * @param {string} color CSS color value.
  */
 LightView_.prototype['setColor'] = function(color) {
-  log_.assert_(this['renderer'] == Renderer['ThreeJs'],
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
       'Only ThreeJs is supported');
 
   var threeJsColor =
