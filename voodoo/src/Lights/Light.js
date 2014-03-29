@@ -104,9 +104,7 @@ var Light_ = Model['extend']();
  * @param {{color: string}} options Options object.
  */
 Light_.prototype['initialize'] = function(options) {
-  if (typeof options.color !== 'undefined')
-    this.color_ = options.color;
-  else this.color_ = null;
+  this.color_ = options.color || 'white';
 
   // Create the color property
   var self = this;

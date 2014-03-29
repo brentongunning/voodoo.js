@@ -118,7 +118,7 @@ BaseTests.prototype.testBaseWithInsertedType = function() {
   Base = voodoo.Extendable.extend({
     construct: function() {},
     foo: function() {
-      if (typeof this.base.foo !== 'undefined')
+      if (this.base.foo)
         this.base.foo();
     }
   });

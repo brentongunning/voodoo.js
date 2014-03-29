@@ -15,9 +15,8 @@
  * @param {Engine} engine Voodoo main engine.
  */
 function ThreeJsRaycaster_(engine) {
-  log_.assert_(typeof engine !== 'undefined', 'Engine must be defined.');
-  log_.assert_(typeof engine.renderer_ !== 'undefined',
-      'Renderer must be defined.');
+  log_.assert_(engine, 'Engine must be defined.');
+  log_.assert_(engine.renderer_, 'Renderer must be defined.');
 
   this.engine_ = engine;
   this.renderer_ = engine.renderer_;

@@ -82,7 +82,7 @@ EngineTests.prototype.testDestroyEngine = function() {
   voodoo.engine = new voodoo.Engine(new voodoo.Options());
   voodoo.engine.destroy();
 
-  assert(typeof voodoo.engine === 'undefined');
+  assert(!voodoo.engine);
 };
 
 

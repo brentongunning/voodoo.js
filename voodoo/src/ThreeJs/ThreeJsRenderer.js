@@ -91,7 +91,7 @@ ThreeJsRenderer_.prototype.capturePointerEvents_ = function(capture) {
  * @param {Layer_} layer Layer to clear.
  */
 ThreeJsRenderer_.prototype.clearDirtyFlags_ = function(layer) {
-  if (!layer || typeof layer === 'undefined')
+  if (!layer)
     return;
 
   var views = layer.views_;
@@ -252,7 +252,7 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
     this.layers_.push(this.seamLayer_);
 
     if (engineOptions['stencils']) {
-      if (typeof this.stencilCamera_ === 'undefined')
+      if (!this.stencilCamera_)
         this.stencilCamera_ = new ThreeJsCamera_(this.seamCanvas_,
             fovY, zNear, zFar);
 
@@ -310,7 +310,7 @@ ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer) {
   if (this.isDirty_)
     return true;
 
-  if (!layer || typeof layer === 'undefined')
+  if (!layer)
     return false;
 
   var frustum = layer.camera_.frustum_;
@@ -736,14 +736,10 @@ ThreeJsRenderer_.prototype.setupFullscreenCanvasRenderer_ =
 ThreeJsRenderer_.prototype.updateCameras_ = function() {
   // Update the cameras
 
-  if (typeof this.aboveCamera_ !== 'undefined')
-    this.aboveCamera_.update_();
-  if (typeof this.belowCamera_ !== 'undefined')
-    this.belowCamera_.update_();
-  if (typeof this.seamCamera_ !== 'undefined')
-    this.seamCamera_.update_();
-  if (typeof this.stencilCamera_ !== 'undefined')
-    this.stencilCamera_.update_();
+  if (this.aboveCamera_) this.aboveCamera_.update_();
+  if (this.belowCamera_) this.belowCamera_.update_();
+  if (this.seamCamera_) this.seamCamera_.update_();
+  if (this.stencilCamera_) this.stencilCamera_.update_();
 
   if (this.pendingUpdateLayerZBoundaries_) {
     this.updateLayerZBoundaries_();
@@ -752,14 +748,10 @@ ThreeJsRenderer_.prototype.updateCameras_ = function() {
 
   // Dispatch cameramove events
 
-  if ((typeof this.aboveCamera_ !== 'undefined' &&
-      this.aboveCamera_.pendingCameraMoveEvent_) ||
-      (typeof this.belowCamera_ !== 'undefined' &&
-      this.belowCamera_.pendingCameraMoveEvent_) ||
-      (typeof this.seamCamera_ !== 'undefined' &&
-      this.seamCamera_.pendingCameraMoveEvent_) ||
-      (typeof this.stencilCamera_ !== 'undefined' &&
-      this.stencilCamera_.pendingCameraMoveEvent_)) {
+  if ((this.aboveCamera_ && this.aboveCamera_.pendingCameraMoveEvent_) ||
+      (this.belowCamera_ && this.belowCamera_.pendingCameraMoveEvent_) ||
+      (this.seamCamera_ && this.seamCamera_.pendingCameraMoveEvent_) ||
+      (this.stencilCamera_ && this.stencilCamera_.pendingCameraMoveEvent_)) {
 
     var models = this.engine_.models_;
     var event = new window['voodoo']['Event']('cameramove');
@@ -768,13 +760,10 @@ ThreeJsRenderer_.prototype.updateCameras_ = function() {
         ++modelIndex)
       models[modelIndex].dispatchEvent_(event);
 
-    if (typeof this.aboveCamera_ !== 'undefined')
-      this.aboveCamera_.pendingCameraMoveEvent_ = false;
-    if (typeof this.belowCamera_ !== 'undefined')
-      this.belowCamera_.pendingCameraMoveEvent_ = false;
-    if (typeof this.seamCamera_ !== 'undefined')
-      this.seamCamera_.pendingCameraMoveEvent_ = false;
-    if (typeof this.stencilCamera_ !== 'undefined')
+    if (this.aboveCamera_) this.aboveCamera_.pendingCameraMoveEvent_ = false;
+    if (this.belowCamera_) this.belowCamera_.pendingCameraMoveEvent_ = false;
+    if (this.seamCamera_) this.seamCamera_.pendingCameraMoveEvent_ = false;
+    if (this.stencilCamera_)
       this.stencilCamera_.pendingCameraMoveEvent_ = false;
   }
 };

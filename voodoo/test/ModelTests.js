@@ -149,7 +149,7 @@ ModelTests.prototype.testAutomaticEngineCreation = function() {
     voodoo.engine.destroy();
 
   new HookedModel();
-  assertTrue(typeof voodoo.engine !== 'undefined');
+  assertTrue(!!voodoo.engine);
 };
 
 

@@ -355,9 +355,7 @@ Utility.prototype.convertHSLColorToThreeJsColor_ = function(h, s, l) {
  * @return {THREE.Color} Three.Js color.
  */
 Utility.prototype.convertColorStringToThreeJsColor_ = function(color) {
-  log_.assert_(
-      typeof this.colorToHexString[color] !== 'undefined',
-      'Invalid color string');
+  log_.assert_(color in this.colorToHexString, 'Invalid color string');
 
   return this.convertHexStringToThreeJsColor_(
       this.colorToHexString[color.toLowerCase()]);

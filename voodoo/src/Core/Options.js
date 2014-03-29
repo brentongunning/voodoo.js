@@ -17,7 +17,7 @@
 function Options(opt_options) {
   log_.information_('Creating Options');
 
-  if (typeof opt_options !== 'undefined')
+  if (opt_options)
     for (var key in opt_options)
       this[key] = opt_options[key];
 }

@@ -16,7 +16,7 @@ for (var i = 0; i < namespaceParts.length - 1; ++i) {
   currentNamespace = currentNamespace[part];
 }
 
-if (typeof currentNamespace[namespaceParts[namespaceParts.length - 1]] === 'undefined') {
+if (!currentNamespace[namespaceParts[namespaceParts.length - 1]]) {
   // The namespace does not exist. Create it.
   currentNamespace[namespaceParts[namespaceParts.length - 1]] = new project();
 } else {

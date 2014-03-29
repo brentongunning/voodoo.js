@@ -111,7 +111,7 @@ Cache.prototype['set'] = function(key, value, opt_name, opt_organization) {
  */
 Cache.prototype.getSubcache_ = function(opt_name, opt_organization) {
   var name, organization;
-  if (typeof opt_name === 'undefined') {
+  if (!opt_name) {
     name = this.modelName_;
     organization = this.modelOrganization_;
   } else {

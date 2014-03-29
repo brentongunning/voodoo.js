@@ -64,9 +64,9 @@ Model.prototype['cleanUp'] = function() {
  * @this {Model}
  * @ignore
  *
- * @param {Object} options User options.
+ * @param {Object=} opt_options User options.
  */
-Model.prototype['construct'] = function(options) {
+Model.prototype['construct'] = function(opt_options) {
   log_.assert_(this['name'], 'Model type name cannot be undefined or null');
   log_.assert_(this['viewType'], 'Model view type cannot be undefined or null');
   if (!this['viewType'].prototype['above'] &&
@@ -85,8 +85,7 @@ Model.prototype['construct'] = function(options) {
   this.dispatcher_ = new Dispatcher_();
 
   this.setupCache_();
-  if (typeof options === 'undefined' || !options)
-    options = {};
+  var options = opt_options || {};
   this['initialize'](options);
 
   this.createViews_();
@@ -475,7 +474,7 @@ Model.prototype['viewType'] = null;
 /**
  * The stencil view type for this model.
  *
- * If this is left undefined, voodoo uses the view.
+ * If this is not set, voodoo uses the view.
  *
  * @type {View}
  */
@@ -499,27 +498,18 @@ Model['extend'] = function(opt_object) {
 
   var viewType = thisPrototype['viewType'];
   var newViewType = newTypePrototype['viewType'];
-  if (typeof viewType !== 'undefined' && viewType !== null &&
-      typeof newViewType !== 'undefined' && newViewType !== null &&
-      viewType !== newViewType) {
+  if (viewType && newViewType && viewType !== newViewType)
     newTypePrototype['viewType'] = viewType['extend'](newViewType);
-  }
 
   var stencil = thisPrototype['stencilViewType'];
   var newStencil = newTypePrototype['stencilViewType'];
-  if (typeof stencil !== 'undefined' && stencil !== null &&
-      typeof newStencil !== 'undefined' && newStencil !== null &&
-      stencil !== newStencil) {
+  if (stencil && newStencil && stencil !== newStencil)
     newTypePrototype['stencilViewType'] = stencil['extend'](newStencil);
-  }
 
   var name = thisPrototype['name'];
   var newName = newTypePrototype['name'];
-  if (typeof name !== 'undefined' && name !== null &&
-      typeof newName !== 'undefined' && newName !== null &&
-      newName !== name) {
+  if (name && newName && newName !== name)
     newTypePrototype['name'] = name + '.' + newName;
-  }
 
   newType['extend'] = Model['extend'];
 
