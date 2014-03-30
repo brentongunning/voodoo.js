@@ -13,7 +13,7 @@
  * @private
  */
 function CacheFactory_() {
-  log_.information_('Creating Cache Factory');
+  log_.info_('Creating Cache Factory');
 
   this.cache_ = {};
 }

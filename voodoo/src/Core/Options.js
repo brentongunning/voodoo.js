@@ -15,9 +15,9 @@
  * @param {Object=} opt_options Options settings to set.
  */
 function Options(opt_options) {
-  log_.information_('Creating Options');
+  log_.info_('Creating Options');
 
-  if (typeof opt_options !== 'undefined')
+  if (opt_options)
     for (var key in opt_options)
       this[key] = opt_options[key];
 }

@@ -41,17 +41,19 @@
 
 var CubbyView = voodoo.View.extend({
   load: function() {
-    this.material = new THREE.MeshLambertMaterial({
+    var material = new THREE.MeshLambertMaterial({
       color: 0x5599FF,
       ambient: 0x303030
     });
-    this.mesh = new THREE.Mesh(this.createGeometry(), this.material);
+    var mesh = new THREE.Mesh(this.createGeometry(), material);
 
     // The z position and scale doesn't change with the divs.
-    this.mesh.position.z = -200;
-    this.mesh.scale.z = 200;
+    mesh.position.z = -200;
+    mesh.scale.z = 200;
 
-    this.scene.add(this.mesh);
+    this.scene.add(mesh);
+
+    this.mesh = mesh;
   },
 
   unload: function() {
@@ -88,10 +90,14 @@ var CubbyView = voodoo.View.extend({
   },
 
   move: function(x, y, w, h) {
-    this.mesh.position.x = x + w / 2;
-    this.mesh.position.y = y + h / 2;
-    this.mesh.scale.x = w / 2;
-    this.mesh.scale.y = h / 2;
+    var meshPosition = this.mesh.position;
+    var meshScale = this.mesh.scale;
+
+    meshPosition.x = x + w / 2;
+    meshPosition.y = y + h / 2;
+
+    meshScale.x = w / 2;
+    meshScale.y = h / 2;
 
     this.dirty();
   }
@@ -123,10 +129,14 @@ var CubbyStencilView = voodoo.View.extend({
   },
 
   move: function(x, y, w, h) {
-    this.stencilMesh.position.x = x + w / 2;
-    this.stencilMesh.position.y = y + h / 2;
-    this.stencilMesh.scale.x = w / 2;
-    this.stencilMesh.scale.y = h / 2;
+    var stencilMeshPosition = this.stencilMesh.position;
+    var stencilMeshScale = this.stencilMesh.scale;
+
+    stencilMeshPosition.x = x + w / 2;
+    stencilMeshPosition.y = y + h / 2;
+
+    stencilMeshScale.x = w / 2;
+    stencilMeshScale.y = h / 2;
 
     this.dirty();
   }
@@ -152,8 +162,10 @@ var Cubby = voodoo.Model.extend({
     var pos = voodoo.utility.findAbsolutePosition(this.element);
 
     // We have to move both the view AND stencil views
-    this.view.move(pos.x, pos.y, this.element.offsetWidth, this.element.offsetHeight);
-    this.stencilView.move(pos.x, pos.y, this.element.offsetWidth, this.element.offsetHeight);
+    var elementWidth = this.element.offsetWidth;
+    var elementHeight = this.element.offsetHeight;
+    this.view.move(pos.x, pos.y, elementWidth, elementHeight);
+    this.stencilView.move(pos.x, pos.y, elementWidth, elementHeight);
   }
 });
 
@@ -164,9 +176,9 @@ var Cubby = voodoo.Model.extend({
 // Create a table of cubbies
 var content = document.getElementById('content');
 var table = document.createElement("table");
-for (var i = 0; i < 5; i++) {
+for (var i = 0; i < 5; ++i) {
   var row = document.createElement("tr");
-  for (var j = 0; j < 5; j++) {
+  for (var j = 0; j < 5; ++j) {
     var cell = document.createElement("td");
     row.appendChild(cell);
 

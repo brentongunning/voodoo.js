@@ -135,7 +135,7 @@ ModelTests.prototype.setUp = function() {
  * Shutdown the engine between test cases.
  */
 ModelTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
+  if (voodoo.engine)
     voodoo.engine.destroy();
 };
 
@@ -145,11 +145,11 @@ ModelTests.prototype.tearDown = function() {
  * is created.
  */
 ModelTests.prototype.testAutomaticEngineCreation = function() {
-  if (typeof voodoo.engine !== 'undefined')
+  if (voodoo.engine)
     voodoo.engine.destroy();
 
   new HookedModel();
-  assertTrue(typeof voodoo.engine !== 'undefined');
+  assertTrue(!!voodoo.engine);
 };
 
 

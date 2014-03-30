@@ -9,148 +9,55 @@
 /**
  * Creates an extendable type.
  *
- * Both the Model and View extend this base Extendable type. Derived
- * models and views must inherit from those base classes via extend.
+ * Extendable provides some aspects of a classical inheritance system in
+ * javascript. Each extended object:
+ *
+ *   1) Inherits all methods and variables from its parent.
+ *   2) Automatically call construct() when instantiated via new.
+ *   3) Enable calling overridden parent methods via this.base.
+ *
+ * Both Model and View derive from Extendable and override construct to perform
+ * custom initialization. User models and views must inherit from them.
  *
  * @constructor
  * @ignore
  */
 function Extendable() {
-  var self = this;
-  this.base_ = null;
+  // Remove methods that are the same as the top of the method stack because
+  // the user will call them via this.method not this.base.method. These
+  // duplicates are a side effect of the way we build the method stack.
 
-  function createBases() {
-    var ancestors = self.constructor['ancestors'];
-    var bases = [];
-
-    function createBase(index) {
-      var base = {};
-      var type = ancestors[index];
-      var proto = type.prototype;
-
-      for (var key in proto) {
-        var val = proto[key];
-        if (typeof val !== 'function')
-          continue;
-
-        // The most recent function is a special case if it was not overridden
-        // in the last item in the chain. We must detect it and make sure we
-        // don't mistakenly think our function in the chain is unique when it
-        // isn't.
-        if (val === self[key]) {
-          // Make sure there are no differences from this base up the chain.
-          // This ensures we don't think A->B->A->B, that the first B is the
-          // latest.
-          var differences = false;
-          for (var j = index + 1; j < ancestors.length; ++j) {
-            if (ancestors[j].prototype[key] !== val) {
-              differences = true;
-              break;
-            }
-          }
-          if (!differences) {
-            // Change our function we're going to run when called to be
-            // the next one in the chain that we would call.
-            var found = false;
-            for (var j = index - 1; j >= 0; --j) {
-              var ancFunc = ancestors[j].prototype[key];
-              if (ancFunc !== val && typeof ancFunc !== 'undefined') {
-                val = function(j, key) {
-                  return function() {
-                    return bases[j][key].apply(self, arguments);
-                  }
-                }(j, key);
-                found = true;
-                break;
-              }
-            }
-            if (!found)
-              continue;
-          }
-        }
-
-        // Find this function's parent base. The parent base is the first up
-        // the inheritance chain whose function is different than this one,
-        // meaning it was specifically overridden.
-        var parentBase = {};
-        for (var j = index - 1; j >= 0; --j) {
-          if (ancestors[j].prototype[key] !== val) {
-            parentBase = bases[j];
-            break;
-          }
-        }
-
-        // Wrapped the function so that when it's called, this.base
-        // obtains its new meaning inside it and all the functions are
-        // those at that inheritance level.
-        base[key] = function(key, val, proto, parentBase) {
-          return function() {
-            // Save the current base to set back later.
-            var storedBase = self.base_;
-            self.base_ = parentBase;
-
-            // Set all functions at this level. Save the old ones.
-            var saved = {};
-            for (var protoKey in proto) {
-              var protoVal = proto[protoKey];
-              if (typeof protoVal !== 'function')
-                continue;
-              saved[protoKey] = self[protoKey];
-              self[protoKey] = protoVal;
-            }
-
-            // Call the function.
-            var retVal = val.apply(self, arguments);
-
-            // Set back the old functions and base.
-            for (var savedKey in saved) {
-              self[savedKey] = saved[savedKey];
-            }
-            self.base_ = storedBase;
-
-            return retVal;
-          }
-        }(key, val, proto, parentBase);
-      }
-
-      bases.push(base);
-    }
-
-    for (var i = 0; i < ancestors.length; ++i)
-      createBase(i);
-    self.base_ = bases.length > 0 ? bases[bases.length - 1] : {};
+  var methodStack = this['extendableMethodStack'];
+  for (var name in methodStack) {
+    var record = methodStack[name];
+    if (this[name] === record.methods[record.current])
+      --record.current;
   }
 
-  Object.defineProperty(this, 'base', {
-    get: function() {
-      if (!self.base_)
-        createBases();
-      return self.base_;
-    }
-  });
+  // Set the base instance so the method stack functions to work properly.
 
-  // Call the one and only construct function
+  this['base'].instance = this;
+
+  // Call the construct method to initialize the object.
+
   this['construct'].apply(this, arguments);
 }
 
 
 /**
- * Constructs this type.
+ * Constructs this type. This is called when an instance is created.
  *
- * Extended types should override this. If they are not derived from Extendable
- * directly, then in their constructor they should call:
- *
- *      <BaseClass>.prototype.construct.apply(this, arguments);
+ * Extended types should override this.
  *
  * @ignore
  */
 Extendable.prototype['construct'] = function() {
-  throw 'Extendable::construct not implemented';
+  log_.error_('Extendable::construct not implemented');
 };
 
 
 /**
- * Parent object in the inheritance chain.
+ * Parent method accessor. This work like base in C# or super in Java.
  *
  * @type {Object}
  */
@@ -168,61 +75,166 @@ Extendable.prototype['base'] = {};
  * @return {?} Extended type.
  */
 Extendable['extend'] = function(opt_object) {
-  log_.assert_(typeof this === 'function', 'Invalid Extendable.');
-  var baseType = this;
-
-  /**
-    * Base type is the current type without the constructor. Extended type
-    * will set its protototype to this
-    * @constructor.
-    * @private
-    */
-  function BaseType_() {}
-  var baseTypePrototype = baseType['prototype'];
-  BaseType_.prototype = baseTypePrototype;
-
-  /**
-    * Extended type is the new type we return. It has all the same
-    * function as the base type.
-    * @constructor
-    * @private
-    */
-  var ExtendedType_ = function() {
-    // Pass arguments up the chain and then to construct
-    baseType['apply'](this, arguments);
-  };
-  ExtendedType_['extend'] = baseType['extend'];
-  ExtendedType_.prototype = new BaseType_();
-
-  // Append opt_object's properties onto ExtendedType
-  var isExtended = false;
-  if (typeof opt_object !== 'undefined') {
-    isExtended = typeof opt_object === 'function';
-    log_.assert_(!isExtended || typeof opt_object['extend'] !== 'undefined',
-        'Extend must either be pased null, an object or another Extendable.');
-
-    var properties = isExtended ? opt_object.prototype : opt_object;
-    for (var key in properties)
-      ExtendedType_.prototype[key] = properties[key];
+  function Child() {
+    Extendable.apply(this, arguments);
   }
-  ExtendedType_.prototype.constructor = ExtendedType_;
 
-  // Construct ancestors
-  var ancestors = typeof baseType['ancestors'] === 'undefined' ?
-      [] : baseType['ancestors'].slice(0);
+  Child['extend'] = Extendable['extend'];
 
-  /** @type {?} */
-  var self = this;
-  if (self !== Extendable)
-    ancestors.push(baseType);
+  // Clone the current object.
 
-  if (isExtended) {
-    ancestors = ancestors.concat(opt_object['ancestors']);
-    ancestors.push(opt_object);
+  var parentPrototype = this.prototype;
+  var childPrototype = Child.prototype;
+
+  for (var property in parentPrototype)
+    childPrototype[property] = parentPrototype[property];
+
+  // Clone the current method stack.
+  //
+  // The method stack keeps track of all methods with the same name on this
+  // object, as well as the current ones available from the base so that we
+  // can let the user call this.base.method() and access a parent method.
+  //
+  // Each method in the method stack is tracked by a method record which stores
+  // its unique methods in order as well as the index of the current one.
+
+  var parentMethodStack = parentPrototype['extendableMethodStack'];
+  var childMethodStack = childPrototype['extendableMethodStack'] = {};
+
+  for (var name in parentMethodStack) {
+    var methodRecord = parentMethodStack[name];
+    childMethodStack[name] = {
+      methods: methodRecord.methods.slice(0),
+      current: methodRecord.current
+    };
   }
-  ExtendedType_['ancestors'] = ancestors.slice(0);
 
-  return ExtendedType_;
+  // Add any missing parent methods to the method stack.
+  // This can happen when the user adds methods to the prototype.
+  // Here is an example. ## represents a comment.
+  //
+  //   var A = Extendable.extend();
+  //
+  //   ## A.method stack is currently:
+  //   ##   {
+  //   ##     'construct': {
+  //   ##       methods: [Extendable.prototype.construct],
+  //   ##       current: 0
+  //   ##     }
+  //   ##   }
+  //
+  //   A.prototype.initialize = function() {
+  //     alert('Initializing'});
+  //   };
+  //
+  //   ## A's method stack remains unchanged.
+  //
+  //   var B = A.extend();
+  //
+  //   ## B's method stack picks up A.initialize and is then:
+  //   ##   {
+  //   ##     'construct': {
+  //   ##       methods: [Extendable.prototype.construct],
+  //   ##       current: 0
+  //   ##     },
+  //   ##     'initialize': {
+  //   ##       methods: [A.prototype.initialize],
+  //   ##       current: 0
+  //   ##     }
+  //   ##   }
+
+  function addToMethodStack(stack, name, method) {
+    // Create the entry if it doesn't exist.
+
+    var record = stack[name];
+    if (!record)
+      record = stack[name] = { methods: [], current: -1 };
+
+    // Add the method iff it is different than our current top-of-stack.
+    // This precludes duplicate methods.
+
+    var recordMethods = record.methods;
+    if (recordMethods[record.current] !== method) {
+      recordMethods.push(method);
+      ++record.current;
+    }
+  }
+
+  for (var name in parentPrototype) {
+    var parentMethod = parentPrototype[name];
+
+    if (typeof parentMethod !== 'function')
+      continue;
+
+    if (!parentPrototype.hasOwnProperty(name))
+      continue;
+
+    addToMethodStack(childMethodStack, name, parentMethod);
+  }
+
+  // If there is no optional object provided, create the base and exit.
+
+  function createBase() {
+    var base = childPrototype['base'] = {};
+
+    for (var name in childMethodStack) {
+      var record = childMethodStack[name];
+      var recordMethods = record.methods;
+
+      base[name] = function(base, record, recordMethods) {
+        return function() {
+          if (record.current >= 0) {
+            var current = record.current--;
+            var ret = recordMethods[current].apply(base.instance, arguments);
+            ++record.current;
+            return ret;
+          }
+        };
+      }(base, record, recordMethods);
+    }
+  }
+
+  if (!opt_object) {
+    createBase();
+    return Child;
+  }
+
+  // Merge the method stack of the optional object with our new object's stack.
+
+  if (typeof opt_object === 'function')
+    opt_object = opt_object.prototype;
+
+  var opt_objectMethodStack = opt_object['extendableMethodStack'];
+  if (opt_objectMethodStack) {
+    for (var name in opt_objectMethodStack) {
+      var record = opt_objectMethodStack[name];
+      var recordMethods = record.methods;
+
+      for (var i = 0, len = recordMethods.length; i < len; ++i)
+        addToMethodStack(childMethodStack, name, recordMethods[i]);
+    }
+  }
+
+  // Append all methods and variables from the optional object onto our new
+  // object and its method stack.
+
+  for (var property in opt_object) {
+    if (!opt_object.hasOwnProperty(property))
+      continue;
+
+    var propertyValue = opt_object[property];
+    if (propertyValue === opt_objectMethodStack)
+      continue;
+
+    if (typeof propertyValue === 'function')
+      addToMethodStack(childMethodStack, property, propertyValue);
+
+    childPrototype[property] = propertyValue;
+  }
+
+  createBase();
+
+  return Child;
 };
 
 // Exports

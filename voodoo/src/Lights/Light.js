@@ -26,7 +26,8 @@ var LightView_ = View['extend']();
  * @return {THREE.Light} Custom light.
  */
 LightView_.prototype['createLight'] = function() {
-  throw 'createLight_() undefined.';
+  log_.error_('createLight_() undefined.');
+  return null;
 };
 
 
@@ -38,7 +39,7 @@ LightView_.prototype['createLight'] = function() {
  * @this {LightView_}
  */
 LightView_.prototype['load'] = function() {
-  log_.assert_(this['renderer'] == Renderer['ThreeJs'],
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
       'Only ThreeJs is supported');
 
   this.light = this['createLight']();
@@ -54,7 +55,7 @@ LightView_.prototype['load'] = function() {
  * @this {LightView_}
  */
 LightView_.prototype['unload'] = function() {
-  log_.assert_(this['renderer'] == Renderer['ThreeJs'],
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
       'Only ThreeJs is supported');
 
   this['scene']['remove'](this.light);
@@ -69,7 +70,7 @@ LightView_.prototype['unload'] = function() {
  * @param {string} color CSS color value.
  */
 LightView_.prototype['setColor'] = function(color) {
-  log_.assert_(this['renderer'] == Renderer['ThreeJs'],
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
       'Only ThreeJs is supported');
 
   var threeJsColor =
@@ -104,17 +105,15 @@ var Light_ = Model['extend']();
  * @param {{color: string}} options Options object.
  */
 Light_.prototype['initialize'] = function(options) {
-  if (typeof options.color !== 'undefined')
-    this.color_ = options.color;
-  else this.color_ = null;
+  this.color_ = options.color || 'white';
 
   // Create the color property
-  var self = this;
+  var that = this;
   Object.defineProperty(this, 'color', {
-    get: function() { return self.color_; },
+    get: function() { return that.color_; },
     set: function(value) {
-      self['view']['setColor'](value);
-      self.color_ = value;
+      that['view']['setColor'](value);
+      that.color_ = value;
     }
   });
 };

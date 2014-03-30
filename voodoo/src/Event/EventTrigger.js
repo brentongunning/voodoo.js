@@ -48,9 +48,9 @@ function EventTrigger_(view, object, parent, opt_triggerId) {
  * @return {boolean} Whether the triggers are equivalent.
  */
 EventTrigger_.prototype.isEquivalentTo = function(other) {
-  return other != null &&
-      this.model_ == other.model_ &&
-      this.triggerId_ == other.triggerId_;
+  return other !== null &&
+      this.model_ === other.model_ &&
+      this.triggerId_ === other.triggerId_;
 };
 
 

@@ -24,7 +24,7 @@ var AmbientLightView_ = LightView_['extend']();
  * @return {THREE.Light} Custom light.
  */
 AmbientLightView_.prototype['createLight'] = function() {
-  log_.assert_(this['renderer'] == Renderer['ThreeJs'],
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
       'Only ThreeJs is supported');
 
   return new THREE.AmbientLight();

@@ -19,24 +19,25 @@ function FpsTimer_() {
   this.rpsCounter_ = 0;
 
   this.fpsDiv_ = document.createElement('div');
-  this.fpsDiv_.style.position = 'fixed';
-  this.fpsDiv_.style.zIndex = 999999999;
-  this.fpsDiv_.style.left = '0px';
-  this.fpsDiv_.style.top = '0px';
-  this.fpsDiv_.style.backgroundColor = 'black';
-  this.fpsDiv_.style.color = 'lime';
-  this.fpsDiv_.style.fontStyle = 'bold';
-  this.fpsDiv_.style.fontSize = '200%';
-  this.fpsDiv_.style.fontFamily = 'sans-serif';
+  var fpsDivStyle = this.fpsDiv_.style;
+  fpsDivStyle.position = 'fixed';
+  fpsDivStyle.zIndex = 999999999;
+  fpsDivStyle.left = '0px';
+  fpsDivStyle.top = '0px';
+  fpsDivStyle.backgroundColor = 'black';
+  fpsDivStyle.color = 'lime';
+  fpsDivStyle.fontStyle = 'bold';
+  fpsDivStyle.fontSize = '200%';
+  fpsDivStyle.fontFamily = 'sans-serif';
   this.fpsDiv_.display = 'none';
 
   // Create a timer that runs every second
-  var self = this;
+  var that = this;
   this.fpsTimerId_ = setInterval(function() {
-    self.fps_ = self.fpsCounter_;
-    self.rps_ = self.rpsCounter_;
-    self.fpsCounter_ = 0;
-    self.rpsCounter_ = 0;
+    that.fps_ = that.fpsCounter_;
+    that.rps_ = that.rpsCounter_;
+    that.fpsCounter_ = 0;
+    that.rpsCounter_ = 0;
   }, 1000);
 }
 

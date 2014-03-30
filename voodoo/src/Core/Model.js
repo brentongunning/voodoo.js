@@ -64,9 +64,9 @@ Model.prototype['cleanUp'] = function() {
  * @this {Model}
  * @ignore
  *
- * @param {Object} options User options.
+ * @param {Object=} opt_options User options.
  */
-Model.prototype['construct'] = function(options) {
+Model.prototype['construct'] = function(opt_options) {
   log_.assert_(this['name'], 'Model type name cannot be undefined or null');
   log_.assert_(this['viewType'], 'Model view type cannot be undefined or null');
   if (!this['viewType'].prototype['above'] &&
@@ -74,29 +74,116 @@ Model.prototype['construct'] = function(options) {
     log_.error_('View must exist on at least one layer');
   this['stencilViewType'] = this['stencilViewType'] || this['viewType'];
 
-  this.setId_();
-  log_.modelInformation_(this, 'Constructing');
+  var vars = this['privateModelProperties'] = {};
+
+  // Sets the identifier used for the model in logging.
+  var id = '<' + (++nextModelId_) + ',';
+  if (this['organization'] !== defaultOrganization_)
+    id += this['organization'] + '.';
+  id += this['name'] + '>';
+  vars.id_ = id;
+
+  log_.model_(this, 'Constructing');
 
   // If no engine has been created, create one with default options.
-  if (typeof window['voodoo']['engine'] === 'undefined' ||
-      window['voodoo']['engine'] === null) {
-    window['voodoo']['engine'] = new Engine(new Options());
-  }
+  var voodoo = window['voodoo'];
+  if (!voodoo['engine'])
+    voodoo['engine'] = new Engine(new Options());
 
-  this.dispatcher_ = new Dispatcher_();
+  /** @type {Engine} */
+  var engine = voodoo['engine'];
 
-  this.setupCache_();
-  if (typeof options === 'undefined' || !options)
-    options = {};
+  vars.dispatcher_ = new Dispatcher_();
+
+  var cache = vars.cache_ = engine.modelCacheFactory_.createCache_(this);
+  Object.defineProperty(this, 'cache', {
+    get: function() { return cache; },
+    enumerable: true
+  });
+
+  var options = opt_options || {};
   this['initialize'](options);
 
-  this.createViews_();
+  var views = vars.views_ = [];
+  var stencilViews = vars.stencilViews_ = [];
+  vars.numViewsLoaded_ = 0;
+  vars.numViewsToLoad_ = 0;
 
-  this.setupViewProperties_();
+  Object.defineProperty(this, 'loaded', {
+    get: function() { return vars.numViewsLoaded_ === vars.numViewsToLoad_; },
+    enumerable: true
+  });
+
+  // Create views, one for each layer and one additional for the stencil layer.
+  var nonuniqueStencilView = this['stencilViewType'] === this['viewType'];
+  var viewPrototype = this['viewType'].prototype;
+  var viewSupportsAbove = viewPrototype['above'];
+  var viewSupportsBelow = viewPrototype['below'];
+
+  var layers = engine.renderer_.layers_;
+  for (var layerIndex = 0, numLayers = layers.length; layerIndex < numLayers;
+      ++layerIndex) {
+    var layer = layers[layerIndex];
+
+    switch (layer.pass_) {
+      case LayerPass_['Above']:
+        if (viewSupportsAbove)
+          views.push(new this['viewType'](this, layer));
+        break;
+      case LayerPass_['Below']:
+        if (viewSupportsBelow)
+          views.push(new this['viewType'](this, layer));
+        break;
+      case LayerPass_['Seam']:
+        // If the model has content in the above layer, it MUST be added
+        // to the seam layer to work with the stencil tests against other
+        // models in the seam layer.
+        if (viewSupportsAbove)
+          views.push(new this['viewType'](this, layer));
+        break;
+      case LayerPass_['BelowStencil']:
+        if (viewSupportsBelow) {
+          if (nonuniqueStencilView)
+            views.push(new this['viewType'](this, layer));
+          else
+            stencilViews.push(new this['stencilViewType'](this, layer));
+        }
+        break;
+      case LayerPass_['SeamStencil']:
+        if (viewSupportsBelow) {
+          if (nonuniqueStencilView)
+            views.push(new this['viewType'](this, layer));
+          else
+            stencilViews.push(new this['stencilViewType'](this, layer));
+        }
+        break;
+    }
+  }
+
+  var numViews = views.length;
+  var numStencilViews = stencilViews.length;
+
+  // Create composite view and stencil views if there are more than one.
+  var view = vars.view_ = numViews > 1 ? new Composite_(views) : views[0];
+  var stencilView = vars.stencilView_ = numStencilViews > 1 ?
+      new Composite_(stencilViews) : stencilViews[0];
+
+  vars.numViewsToLoad_ = numViews + numStencilViews;
+
+  Object.defineProperty(this, 'view', {
+    get: function() { return view; },
+    enumerable: true
+  });
+
+  Object.defineProperty(this, 'stencilView', {
+    get: function() { return stencilView; },
+    enumerable: true
+  });
+
   this['setUpViews']();
 
   // Add this model to the engine to be updated
-  window['voodoo']['engine'].addModel_(this);
+  engine.addModel_(this);
 };
 
 
@@ -106,27 +193,32 @@ Model.prototype['construct'] = function(options) {
  * @this {Model}
  */
 Model.prototype['destroy'] = function() {
-  log_.modelInformation_(this, 'Destroying');
+  log_.model_(this, 'Destroying');
 
-  this.dispatchEvent_(new window['voodoo']['Event']('destroy', this));
+  var vars = this['privateModelProperties'];
+
+  var voodoo = window['voodoo'];
+  var evt = new voodoo['Event']('destroy', this);
+  vars.dispatcher_.dispatchEvent_(this, evt);
 
   this['tearDownViews']();
 
   // Remove this model from the engine to stop being updated
-  window['voodoo']['engine'].removeModel_(this);
+  voodoo['engine'].removeModel_(this);
 
-  if (this.view_ && this.view_['destroy'])
-    this.view_['destroy']();
-  if (this.stencilView_ && this.stencilView_['destroy'])
-    this.stencilView_['destroy']();
+  var view = vars.view_;
+  var stencilView = vars.stencilView_;
+
+  if (view && view['destroy']) view['destroy']();
+  if (stencilView && stencilView['destroy']) stencilView['destroy']();
 
   this['cleanUp']();
 
-  this.dispatcher_.destroy_();
+  vars.dispatcher_.destroy_();
 
-  this.dispatcher_ = null;
-  this.view_ = null;
-  this.stencilView_ = null;
+  vars.dispatcher_ = null;
+  vars.view_ = null;
+  vars.stencilView_ = null;
 };
 
 
@@ -135,13 +227,13 @@ Model.prototype['destroy'] = function() {
  *
  * @this {Model}
  *
- * @param {Event} event Event to fire.
+ * @param {Event} evt Event to fire.
  *
  * @return {Model} This.
  */
-Model.prototype['dispatch'] = function(event) {
-  event['model'] = this;
-  this.dispatchEvent_(event);
+Model.prototype['dispatch'] = function(evt) {
+  var vars = this['privateModelProperties'];
+  vars.dispatcher_.dispatchEvent_(this, evt);
   return this;
 };
 
@@ -174,7 +266,8 @@ Model.prototype['initialize'] = function(options) {
  * @return {Model} This.
  */
 Model.prototype['off'] = function(type, listener) {
-  this.dispatcher_.off_(type, listener);
+  var vars = this['privateModelProperties'];
+  vars.dispatcher_.off_(type, listener);
 
   return this;
 };
@@ -192,12 +285,13 @@ Model.prototype['off'] = function(type, listener) {
  * @return {Model} This.
  */
 Model.prototype['on'] = function(type, listener) {
-  this.dispatcher_.on_(type, listener);
+  var vars = this['privateModelProperties'];
+  vars.dispatcher_.on_(type, listener);
 
   // Load is a special event since it can be dispatched before the user had time
   // to register for the event, so we call it anyway as soon as an event
   // listener is registered.
-  if (type == 'load' && this.numViewsLoaded_ === this.numViewsToLoad_)
+  if (type === 'load' && vars.numViewsLoaded_ === vars.numViewsToLoad_)
     listener.call(this, new window['voodoo']['Event']('load', this));
 
   return this;
@@ -282,157 +376,22 @@ Model.prototype['view'] = null;
 
 
 /**
- * Fires an event.
- *
- * @this {Model}
- * @private
- *
- * @param {Event} event Event description.
- */
-Model.prototype.dispatchEvent_ = function(event) {
-  this.dispatcher_.dispatchEvent_(this, event);
-};
-
-
-/**
- * Creates each view.
- *
- * @this {Model}
- * @private
- */
-Model.prototype.createViews_ = function() {
-  this.views_ = [];
-  this.stencilViews_ = [];
-  this.numViewsLoaded_ = 0;
-  this.numViewsToLoad_ = 0;
-
-  /** @type {Engine} */
-  var engine = window['voodoo']['engine'];
-  var layers = engine.renderer_.layers_;
-
-  var self = this;
-  Object.defineProperty(this, 'loaded', {
-    get: function() { return self.numViewsLoaded_ === self.numViewsToLoad_; },
-    enumerable: true
-  });
-
-  // Create the views, one for each layer and one additional for the
-  // stencil layer.
-  var nonuniqueStencilView = this['stencilViewType'] == this['viewType'];
-  for (var layerIndex = 0; layerIndex < layers.length; ++layerIndex) {
-    var layer = layers[layerIndex];
-
-    switch (layer.pass_) {
-      case LayerPass_['Above']:
-        if (this['viewType'].prototype['above'])
-          this.views_.push(new this['viewType'](this, layer));
-        break;
-      case LayerPass_['Below']:
-        if (this['viewType'].prototype['below'])
-          this.views_.push(new this['viewType'](this, layer));
-        break;
-      case LayerPass_['Seam']:
-        // If the model has content in the above layer, it MUST be added
-        // to the seam layer to work with the stencil tests against other
-        // models in the seam layer.
-        if (this['viewType'].prototype['above'])
-          this.views_.push(new this['viewType'](this, layer));
-        break;
-      case LayerPass_['BelowStencil']:
-        if (this['viewType'].prototype['below']) {
-          if (nonuniqueStencilView)
-            this.views_.push(new this['viewType'](this, layer));
-          else
-            this.stencilViews_.push(new this['stencilViewType'](this, layer));
-        }
-        break;
-      case LayerPass_['SeamStencil']:
-        if (this['viewType'].prototype['below']) {
-          if (nonuniqueStencilView)
-            this.views_.push(new this['viewType'](this, layer));
-          else
-            this.stencilViews_.push(new this['stencilViewType'](this, layer));
-        }
-        break;
-    }
-  }
-
-  // Create composite view and stencil views if there are more than one.
-  this.view_ = this.views_.length > 1 ?
-      new Composite_(this.views_) :
-      this.views_[0];
-  this.stencilView_ = this.stencilViews_.length > 1 ?
-      new Composite_(this.stencilViews_) :
-      this.stencilViews_[0];
-
-  this.numViewsToLoad_ = this.views_.length + this.stencilViews_.length;
-};
-
-
-/**
  * Called from the view when it has loaded.
  *
- * @private
+ * @ignore
+ *
+ * @this {Model}
  *
  * @param {View} view View that loaded.
  */
-Model.prototype.onViewLoad_ = function(view) {
-  this.numViewsLoaded_++;
-  if (this.numViewsLoaded_ === this.numViewsToLoad_)
-    this.dispatchEvent_(new window['voodoo']['Event']('load', this));
-};
+Model.prototype['onViewLoad'] = function(view) {
+  var vars = this['privateModelProperties'];
 
-
-/**
- * Sets the identifier used for thei model in logging.
- *
- * @private
- */
-Model.prototype.setId_ = function() {
-  this.id_ = '<' + (++nextModelId_) + ',';
-
-  // Only write the organization if it's not the default.
-  if (this['organization'] !== defaultOrganization_)
-    this.id_ += this['organization'] + '.';
-
-  this.id_ += this['name'] + '>';
-};
-
-
-/**
- * Sets up the cache and the public property for it.
- *
- * @private
- */
-Model.prototype.setupCache_ = function() {
-  this.cache_ = window['voodoo']['engine'].modelCacheFactory_.createCache_(
-      this);
-
-  var self = this;
-  Object.defineProperty(this, 'cache', {
-    get: function() { return self.cache_; },
-    enumerable: true
-  });
-};
-
-
-/**
- * Creates the public properties for the views of the Model.
- *
- * @private
- */
-Model.prototype.setupViewProperties_ = function() {
-  var self = this;
-
-  Object.defineProperty(this, 'view', {
-    get: function() { return self.view_; },
-    enumerable: true
-  });
-
-  Object.defineProperty(this, 'stencilView', {
-    get: function() { return self.stencilView_; },
-    enumerable: true
-  });
+  vars.numViewsLoaded_++;
+  if (vars.numViewsLoaded_ === vars.numViewsToLoad_) {
+    var evt = new window['voodoo']['Event']('load', this);
+    vars.dispatcher_.dispatchEvent_(this, evt);
+  }
 };
 
 
@@ -470,7 +429,7 @@ Model.prototype['viewType'] = null;
 /**
  * The stencil view type for this model.
  *
- * If this is left undefined, voodoo uses the view.
+ * If this is not set, voodoo uses the view.
  *
  * @type {View}
  */
@@ -489,30 +448,25 @@ Model.prototype['stencilViewType'] = null;
  */
 Model['extend'] = function(opt_object) {
   var newType = Extendable['extend'].call(this, opt_object);
+  var newTypePrototype = newType.prototype;
+  var thisPrototype = this.prototype;
 
-  var viewType = this.prototype['viewType'];
-  var newViewType = newType.prototype['viewType'];
-  if (typeof viewType !== 'undefined' && viewType !== null &&
-      typeof newViewType !== 'undefined' && newViewType !== null &&
-      viewType != newViewType) {
-    newType.prototype['viewType'] = viewType['extend'](newViewType);
-  }
+  var viewType = thisPrototype['viewType'];
+  var newViewType = newTypePrototype['viewType'];
+  if (viewType && newViewType && viewType !== newViewType)
+    newTypePrototype['viewType'] = viewType['extend'](newViewType);
 
-  var stencil = this.prototype['stencilViewType'];
-  var newStencil = newType.prototype['stencilViewType'];
-  if (typeof stencil !== 'undefined' && stencil != null &&
-      typeof newStencil !== 'undefined' && newStencil != null &&
-      stencil != newStencil) {
-    newType.prototype['stencilViewType'] = stencil['extend'](newStencil);
-  }
+  var stencil = thisPrototype['stencilViewType'];
+  var newStencil = newTypePrototype['stencilViewType'];
+  if (stencil && newStencil && stencil !== newStencil)
+    newTypePrototype['stencilViewType'] = stencil['extend'](newStencil);
 
-  var name = this.prototype['name'];
-  var newName = newType.prototype['name'];
-  if (typeof name !== 'undefined' && name !== null &&
-      typeof newName !== 'undefined' && newName !== null &&
-      newName !== name) {
-    newType.prototype['name'] = name + '.' + newName;
-  }
+  var name = thisPrototype['name'];
+  var newName = newTypePrototype['name'];
+  if (name && newName && newName !== name)
+    newTypePrototype['name'] = name + '.' + newName;
+
+  newType['extend'] = Model['extend'];
 
   return newType;
 };

@@ -26,7 +26,7 @@ UtilityTests.prototype.setUp = function() {
  * Shuts down the engine between test cases.
  */
 UtilityTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
+  if (voodoo.engine)
     voodoo.engine.destroy();
 };
 
@@ -35,30 +35,28 @@ UtilityTests.prototype.tearDown = function() {
  * Tests that the conversions between CSS colors and Three.Js colors work.
  */
 UtilityTests.prototype.testColorConversions = function() {
+  var utility = voodoo.utility;
+
   // Test hex colors
-  var teal = voodoo.utility.convertCssColorToThreeJsColor(
-      '#00FFFF');
+  var teal = utility.convertCssColorToThreeJsColor('#00FFFF');
   assertEquals(0.0, teal.r);
   assertEquals(1.0, teal.g);
   assertEquals(1.0, teal.b);
 
   // Test RGB colors
-  var magenta = voodoo.utility.convertCssColorToThreeJsColor(
-      'rgb(255, 0, 255)');
+  var magenta = utility.convertCssColorToThreeJsColor('rgb(255, 0, 255)');
   assertEquals(1.0, magenta.r);
   assertEquals(0.0, magenta.g);
   assertEquals(1.0, magenta.b);
 
   // Test RGBA colors
-  var yellow = voodoo.utility.convertCssColorToThreeJsColor(
-      'rgba(255, 255, 0, 0.5)');
+  var yellow = utility.convertCssColorToThreeJsColor('rgba(255, 255, 0, 0.5)');
   assertEquals(1.0, yellow.r);
   assertEquals(1.0, yellow.g);
   assertEquals(0.0, yellow.b);
 
   // Test HSL colors
-  var green = voodoo.utility.convertCssColorToThreeJsColor(
-      'hsl(120, 50%, 50%)');
+  var green = utility.convertCssColorToThreeJsColor('hsl(120, 50%, 50%)');
   var error = 0.005;
   assert(green.r < 64.0 / 255.0 + error);
   assert(green.r > 64.0 / 255.0 - error);
@@ -68,8 +66,7 @@ UtilityTests.prototype.testColorConversions = function() {
   assert(green.b > 64.0 / 255.0 - error);
 
   // Test HSLA colors
-  var blue = voodoo.utility.convertCssColorToThreeJsColor(
-      'hsla(240, 80%, 80%, 0.5)');
+  var blue = utility.convertCssColorToThreeJsColor('hsla(240, 80%, 80%, 0.5)');
   assert(blue.r < 163.0 / 255.0 + error);
   assert(blue.r > 163.0 / 255.0 - error);
   assert(blue.g < 163.0 / 255.0 + error);
@@ -78,8 +75,7 @@ UtilityTests.prototype.testColorConversions = function() {
   assert(blue.b > 245.0 / 255.0 - error);
 
   // Test direct color conversions
-  var red = voodoo.utility.convertCssColorToThreeJsColor(
-      'red');
+  var red = utility.convertCssColorToThreeJsColor('red');
   assertEquals(1.0, red.r);
   assertEquals(0.0, red.g);
   assertEquals(0.0, red.b);

@@ -26,7 +26,7 @@ EngineTests.prototype.setUp = function() {
  * Shuts down the engine between test cases.
  */
 EngineTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
+  if (voodoo.engine)
     voodoo.engine.destroy();
 };
 
@@ -82,7 +82,7 @@ EngineTests.prototype.testDestroyEngine = function() {
   voodoo.engine = new voodoo.Engine(new voodoo.Options());
   voodoo.engine.destroy();
 
-  assert(typeof voodoo.engine === 'undefined');
+  assert(!voodoo.engine);
 };
 
 

@@ -23,7 +23,7 @@
  */
 function Layer_(pass, renderer, camera, sceneFactory, triggersFactory,
     cacheFactory) {
-  log_.assert_(renderer == Renderer['ThreeJs'], 'Only ThreeJs is supported');
+  log_.assert_(renderer === Renderer['ThreeJs'], 'Only ThreeJs is supported');
 
   this.pass_ = pass;
   this.renderer_ = renderer;
@@ -56,7 +56,7 @@ Layer_.prototype.addView_ = function(view) {
  */
 Layer_.prototype.removeView_ = function(view) {
   var index = this.views_.indexOf(view);
-  if (index != -1)
+  if (index !== -1)
     this.views_.splice(index, 1);
 };
 

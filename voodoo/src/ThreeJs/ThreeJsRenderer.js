@@ -59,23 +59,25 @@ ThreeJsRenderer_.prototype.constructor = ThreeJsRenderer_.constructor;
  * @param {boolean} capture Whether to capture mouse events or not.
  */
 ThreeJsRenderer_.prototype.capturePointerEvents_ = function(capture) {
+  var engineOptions = this.engine_.options_;
+
   if (capture) {
-    if (this.engine_.options_['aboveLayer'])
+    if (engineOptions['aboveLayer'])
       this.aboveCanvas_.style['pointerEvents'] = 'auto';
 
-    if (this.engine_.options_['belowLayer'])
+    if (engineOptions['belowLayer'])
       this.belowCanvas_.style['pointerEvents'] = 'auto';
 
-    if (this.engine_.options_['seamLayer'])
+    if (engineOptions['seamLayer'])
       this.seamCanvas_.style['pointerEvents'] = 'auto';
   } else {
-    if (this.engine_.options_['aboveLayer'])
+    if (engineOptions['aboveLayer'])
       this.aboveCanvas_.style['pointerEvents'] = 'none';
 
-    if (this.engine_.options_['belowLayer'])
+    if (engineOptions['belowLayer'])
       this.belowCanvas_.style['pointerEvents'] = 'none';
 
-    if (this.engine_.options_['seamLayer'])
+    if (engineOptions['seamLayer'])
       this.seamCanvas_.style['pointerEvents'] = 'none';
   }
 };
@@ -89,11 +91,13 @@ ThreeJsRenderer_.prototype.capturePointerEvents_ = function(capture) {
  * @param {Layer_} layer Layer to clear.
  */
 ThreeJsRenderer_.prototype.clearDirtyFlags_ = function(layer) {
-  if (!layer || typeof layer === 'undefined')
+  if (!layer)
     return;
 
-  for (var viewIndex in layer.views_)
-    layer.views_[viewIndex]['scene'].isDirty_ = false;
+  var views = layer.views_;
+  for (var viewIndex = 0, numViews = views.length; viewIndex < numViews;
+      ++viewIndex)
+    views[viewIndex]['scene'].isDirty_ = false;
 };
 
 
@@ -105,50 +109,53 @@ ThreeJsRenderer_.prototype.clearDirtyFlags_ = function(layer) {
  * @private
  */
 ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
-  log_.information_('Creating WebGL renderers');
+  log_.info_('Creating WebGL renderers');
 
   // This reduced by 1/2 when the FPS drops below 45 for a few frames.
   this.canvasScale_ = 1.0;
 
+  var engineOptions = this.engine_.options_;
+  var enableAboveLayer = engineOptions['aboveLayer'];
+  var enableBelowLayer = engineOptions['belowLayer'];
+
   var webGlOptions = {
-    antialias: this.engine_.options_['antialias'],
+    antialias: engineOptions['antialias'],
     alpha: true
   };
 
   // Create the canvas for the above layer.
-  if (this.engine_.options_['aboveLayer']) {
+  if (enableAboveLayer) {
     this.aboveRenderer_ = new THREE.WebGLRenderer(webGlOptions);
     this.aboveCanvas_ = this.aboveRenderer_.domElement;
     this.setupFullscreenCanvasRenderer_(this.aboveRenderer_);
-    this.aboveCanvas_.style.zIndex = this.engine_.options_['aboveZIndex'];
+    this.aboveCanvas_.style.zIndex = engineOptions['aboveZIndex'];
   }
 
   // Create the canvas for the below layer.
-  if (this.engine_.options_['belowLayer']) {
+  if (enableBelowLayer) {
     this.belowRenderer_ = new THREE.WebGLRenderer(webGlOptions);
     this.belowCanvas_ = this.belowRenderer_.domElement;
     this.setupFullscreenCanvasRenderer_(this.belowRenderer_);
-    this.belowCanvas_.style.zIndex = this.engine_.options_['belowZIndex'];
+    this.belowCanvas_.style.zIndex = engineOptions['belowZIndex'];
   }
 
   // Check whether antialiasing is actually being used. The seam layer is only
   // supported when antialiasing is on.
-  var antialiasSupported = (this.engine_.options_['aboveLayer'] &&
+  var antialiasSupported = (enableAboveLayer &&
       this.aboveRenderer_.context.getContextAttributes().antialias) ||
-      (this.engine_.options_['belowLayer'] &&
+      (enableBelowLayer &&
       this.belowRenderer_.context.getContextAttributes().antialias);
   if (!antialiasSupported) {
-    this.engine_.options_['antialias'] = false;
-    this.engine_.options_['seamLayer'] = false;
+    engineOptions['antialias'] = false;
+    engineOptions['seamLayer'] = false;
   }
 
   // Require both above and below layers to have a seam layer.
-  if (!this.engine_.options_['aboveLayer'] ||
-      !this.engine_.options_['belowLayer'])
-    this.engine_.options_['seamLayer'] = false;
+  if (!enableAboveLayer || !enableBelowLayer)
+    engineOptions['seamLayer'] = false;
 
   // Create the canvas for the seam layer.
-  if (this.engine_.options_['seamLayer']) {
+  if (engineOptions['seamLayer']) {
     // The seam layer always has antialiasing off to blend the layers.
     var seamWebGlOptions = {
       antialias: false,
@@ -158,7 +165,7 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
     this.seamRenderer_ = new THREE.WebGLRenderer(seamWebGlOptions);
     this.seamCanvas_ = this.seamRenderer_.domElement;
     this.setupFullscreenCanvasRenderer_(this.seamRenderer_);
-    this.seamCanvas_.style.zIndex = this.engine_.options_['seamZIndex'];
+    this.seamCanvas_.style.zIndex = engineOptions['seamZIndex'];
   }
 
   this.onResize_(null);
@@ -174,16 +181,18 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
  * @private
  */
 ThreeJsRenderer_.prototype.createLayers_ = function() {
-  log_.information_('Creating layers');
+  log_.info_('Creating layers');
 
-  var renderer = this.engine_.options_['renderer'];
+  var engineOptions = this.engine_.options_;
+  var renderer = engineOptions['renderer'];
+  var fovY = engineOptions['fovY'];
+  var zNear = engineOptions.zNear_;
+  var zFar = engineOptions.zFar_;
 
   // Create the above layer
-  if (this.engine_.options_['aboveLayer']) {
+  if (engineOptions['aboveLayer']) {
     this.aboveCamera_ = new ThreeJsCamera_(this.aboveCanvas_,
-        this.engine_.options_['fovY'],
-        this.engine_.options_.zNear_,
-        this.engine_.options_.zFar_);
+        fovY, zNear, zFar);
 
     this.aboveSceneFactory_ = new ThreeJsSceneFactory_();
 
@@ -198,11 +207,9 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
   }
 
   // Create the below and stencil layer
-  if (this.engine_.options_['belowLayer']) {
+  if (engineOptions['belowLayer']) {
     this.belowCamera_ = new ThreeJsCamera_(this.belowCanvas_,
-        this.engine_.options_['fovY'],
-        this.engine_.options_.zNear_,
-        this.engine_.options_.zFar_);
+        fovY, zNear, zFar);
 
     this.belowSceneFactory_ = new ThreeJsSceneFactory_();
     this.belowTriggersFactory_ = new ThreeJsTriggersFactory_();
@@ -212,11 +219,9 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
         this.belowCacheFactory_);
     this.layers_.push(this.belowLayer_);
 
-    if (this.engine_.options_['stencils']) {
+    if (engineOptions['stencils']) {
       this.stencilCamera_ = new ThreeJsCamera_(this.belowCanvas_,
-          this.engine_.options_['fovY'],
-          this.engine_.options_.zNear_,
-          this.engine_.options_.zFar_);
+          fovY, zNear, zFar);
 
       this.belowStencilSceneFactory_ = new ThreeJsSceneFactory_();
       this.belowStencilTriggersFactory_ = new ThreeJsTriggersFactory_();
@@ -229,11 +234,9 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
   }
 
   // Create the seam layer and seam stencil layer
-  if (this.engine_.options_['seamLayer']) {
+  if (engineOptions['seamLayer']) {
     this.seamCamera_ = new ThreeJsCamera_(this.seamCanvas_,
-        this.engine_.options_['fovY'],
-        this.engine_.options_.zNear_,
-        this.engine_.options_.zFar_);
+        fovY, zNear, zFar);
 
     this.seamSceneFactory_ = new ThreeJsSceneFactory_();
 
@@ -248,12 +251,10 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
 
     this.layers_.push(this.seamLayer_);
 
-    if (this.engine_.options_['stencils']) {
-      if (typeof this.stencilCamera_ === 'undefined')
+    if (engineOptions['stencils']) {
+      if (!this.stencilCamera_)
         this.stencilCamera_ = new ThreeJsCamera_(this.seamCanvas_,
-            this.engine_.options_['fovY'],
-            this.engine_.options_.zNear_,
-            this.engine_.options_.zFar_);
+            fovY, zNear, zFar);
 
       this.seamStencilSceneFactory_ = new ThreeJsSceneFactory_();
       this.seamStencilTriggersFactory_ = new ThreeJsTriggersFactory_();
@@ -267,9 +268,9 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
 
   this.pendingUpdateLayerZBoundaries_ = false;
   this.updateLayerZBoundaries_();
-  var self = this;
+  var that = this;
   window.addEventListener('resize', function() {
-    self.pendingUpdateLayerZBoundaries_ = true;
+    that.pendingUpdateLayerZBoundaries_ = true;
   }, false);
 };
 
@@ -280,14 +281,19 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
  * @private
  */
 ThreeJsRenderer_.prototype.destroy_ = function() {
-  if (this.engine_.options_['aboveLayer'])
-    document.body.removeChild(this.aboveCanvas_);
-  if (this.engine_.options_['belowLayer'])
-    document.body.removeChild(this.belowCanvas_);
-  if (this.engine_.options_['seamLayer'])
-    document.body.removeChild(this.seamCanvas_);
+  var engineOptions = this.engine_.options_;
+  var documentBody = document.body;
 
-  if (DEBUG || this.engine_.options_['performanceScaling'])
+  if (engineOptions['aboveLayer'])
+    documentBody.removeChild(this.aboveCanvas_);
+
+  if (engineOptions['belowLayer'])
+    documentBody.removeChild(this.belowCanvas_);
+
+  if (engineOptions['seamLayer'])
+    documentBody.removeChild(this.seamCanvas_);
+
+  if (DEBUG || engineOptions['performanceScaling'])
     this.fpsTimer_.destroy_();
 };
 
@@ -301,30 +307,35 @@ ThreeJsRenderer_.prototype.destroy_ = function() {
  * @return {boolean} True if a layer needs to be rendered. False if not.
  */
 ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer) {
-  if (this.isDirty_) {
+  if (this.isDirty_)
     return true;
-  } else {
-    if (!layer || typeof layer === 'undefined')
-      return false;
 
-    var frustum = layer.camera_.frustum_;
-    for (var viewIndex in layer.views_) {
-      var view = layer.views_[viewIndex];
-      var scene = view['scene'];
-      if (view.isLoaded_ && scene.isDirty_) {
-        if (scene.meshes_.length !== scene.objects_.length) {
-          // If a scene has any non-mesh objects, then we have to redraw.
-          return true;
-        } else {
-          var meshes = scene.meshes_;
-          for (var meshIndex in meshes) {
-            var mesh = meshes[meshIndex];
-            if (mesh['geometry'] && typeof mesh['geometry'] !== 'undefined') {
-              mesh.updateMatrixWorld(true);
-              if (frustum.intersectsObject(mesh))
-                return true;
-            }
-          }
+  if (!layer)
+    return false;
+
+  var frustum = layer.camera_.frustum_;
+  var views = layer.views_;
+
+  for (var viewIndex = 0, numViews = views.length; viewIndex < numViews;
+      ++viewIndex) {
+    var view = views[viewIndex];
+    var scene = view['scene'];
+
+    if (view['loaded'] && scene.isDirty_) {
+      var meshes = scene.meshes_;
+
+      // If a scene has any non-mesh objects, then we have to redraw.
+      if (meshes.length !== scene.objects_.length)
+        return true;
+
+      for (var meshIndex = 0, numMeshes = meshes.length; meshIndex < numMeshes;
+          ++meshIndex) {
+        var mesh = meshes[meshIndex];
+
+        if (mesh['geometry']) {
+          mesh.updateMatrixWorld(true);
+          if (frustum.intersectsObject(mesh))
+            return true;
         }
       }
     }
@@ -343,53 +354,62 @@ ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer) {
  */
 ThreeJsRenderer_.prototype.onResize_ = function(event) {
   this.updateViewportSize_();
-  var canvasWidth = this.viewportSize_.width;
-  var canvasHeight = this.viewportSize_.height;
+
+  var viewportSize = this.viewportSize_;
+  var canvasWidth = viewportSize.width;
+  var canvasHeight = viewportSize.height;
+
   var styleCanvasWidth = canvasWidth + 'px';
   var styleCanvasHeight = canvasHeight + 'px';
+
   var devicePixelRatio = window.devicePixelRatio || 1.0;
   var renderingCanvasWidth = canvasWidth * devicePixelRatio *
       this.canvasScale_;
   var renderingCanvasHeight = canvasHeight * devicePixelRatio *
       this.canvasScale_;
 
-  if (this.engine_.options_['aboveLayer']) {
-    this.aboveRenderer_.setViewport(0, 0, renderingCanvasWidth,
-        renderingCanvasHeight);
-    this.aboveCanvas_.style.width = styleCanvasWidth;
-    this.aboveCanvas_.style.height = styleCanvasHeight;
-    this.aboveCanvas_.width = renderingCanvasWidth;
-    this.aboveCanvas_.height = renderingCanvasHeight;
+
+  function setRenderSize(renderer, canvas) {
+    renderer.setViewport(0, 0, renderingCanvasWidth, renderingCanvasHeight);
+
+    var canvasStyle = canvas.style;
+    canvasStyle.width = styleCanvasWidth;
+    canvasStyle.height = styleCanvasHeight;
+
+    canvas.width = renderingCanvasWidth;
+    canvas.height = renderingCanvasHeight;
   }
 
-  if (this.engine_.options_['belowLayer']) {
-    this.belowRenderer_.setViewport(0, 0, renderingCanvasWidth,
-        renderingCanvasHeight);
-    this.belowCanvas_.style.width = styleCanvasWidth;
-    this.belowCanvas_.style.height = styleCanvasHeight;
-    this.belowCanvas_.width = renderingCanvasWidth;
-    this.belowCanvas_.height = renderingCanvasHeight;
-  }
 
-  if (this.engine_.options_['seamLayer']) {
-    this.seamRenderer_.setViewport(0, 0, renderingCanvasWidth,
-        renderingCanvasHeight);
-    this.seamCanvas_.style.width = styleCanvasWidth;
-    this.seamCanvas_.style.height = styleCanvasHeight;
-    this.seamCanvas_.width = renderingCanvasWidth;
-    this.seamCanvas_.height = renderingCanvasHeight;
-  }
+  var engineOptions = this.engine_.options_;
+
+  if (engineOptions['aboveLayer'])
+    setRenderSize(this.aboveRenderer_, this.aboveCanvas_);
+
+  if (engineOptions['belowLayer'])
+    setRenderSize(this.belowRenderer_, this.belowCanvas_);
+
+  if (engineOptions['seamLayer'])
+    setRenderSize(this.seamRenderer_, this.seamCanvas_);
+
+
 
   // This code forces webkit to redraw. It's needed because of a bug where
   // Chrome does not repaint some elements under the fullscreen canvas on
   // browser resize
-  document.body.style.display = 'none';
-  var unused = document.body.offsetHeight;
-  document.body.style.display = 'block';
+
+  var documentBody = document.body;
+  var documentBodyStyle = documentBody.style;
+
+  documentBodyStyle.display = 'none';
+  var unused = documentBody.offsetHeight;
+  documentBodyStyle.display = 'block';
+
+
 
   this.isDirty_ = true;
 
-  if (this.engine_.options_['realtime'] && event)
+  if (engineOptions['realtime'] && event)
     this.render_();
 };
 
@@ -420,16 +440,16 @@ ThreeJsRenderer_.prototype.onScroll_ = function(event) {
  * @private
  */
 ThreeJsRenderer_.prototype.registerWindowEvents_ = function() {
-  log_.information_('Registering for window events');
+  log_.info_('Registering for window events');
 
   // Register the canvasRenderer's onScroll and onResize events with the
   // window so we can adjust our canvas size
-  var self = this;
+  var that = this;
   window.addEventListener('scroll', function(event) {
-    self.onScroll_.call(self, event);
+    that.onScroll_.call(that, event);
   }, false);
   window.addEventListener('resize', function(event) {
-    self.onResize_.call(self, event);
+    that.onResize_.call(that, event);
   }, false);
 };
 
@@ -442,40 +462,56 @@ ThreeJsRenderer_.prototype.registerWindowEvents_ = function() {
 ThreeJsRenderer_.prototype.render_ = function() {
   var rendered = false;
 
+  var engineOptions = this.engine_.options_;
+  var enableAboveLayer = engineOptions['aboveLayer'];
+  var enableBelowLayer = engineOptions['belowLayer'];
+  var enableSeamLayer = engineOptions['seamLayer'];
+  var enableStencils = engineOptions['stencils'];
+  var enablePerformanceScaling = engineOptions['performanceScaling'];
+
+  var voodooDebug = window['voodoo']['debug'];
+  var debugDrawStencils = voodooDebug['drawStencils'];
+  var debugDisableStencils = voodooDebug['disableStencils'];
+
   this.updateCameras_();
 
   // Detect performance drops and drop the canvas resolution if it's bad.
-  if (DEBUG || this.engine_.options_['performanceScaling']) {
+  if (DEBUG || enablePerformanceScaling) {
     this.fpsTimer_.frame_();
 
-    if (this.engine_.options_['performanceScaling'] &&
-        !this.performanceScaling_) {
-      if (this.fpsTimer_.fps_ >
-          this.engine_.options_.performanceScalingFpsThreshold_ ||
-          this.engine_.lastTicks_ == 0) {
+    if (enablePerformanceScaling && !this.performanceScaling_) {
+
+      var fps = this.fpsTimer_.fps_;
+      if (fps > engineOptions.performanceScalingFpsThreshold_ ||
+          this.engine_.lastTicks_ === 0) {
+
         this.lastValidFpsTime_ = new Date();
+
       } else {
+
         var now = new Date();
         var seconds = (now - this.lastValidFpsTime_) / 1000;
-        if (seconds > this.engine_.options_.performanceScalingTimeLimit_) {
-          log_.information_('Enabling performance scaling');
+        if (seconds > engineOptions.performanceScalingTimeLimit_) {
+          log_.info_('Enabling performance scaling');
 
           this.canvasScale_ = 0.5;
           this.performanceScaling_ = true;
           this.onResize_(null);
         }
+
       }
     }
   }
 
-  if (DEBUG && window['voodoo']['debug']['drawStencils']) {
+  if (DEBUG && debugDrawStencils) {
+
     // Render just the stencils
 
-    if (this.engine_.options_['stencils']) {
-      if (this.engine_.options_['belowLayer'] &&
-          this.isRenderNeeded_(this.belowStencilLayer_)) {
-        this.belowRenderer_.context.disable(
-            this.belowRenderer_.context.STENCIL_TEST);
+    if (enableStencils) {
+      if (enableBelowLayer && this.isRenderNeeded_(this.belowStencilLayer_)) {
+        var belowRendererContext = this.belowRenderer_.context;
+
+        belowRendererContext.disable(belowRendererContext.STENCIL_TEST);
         this.belowRenderer_.autoClear = true;
         this.belowRenderer_.render(this.belowStencilSceneFactory_.scene_,
             this.belowCamera_.camera_);
@@ -488,18 +524,22 @@ ThreeJsRenderer_.prototype.render_ = function() {
     this.aboveRenderer_.clear();
     this.seamRenderer_.clear();
   } else {
+
     // Render normally
 
-    if (this.engine_.options_['belowLayer'] &&
-        (this.isRenderNeeded_(this.belowLayer_) ||
+    if (enableBelowLayer && (this.isRenderNeeded_(this.belowLayer_) ||
         this.isRenderNeeded_(this.belowStencilLayer_))) {
-      if (!this.engine_.options_['stencils'] ||
-          (DEBUG && window['voodoo']['debug']['disableStencils'])) {
-        this.belowRenderer_.context.disable(
-            this.belowRenderer_.context.STENCIL_TEST);
+
+      if (!enableStencils || (DEBUG && debugDisableStencils)) {
+        var belowRendererContext = this.belowRenderer_.context;
+
+        belowRendererContext.disable(belowRendererContext.STENCIL_TEST);
         this.belowRenderer_.autoClear = true;
+
       } else {
+
         // Enable stencils and render them onto the below layer
+
         var context = this.belowRenderer_.context;
 
         context.enable(context.STENCIL_TEST);
@@ -521,8 +561,8 @@ ThreeJsRenderer_.prototype.render_ = function() {
       rendered = true;
     }
 
-    if (this.engine_.options_['aboveLayer'] &&
-        this.isRenderNeeded_(this.aboveLayer_)) {
+    if (enableAboveLayer && this.isRenderNeeded_(this.aboveLayer_)) {
+
       this.aboveRenderer_.render(this.aboveSceneFactory_.scene_,
           this.aboveCamera_.camera_);
 
@@ -533,11 +573,14 @@ ThreeJsRenderer_.prototype.render_ = function() {
     // on top of the above layer to eliminate the seam from antialiasing
     // between layers. The stencil buffer is used so we don't draw on top
     // of content mistakenly.
-    if (this.engine_.options_['seamLayer'] &&
-        (this.isRenderNeeded_(this.seamLayer_) ||
+
+    if (enableSeamLayer && (this.isRenderNeeded_(this.seamLayer_) ||
         this.isRenderNeeded_(this.seamStencilLayer_))) {
-      var seam = this.engine_.options_.seamPixels_;
+
+      var seam = engineOptions.seamPixels_;
       var zCamera = this.seamCamera_['position']['z'];
+      var zNear = zCamera + seam;
+      var zFar = zCamera - seam;
 
       var context = this.seamRenderer_.context;
       context.enable(context.STENCIL_TEST);
@@ -549,8 +592,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
       // and where they should be. When the stencil buffer is 1, the don't draw
       // anything and where it is 0, we may be drawing a seam.
 
-      if (!this.engine_.options_['stencils'] ||
-          (DEBUG && window['voodoo']['debug']['disableStencils'])) {
+      if (!enableStencils || (DEBUG && debugDisableStencils)) {
         // No stencils
 
         context.clearStencil(0);
@@ -567,27 +609,27 @@ ThreeJsRenderer_.prototype.render_ = function() {
         this.seamRenderer_.render(this.seamStencilSceneFactory_.scene_,
             this.stencilCamera_.camera_);
 
-        this.seamCamera_.setZNearAndFar_(zCamera - seam, zCamera);
+        this.seamCamera_.setZNearAndFar_(zNear, zCamera);
         this.seamRenderer_.render(this.seamSceneFactory_.scene_,
             this.seamCamera_.camera_);
       }
+
+      var seamSceneFactoryScene = this.seamSceneFactory_.scene_;
+      var seamCameraCamera = this.seamCamera_.camera_;
 
       // No seams may overlap content above the seam space.
       context.stencilOp(context.REPLACE, context.REPLACE, context.REPLACE);
       context.stencilFunc(context.NEVER, 1, 0xffffffff);
 
-      this.seamCamera_.setZNearAndFar_(this.engine_.options_.zNear_,
-          zCamera - seam);
-      this.seamRenderer_.render(this.seamSceneFactory_.scene_,
-          this.seamCamera_.camera_);
+      this.seamCamera_.setZNearAndFar_(engineOptions.zNear_, zNear);
+      this.seamRenderer_.render(seamSceneFactoryScene, seamCameraCamera);
 
       // Draw what's remaining normally and it will be our seam.
       context.stencilOp(context.KEEP, context.KEEP, context.KEEP);
       context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
 
-      this.seamCamera_.setZNearAndFar_(zCamera - seam, zCamera + seam);
-      this.seamRenderer_.render(this.seamSceneFactory_.scene_,
-          this.seamCamera_.camera_);
+      this.seamCamera_.setZNearAndFar_(zNear, zFar);
+      this.seamRenderer_.render(seamSceneFactoryScene, seamCameraCamera);
 
       rendered = true;
     }
@@ -596,23 +638,33 @@ ThreeJsRenderer_.prototype.render_ = function() {
   // Force rendering to complete on all layers so there is no slicing from
   // timing differences. Then move the canvases to the target position right
   // after we render.
-  if (this.engine_.options_['aboveLayer']) {
+
+  if (engineOptions['aboveLayer']) {
     this.aboveRenderer_.context.finish();
-    this.aboveCanvas_.style.left = this.targetLeft;
-    this.aboveCanvas_.style.top = this.targetTop;
+
+    var aboveCanvasStyle = this.aboveCanvas_.style;
+    aboveCanvasStyle.left = this.targetLeft;
+    aboveCanvasStyle.top = this.targetTop;
   }
-  if (this.engine_.options_['belowLayer']) {
+
+  if (engineOptions['belowLayer']) {
     this.belowRenderer_.context.finish();
-    this.belowCanvas_.style.left = this.targetLeft;
-    this.belowCanvas_.style.top = this.targetTop;
+
+    var belowCanvasStyle = this.belowCanvas_.style;
+    belowCanvasStyle.left = this.targetLeft;
+    belowCanvasStyle.top = this.targetTop;
   }
-  if (this.engine_.options_['seamLayer']) {
+
+  if (engineOptions['seamLayer']) {
     this.seamRenderer_.context.finish();
-    this.seamCanvas_.style.left = this.targetLeft;
-    this.seamCanvas_.style.top = this.targetTop;
+
+    var seamCanvasStyle = this.seamCanvas_.style;
+    seamCanvasStyle.left = this.targetLeft;
+    seamCanvasStyle.top = this.targetTop;
   }
 
   this.isDirty_ = false;
+
   this.clearDirtyFlags_(this.aboveLayer_);
   this.clearDirtyFlags_(this.belowLayer_);
   this.clearDirtyFlags_(this.belowStencilLayer_);
@@ -632,13 +684,15 @@ ThreeJsRenderer_.prototype.render_ = function() {
  * @param {string} cursor CSS cursor style.
  */
 ThreeJsRenderer_.prototype.setCursor_ = function(cursor) {
-  if (this.engine_.options_['aboveLayer'])
+  var engineOptions = this.engine_.options_;
+
+  if (engineOptions['aboveLayer'])
     this.aboveCanvas_.style['cursor'] = cursor;
 
-  if (this.engine_.options_['belowLayer'])
+  if (engineOptions['belowLayer'])
     this.belowCanvas_.style['cursor'] = cursor;
 
-  if (this.engine_.options_['seamLayer'])
+  if (engineOptions['seamLayer'])
     this.seamCanvas_.style['cursor'] = cursor;
 };
 
@@ -681,14 +735,11 @@ ThreeJsRenderer_.prototype.setupFullscreenCanvasRenderer_ =
  */
 ThreeJsRenderer_.prototype.updateCameras_ = function() {
   // Update the cameras
-  if (typeof this.aboveCamera_ !== 'undefined')
-    this.aboveCamera_.update_();
-  if (typeof this.belowCamera_ !== 'undefined')
-    this.belowCamera_.update_();
-  if (typeof this.seamCamera_ !== 'undefined')
-    this.seamCamera_.update_();
-  if (typeof this.stencilCamera_ !== 'undefined')
-    this.stencilCamera_.update_();
+
+  if (this.aboveCamera_) this.aboveCamera_.update_();
+  if (this.belowCamera_) this.belowCamera_.update_();
+  if (this.seamCamera_) this.seamCamera_.update_();
+  if (this.stencilCamera_) this.stencilCamera_.update_();
 
   if (this.pendingUpdateLayerZBoundaries_) {
     this.updateLayerZBoundaries_();
@@ -696,26 +747,23 @@ ThreeJsRenderer_.prototype.updateCameras_ = function() {
   }
 
   // Dispatch cameramove events
-  if ((typeof this.aboveCamera_ !== 'undefined' &&
-      this.aboveCamera_.pendingCameraMoveEvent_) ||
-      (typeof this.belowCamera_ !== 'undefined' &&
-      this.belowCamera_.pendingCameraMoveEvent_) ||
-      (typeof this.seamCamera_ !== 'undefined' &&
-      this.seamCamera_.pendingCameraMoveEvent_) ||
-      (typeof this.stencilCamera_ !== 'undefined' &&
-      this.stencilCamera_.pendingCameraMoveEvent_)) {
+
+  if ((this.aboveCamera_ && this.aboveCamera_.pendingCameraMoveEvent_) ||
+      (this.belowCamera_ && this.belowCamera_.pendingCameraMoveEvent_) ||
+      (this.seamCamera_ && this.seamCamera_.pendingCameraMoveEvent_) ||
+      (this.stencilCamera_ && this.stencilCamera_.pendingCameraMoveEvent_)) {
+
     var models = this.engine_.models_;
     var event = new window['voodoo']['Event']('cameramove');
-    for (var modelIndex = 0; modelIndex < models.length; ++modelIndex)
-      models[modelIndex].dispatchEvent_(event);
 
-    if (typeof this.aboveCamera_ !== 'undefined')
-      this.aboveCamera_.pendingCameraMoveEvent_ = false;
-    if (typeof this.belowCamera_ !== 'undefined')
-      this.belowCamera_.pendingCameraMoveEvent_ = false;
-    if (typeof this.seamCamera_ !== 'undefined')
-      this.seamCamera_.pendingCameraMoveEvent_ = false;
-    if (typeof this.stencilCamera_ !== 'undefined')
+    for (var modelIndex = 0, numModels = models.length; modelIndex < numModels;
+        ++modelIndex)
+      models[modelIndex]['dispatch'](event);
+
+    if (this.aboveCamera_) this.aboveCamera_.pendingCameraMoveEvent_ = false;
+    if (this.belowCamera_) this.belowCamera_.pendingCameraMoveEvent_ = false;
+    if (this.seamCamera_) this.seamCamera_.pendingCameraMoveEvent_ = false;
+    if (this.stencilCamera_)
       this.stencilCamera_.pendingCameraMoveEvent_ = false;
   }
 };
@@ -729,26 +777,30 @@ ThreeJsRenderer_.prototype.updateCameras_ = function() {
  * @private
  */
 ThreeJsRenderer_.prototype.updateLayerZBoundaries_ = function() {
+  var engineOptions = this.engine_.options_;
+  var enableAboveLayer = engineOptions['aboveLayer'];
+  var enableBelowLayer = engineOptions['belowLayer'];
+
   // We subtract -0.5 from where we should cut off the Z so there is no seam
   // between renders.
-  if (this.engine_.options_['belowLayer']) {
-    if (this.engine_.options_['aboveLayer']) {
+
+  if (enableBelowLayer) {
+    if (enableAboveLayer) {
       var zCamera = this.belowCamera_['position']['z'];
-      this.belowCamera_.setZNearAndFar_(zCamera - 0.5,
-          this.engine_.options_.zFar_);
+      this.belowCamera_.setZNearAndFar_(zCamera - 0.5, engineOptions.zFar_);
     } else {
-      this.belowCamera_.setZNearAndFar_(this.engine_.options_.zNear_,
-          this.engine_.options_.zFar_);
+      this.belowCamera_.setZNearAndFar_(engineOptions.zNear_,
+          engineOptions.zFar_);
     }
   }
 
-  if (this.engine_.options_['aboveLayer']) {
-    if (this.engine_.options_['belowLayer']) {
+  if (enableAboveLayer) {
+    if (enableBelowLayer) {
       var zCamera = this.aboveCamera_['position']['z'];
-      this.aboveCamera_.setZNearAndFar_(this.engine_.options_.zNear_, zCamera);
+      this.aboveCamera_.setZNearAndFar_(engineOptions.zNear_, zCamera);
     } else {
-      this.aboveCamera_.setZNearAndFar_(this.engine_.options_.zNear_,
-          this.engine_.options_.zFar_);
+      this.aboveCamera_.setZNearAndFar_(engineOptions.zNear_,
+          engineOptions.zFar_);
     }
   }
 };
@@ -761,14 +813,14 @@ ThreeJsRenderer_.prototype.updateLayerZBoundaries_ = function() {
  */
 ThreeJsRenderer_.prototype.updateViewportSize_ = function() {
   var testDiv = document.createElement('div');
+  var documentElement = document.documentElement;
 
   testDiv.style.cssText =
       'position: fixed; top: 0; left: 0; bottom: 0; right: 0;';
-  document.documentElement.insertBefore(testDiv,
-      document.documentElement.firstChild);
+  documentElement.insertBefore(testDiv, documentElement.firstChild);
 
   this.viewportSize_ = new Size2_(testDiv.offsetWidth, testDiv.offsetHeight);
-  document.documentElement.removeChild(testDiv);
+  documentElement.removeChild(testDiv);
 };
 
 
@@ -780,20 +832,24 @@ ThreeJsRenderer_.prototype.updateViewportSize_ = function() {
  * @private
  */
 ThreeJsRenderer_.prototype.validateAndPrepareWebpage_ = function() {
-  log_.information_('Validating and preparing webpage for use');
+  log_.info_('Validating and preparing webpage for use');
 
   // Set the body dimensions to 100% so the canvas sizes can be set to 100%
   // and there will be no scroll bars.
+
   log_.assert_(document.body, 'document.body is undefined');
-  document.body.style.width = '100%';
-  document.body.style.height = '100%';
+
+  var documentBodyStyle = document.body.style;
+  documentBodyStyle.width = '100%';
+  documentBodyStyle.height = '100%';
 
   // This tells the browser not to add scroll bars for full screen canvases.
   // Consequently, it also removes the nice looking margins from the body.
   // The only alternative to this is to set:
   //    document.body.style.overflow = 'hidden';
   // which prevents scrolling altogether. No good solution here :(
-  document.body.style.margin = 0 + 'px';
+
+  documentBodyStyle.margin = 0 + 'px';
 };
 
 

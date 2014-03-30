@@ -14,7 +14,7 @@
  * @private
  */
 function Tracker_() {
-  log_.information_('Creating Tracker');
+  log_.info_('Creating Tracker');
 
   this.trackedElements_ = {};
   this.nextTrackedElementId_ = 0;
@@ -35,10 +35,8 @@ function Tracker_() {
  * @return {number} Track id used to release the callback.
  */
 Tracker_.prototype.track_ = function(element, callback) {
-  log_.assert_(element !== null && typeof element !== 'undefined',
-      'Element must be a valid HTML DOM element');
-  log_.assert_(callback !== null && typeof callback === 'function',
-      'Callback must be a valid function');
+  log_.assert_(element, 'Element must be a valid HTML DOM element');
+  log_.assert_(callback, 'Callback must be a valid function');
 
   // Find or create the tracked element
   var trackedElement, trackedElementId;
@@ -54,8 +52,7 @@ Tracker_.prototype.track_ = function(element, callback) {
         new TrackedElement_(element);
   }
 
-  log_.assert_(typeof trackedElement !== 'undefined',
-      'TrackedElement not found');
+  log_.assert_(trackedElement, 'TrackedElement not found');
 
   // Add the callback
   var callbackId = trackedElement.addCallback_(callback);
@@ -91,7 +88,7 @@ Tracker_.prototype.release_ = function(trackId) {
   // Release the callback from the tracked element
   trackedElement.releaseCallback_(callbackId);
 
-  if (trackedElement.numCallbacks_ == 0) {
+  if (trackedElement.numCallbacks_ === 0) {
     delete this.trackedElements_[trackedElementId];
     delete trackedElement.element_['VoodooTrackedElementId'];
   }

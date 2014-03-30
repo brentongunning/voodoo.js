@@ -18,7 +18,7 @@
  * @param {number} zFar Maximum z distance rendered.
  */
 function ThreeJsCamera_(canvas, fovY, zNear, zFar) {
-  log_.information_('Creating ThreeJs Camera');
+  log_.info_('Creating ThreeJs Camera');
   this.camera_ = new THREE.Camera();
   this.frustum_ = new THREE.Frustum();
 
@@ -50,26 +50,27 @@ ThreeJsCamera_.prototype.constructor = ThreeJsCamera_.constructor;
  * @private
  */
 ThreeJsCamera_.prototype.createProperties_ = function() {
-  var self = this;
+  var that = this;
 
   Object.defineProperty(this, 'fovY', {
-    get: function() { return self.fovY_; },
+    get: function() { return that.fovY_; },
     enumerable: true
   });
 
   Object.defineProperty(this, 'position', {
     get: function() {
+      var cameraPosition = that.camera_.position;
       return {
-        'x': self.camera_.position.x,
-        'y': self.camera_.position.y,
-        'z': self.camera_.position.z
+        'x': cameraPosition.x,
+        'y': cameraPosition.y,
+        'z': cameraPosition.z
       };
     },
     enumerable: true
   });
 
   Object.defineProperty(this, 'zNear', {
-    get: function() { return self.zNear_; },
+    get: function() { return that.zNear_; },
     enumerable: true
   });
 
@@ -91,22 +92,23 @@ ThreeJsCamera_.prototype.initialize_ = function() {
   this.pendingFrustumUpdate_ = true;
 
   // The camera is oriented so that 0,0 is the upper-left corner
-  this.camera_.up.x = 0;
-  this.camera_.up.y = -1;
-  this.camera_.up.z = 0;
+  var cameraUp = this.camera_.up;
+  cameraUp.x = 0;
+  cameraUp.y = -1;
+  cameraUp.z = 0;
 
   this.onResize_();
   this.update_();
 
   // Register the renderer's onScroll and onResize events with the window
-  var self = this;
+  var that = this;
 
   window.addEventListener('scroll', function() {
-    self.onScroll_();
+    that.onScroll_();
   }, false);
 
   window.addEventListener('resize', function() {
-    self.onResize_();
+    that.onResize_();
   }, false);
 
   this.pendingCameraMoveEvent_ = true;
@@ -167,8 +169,9 @@ ThreeJsCamera_.prototype.setZNearAndFar_ = function(zNear, zFar) {
  */
 ThreeJsCamera_.prototype.update_ = function() {
   if (this.pendingResize_) {
-    var canvasWidth = parseInt(this.canvas_.style.width, 10);
-    var canvasHeight = parseInt(this.canvas_.style.height, 10);
+    var canvasStyle = this.canvas_.style;
+    var canvasWidth = parseInt(canvasStyle.width, 10);
+    var canvasHeight = parseInt(canvasStyle.height, 10);
 
     this.aspectRatio_ = canvasWidth / canvasHeight;
 
@@ -192,14 +195,16 @@ ThreeJsCamera_.prototype.update_ = function() {
   }
 
   if (this.pendingScroll_) {
-    var canvasWidth = parseInt(this.canvas_.style.width, 10);
-    var canvasHeight = parseInt(this.canvas_.style.height, 10);
+    var canvasStyle = this.canvas_.style;
+    var canvasWidth = parseInt(canvasStyle.width, 10);
+    var canvasHeight = parseInt(canvasStyle.height, 10);
 
-    this.camera_.position.x = canvasWidth / 2 + window.pageXOffset;
-    this.camera_.position.y = canvasHeight / 2 + window.pageYOffset;
+    var cameraPosition = this.camera_.position;
+    cameraPosition.x = canvasWidth / 2 + window.pageXOffset;
+    cameraPosition.y = canvasHeight / 2 + window.pageYOffset;
 
-    this.camera_.lookAt(new THREE.Vector3(this.camera_.position.x,
-        this.camera_.position.y, 0));
+    this.camera_.lookAt(new THREE.Vector3(cameraPosition.x,
+        cameraPosition.y, 0));
 
     this.pendingScroll_ = false;
     this.pendingCameraMoveEvent_ = true;

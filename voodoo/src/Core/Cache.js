@@ -111,7 +111,7 @@ Cache.prototype['set'] = function(key, value, opt_name, opt_organization) {
  */
 Cache.prototype.getSubcache_ = function(opt_name, opt_organization) {
   var name, organization;
-  if (typeof opt_name === 'undefined') {
+  if (!opt_name) {
     name = this.modelName_;
     organization = this.modelOrganization_;
   } else {
@@ -122,10 +122,12 @@ Cache.prototype.getSubcache_ = function(opt_name, opt_organization) {
   if (!this.cache_.hasOwnProperty(organization))
     this.cache_[organization] = {};
 
-  if (!this.cache_[organization].hasOwnProperty(name))
-    this.cache_[organization][name] = {};
+  var organizationCache = this.cache_[organization];
 
-  return this.cache_[organization][name];
+  if (!organizationCache.hasOwnProperty(name))
+    organizationCache[name] = {};
+
+  return organizationCache[name];
 };
 
 

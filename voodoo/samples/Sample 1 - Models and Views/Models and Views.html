@@ -57,15 +57,18 @@ var SampleView = voodoo.View.extend({
 
     // Let's create a ring, 200px long and 20px wide. Any geometry and
     // materials you can create with THREE.js you can use in voodoo.
-    this.geometry = new THREE.TorusGeometry(100, 10, 20, 80)
-    this.material = new THREE.MeshPhongMaterial();
-    this.torus = new THREE.Mesh(this.geometry, this.material);
+    var geometry = new THREE.TorusGeometry(100, 10, 20, 80)
+    var material = new THREE.MeshPhongMaterial();
+    var torus = new THREE.Mesh(geometry, material);
 
-    this.torus.position.set(500, 500, 0);
-    this.torus.rotation.y = Math.PI / 2;
+    torus.position.set(500, 500, 0);
+    torus.rotation.y = Math.PI / 2;
 
     // Add the torus to the scene. this.scene is a property provided by View.
-    this.scene.add(this.torus);
+    this.scene.add(torus);
+
+    this.material = material;
+    this.torus = torus;
 
     // The torus will move at 200px per second.
     this.speed = 200;
@@ -90,13 +93,16 @@ var SampleView = voodoo.View.extend({
     this.torus.position.x += deltaTime * this.speed;
 
     // Keep the torus within the page boundaries
-    if (this.torus.position.x > document.documentElement.clientWidth) {
+    var documentWidth = document.documentElement.clientWidth;
+    var torusPosition = this.torus.position;
+
+    if (torusPosition.x > documentWidth) {
       this.speed = -Math.abs(this.speed);
-      this.torus.position.x = document.documentElement.clientWidth;
+      torusPosition.x = documentWidth;
     }
-    else if (this.torus.position.x < 0) {
+    else if (torusPosition.x < 0) {
       this.speed = Math.abs(this.speed);
-      this.torus.position.x = 0;
+      torusPosition.x = 0;
     }
 
     // Objects in our view have changed, so mark it dirty.
