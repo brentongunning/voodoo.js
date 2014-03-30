@@ -1,0 +1,49 @@
+<html>
+<body>
+</body>
+<script src="lib/three.min.js"></script>
+<script src="build/voodoo-0.8.8.min.js"></script>
+<script>
+
+var MyView = voodoo.View.extend({
+  print: function() {
+    console.log('view');
+	for (var x in this)
+	  console.log('  ' + typeof this[x] + ': ' + x);
+  }
+});
+
+var MyModel = voodoo.Model.extend({
+  name: 'MyModel',
+  viewType: MyView,
+  
+  print: function() {
+    console.log('model');
+	for (var x in this)
+	  console.log('  ' + typeof this[x] + ': ' + x);
+    this.view.print();
+  }
+});
+
+new voodoo.Engine({
+  seamLayer: false,
+  stencils: false,
+  belowLayer: false
+});
+
+var model = new MyModel();
+model.print();
+
+var Extended = voodoo.Extendable.extend({
+  construct: function() {},
+  print: function() {
+    console.log('extended');
+	for (var x in this)
+	  console.log('  ' + typeof this[x] + ': ' + x);
+  }
+});
+
+var extended = new Extended();
+extended.print();
+</script>
+</html>

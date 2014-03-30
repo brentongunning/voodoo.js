@@ -47,26 +47,68 @@ View.prototype['construct'] = function(model, layer) {
   log_.assert_(model, 'View model passed to initialize cannot be null');
   log_.assert_(layer, 'View layer passed to initialize cannot be null');
 
-  // Create public properties
-  this.setupPublicProperties_();
+  var vars = this['privateViewProperties'] = {};
+  var that = this;
+
+  // Setup public properties
+
+  Object.defineProperty(this, 'cache', {
+    get: function() { return vars.cache_; },
+    enumerable: true
+  });
+
+  Object.defineProperty(this, 'camera', {
+    get: function() { return vars.layer_.camera_; },
+    enumerable: true
+  });
+
+  Object.defineProperty(this, 'loaded', {
+    get: function() { return vars.isLoaded_; },
+    set: function(val) {
+      vars.isLoaded_ = val;
+      if (vars.isLoaded_)
+        vars.model_['onViewLoad'](that);
+    },
+    enumerable: true
+  });
+
+  Object.defineProperty(this, 'model', {
+    get: function() { return vars.model_; },
+    enumerable: true
+  });
+
+  Object.defineProperty(this, 'renderer', {
+    get: function() { return vars.layer_.renderer_; },
+    enumerable: true
+  });
+
+  Object.defineProperty(this, 'scene', {
+    get: function() { return vars.scene_; },
+    enumerable: true
+  });
+
+  Object.defineProperty(this, 'triggers', {
+    get: function() { return vars.triggers_; },
+    enumerable: true
+  });
 
   // Setup private vars
-  this.model_ = model;
-  this.layer_ = layer;
-  this.scene_ = this.layer_.sceneFactory_.createScene_(this);
-  this.triggers_ = this.layer_.triggersFactory_.createTriggers_(this);
-  this.cache_ = this.layer_.cacheFactory_.createCache_(this.model_);
+  vars.model_ = model;
+  vars.layer_ = layer;
+  vars.scene_ = layer.sceneFactory_.createScene_(this);
+  vars.triggers_ = layer.triggersFactory_.createTriggers_(this);
+  vars.cache_ = layer.cacheFactory_.createCache_(model);
 
   // The view always starts off dirty.
   this['dirty']();
 
-  this.layer_.addView_(this);
+  layer.addView_(this);
 
   // Call the user's load function.
-  this.isLoaded_ = true;
+  vars.isLoaded_ = true;
   this['load']();
-  if (this.isLoaded_)
-    this.model_.onViewLoad_(this);
+  if (vars.isLoaded_)
+    model['onViewLoad'](this);
 };
 
 
@@ -80,15 +122,17 @@ View.prototype['construct'] = function(model, layer) {
 View.prototype['destroy'] = function() {
   this['unload']();
 
-  this.triggers_.destroy_();
-  this.scene_.destroy_();
-  this.layer_.removeView_(this);
+  var vars = this['privateViewProperties'];
 
-  this.model_ = null;
-  this.triggers_ = null;
-  this.scene_ = null;
-  this.layer_ = null;
-  this.cache_ = null;
+  vars.triggers_.destroy_();
+  vars.scene_.destroy_();
+  vars.layer_.removeView_(this);
+
+  vars.model_ = null;
+  vars.triggers_ = null;
+  vars.scene_ = null;
+  vars.layer_ = null;
+  vars.cache_ = null;
 };
 
 
@@ -98,7 +142,8 @@ View.prototype['destroy'] = function() {
  * @this {View}
  */
 View.prototype['dirty'] = function() {
-  this.scene_.isDirty_ = true;
+  var vars = this['privateViewProperties'];
+  vars.scene_.isDirty_ = true;
 };
 
 
@@ -212,56 +257,6 @@ View.prototype['scene'] = null;
  * @type {Triggers}
  */
 View.prototype['triggers'] = null;
-
-
-/**
- * Creates the View's public properties.
- *
- * @private
- */
-View.prototype.setupPublicProperties_ = function() {
-  var that = this;
-
-  Object.defineProperty(this, 'cache', {
-    get: function() { return that.cache_; },
-    enumerable: true
-  });
-
-  Object.defineProperty(this, 'camera', {
-    get: function() { return that.layer_.camera_; },
-    enumerable: true
-  });
-
-  Object.defineProperty(this, 'loaded', {
-    get: function() { return that.isLoaded_; },
-    set: function(val) {
-      that.isLoaded_ = val;
-      if (that.isLoaded_)
-        that.model_.onViewLoad_(that);
-    },
-    enumerable: true
-  });
-
-  Object.defineProperty(this, 'model', {
-    get: function() { return that.model_; },
-    enumerable: true
-  });
-
-  Object.defineProperty(this, 'renderer', {
-    get: function() { return that.layer_.renderer_; },
-    enumerable: true
-  });
-
-  Object.defineProperty(this, 'scene', {
-    get: function() { return that.scene_; },
-    enumerable: true
-  });
-
-  Object.defineProperty(this, 'triggers', {
-    get: function() { return that.triggers_; },
-    enumerable: true
-  });
-};
 
 
 /**

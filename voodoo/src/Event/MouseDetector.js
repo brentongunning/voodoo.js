@@ -105,7 +105,7 @@ MouseDetector_.prototype.dispatchMouseEvent_ = function(
       this.lastHitZ_, opt_button);
 
   var target = opt_target || trigger;
-  target.model_.dispatchEvent_(event);
+  target.model_['dispatch'](event);
 };
 
 

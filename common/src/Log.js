@@ -68,7 +68,7 @@ Log_.prototype.info_ = function(message) {
  */
 Log_.prototype.model_ = function(model, message) {
   var args = Array.prototype.slice.call(arguments, 1);
-  args.unshift(model.id_);
+  args.unshift(model['privateModelProperties'].id_);
 
   this.info_.apply(this, args);
 };

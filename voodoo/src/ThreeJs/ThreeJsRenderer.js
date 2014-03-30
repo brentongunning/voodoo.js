@@ -321,7 +321,7 @@ ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer) {
     var view = views[viewIndex];
     var scene = view['scene'];
 
-    if (view.isLoaded_ && scene.isDirty_) {
+    if (view['loaded'] && scene.isDirty_) {
       var meshes = scene.meshes_;
 
       // If a scene has any non-mesh objects, then we have to redraw.
@@ -758,7 +758,7 @@ ThreeJsRenderer_.prototype.updateCameras_ = function() {
 
     for (var modelIndex = 0, numModels = models.length; modelIndex < numModels;
         ++modelIndex)
-      models[modelIndex].dispatchEvent_(event);
+      models[modelIndex]['dispatch'](event);
 
     if (this.aboveCamera_) this.aboveCamera_.pendingCameraMoveEvent_ = false;
     if (this.belowCamera_) this.belowCamera_.pendingCameraMoveEvent_ = false;

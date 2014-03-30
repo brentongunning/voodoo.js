@@ -27,7 +27,7 @@ function Extendable() {
   // the user will call them via this.method not this.base.method. These
   // duplicates are a side effect of the way we build the method stack.
 
-  var methodStack = this['methodStack'];
+  var methodStack = this['extendableMethodStack'];
   for (var name in methodStack) {
     var record = methodStack[name];
     if (this[name] === record.methods[record.current])
@@ -98,8 +98,8 @@ Extendable['extend'] = function(opt_object) {
   // Each method in the method stack is tracked by a method record which stores
   // its unique methods in order as well as the index of the current one.
 
-  var parentMethodStack = parentPrototype['methodStack'];
-  var childMethodStack = childPrototype['methodStack'] = {};
+  var parentMethodStack = parentPrototype['extendableMethodStack'];
+  var childMethodStack = childPrototype['extendableMethodStack'] = {};
 
   for (var name in parentMethodStack) {
     var methodRecord = parentMethodStack[name];
@@ -204,7 +204,7 @@ Extendable['extend'] = function(opt_object) {
   if (typeof opt_object === 'function')
     opt_object = opt_object.prototype;
 
-  var opt_objectMethodStack = opt_object['methodStack'];
+  var opt_objectMethodStack = opt_object['extendableMethodStack'];
   if (opt_objectMethodStack) {
     for (var name in opt_objectMethodStack) {
       var record = opt_objectMethodStack[name];
