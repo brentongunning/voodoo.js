@@ -26,8 +26,10 @@ function Engine(opt_options) {
   log_.info_('Creating Engine');
   log_.info_('   version: ' + VERSION);
   log_.info_('   userAgent: ' + navigator.userAgent);
-  for (var property in options)
-    log_.info_('   options.' + property + ': ' + options[property]);
+  for (var property in options) {
+    if (options.hasOwnProperty(property))
+      log_.info_('   options.' + property + ': ' + options[property]);
+  }
 
   // Check for WebGL support
   if (DEBUG && !window['WebGLRenderingContext']) {
