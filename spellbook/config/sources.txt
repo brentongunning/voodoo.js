@@ -1,3 +1,6 @@
+..\..\common\src\Log.js
+
+Helpers\Log.js
 Helpers\Easing.js
 Helpers\Helpers.js
 Helpers\NullView.js

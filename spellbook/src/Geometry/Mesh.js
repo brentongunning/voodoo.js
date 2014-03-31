@@ -26,22 +26,23 @@ var MeshView_ = voodoo.View.extend({
   },
 
   loadJson: function() {
-    var self = this;
+    var that = this;
     var loader = new THREE.JSONLoader();
     loader.load(this.model.mesh, function(geometry, materials) {
       var mesh;
 
-      for (var i = 0; i < materials.length; ++i) {
+      for (var i = 0, len = i < materials.length; i < len; ++i) {
         var material = materials[i];
-        if (material && typeof material.map !== 'undefined' &&
-            material.map !== null)
+        if (material && material.map)
           materials.map.flipY = false;
       }
 
-      if (self.model.animated) {
+      if (that.model.animated) {
         var material = materials[0];
+
         material.morphTargets = true;
         material.map.flipY = false;
+
         var faceMaterial = new THREE.MeshFaceMaterial(materials);
         mesh = new THREE.MorphAnimMesh(geometry, faceMaterial);
       } else {
@@ -49,12 +50,17 @@ var MeshView_ = voodoo.View.extend({
         mesh = new THREE.Mesh(geometry, faceMaterial);
       }
 
-      self.mesh = mesh;
-      self.scene.add(mesh);
-      self.triggers.add(mesh);
-      self.scene.attach(self.model.element, self.model.center,
-          self.model.pixelScale);
-      self.loaded = true;
+      that.mesh = mesh;
+
+      that.scene.add(mesh);
+      that.triggers.add(mesh);
+
+      that.scene.attach(
+          that.model.element,
+          that.model.center,
+          that.model.pixelScale);
+
+      that.loaded = true;
     });
   },
 
@@ -69,7 +75,8 @@ var MeshView_ = voodoo.View.extend({
 
     if (animation.forward)
       this.mesh.setDirectionForward();
-    else this.mesh.setDirectionBackward();
+    else
+      this.mesh.setDirectionBackward();
 
     this.mesh.setFrameRange(animation.start, animation.end);
   },
@@ -130,14 +137,11 @@ var Mesh = this.Mesh = Positioner.extend({
     this.base.initialize(options);
 
     this.element = options.element;
-    if (typeof options.element === 'undefined')
-      throw '[Mesh] element must be defined';
+    log_.assert_(options.element, 'element must be defined');
 
     this.mesh = options.mesh;
-    if (typeof options.mesh === 'undefined')
-      throw '[Mesh] mesh must be defined';
-    this.format = typeof options.format !== 'undefined' ?
-        options.format : Mesh.Format.JSON;
+    log_.assert_(options.mesh, 'mesh must be defined');
+    this.format = options.format || Mesh.Format.JSON;
 
     this.animated = typeof options.animated !== 'undefined' ?
         options.animated : true;
@@ -150,19 +154,20 @@ var Mesh = this.Mesh = Positioner.extend({
     this.playing_ = false;
     this.looping_ = false;
 
-    var self = this;
+    var that = this;
 
     Object.defineProperty(this, 'looping', {
-      get: function() { return self.looping_; },
+      get: function() { return that.looping_; },
       enumerable: false
     });
 
     Object.defineProperty(this, 'playing', {
-      get: function() { return self.playing_; },
+      get: function() { return that.playing_; },
       set: function(playing) {
         if (playing)
           throw 'Cannot set playing to true. Call play()';
-        else self.stop();
+        else
+          that.stop();
       },
       enumerable: false
     });
@@ -172,17 +177,20 @@ var Mesh = this.Mesh = Positioner.extend({
     if (this.playing_) {
       var deltaTimeMs = deltaTime * 1000;
       this.view.updateAnimation(deltaTimeMs);
-      if (typeof this.stencilView !== 'undefined' && this.stencilView)
+      if (this.stencilView)
         this.stencilView.updateAnimation(deltaTimeMs);
 
       if (!this.looping_) {
         var lastTime = this.view.getLastTime();
+
         if (lastTime < this.lastTime) {
           this.view.setToLastFrame();
-          if (typeof this.stencilView !== 'undefined' && this.stencilView)
+          if (this.stencilView)
             this.stencilView.setToLastFrame();
           this.stop();
-        } else this.lastTime = lastTime;
+        } else {
+          this.lastTime = lastTime;
+        }
       }
     }
   }
@@ -228,7 +236,7 @@ Mesh.prototype.play = function(name) {
   var animation = this.animations[name];
 
   this.view.playAnimation(animation);
-  if (typeof this.stencilView !== 'undefined' && this.stencilView)
+  if (this.stencilView)
     this.stencilView.playAnimation(animation);
 
   if (!this.playing_)
@@ -273,8 +281,8 @@ Mesh.prototype.playing = false;
 /**
  * Enumeration for the file format.
  *
- * @enum {number}
+ * @enum {string}
  */
 Mesh.Format = {
-  JSON: 1
+  JSON: 'json'
 };

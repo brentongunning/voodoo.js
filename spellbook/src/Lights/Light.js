@@ -18,7 +18,7 @@
 var LightView_ = voodoo.View.extend({
 
   createLight: function() {
-    throw 'createLight_() undefined.';
+    log_.error_('createLight_() undefined.');
   },
 
   load: function() {
@@ -50,18 +50,19 @@ var Light_ = voodoo.Model.extend({
   stencilViewType: NullView,
 
   initialize: function(options) {
-    if (typeof options.color !== 'undefined')
+    if (options.color)
       this.color_ = options.color;
-    else this.color_ = null;
+    else
+      this.color_ = null;
 
     // Create the color property
-    var self = this;
+    var that = this;
     Object.defineProperty(this, 'color', {
-      get: function() { return self.color_; },
+      get: function() { return that.color_; },
       set: function(color) {
         var threeJsColor = voodoo.utility.convertCssColorToThreeJsColor(color);
         this.view.setColor(threeJsColor);
-        self.color_ = color;
+        that.color_ = color;
       },
       enumerable: true
     });

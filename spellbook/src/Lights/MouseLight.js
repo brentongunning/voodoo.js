@@ -36,7 +36,9 @@ var MouseLightView_ = LightView_.extend({
   updateHeight: function() {
     if (this.model.height <= 0)
       this.light.position.z = this.camera.position.z;
-    else this.light.position.z = this.model.height;
+    else
+      this.light.position.z = this.model.height;
+
     this.dirty();
   }
 
@@ -74,11 +76,11 @@ var MouseLight = this.MouseLight = Light_.extend({
     Light_.prototype.setUpViews.call(this);
 
     // Move the light when the mouse moves.
-    var self = this;
+    var that = this;
     document.addEventListener('mousemove', function(event) {
       var x = event.clientX + window.pageXOffset;
       var y = event.clientY + window.pageYOffset;
-      self.view.move(x, y);
+      that.view.move(x, y);
     }, false);
 
     // Respond to camera moves in case the height changes.

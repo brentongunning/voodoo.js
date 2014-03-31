@@ -18,8 +18,9 @@ PositionerTests = TestCase('PositionerTests');
  * Shutdown the engine between test cases.
  */
 PositionerTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 
@@ -32,9 +33,11 @@ PositionerTests.prototype.testPositionerExtend = function() {
     viewType: voodoo.View.extend({
       load: function() {
         this.base.load();
+
         var geometry = new THREE.CubeGeometry(1, 1, 1);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
+
         this.scene.add(mesh);
       }
     })
@@ -48,6 +51,7 @@ PositionerTests.prototype.testPositionerExtend = function() {
     y: 2,
     z: 3
   }});
+
   var instance2 = new BasePositioner({position: [1, 1, 0]});
 };
 
@@ -58,45 +62,52 @@ PositionerTests.prototype.testPositionerExtend = function() {
 PositionerTests.prototype.testPositionerSetPosition = function() {
   var instance = new voodoo.Positioner({position: [2, 3, 4]});
 
-  assertEquals(2, instance.position.x);
-  assertEquals(3, instance.position.y);
-  assertEquals(4, instance.position.z);
+  var instancePosition = instance.position;
+  assertEquals(2, instancePosition.x);
+  assertEquals(3, instancePosition.y);
+  assertEquals(4, instancePosition.z);
 
   instance.position.x = 1;
 
-  assertEquals(1, instance.position.x);
-  assertEquals(3, instance.position.y);
-  assertEquals(4, instance.position.z);
+  instancePosition = instance.position;
+  assertEquals(1, instancePosition.x);
+  assertEquals(3, instancePosition.y);
+  assertEquals(4, instancePosition.z);
 
   instance.position = [0.25, 0.5, 0.75];
 
-  assertEquals(0.25, instance.position.x);
-  assertEquals(0.5, instance.position.y);
-  assertEquals(0.75, instance.position.z);
+  instancePosition = instance.position;
+  assertEquals(0.25, instancePosition.x);
+  assertEquals(0.5, instancePosition.y);
+  assertEquals(0.75, instancePosition.z);
 
   instance.position = {x: 0.1, y: 0.2, z: 0.3};
 
-  assertEquals(0.1, instance.position.x);
-  assertEquals(0.2, instance.position.y);
-  assertEquals(0.3, instance.position.z);
+  instancePosition = instance.position;
+  assertEquals(0.1, instancePosition.x);
+  assertEquals(0.2, instancePosition.y);
+  assertEquals(0.3, instancePosition.z);
 
   instance.setPosition([1, 2, 3]);
 
-  assertEquals(1, instance.position.x);
-  assertEquals(2, instance.position.y);
-  assertEquals(3, instance.position.z);
+  instancePosition = instance.position;
+  assertEquals(1, instancePosition.x);
+  assertEquals(2, instancePosition.y);
+  assertEquals(3, instancePosition.z);
 
   instance.setPosition(2, 3, 4);
 
-  assertEquals(2, instance.position.x);
-  assertEquals(3, instance.position.y);
-  assertEquals(4, instance.position.z);
+  instancePosition = instance.position;
+  assertEquals(2, instancePosition.x);
+  assertEquals(3, instancePosition.y);
+  assertEquals(4, instancePosition.z);
 
   instance.moveTo(0.1, 0.2, 0.3, 0, voodoo.easing.easeOutBounce);
 
-  assertEquals(0.1, instance.position.x);
-  assertEquals(0.2, instance.position.y);
-  assertEquals(0.3, instance.position.z);
+  instancePosition = instance.position;
+  assertEquals(0.1, instancePosition.x);
+  assertEquals(0.2, instancePosition.y);
+  assertEquals(0.3, instancePosition.z);
 };
 
 
@@ -109,6 +120,7 @@ PositionerTests.prototype.testPositionerMoveEvents = function() {
   var moveBegin = false;
   var moveEnd = false;
   var move = false;
+
   instance.on('moveBegin', function() { moveBegin = true; });
   instance.on('moveEnd', function() { moveEnd = true; });
   instance.on('move', function() { move = true; });
@@ -116,16 +128,18 @@ PositionerTests.prototype.testPositionerMoveEvents = function() {
   instance.moveTo(0.5, 0.4, 0.3, 0.0001);
 
   var start = new Date;
+  var voodooEngine = voodoo.engine;
   while (!moveEnd && new Date() - start < 1000)
-    voodoo.engine.frame();
+    voodooEngine.frame();
 
   assert('Move Begin', moveBegin);
   assert('Move End', moveEnd);
   assert('Move', moveEnd);
 
-  assertEquals(0.5, instance.position.x);
-  assertEquals(0.4, instance.position.y);
-  assertEquals(0.3, instance.position.z);
+  var instancePosition = instance.position;
+  assertEquals(0.5, instancePosition.x);
+  assertEquals(0.4, instancePosition.y);
+  assertEquals(0.3, instancePosition.z);
 };
 
 
@@ -146,6 +160,7 @@ PositionerTests.prototype.testPositionerAttachEvents = function() {
 
   var detach = false;
   var attach = false;
+
   instance.on('detach', function() { detach = true; });
   instance.on('attach', function() { attach = true; });
 

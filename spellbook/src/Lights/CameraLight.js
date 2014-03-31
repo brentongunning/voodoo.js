@@ -25,9 +25,13 @@ var CameraLightView_ = LightView_.extend({
   },
 
   updatePosition: function() {
-    this.light.position.x = this.camera.position.x;
-    this.light.position.y = this.camera.position.y;
-    this.light.position.z = this.camera.position.z;
+    var lightPosition = this.light.position;
+    var cameraPosition = this.camera.position;
+
+    lightPosition.x = cameraPosition.x;
+    lightPosition.y = cameraPosition.y;
+    lightPosition.z = cameraPosition.z;
+
     this.dirty();
   }
 

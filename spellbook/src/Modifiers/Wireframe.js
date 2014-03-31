@@ -22,24 +22,26 @@ var WireframeView_ = voodoo.View.extend({
       this.setWireframeToMesh(e.object, this.model.wireframe_);
       this.dirty();
     });
+
     this.setWireframe(this.model.wireframe_);
   },
 
   setWireframe: function(wireframe) {
     var sceneObjects = this.scene.objects;
-    for (var i = 0; i < sceneObjects.length; ++i) {
+    for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
       this.setWireframeToMesh(sceneObject, wireframe);
     }
+
     this.dirty();
   },
 
   setWireframeToMesh: function(mesh, wireframe) {
     var material = mesh.material;
-    if (typeof material !== 'undefined' && material) {
+    if (material) {
       var materials = material.materials;
-      if (typeof materials !== 'undefined' && materials) {
-        for (var i in materials) {
+      if (materials) {
+        for (var i = 0, len = materials.length; i < len; ++i) {
           var subMaterial = materials[i];
           if (typeof subMaterial.wireframe !== 'undefined')
             subMaterial.wireframe = wireframe;
@@ -83,10 +85,10 @@ var Wireframe = this.Wireframe = voodoo.Model.extend({
     this.wireframe_ = typeof options.wireframe !== 'undefined' ?
         options.wireframe : true;
 
-    var self = this;
+    var that = this;
     Object.defineProperty(this, 'wireframe', {
-      get: function() { return self.wireframe_; },
-      set: function(wireframe) { self.setWireframe(wireframe); },
+      get: function() { return that.wireframe_; },
+      set: function(wireframe) { that.setWireframe(wireframe); },
       enumerable: false
     });
   }
@@ -102,13 +104,13 @@ var Wireframe = this.Wireframe = voodoo.Model.extend({
   * @return {Wireframe}
   */
 Wireframe.prototype.setWireframe = function(wireframe) {
-  if (wireframe != this.wireframe_) {
+  if (wireframe !== this.wireframe_) {
     this.wireframe_ = wireframe;
 
     this.dispatch(new voodoo.Event('changeWireframe', this));
 
     this.view.setWireframe(this.wireframe_);
-    if (typeof this.stencilView !== 'undefined' && this.stencilView)
+    if (this.stencilView)
       this.stencilView.setWireframe(this.wireframe_);
   }
 

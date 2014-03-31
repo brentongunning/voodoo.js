@@ -19,18 +19,22 @@ var FaderView_ = voodoo.View.extend({
     this.base.load();
 
     this.scene.on('add', function(e) {
-      if (typeof e.object.material !== 'undefined')
-        e.object.material.opacity = this.model.alpha;
+      var objectMaterial = e.object.material;
+
+      if (objectMaterial)
+        objectMaterial.opacity = this.model.alpha;
+
       this.dirty();
     });
+
     this.setAlpha(this.model.alpha);
   },
 
   setAlpha: function(alpha) {
     var sceneObjects = this.scene.objects;
-    for (var i = 0; i < sceneObjects.length; ++i) {
+    for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
-      if (typeof sceneObject.material !== 'undefined')
+      if (sceneObject.material)
         sceneObject.material.opacity = this.model.alpha;
     }
 
@@ -60,9 +64,8 @@ var FaderStencilView_ = voodoo.View.extend({
 
   setAlpha: function(alpha) {
     var sceneObjects = this.scene.objects;
-    for (var i = 0; i < sceneObjects.length; ++i) {
+    for (var i = 0, len = sceneObjects.length; i < len; ++i)
       sceneObjects[i].visible = this.model.alpha > 0;
-    }
 
     this.dirty();
   }
@@ -102,14 +105,15 @@ var Fader = this.Fader = voodoo.Model.extend({
     this.alpha_ = typeof options.alpha !== 'undefined' ? options.alpha : 0;
     this.startAlpha = this.alpha_;
     this.targetAlpha = this.alpha_;
+
     this.fadeStartTime = null;
     this.fadeDuration = 0;
     this.fading = false;
 
-    var self = this;
+    var that = this;
     Object.defineProperty(this, 'alpha', {
-      get: function() { return self.alpha_; },
-      set: function(alpha) { self.setAlpha(alpha); },
+      get: function() { return that.alpha_; },
+      set: function(alpha) { that.setAlpha(alpha); },
       enumerable: false
     });
   },
@@ -125,7 +129,10 @@ var Fader = this.Fader = voodoo.Model.extend({
       if (t < 1.0) {
         var i = this.fadeEasing(t);
         this.alpha_ = this.startAlpha * (1 - i) + this.targetAlpha * i;
-      } else this.alpha_ = this.targetAlpha;
+      } else {
+        this.alpha_ = this.targetAlpha;
+      }
+
       this.dispatch(new voodoo.Event('alphaChange', this));
 
       if (t >= 1.0) {
@@ -134,7 +141,7 @@ var Fader = this.Fader = voodoo.Model.extend({
       }
 
       this.view.setAlpha(this.alpha_);
-      if (typeof this.stencilView !== 'undefined' && this.stencilView)
+      if (this.stencilView)
         this.stencilView.setAlpha(this.alpha_);
     }
   }
@@ -177,18 +184,23 @@ Fader.prototype.fadeOut = function(seconds) {
   * @return {Fader}
   */
 Fader.prototype.fadeTo = function(alpha, seconds, opt_easing) {
-  if (seconds == 0) {
+  if (seconds === 0) {
+
     this.setAlpha(alpha);
-  } else if (this.alpha_ != alpha) {
+
+  } else if (this.alpha_ !== alpha) {
+
     this.startAlpha = this.alpha_;
     this.targetAlpha = alpha;
+
     this.fadeStartTime = new Date();
     this.fadeDuration = seconds * 1000;
     this.fading = true;
-    this.fadeEasing = typeof opt_easing === 'undefined' ?
-        Easing.prototype.easeInOutQuad : opt_easing;
+
+    this.fadeEasing = opt_easing || Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('fadeBegin', this));
+
   }
 
   return this;
@@ -206,10 +218,11 @@ Fader.prototype.setAlpha = function(alpha) {
   this.alpha_ = alpha;
   this.targetAlpha = alpha;
   this.fading = false;
+
   this.dispatch(new voodoo.Event('alphaChange', this));
 
   this.view.setAlpha(alpha);
-  if (typeof this.stencilView !== 'undefined' && this.stencilView)
+  if (this.stencilView)
     this.stencilView.setAlpha(alpha);
 
   return this;

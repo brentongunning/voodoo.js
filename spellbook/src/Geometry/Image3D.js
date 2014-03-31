@@ -58,12 +58,16 @@ var Image3DView_ = voodoo.View.extend({
     var invHeightMinusOne = 1.0 / (height - 1);
     var stride = width * 4;
 
+    var THREEVector3 = THREE.Vector3;
+    var THREEFace3 = THREE.Face3;
+    var THREEVector2 = THREE.Vector2;
+
     // Vertices
     var i = 0;
     for (var y = 0; y < height; ++y) {
       for (var x = 0; x < width; ++x) {
         var depth = this.getDepth(data, i);
-        vertices.push(new THREE.Vector3(
+        vertices.push(new THREEVector3(
             x * invWidthMinusOne,
             y * invHeightMinusOne,
             depth));
@@ -71,29 +75,32 @@ var Image3DView_ = voodoo.View.extend({
       }
     }
 
+    var geometryFaces = geometry.faces;
+    var geometryFaceVertexUvs = geometry.faceVertexUvs[0];
+
     // Indices
     if (createFaces) {
       var yi = 0, yi2 = width;
       for (var y = 0; y < height - 1; ++y) {
         for (var x = 0; x < width - 1; ++x) {
           var x2 = x + 1;
-          geometry.faces.push(new THREE.Face3(yi + x, yi + x2, yi2 + x2));
-          geometry.faces.push(new THREE.Face3(yi + x, yi2 + x2, yi2 + x));
+          geometryFaces.push(new THREEFace3(yi + x, yi + x2, yi2 + x2));
+          geometryFaces.push(new THREEFace3(yi + x, yi2 + x2, yi2 + x));
 
           var u1 = x * invWidthMinusOne;
           var u2 = x2 * invWidthMinusOne;
           var v1 = y * invHeightMinusOne;
           var v2 = (y + 1) * invHeightMinusOne;
 
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u1, v1),
-            new THREE.Vector2(u2, v1),
-            new THREE.Vector2(u2, v2)
+          geometryFaceVertexUvs.push([
+            new THREEVector2(u1, v1),
+            new THREEVector2(u2, v1),
+            new THREEVector2(u2, v2)
           ]);
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u1, v1),
-            new THREE.Vector2(u2, v2),
-            new THREE.Vector2(u1, v2)
+          geometryFaceVertexUvs.push([
+            new THREEVector2(u1, v1),
+            new THREEVector2(u2, v2),
+            new THREEVector2(u1, v2)
           ]);
         }
         yi += width;
@@ -108,10 +115,13 @@ var Image3DView_ = voodoo.View.extend({
     var height = this.model.heightmapHeight;
     var invWidth = 1.0 / width;
     var invHeight = 1.0 / height;
-    var widthRatio = this.texture.image.width / width;
-    var heightRatio = this.texture.image.height / height;
-    var invTextureWidth = 1.0 / this.texture.image.width;
-    var invTextureHeight = 1.0 / this.texture.image.height;
+    var textureImage = this.texture.image;
+    var textureImageWidth = textureImage.width;
+    var textureImageHeight = textureImage.height;
+    var widthRatio = textureImageWidth / width;
+    var heightRatio = textureImageHeight / height;
+    var invTextureWidth = 1.0 / textureImageWidth;
+    var invTextureHeight = 1.0 / textureImageHeight;
 
     // Precalculate depth
     var depths = new Array(height);
@@ -124,6 +134,13 @@ var Image3DView_ = voodoo.View.extend({
       }
       depths[y] = line;
     }
+
+    var geometryFaces = geometry.faces;
+    var geometryFaceVertexUvs = geometry.faceVertexUvs[0];
+
+    var THREEVector3 = THREE.Vector3;
+    var THREEFace3 = THREE.Face3;
+    var THREEVector2 = THREE.Vector2;
 
     var v = 0;
     for (var y = 0; y < height; ++y) {
@@ -149,46 +166,46 @@ var Image3DView_ = voodoo.View.extend({
         // Front
 
         var j = v;
-        vertices.push(new THREE.Vector3(x1, y1, depth));
-        vertices.push(new THREE.Vector3(x2, y1, depth));
-        vertices.push(new THREE.Vector3(x2, y2, depth));
-        vertices.push(new THREE.Vector3(x1, y2, depth));
+        vertices.push(new THREEVector3(x1, y1, depth));
+        vertices.push(new THREEVector3(x2, y1, depth));
+        vertices.push(new THREEVector3(x2, y2, depth));
+        vertices.push(new THREEVector3(x1, y2, depth));
 
         if (createFaces) {
           v += 4;
 
-          geometry.faces.push(new THREE.Face3(j, j + 1, j + 2));
-          geometry.faces.push(new THREE.Face3(j, j + 2, j + 3));
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u1, v1),
-            new THREE.Vector2(u2, v1),
-            new THREE.Vector2(u2, v2)
+          geometryFaces.push(new THREEFace3(j, j + 1, j + 2));
+          geometryFaces.push(new THREEFace3(j, j + 2, j + 3));
+          geometryFaceVertexUvs.push([
+            new THREEVector2(u1, v1),
+            new THREEVector2(u2, v1),
+            new THREEVector2(u2, v2)
           ]);
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u1, v1),
-            new THREE.Vector2(u2, v2),
-            new THREE.Vector2(u1, v2)
+          geometryFaceVertexUvs.push([
+            new THREEVector2(u1, v1),
+            new THREEVector2(u2, v2),
+            new THREEVector2(u1, v2)
           ]);
         }
 
         // Left
 
         if (depth > depthLeft) {
-          vertices.push(new THREE.Vector3(x1, y1, depthLeft));
-          vertices.push(new THREE.Vector3(x1, y2, depthLeft));
+          vertices.push(new THREEVector3(x1, y1, depthLeft));
+          vertices.push(new THREEVector3(x1, y2, depthLeft));
 
           if (createFaces) {
-            geometry.faces.push(new THREE.Face3(j, j + 3, v + 1));
-            geometry.faces.push(new THREE.Face3(j, v + 1, v));
-            geometry.faceVertexUvs[0].push([
-              new THREE.Vector2(u1, v1),
-              new THREE.Vector2(u1, v2),
-              new THREE.Vector2(u1, v2)
+            geometryFaces.push(new THREEFace3(j, j + 3, v + 1));
+            geometryFaces.push(new THREEFace3(j, v + 1, v));
+            geometryFaceVertexUvs.push([
+              new THREEVector2(u1, v1),
+              new THREEVector2(u1, v2),
+              new THREEVector2(u1, v2)
             ]);
-            geometry.faceVertexUvs[0].push([
-              new THREE.Vector2(u1, v1),
-              new THREE.Vector2(u1, v2),
-              new THREE.Vector2(u1, v1)
+            geometryFaceVertexUvs.push([
+              new THREEVector2(u1, v1),
+              new THREEVector2(u1, v2),
+              new THREEVector2(u1, v1)
             ]);
 
             v += 2;
@@ -198,21 +215,21 @@ var Image3DView_ = voodoo.View.extend({
         // Right
 
         if (depth > depthRight) {
-          vertices.push(new THREE.Vector3(x2, y1, depthRight));
-          vertices.push(new THREE.Vector3(x2, y2, depthRight));
+          vertices.push(new THREEVector3(x2, y1, depthRight));
+          vertices.push(new THREEVector3(x2, y2, depthRight));
 
           if (createFaces) {
-            geometry.faces.push(new THREE.Face3(j + 2, j + 1, v + 0));
-            geometry.faces.push(new THREE.Face3(j + 2, v + 0, v + 1));
-            geometry.faceVertexUvs[0].push([
-              new THREE.Vector2(u2, v2),
-              new THREE.Vector2(u2, v1),
-              new THREE.Vector2(u2, v1)
+            geometryFaces.push(new THREEFace3(j + 2, j + 1, v + 0));
+            geometryFaces.push(new THREEFace3(j + 2, v + 0, v + 1));
+            geometryFaceVertexUvs.push([
+              new THREEVector2(u2, v2),
+              new THREEVector2(u2, v1),
+              new THREEVector2(u2, v1)
             ]);
-            geometry.faceVertexUvs[0].push([
-              new THREE.Vector2(u2, v2),
-              new THREE.Vector2(u2, v1),
-              new THREE.Vector2(u2, v2)
+            geometryFaceVertexUvs.push([
+              new THREEVector2(u2, v2),
+              new THREEVector2(u2, v1),
+              new THREEVector2(u2, v2)
             ]);
 
             v += 2;
@@ -222,21 +239,21 @@ var Image3DView_ = voodoo.View.extend({
         // Top
 
         if (depth > depthTop) {
-          vertices.push(new THREE.Vector3(x1, y1, depthTop));
-          vertices.push(new THREE.Vector3(x2, y1, depthTop));
+          vertices.push(new THREEVector3(x1, y1, depthTop));
+          vertices.push(new THREEVector3(x2, y1, depthTop));
 
           if (createFaces) {
-            geometry.faces.push(new THREE.Face3(j + 1, j, v));
-            geometry.faces.push(new THREE.Face3(j + 1, v, v + 1));
-            geometry.faceVertexUvs[0].push([
-              new THREE.Vector2(u2, v1),
-              new THREE.Vector2(u1, v1),
-              new THREE.Vector2(u1, v1)
+            geometryFaces.push(new THREEFace3(j + 1, j, v));
+            geometryFaces.push(new THREEFace3(j + 1, v, v + 1));
+            geometryFaceVertexUvs.push([
+              new THREEVector2(u2, v1),
+              new THREEVector2(u1, v1),
+              new THREEVector2(u1, v1)
             ]);
-            geometry.faceVertexUvs[0].push([
-              new THREE.Vector2(u2, v1),
-              new THREE.Vector2(u1, v1),
-              new THREE.Vector2(u2, v1)
+            geometryFaceVertexUvs.push([
+              new THREEVector2(u2, v1),
+              new THREEVector2(u1, v1),
+              new THREEVector2(u2, v1)
             ]);
 
             v += 2;
@@ -246,21 +263,21 @@ var Image3DView_ = voodoo.View.extend({
         // Bottom
 
         if (depth > depthBottom) {
-          vertices.push(new THREE.Vector3(x1, y2, depthBottom));
-          vertices.push(new THREE.Vector3(x2, y2, depthBottom));
+          vertices.push(new THREEVector3(x1, y2, depthBottom));
+          vertices.push(new THREEVector3(x2, y2, depthBottom));
 
           if (createFaces) {
-            geometry.faces.push(new THREE.Face3(j + 3, j + 2, v + 1));
-            geometry.faces.push(new THREE.Face3(j + 3, v + 1, v));
-            geometry.faceVertexUvs[0].push([
-              new THREE.Vector2(u1, v2),
-              new THREE.Vector2(u2, v2),
-              new THREE.Vector2(u2, v2)
+            geometryFaces.push(new THREEFace3(j + 3, j + 2, v + 1));
+            geometryFaces.push(new THREEFace3(j + 3, v + 1, v));
+            geometryFaceVertexUvs.push([
+              new THREEVector2(u1, v2),
+              new THREEVector2(u2, v2),
+              new THREEVector2(u2, v2)
             ]);
-            geometry.faceVertexUvs[0].push([
-              new THREE.Vector2(u1, v2),
-              new THREE.Vector2(u2, v2),
-              new THREE.Vector2(u1, v2)
+            geometryFaceVertexUvs.push([
+              new THREEVector2(u1, v2),
+              new THREEVector2(u2, v2),
+              new THREEVector2(u1, v2)
             ]);
 
             v += 2;
@@ -276,10 +293,17 @@ var Image3DView_ = voodoo.View.extend({
     var height = this.model.heightmapHeight;
     var invWidth = 1.0 / width;
     var invHeight = 1.0 / height;
-    var widthRatio = this.texture.image.width / width;
-    var heightRatio = this.texture.image.height / height;
-    var invTextureWidth = 1.0 / this.texture.image.width;
-    var invTextureHeight = 1.0 / this.texture.image.height;
+    var textureImage = this.texture.image;
+    var textureImageWidth = textureImage.width;
+    var textureImageHeight = textureImage.height;
+    var widthRatio = textureImageWidth / width;
+    var heightRatio = textureImageHeight / height;
+    var invTextureWidth = 1.0 / textureImageWidth;
+    var invTextureHeight = 1.0 / textureImageHeight;
+
+    var THREEVector3 = THREE.Vector3;
+    var THREEFace3 = THREE.Face3;
+    var THREEVector2 = THREE.Vector2;
 
     var i = 0;
     for (var y = 0; y < height; ++y) {
@@ -291,14 +315,17 @@ var Image3DView_ = voodoo.View.extend({
         var y1 = y * invHeight;
         var y2 = (y + 1) * invHeight;
 
-        vertices.push(new THREE.Vector3(x1, y1, depth));
-        vertices.push(new THREE.Vector3(x2, y1, depth));
-        vertices.push(new THREE.Vector3(x2, y2, depth));
-        vertices.push(new THREE.Vector3(x1, y2, depth));
+        vertices.push(new THREEVector3(x1, y1, depth));
+        vertices.push(new THREEVector3(x2, y1, depth));
+        vertices.push(new THREEVector3(x2, y2, depth));
+        vertices.push(new THREEVector3(x1, y2, depth));
 
         i += 4;
       }
     }
+
+    var geometryFaces = geometry.faces;
+    var geometryFaceVertexUvs = geometry.faceVertexUvs[0];
 
     if (createFaces) {
       i = 0;
@@ -311,18 +338,18 @@ var Image3DView_ = voodoo.View.extend({
           var v1 = (yr + 0.5) * invTextureHeight;
           var v2 = (yr + heightRatio - 0.5) * invTextureHeight;
 
-          geometry.faces.push(new THREE.Face3(i, i + 1, i + 2));
-          geometry.faces.push(new THREE.Face3(i, i + 2, i + 3));
+          geometryFaces.push(new THREEFace3(i, i + 1, i + 2));
+          geometryFaces.push(new THREEFace3(i, i + 2, i + 3));
 
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u1, v1),
-            new THREE.Vector2(u2, v1),
-            new THREE.Vector2(u2, v2)
+          geometryFaceVertexUvs.push([
+            new THREEVector2(u1, v1),
+            new THREEVector2(u2, v1),
+            new THREEVector2(u2, v2)
           ]);
-          geometry.faceVertexUvs[0].push([
-            new THREE.Vector2(u1, v1),
-            new THREE.Vector2(u2, v2),
-            new THREE.Vector2(u1, v2)
+          geometryFaceVertexUvs.push([
+            new THREEVector2(u1, v1),
+            new THREEVector2(u2, v2),
+            new THREEVector2(u1, v2)
           ]);
 
           i += 4;
@@ -348,19 +375,22 @@ var Image3DView_ = voodoo.View.extend({
   createGeometry: function() {
     var geometry = new THREE.Geometry();
 
+    var modelHeightmaps = this.model.heightmaps;
+    var modelHeightmapData = this.model.heightmapData;
+
     var numValidHeightmaps = 0;
     for (var i = 0; i < 4; ++i) {
-      if (this.model.heightmaps[i])
+      if (modelHeightmaps[i])
         ++numValidHeightmaps;
     }
 
-    this.createHeightmapGeometry(this.model.heightmapData[0],
+    this.createHeightmapGeometry(modelHeightmapData[0],
         geometry, geometry.vertices, true);
 
     // Make sure there are no morph targets for block geometry
-    if (numValidHeightmaps > 1 &&
-        this.model.geometryStyle_ === Image3D.GeometryStyle.Block)
-      throw '[Image3D] Block geometry does not support multiple heightmaps';
+    log_.assert_(numValidHeightmaps <= 1 ||
+        this.model.geometryStyle_ !== Image3D.GeometryStyle.Block,
+        'Block geometry does not support multiple heightmaps');
 
     for (var i = 0; i < 4; ++i) {
       var morphTarget = {
@@ -368,10 +398,10 @@ var Image3DView_ = voodoo.View.extend({
         vertices: []
       };
 
-      if (!this.model.heightmaps[i] || i == 0) {
+      if (!modelHeightmaps[i] || i === 0) {
         morphTarget.vertices = geometry.vertices;
       } else {
-        this.createHeightmapGeometry(this.model.heightmapData[i], geometry,
+        this.createHeightmapGeometry(modelHeightmapData[i], geometry,
             morphTarget.vertices, false);
       }
 
@@ -384,7 +414,7 @@ var Image3DView_ = voodoo.View.extend({
   },
 
   createMesh: function() {
-    if (typeof this.texture === 'undefined' || !this.texture)
+    if (!this.texture)
       return;
 
     var geometry = this.createGeometry();
@@ -412,7 +442,7 @@ var Image3DView_ = voodoo.View.extend({
   },
 
   setImage: function(image, imageSrc) {
-    if (typeof this.texture === 'undefined' || !this.texture) {
+    if (!this.texture) {
       this.texture = new THREE.Texture(undefined);
 
       this.texture.flipY = false;
@@ -428,13 +458,14 @@ var Image3DView_ = voodoo.View.extend({
   },
 
   rebuildGeometry: function() {
-    if (typeof this.mesh !== 'undefined' && this.mesh)
+    if (this.mesh)
       this.destroyMesh();
+
     this.createMesh();
   },
 
   setTransparent: function(transparent) {
-    if (typeof this.mesh !== 'undefined' && this.mesh)
+    if (this.mesh)
       this.mesh.material.transparent = transparent;
   }
 
@@ -488,30 +519,25 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     this.base.initialize(options);
 
     this.element = options.element;
-    if (typeof options.element === 'undefined')
-      throw '[Image3D] element must be defined';
+    log_.assert_(options.element, 'element must be defined');
 
-    this.imageSrc_ = typeof options.imageSrc !== 'undefined' ?
+    this.imageSrc_ = options.imageSrc ?
         getAbsoluteUrl(options.imageSrc) :
         getAbsoluteUrl(options.element.src);
+
     this.heightSources = [
-      typeof options.heightmap !== 'undefined' ?
-          getAbsoluteUrl(options.heightmap) : '',
-      typeof options.heightmap2 !== 'undefined' ?
-          getAbsoluteUrl(options.heightmap2) : '',
-      typeof options.heightmap3 !== 'undefined' ?
-          getAbsoluteUrl(options.heightmap3) : '',
-      typeof options.heightmap4 !== 'undefined' ?
-          getAbsoluteUrl(options.heightmap4) : ''
+      options.heightmap ? getAbsoluteUrl(options.heightmap) : '',
+      options.heightmap2 ? getAbsoluteUrl(options.heightmap2) : '',
+      options.heightmap3 ? getAbsoluteUrl(options.heightmap3) : '',
+      options.heightmap4 ? getAbsoluteUrl(options.heightmap4) : ''
     ];
 
-    if (typeof options.heightmap === 'undefined')
-      throw '[Image3D] heightmap must be defined';
+    log_.assert_(options.heightmap, 'heightmap must be defined');
 
     this.maxHeight_ = typeof options.maxHeight !== 'undefined' ?
         options.maxHeight : 200;
-    this.geometryStyle_ = typeof options.geometryStyle !== 'undefined' ?
-        options.geometryStyle : Image3D.GeometryStyle.Smooth;
+    this.geometryStyle_ = options.geometryStyle ||
+        Image3D.GeometryStyle.Smooth;
     this.transparent_ = typeof options.transparent !== 'undefined' ?
         options.transparent : true;
 
@@ -528,11 +554,11 @@ var Image3D = this.Image3D = voodoo.Model.extend({
   setUpViews: function() {
     this.base.setUpViews();
 
-    var self = this;
+    var that = this;
     this.loadHeightmaps(function() {
-      var src = self.imageSrc_;
-      self.imageSrc_ = null;
-      self.setImageSrc(src);
+      var src = that.imageSrc_;
+      that.imageSrc_ = null;
+      that.setImageSrc(src);
     });
   },
 
@@ -554,8 +580,9 @@ var Image3D = this.Image3D = voodoo.Model.extend({
       if (time > 1) {
         // Finish animations
         this.morphing = false;
+
         this.view.setMorphTargetInfluences(this.endMorphTargets);
-        if (typeof this.stencilView !== 'undefined' && this.stencilView)
+        if (this.stencilView)
           this.stencilView.setMorphTargetInfluences(this.endMorphTargets);
 
         this.currentMorphTargets = this.endMorphTargets.slice(0);
@@ -563,66 +590,66 @@ var Image3D = this.Image3D = voodoo.Model.extend({
         this.dispatch(new voodoo.Event('morphEnd', this));
       } else {
         var invTime = 1.0 - time;
-        for (var i = 0; i < this.endMorphTargets.length; ++i) {
+        for (var i = 0, len = this.endMorphTargets.length; i < len; ++i) {
           this.currentMorphTargets[i] =
               this.startMorphTargets[i] * invTime +
               this.endMorphTargets[i] * time;
         }
         this.view.setMorphTargetInfluences(this.currentMorphTargets);
-        if (typeof this.stencilView !== 'undefined' && this.stencilView)
+        if (this.stencilView)
           this.stencilView.setMorphTargetInfluences(this.currentMorphTargets);
       }
     }
   },
 
   createPublicProperties: function() {
-    var self = this;
+    var that = this;
 
     Object.defineProperty(this, 'geometryStyle', {
-      get: function() { return self.geometryStyle_; },
-      set: function(geometryStyle) { self.setGeometryStyle(geometryStyle); },
+      get: function() { return that.geometryStyle_; },
+      set: function(geometryStyle) { that.setGeometryStyle(geometryStyle); },
       enumerable: true
     });
 
     Object.defineProperty(this, 'heightmap', {
-      get: function() { return self.heightSources[0]; },
-      set: function(heightmap) { self.setHeightmap(heightmap, 1); },
+      get: function() { return that.heightSources[0]; },
+      set: function(heightmap) { that.setHeightmap(heightmap, 1); },
       enumerable: true
     });
 
     Object.defineProperty(this, 'heightmap2', {
-      get: function() { return self.heightSources[1]; },
-      set: function(heightmap) { self.setHeightmap(heightmap, 2); },
+      get: function() { return that.heightSources[1]; },
+      set: function(heightmap) { that.setHeightmap(heightmap, 2); },
       enumerable: true
     });
 
     Object.defineProperty(this, 'heightmap3', {
-      get: function() { return self.heightSources[2]; },
-      set: function(heightmap) { self.setHeightmap(heightmap, 3); },
+      get: function() { return that.heightSources[2]; },
+      set: function(heightmap) { that.setHeightmap(heightmap, 3); },
       enumerable: true
     });
 
     Object.defineProperty(this, 'heightmap4', {
-      get: function() { return self.heightSources[3]; },
-      set: function(heightmap) { self.setHeightmap(heightmap, 4); },
+      get: function() { return that.heightSources[3]; },
+      set: function(heightmap) { that.setHeightmap(heightmap, 4); },
       enumerable: true
     });
 
     Object.defineProperty(this, 'imageSrc', {
-      get: function() { return self.imageSrc_; },
-      set: function(imageSrc) { self.setImageSrc(imageSrc); },
+      get: function() { return that.imageSrc_; },
+      set: function(imageSrc) { that.setImageSrc(imageSrc); },
       enumerable: true
     });
 
     Object.defineProperty(this, 'maxHeight', {
-      get: function() { return self.maxHeight_; },
-      set: function(maxHeight) { self.setMaxHeight(maxHeight); },
+      get: function() { return that.maxHeight_; },
+      set: function(maxHeight) { that.setMaxHeight(maxHeight); },
       enumerable: true
     });
 
     Object.defineProperty(this, 'transparent', {
-      get: function() { return self.transparent_; },
-      set: function(transparent) { self.setTransparent(transparent); },
+      get: function() { return that.transparent_; },
+      set: function(transparent) { that.setTransparent(transparent); },
       enumerable: true
     });
   },
@@ -632,16 +659,16 @@ var Image3D = this.Image3D = voodoo.Model.extend({
       return;
 
     function onLoad(index) {
-      var heightmapWidth = this.heightmaps[index].width;
-      var heightmapHeight = this.heightmaps[index].height;
+      var heightmap = this.heightmaps[index];
+      var heightmapWidth = heightmap.width;
+      var heightmapHeight = heightmap.height;
 
       var canvas = document.createElement('canvas');
       canvas.width = heightmapWidth;
       canvas.height = heightmapHeight;
 
       var context = canvas.getContext('2d');
-      context.drawImage(this.heightmaps[index], 0, 0, heightmapWidth,
-          heightmapHeight);
+      context.drawImage(heightmap, 0, 0, heightmapWidth, heightmapHeight);
       this.heightmapData[index] = context.getImageData(0, 0,
           heightmapWidth, heightmapHeight).data;
 
@@ -664,13 +691,14 @@ var Image3D = this.Image3D = voodoo.Model.extend({
       var heightmap = this.heightmaps[index];
 
       // Ensure all heightmaps are the same size
-      if (numLoaded == 0) {
+      if (numLoaded === 0) {
         this.heightmapWidth = heightmap.width;
         this.heightmapHeight = heightmap.height;
       } else {
-        if (this.heightmapWidth != heightmap.width ||
-            this.heightmapHeight != heightmap.height)
-          throw '[Image3D]: All heightmaps must be the same size';
+        log_.assert_(
+            this.heightmapWidth === heightmap.width &&
+            this.heightmapHeight === heightmap.height,
+            'All heightmaps must be the same size');
       }
 
       numLoaded++;
@@ -717,7 +745,7 @@ Image3D.prototype.morph = function(index, seconds) {
     this.endMorphTargets = morphTargetInfluences.slice(0);
     this.currentMorphTargets = morphTargetInfluences.slice(0);
     this.view.setMorphTargetInfluences(morphTargetInfluences);
-    if (typeof this.stencilView !== 'undefined' && this.stencilView)
+    if (this.stencilView)
       this.stencilView.setMorphTargetInfluences(morphTargetInfluences);
     this.morphing = false;
   }
@@ -740,8 +768,8 @@ Image3D.prototype.setGeometryStyle = function(geometryStyle) {
     this.dispatch(new voodoo.Event('changeGeometryStyle', this));
 
     this.view.rebuildGeometry();
-    if (typeof self.stencilView !== 'undefined' && self.stencilView)
-      self.stencilView.rebuildGeometry();
+    if (this.stencilView)
+      this.stencilView.rebuildGeometry();
   }
 
   return this;
@@ -772,12 +800,12 @@ Image3D.prototype.setHeightmap = function(heightmap, opt_index) {
   else this.dispatch(new voodoo.Event('changeHeightmap' + (index + 1), this));
 
   /** @type {?} */
-  var self = this;
+  var that = this;
 
-  self.loadHeightmap(heightmap, index, function() {
-    self.view.rebuildGeometry();
-    if (typeof self.stencilView !== 'undefined' && self.stencilView)
-      self.stencilView.rebuildGeometry();
+  that.loadHeightmap(heightmap, index, function() {
+    that.view.rebuildGeometry();
+    if (that.stencilView)
+      that.stencilView.rebuildGeometry();
   });
 
   return this;
@@ -808,7 +836,7 @@ Image3D.prototype.setImageSrc = function(imageSrc) {
 
   function onLoad(index) {
     this.view.setImage(this.image, this.imageSrc_);
-    if (typeof this.stencilView !== 'undefined' && this.stencilView)
+    if (this.stencilView)
       this.stencilView.setImage(this.image, this.imageSrc_);
   }
 
@@ -834,8 +862,8 @@ Image3D.prototype.setMaxHeight = function(maxHeight) {
     this.dispatch(new voodoo.Event('changeMaxHeight', this));
 
     this.view.rebuildGeometry();
-    if (typeof self.stencilView !== 'undefined' && self.stencilView)
-      self.stencilView.rebuildGeometry();
+    if (this.stencilView)
+      this.stencilView.rebuildGeometry();
   }
 
   return this;
@@ -856,8 +884,8 @@ Image3D.prototype.setTransparent = function(transparent) {
     this.dispatch(new voodoo.Event('changeTransparent', this));
 
     this.view.setTransparent(transparent);
-    if (typeof self.stencilView !== 'undefined' && self.stencilView)
-      self.stencilView.setTransparent(transparent);
+    if (this.stencilView)
+      this.stencilView.setTransparent(transparent);
   }
 
   return this;

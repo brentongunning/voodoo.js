@@ -18,8 +18,9 @@ MeshTests = AsyncTestCase('MeshTests');
  * Shutdown the engine between test cases.
  */
 MeshTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 
@@ -117,8 +118,9 @@ MeshTests.prototype.testMeshNonLoopAnimations = function(queue) {
     assert('Looping', !mesh.looping);
 
     var start = new Date();
+    var voodooEngine = voodoo.engine;
     while (mesh.playing && new Date() - start < 1000)
-      voodoo.engine.frame();
+      voodooEngine.frame();
 
     assert('Finished', !mesh.playing);
   });

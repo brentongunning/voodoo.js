@@ -18,8 +18,9 @@ RotatorTests = AsyncTestCase('RotatorTests');
  * Shutdown the engine between test cases.
  */
 RotatorTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 
@@ -32,9 +33,11 @@ RotatorTests.prototype.testRotatorExtend = function() {
     viewType: voodoo.View.extend({
       load: function() {
         this.base.load();
+
         var geometry = new THREE.CubeGeometry(1, 1, 1);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
+
         this.scene.add(mesh);
       }
     })
@@ -48,6 +51,7 @@ RotatorTests.prototype.testRotatorExtend = function() {
     y: 2,
     z: 3
   }});
+
   var instance2 = new BaseRotator({rotation: [1, 1, 0]});
 };
 
@@ -58,45 +62,52 @@ RotatorTests.prototype.testRotatorExtend = function() {
 RotatorTests.prototype.testRotatorSetRotation = function() {
   var instance = new voodoo.Rotator({rotation: [2, 3, 4]});
 
-  assertEquals(2, instance.rotation.x);
-  assertEquals(3, instance.rotation.y);
-  assertEquals(4, instance.rotation.z);
+  var instanceRotation = instance.rotation;
+  assertEquals(2, instanceRotation.x);
+  assertEquals(3, instanceRotation.y);
+  assertEquals(4, instanceRotation.z);
 
   instance.rotation.x = 1;
 
-  assertEquals(1, instance.rotation.x);
-  assertEquals(3, instance.rotation.y);
-  assertEquals(4, instance.rotation.z);
+  instanceRotation = instance.rotation;
+  assertEquals(1, instanceRotation.x);
+  assertEquals(3, instanceRotation.y);
+  assertEquals(4, instanceRotation.z);
 
   instance.rotation = [0.25, 0.5, 0.75];
 
-  assertEquals(0.25, instance.rotation.x);
-  assertEquals(0.5, instance.rotation.y);
-  assertEquals(0.75, instance.rotation.z);
+  instanceRotation = instance.rotation;
+  assertEquals(0.25, instanceRotation.x);
+  assertEquals(0.5, instanceRotation.y);
+  assertEquals(0.75, instanceRotation.z);
 
   instance.rotation = {x: 0.1, y: 0.2, z: 0.3};
 
-  assertEquals(0.1, instance.rotation.x);
-  assertEquals(0.2, instance.rotation.y);
-  assertEquals(0.3, instance.rotation.z);
+  instanceRotation = instance.rotation;
+  assertEquals(0.1, instanceRotation.x);
+  assertEquals(0.2, instanceRotation.y);
+  assertEquals(0.3, instanceRotation.z);
 
   instance.setRotation([1, 2, 3]);
 
-  assertEquals(1, instance.rotation.x);
-  assertEquals(2, instance.rotation.y);
-  assertEquals(3, instance.rotation.z);
+  instanceRotation = instance.rotation;
+  assertEquals(1, instanceRotation.x);
+  assertEquals(2, instanceRotation.y);
+  assertEquals(3, instanceRotation.z);
 
   instance.setRotation(2, 3, 4);
 
-  assertEquals(2, instance.rotation.x);
-  assertEquals(3, instance.rotation.y);
-  assertEquals(4, instance.rotation.z);
+  instanceRotation = instance.rotation;
+  assertEquals(2, instanceRotation.x);
+  assertEquals(3, instanceRotation.y);
+  assertEquals(4, instanceRotation.z);
 
   instance.rotateTo(0.1, 0.2, 0.3, 0);
 
-  assertEquals(0.1, instance.rotation.x);
-  assertEquals(0.2, instance.rotation.y);
-  assertEquals(0.3, instance.rotation.z);
+  instanceRotation = instance.rotation;
+  assertEquals(0.1, instanceRotation.x);
+  assertEquals(0.2, instanceRotation.y);
+  assertEquals(0.3, instanceRotation.z);
 };
 
 
@@ -120,16 +131,19 @@ RotatorTests.prototype.testRotatorRotate = function(queue) {
 
   queue.call(function(callbacks) {
     var start = new Date();
+    var voodooEngine = voodoo.engine;
     while (new Date() - start < 1000)
-      voodoo.engine.frame();
+      voodooEngine.frame();
 
-    assertNotEquals(0, instance.rotation.x);
-    assertNotEquals(0, instance.rotation.y);
-    assertNotEquals(0, instance.rotation.z);
+    var instanceRotation = instance.rotation;
 
-    assertNotEquals(0.5, instance.rotation.x);
-    assertNotEquals(0.4, instance.rotation.y);
-    assertNotEquals(0.3, instance.rotation.z);
+    assertNotEquals(0, instanceRotation.x);
+    assertNotEquals(0, instanceRotation.y);
+    assertNotEquals(0, instanceRotation.z);
+
+    assertNotEquals(0.5, instanceRotation.x);
+    assertNotEquals(0.4, instanceRotation.y);
+    assertNotEquals(0.3, instanceRotation.z);
   });
 };
 
@@ -143,6 +157,7 @@ RotatorTests.prototype.testRotatorEvents = function() {
   var rotateBegin = false;
   var rotateEnd = false;
   var rotate = false;
+
   instance.on('rotateBegin', function() { rotateBegin = true; });
   instance.on('rotateEnd', function() { rotateEnd = true; });
   instance.on('rotate', function() { rotate = true; });
@@ -150,14 +165,16 @@ RotatorTests.prototype.testRotatorEvents = function() {
   instance.rotateTo(0.5, 0.4, 0.3, 0.0001);
 
   var start = new Date;
+  var voodooEngine = voodoo.engine;
   while (!rotateEnd && new Date() - start < 1000)
-    voodoo.engine.frame();
+    voodooEngine.frame();
 
   assert('Rotate Begin', rotateBegin);
   assert('Rotate End', rotateEnd);
   assert('Rotate', rotate);
 
-  assertEquals(0.5, instance.rotation.x);
-  assertEquals(0.4, instance.rotation.y);
-  assertEquals(0.3, instance.rotation.z);
+  var instanceRotation = instance.rotation;
+  assertEquals(0.5, instanceRotation.x);
+  assertEquals(0.4, instanceRotation.y);
+  assertEquals(0.3, instanceRotation.z);
 };

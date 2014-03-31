@@ -18,8 +18,9 @@ HiderTests = TestCase('HiderTests');
  * Shutdown the engine between test cases.
  */
 HiderTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 
@@ -32,9 +33,11 @@ HiderTests.prototype.testHiderExtend = function() {
     viewType: voodoo.View.extend({
       load: function() {
         this.base.load();
+
         var geometry = new THREE.CubeGeometry(1, 1, 1);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
+
         this.scene.add(mesh);
       }
     })

@@ -18,8 +18,9 @@ ScalerTests = TestCase('ScalerTests');
  * Shutdown the engine between test cases.
  */
 ScalerTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 
@@ -32,9 +33,11 @@ ScalerTests.prototype.testScalerExtend = function() {
     viewType: voodoo.View.extend({
       load: function() {
         this.base.load();
+
         var geometry = new THREE.CubeGeometry(1, 1, 1);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
+
         this.scene.add(mesh);
       }
     })
@@ -54,51 +57,59 @@ ScalerTests.prototype.testScalerExtend = function() {
 ScalerTests.prototype.testScalerSetScale = function() {
   var instance = new voodoo.Scaler({scale: 2});
 
-  assertEquals(2, instance.scale.x);
-  assertEquals(2, instance.scale.y);
-  assertEquals(2, instance.scale.z);
+  var instanceScale = instance.scale;
+  assertEquals(2, instanceScale.x);
+  assertEquals(2, instanceScale.y);
+  assertEquals(2, instanceScale.z);
 
   instance.scale.x = 1;
 
-  assertEquals(1, instance.scale.x);
-  assertEquals(2, instance.scale.y);
-  assertEquals(2, instance.scale.z);
+  instanceScale = instance.scale;
+  assertEquals(1, instanceScale.x);
+  assertEquals(2, instanceScale.y);
+  assertEquals(2, instanceScale.z);
 
   instance.scale = [0.25, 0.5, 0.75];
 
-  assertEquals(0.25, instance.scale.x);
-  assertEquals(0.5, instance.scale.y);
-  assertEquals(0.75, instance.scale.z);
+  instanceScale = instance.scale;
+  assertEquals(0.25, instanceScale.x);
+  assertEquals(0.5, instanceScale.y);
+  assertEquals(0.75, instanceScale.z);
 
   instance.scale = {x: 0.1, y: 0.2, z: 0.3};
 
-  assertEquals(0.1, instance.scale.x);
-  assertEquals(0.2, instance.scale.y);
-  assertEquals(0.3, instance.scale.z);
+  instanceScale = instance.scale;
+  assertEquals(0.1, instanceScale.x);
+  assertEquals(0.2, instanceScale.y);
+  assertEquals(0.3, instanceScale.z);
 
   instance.scale = 5;
 
-  assertEquals(5, instance.scale.x);
-  assertEquals(5, instance.scale.y);
-  assertEquals(5, instance.scale.z);
+  instanceScale = instance.scale;
+  assertEquals(5, instanceScale.x);
+  assertEquals(5, instanceScale.y);
+  assertEquals(5, instanceScale.z);
 
   instance.setScale([1, 2, 3]);
 
-  assertEquals(1, instance.scale.x);
-  assertEquals(2, instance.scale.y);
-  assertEquals(3, instance.scale.z);
+  instanceScale = instance.scale;
+  assertEquals(1, instanceScale.x);
+  assertEquals(2, instanceScale.y);
+  assertEquals(3, instanceScale.z);
 
   instance.setScale(2, 3, 4);
 
-  assertEquals(2, instance.scale.x);
-  assertEquals(3, instance.scale.y);
-  assertEquals(4, instance.scale.z);
+  instanceScale = instance.scale;
+  assertEquals(2, instanceScale.x);
+  assertEquals(3, instanceScale.y);
+  assertEquals(4, instanceScale.z);
 
   instance.scaleTo(0.1, 0);
 
-  assertEquals(0.1, instance.scale.x);
-  assertEquals(0.1, instance.scale.y);
-  assertEquals(0.1, instance.scale.z);
+  instanceScale = instance.scale;
+  assertEquals(0.1, instanceScale.x);
+  assertEquals(0.1, instanceScale.y);
+  assertEquals(0.1, instanceScale.z);
 };
 
 
@@ -111,6 +122,7 @@ ScalerTests.prototype.testScalerEvents = function() {
   var scaleBegin = false;
   var scaleEnd = false;
   var scale = false;
+
   instance.on('scaleBegin', function() { scaleBegin = true; });
   instance.on('scaleEnd', function() { scaleEnd = true; });
   instance.on('scale', function() { scale = true; });
@@ -118,14 +130,16 @@ ScalerTests.prototype.testScalerEvents = function() {
   instance.scaleTo(0.5, 0.4, 0.3, 0.0001);
 
   var start = new Date;
+  var voodooEngine = voodoo.engine;
   while (!scaleEnd && new Date() - start < 1000)
-    voodoo.engine.frame();
+    voodooEngine.frame();
 
   assert('Scale Begin', scaleBegin);
   assert('Scale End', scaleEnd);
   assert('Scale', scale);
 
-  assertEquals(0.5, instance.scale.x);
-  assertEquals(0.4, instance.scale.y);
-  assertEquals(0.3, instance.scale.z);
+  var instanceScale = instance.scale;
+  assertEquals(0.5, instanceScale.x);
+  assertEquals(0.4, instanceScale.y);
+  assertEquals(0.3, instanceScale.z);
 };

@@ -33,7 +33,7 @@ var ShaderView_ = voodoo.View.extend({
 
   setAmbient: function(ambient, emissive, shadingType) {
     var sceneObjects = this.scene.objects;
-    for (var i = 0; i < sceneObjects.length; ++i) {
+    for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
       this.setAmbientToMesh(sceneObject, ambient);
     }
@@ -43,7 +43,7 @@ var ShaderView_ = voodoo.View.extend({
 
   setEmissive: function(emissive) {
     var sceneObjects = this.scene.objects;
-    for (var i = 0; i < sceneObjects.length; ++i) {
+    for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
       this.setEmissiveToMesh(sceneObject, emissive);
     }
@@ -53,7 +53,7 @@ var ShaderView_ = voodoo.View.extend({
 
   setShading: function(shading) {
     var sceneObjects = this.scene.objects;
-    for (var i = 0; i < sceneObjects.length; ++i) {
+    for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
       this.setShadingToMesh(sceneObject, shading);
     }
@@ -63,34 +63,34 @@ var ShaderView_ = voodoo.View.extend({
 
   setAmbientToMesh: function(mesh, ambient) {
     var material = mesh.material;
-    if (typeof material !== 'undefined' && material) {
+    if (material) {
       var materials = material.materials;
-      if (typeof materials !== 'undefined' && materials) {
-        for (var i in materials) {
+      if (materials) {
+        for (var i = 0, len = materials.length; i < len; ++i) {
           var subMaterial = materials[i];
           if (typeof subMaterial.ambient !== 'undefined')
             subMaterial.ambient.copy(ambient);
         }
       }
 
-      if (typeof material.ambient !== 'undefined')
+      if (material.ambient)
         material.ambient.copy(ambient);
     }
   },
 
   setEmissiveToMesh: function(mesh, emissive) {
     var material = mesh.material;
-    if (typeof material !== 'undefined' && material) {
+    if (material) {
       var materials = material.materials;
-      if (typeof materials !== 'undefined' && materials) {
-        for (var i in materials) {
+      if (materials) {
+        for (var i = 0, len = materials.length; i < len; ++i) {
           var subMaterial = materials[i];
-          if (typeof subMaterial.emissive !== 'undefined')
+          if (subMaterial.emissive)
             subMaterial.emissive.copy(emissive);
         }
       }
 
-      if (typeof material.emissive !== 'undefined')
+      if (material.emissive)
         material.emissive.copy(emissive);
     }
   },
@@ -103,10 +103,10 @@ var ShaderView_ = voodoo.View.extend({
       threeJsShading = THREE.NoShading;
 
     var material = mesh.material;
-    if (typeof material !== 'undefined' && material) {
+    if (material) {
       var materials = material.materials;
-      if (typeof materials !== 'undefined' && materials) {
-        for (var i in materials) {
+      if (materials) {
+        for (var i = 0, len = materials.length; i < len; ++i) {
           var subMaterial = materials[i];
           if (typeof subMaterial.shading !== 'undefined')
             subMaterial.shading = threeJsShading;
@@ -118,7 +118,7 @@ var ShaderView_ = voodoo.View.extend({
     }
 
     var geometry = mesh.geometry;
-    if (typeof geometry !== 'undefined' && geometry) {
+    if (geometry) {
       geometry.morphTargetsNeedUpdate = true;
       geometry.normalsNeedUpdate = true;
     }
@@ -158,33 +158,33 @@ var Shader = this.Shader = voodoo.Model.extend({
   initialize: function(options) {
     this.base.initialize(options);
 
-    this.ambient_ = typeof options.ambient !== 'undefined' ?
-        options.ambient : 'black';
+    this.ambient_ = options.ambient || 'black';
     this.threeJsAmbient_ =
         voodoo.utility.convertCssColorToThreeJsColor(this.ambient_);
 
-    this.emissive_ = typeof options.emissive !== 'undefined' ?
-        options.emissive : 'black';
+    this.emissive_ = options.emissive || 'black';
     this.threeJsEmissive_ =
         voodoo.utility.convertCssColorToThreeJsColor(this.emissive_);
 
-    this.shading_ = typeof options.shading !== 'undefined' ?
-        options.shading : Shader.ShadingStyle.Smooth;
+    this.shading_ = options.shading || Shader.ShadingStyle.Smooth;
 
-    var self = this;
+    var that = this;
+
     Object.defineProperty(this, 'ambient', {
-      get: function() { return self.ambient_; },
-      set: function(ambient) { self.setAmbient(ambient); },
+      get: function() { return that.ambient_; },
+      set: function(ambient) { that.setAmbient(ambient); },
       enumerable: false
     });
+
     Object.defineProperty(this, 'emissive', {
-      get: function() { return self.emissive_; },
-      set: function(emissive) { self.setEmissive(emissive); },
+      get: function() { return that.emissive_; },
+      set: function(emissive) { that.setEmissive(emissive); },
       enumerable: false
     });
+
     Object.defineProperty(this, 'shading', {
-      get: function() { return self.shading_; },
-      set: function(shading) { self.setShading(shading); },
+      get: function() { return that.shading_; },
+      set: function(shading) { that.setShading(shading); },
       enumerable: false
     });
   }
@@ -200,7 +200,7 @@ var Shader = this.Shader = voodoo.Model.extend({
   * @return {Shader}
   */
 Shader.prototype.setAmbient = function(ambient) {
-  if (ambient != this.ambient_) {
+  if (ambient !== this.ambient_) {
     this.ambient_ = ambient;
     this.threeJsAmbient_ =
         voodoo.utility.convertCssColorToThreeJsColor(ambient);
@@ -208,7 +208,7 @@ Shader.prototype.setAmbient = function(ambient) {
     this.dispatch(new voodoo.Event('changeAmbient', this));
 
     this.view.setAmbient(this.threeJsAmbient_);
-    if (typeof this.stencilView !== 'undefined' && this.stencilView)
+    if (this.stencilView)
       this.stencilView.setAmbient(this.threeJsAmbient_);
   }
 
@@ -224,7 +224,7 @@ Shader.prototype.setAmbient = function(ambient) {
   * @return {Shader}
   */
 Shader.prototype.setEmissive = function(emissive) {
-  if (emissive != this.emissive_) {
+  if (emissive !== this.emissive_) {
     this.emissive_ = emissive;
     this.threeJsEmissive_ =
         voodoo.utility.convertCssColorToThreeJsColor(emissive);
@@ -232,7 +232,7 @@ Shader.prototype.setEmissive = function(emissive) {
     this.dispatch(new voodoo.Event('changeEmissive', this));
 
     this.view.setEmissive(this.threeJsEmissive_);
-    if (typeof this.stencilView !== 'undefined' && this.stencilView)
+    if (this.stencilView)
       this.stencilView.setEmissive(this.threeJsEmissive_);
   }
 
@@ -248,13 +248,13 @@ Shader.prototype.setEmissive = function(emissive) {
   * @return {Shader}
   */
 Shader.prototype.setShading = function(shading) {
-  if (shading != this.shading_) {
+  if (shading !== this.shading_) {
     this.shading_ = shading;
 
     this.dispatch(new voodoo.Event('changeShading', this));
 
     this.view.setShading(this.shading_);
-    if (typeof this.stencilView !== 'undefined' && this.stencilView)
+    if (this.stencilView)
       this.stencilView.setShading(this.shading_);
   }
 

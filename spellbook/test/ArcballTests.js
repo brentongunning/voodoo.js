@@ -28,8 +28,9 @@ ArcballTests.prototype.setUp = function() {
  * Shutdown the engine between test cases.
  */
 ArcballTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 
@@ -51,9 +52,11 @@ ArcballTests.prototype.testArcball = function() {
     viewType: voodoo.View.extend({
       load: function() {
         this.base.load();
+
         var geometry = new THREE.CubeGeometry(200, 200, 200);
         var material = new THREE.MeshLambertMaterial();
         var mesh = new THREE.Mesh(geometry, material);
+
         this.scene.add(mesh);
         this.scene.attach(this.model.element);
         this.triggers.add(mesh);
@@ -63,15 +66,16 @@ ArcballTests.prototype.testArcball = function() {
 
   cube = new Cube();
 
-  var startRotationX = cube.rotation.x;
-  var startRotationY = cube.rotation.y;
-  var startRotationZ = cube.rotation.z;
+  var cubeRotation = cube.rotation;
+  var startRotationX = cubeRotation.x;
+  var startRotationY = cubeRotation.y;
+  var startRotationZ = cubeRotation.z;
 
   fireMouseEvent('mousedown', 600, 550);
   fireMouseEvent('mousemove', 700, 750);
   fireMouseEvent('mouseup', 700, 750);
 
-  assert(cube.rotation.x !== startRotationX);
-  assert(cube.rotation.y !== startRotationY);
-  assert(cube.rotation.z !== startRotationZ);
+  assertNotEquals(cubeRotation.x, startRotationX);
+  assertNotEquals(cubeRotation.y, startRotationY);
+  assertNotEquals(cubeRotation.z, startRotationZ);
 };

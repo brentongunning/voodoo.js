@@ -22,15 +22,17 @@ var ColorerView_ = voodoo.View.extend({
       this.setColorToMesh(e.object, this.model.threeJsColor_);
       this.dirty();
     });
+
     this.setColor(this.model.threeJsColor_);
   },
 
   setColor: function(color) {
     var sceneObjects = this.scene.objects;
-    for (var i = 0; i < sceneObjects.length; ++i) {
+    for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
       this.setColorToMesh(sceneObject, color);
     }
+
     this.dirty();
   },
 
@@ -44,17 +46,17 @@ var ColorerView_ = voodoo.View.extend({
    */
   setColorToMesh: function(mesh, color) {
     var material = mesh.material;
-    if (typeof material !== 'undefined' && material) {
+    if (material) {
       var materials = material.materials;
-      if (typeof materials !== 'undefined' && materials) {
-        for (var i in materials) {
+      if (materials) {
+        for (var i = 0, len = materials.length; i < len; ++i) {
           var subMaterial = materials[i];
-          if (typeof subMaterial.color !== 'undefined')
+          if (subMaterial.color)
             subMaterial.color.copy(color);
         }
       }
 
-      if (typeof material.color !== 'undefined')
+      if (material.color)
         material.color.copy(color);
     }
   }
@@ -88,15 +90,14 @@ var Colorer = this.Colorer = voodoo.Model.extend({
   initialize: function(options) {
     this.base.initialize(options);
 
-    this.color_ = typeof options.color !== 'undefined' ?
-        options.color : 'white';
+    this.color_ = options.color || 'white';
     this.threeJsColor_ =
         voodoo.utility.convertCssColorToThreeJsColor(this.color_);
 
-    var self = this;
+    var that = this;
     Object.defineProperty(this, 'color', {
-      get: function() { return self.color_; },
-      set: function(color) { self.setColor(color); },
+      get: function() { return that.color_; },
+      set: function(color) { that.setColor(color); },
       enumerable: false
     });
   }
@@ -112,7 +113,8 @@ var Colorer = this.Colorer = voodoo.Model.extend({
   * @return {Colorer}
   */
 Colorer.prototype.setColor = function(color) {
-  if (color != this.color_) {
+  if (color !== this.color_) {
+
     this.color_ = color;
     this.threeJsColor_ =
         voodoo.utility.convertCssColorToThreeJsColor(color);
@@ -120,8 +122,9 @@ Colorer.prototype.setColor = function(color) {
     this.dispatch(new voodoo.Event('changeColor', this));
 
     this.view.setColor(this.threeJsColor_);
-    if (typeof this.stencilView !== 'undefined' && this.stencilView)
+    if (this.stencilView)
       this.stencilView.setColor(this.threeJsColor_);
+
   }
 
   return this;

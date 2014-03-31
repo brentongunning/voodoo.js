@@ -37,72 +37,75 @@
   function getEasing() {
   	var func = document.getElementById('funcType').value;
   	var ease = document.getElementById('easeType').value;
+
+    var voodooEasing = voodoo.easing;
+
   	switch (func) {
   		case 'Linear':
   			switch(ease) {
-  				case 'Ease In': return voodoo.easing.linear;
-  				case 'Ease Out': return voodoo.easing.linear;
-  				case 'Ease In and Out': return voodoo.easing.linear;
+  				case 'Ease In': return voodooEasing.linear;
+  				case 'Ease Out': return voodooEasing.linear;
+  				case 'Ease In and Out': return voodooEasing.linear;
   			}
   		case 'Quadratic':
   			switch(ease) {
-  				case 'Ease In': return voodoo.easing.easeInQuad;
-  				case 'Ease Out': return voodoo.easing.easeOutQuad;
-  				case 'Ease In and Out': return voodoo.easing.easeInOutQuad;
+  				case 'Ease In': return voodooEasing.easeInQuad;
+  				case 'Ease Out': return voodooEasing.easeOutQuad;
+  				case 'Ease In and Out': return voodooEasing.easeInOutQuad;
   			}
   		case 'Cubic':
   			switch(ease) {
-  				case 'Ease In': return voodoo.easing.easeInCubic;
-  				case 'Ease Out': return voodoo.easing.easeOutCubic;
-  				case 'Ease In and Out': return voodoo.easing.easeInOutCubic;
+  				case 'Ease In': return voodooEasing.easeInCubic;
+  				case 'Ease Out': return voodooEasing.easeOutCubic;
+  				case 'Ease In and Out': return voodooEasing.easeInOutCubic;
   			}
   		case 'Quartic':
   			switch(ease) {
-  				case 'Ease In': return voodoo.easing.easeInQuart;
-  				case 'Ease Out': return voodoo.easing.easeOutQuart;
-  				case 'Ease In and Out': return voodoo.easing.easeInOutQuart;
+  				case 'Ease In': return voodooEasing.easeInQuart;
+  				case 'Ease Out': return voodooEasing.easeOutQuart;
+  				case 'Ease In and Out': return voodooEasing.easeInOutQuart;
   			}
   		case 'Quintic':
   			switch(ease) {
-  				case 'Ease In': return voodoo.easing.easeInQuint;
-  				case 'Ease Out': return voodoo.easing.easeOutQuint;
-  				case 'Ease In and Out': return voodoo.easing.easeInOutQuint;
+  				case 'Ease In': return voodooEasing.easeInQuint;
+  				case 'Ease Out': return voodooEasing.easeOutQuint;
+  				case 'Ease In and Out': return voodooEasing.easeInOutQuint;
   			}
   		case 'Sine':
   			switch(ease) {
-  				case 'Ease In': return voodoo.easing.easeInSine;
-  				case 'Ease Out': return voodoo.easing.easeOutSine;
-  				case 'Ease In and Out': return voodoo.easing.easeInOutSine;
+  				case 'Ease In': return voodooEasing.easeInSine;
+  				case 'Ease Out': return voodooEasing.easeOutSine;
+  				case 'Ease In and Out': return voodooEasing.easeInOutSine;
   			}
   		case 'Exponential':
   			switch(ease) {
-  				case 'Ease In': return voodoo.easing.easeInExpo;
-  				case 'Ease Out': return voodoo.easing.easeOutExpo;
-  				case 'Ease In and Out': return voodoo.easing.easeInOutExpo;
+  				case 'Ease In': return voodooEasing.easeInExpo;
+  				case 'Ease Out': return voodooEasing.easeOutExpo;
+  				case 'Ease In and Out': return voodooEasing.easeInOutExpo;
   			}
   		case 'Circular':
   			switch(ease) {
-  				case 'Ease In': return voodoo.easing.easeInCirc;
-  				case 'Ease Out': return voodoo.easing.easeOutCirc;
-  				case 'Ease In and Out': return voodoo.easing.easeInOutCirc;
+  				case 'Ease In': return voodooEasing.easeInCirc;
+  				case 'Ease Out': return voodooEasing.easeOutCirc;
+  				case 'Ease In and Out': return voodooEasing.easeInOutCirc;
   			}
   		case 'Elastic':
   			switch(ease) {
-  				case 'Ease In': return voodoo.easing.easeInElastic;
-  				case 'Ease Out': return voodoo.easing.easeOutElastic;
-  				case 'Ease In and Out': return voodoo.easing.easeInOutElastic;
+  				case 'Ease In': return voodooEasing.easeInElastic;
+  				case 'Ease Out': return voodooEasing.easeOutElastic;
+  				case 'Ease In and Out': return voodooEasing.easeInOutElastic;
   			}
   		case 'Back':
   			switch(ease) {
-  				case 'Ease In': return voodoo.easing.easeInBack;
-  				case 'Ease Out': return voodoo.easing.easeOutBack;
-  				case 'Ease In and Out': return voodoo.easing.easeInOutBack;
+  				case 'Ease In': return voodooEasing.easeInBack;
+  				case 'Ease Out': return voodooEasing.easeOutBack;
+  				case 'Ease In and Out': return voodooEasing.easeInOutBack;
   			}
   		case 'Bounce':
   			switch(ease) {
-  				case 'Ease In': return voodoo.easing.easeInBounce;
-  				case 'Ease Out': return voodoo.easing.easeOutBounce;
-  				case 'Ease In and Out': return voodoo.easing.easeInOutBounce;
+  				case 'Ease In': return voodooEasing.easeInBounce;
+  				case 'Ease Out': return voodooEasing.easeOutBounce;
+  				case 'Ease In and Out': return voodooEasing.easeInOutBounce;
   			}
   	}
   }
@@ -137,7 +140,8 @@
 
   	if (directionToggle)
 	  	cube.moveTo(right, 1, easingFunction);
-	  else cube.moveTo(left, 1, easingFunction);
+	  else
+      cube.moveTo(left, 1, easingFunction);
 
 	  directionToggle = !directionToggle;
   }

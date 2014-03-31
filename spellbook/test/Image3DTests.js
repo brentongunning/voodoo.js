@@ -18,8 +18,9 @@ Image3DTests = AsyncTestCase('Image3DTests');
  * Shutdown the engine between test cases.
  */
 Image3DTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 
@@ -120,8 +121,9 @@ Image3DTests.prototype.testImage3DEvents = function(queue) {
     img3d.morph(2, 0.25);
 
     var start = new Date;
+    var voodooEngine = voodoo.engine;
     while (!morphEnd && new Date() - start < 1000)
-      voodoo.engine.frame();
+      voodooEngine.frame();
 
     assert('Morph Begin:', morphBegin);
     assert('Morph End:', morphEnd);

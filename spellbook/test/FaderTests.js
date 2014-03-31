@@ -18,8 +18,9 @@ FaderTests = TestCase('FaderTests');
  * Shutdown the engine between test cases.
  */
 FaderTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 
@@ -35,6 +36,7 @@ FaderTests.prototype.testFaderExtend = function() {
         var geometry = new THREE.CubeGeometry(1, 1, 1);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
+
         this.scene.add(mesh);
       }
     })
@@ -64,16 +66,18 @@ FaderTests.prototype.testFaderEvents = function() {
   var alphaChange = false;
 
   instance.on('fadeBegin', function() {
-    if (instance.alpha === 0)
+    var instanceAlpha = instance.alpha;
+    if (instanceAlpha === 0)
       fadeInBegin = true;
-    else if (instance.alpha === 1)
+    else if (instanceAlpha === 1)
       fadeOutBegin = true;
   });
 
   instance.on('fadeEnd', function() {
-    if (instance.alpha === 0)
+    var instanceAlpha = instance.alpha;
+    if (instanceAlpha === 0) {
       fadeOutEnd = true;
-    else if (instance.alpha === 1) {
+    } else if (instanceAlpha === 1) {
       fadeInEnd = true;
       this.fadeOut(0.0001);
     }
@@ -86,8 +90,9 @@ FaderTests.prototype.testFaderEvents = function() {
   instance.fadeIn(0.0001);
 
   var start = new Date;
+  var voodooEngine = voodoo.engine;
   while (!fadeOutEnd && new Date() - start < 1000)
-    voodoo.engine.frame();
+    voodooEngine.frame();
 
   assert('Fade In Begin', fadeInBegin);
   assert('Fade Out Begin', fadeOutBegin);
@@ -108,6 +113,7 @@ FaderTests.prototype.testFaderSetAlpha = function() {
         var geometry = new THREE.CubeGeometry(1, 1, 1);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
+
         this.scene.add(mesh);
       }
     })
@@ -118,6 +124,7 @@ FaderTests.prototype.testFaderSetAlpha = function() {
 
   instance.setAlpha(0.5);
   assertEquals(0.5, instance.alpha);
+
   instance.alpha = 0.8;
   assertEquals(0.8, instance.alpha);
 };

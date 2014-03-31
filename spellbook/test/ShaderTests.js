@@ -18,8 +18,9 @@ ShaderTests = TestCase('ShaderTests');
  * Shutdown the engine between test cases.
  */
 ShaderTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 
@@ -34,6 +35,7 @@ ShaderTests.prototype.testShaderExtend = function() {
         var geometry = new THREE.CubeGeometry(1, 1, 1);
         var material = new THREE.MeshLambertMaterial();
         var mesh = new THREE.Mesh(geometry, material);
+
         this.scene.add(mesh);
       }
     })
@@ -59,6 +61,7 @@ ShaderTests.prototype.testShaderEvents = function() {
   var changeAmbient = 0;
   var changeEmissive = 0;
   var changeShading = 0;
+
   instance.on('changeAmbient', function() { changeAmbient++; });
   instance.on('changeEmissive', function() { changeEmissive++; });
   instance.on('changeShading', function() { changeShading++; });

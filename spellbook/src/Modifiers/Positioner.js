@@ -21,19 +21,23 @@ var PositionerView_ = voodoo.View.extend({
     this.scene.on('add', function(e) {
       var position = this.model.position_;
       var objectPosition = e.object.position;
+
       objectPosition.x = position.x;
       objectPosition.y = position.y;
       objectPosition.z = position.z;
+
       this.dirty();
     });
+
     this.setPosition(this.model.position_);
   },
 
   setPosition: function(position) {
     var sceneObjects = this.scene.objects;
-    for (var i = 0; i < sceneObjects.length; ++i) {
+    for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
       var sceneObjectPosition = sceneObject.position;
+
       sceneObjectPosition.x = position.x;
       sceneObjectPosition.y = position.y;
       sceneObjectPosition.z = position.z;
@@ -87,9 +91,10 @@ var Positioner = this.Positioner = voodoo.Model.extend({
   initialize: function(options) {
     this.base.initialize(options);
 
-    if (typeof options.position !== 'undefined') {
+    if (options.position)
       this.position_ = this.parsePosition_(options.position);
-    } else this.position_ = { x: 0, y: 0, z: 0 };
+    else
+      this.position_ = { x: 0, y: 0, z: 0 };
 
     this.element_ = options.element;
     this.center_ = options.center;
@@ -100,39 +105,44 @@ var Positioner = this.Positioner = voodoo.Model.extend({
       y: this.position_.y,
       z: this.position_.z
     };
+
     this.targetPosition = {
       x: this.position_.x,
       y: this.position_.y,
       z: this.position_.z
     };
+
     this.moveStartTime = null;
     this.moveDuration = 0;
     this.moving = false;
 
-    var self = this;
+    var that = this;
     var proxy = {};
+
     Object.defineProperty(proxy, 'x', {
-      get: function() { return self.position_.x; },
-      set: function(x) { self.setPosition(x, self.position_.y,
-          self.position_.z); },
+      get: function() { return that.position_.x; },
+      set: function(x) { that.setPosition(x, that.position_.y,
+          that.position_.z); },
       enumerable: false
     });
+
     Object.defineProperty(proxy, 'y', {
-      get: function() { return self.position_.y; },
-      set: function(y) { self.setPosition(self.position_.x, y,
-          self.position_.z); },
+      get: function() { return that.position_.y; },
+      set: function(y) { that.setPosition(that.position_.x, y,
+          that.position_.z); },
       enumerable: false
     });
+
     Object.defineProperty(proxy, 'z', {
-      get: function() { return self.position_.z; },
-      set: function(z) { self.setPosition(self.position_.x,
-          self.position_.y, z); },
+      get: function() { return that.position_.z; },
+      set: function(z) { that.setPosition(that.position_.x,
+          that.position_.y, z); },
       enumerable: false
     });
 
     Object.defineProperty(this, 'position', {
       get: function() { return proxy; },
-      set: function(position) { self.setPosition(position); },
+      set: function(position) { that.setPosition(position); },
       enumerable: false
     });
   },
@@ -140,7 +150,7 @@ var Positioner = this.Positioner = voodoo.Model.extend({
   setUpViews: function() {
     this.base.setUpViews();
 
-    if (typeof this.element_ !== 'undefined' && this.element_)
+    if (this.element_)
       this.attach(this.element_, this.center_, this.pixelScale_);
   },
 
@@ -153,14 +163,20 @@ var Positioner = this.Positioner = voodoo.Model.extend({
       var t = duration / this.moveDuration;
 
       if (t < 1.0) {
+
         var i = this.moveEasing(t);
         var invI = 1 - i;
-        this.position_.x = this.startPosition.x * invI +
+
+        this.position_.x =
+            this.startPosition.x * invI +
             this.targetPosition.x * i;
-        this.position_.y = this.startPosition.y * invI +
+        this.position_.y =
+            this.startPosition.y * invI +
             this.targetPosition.y * i;
-        this.position_.z = this.startPosition.z * invI +
+        this.position_.z =
+            this.startPosition.z * invI +
             this.targetPosition.z * i;
+
       } else {
         this.position_.x = this.targetPosition.x;
         this.position_.y = this.targetPosition.y;
@@ -174,7 +190,7 @@ var Positioner = this.Positioner = voodoo.Model.extend({
       }
 
       this.view.setPosition(this.position_);
-      if (typeof this.stencilView !== 'undefined' && this.stencilView)
+      if (this.stencilView)
         this.stencilView.setPosition(this.position_);
     }
   }
@@ -193,7 +209,7 @@ var Positioner = this.Positioner = voodoo.Model.extend({
   */
 Positioner.prototype.attach = function(element, center, pixelScale) {
   this.view.attachScene(element, center, pixelScale);
-  if (typeof this.stencilView !== 'undefined' && this.stencilView)
+  if (this.stencilView)
     this.stencilView.attachScene(element, center, pixelScale);
 
   this.dispatch(new voodoo.Event('attach', this));
@@ -211,7 +227,7 @@ Positioner.prototype.detach = function() {
   this.dispatch(new voodoo.Event('detach', this));
 
   this.view.detachScene();
-  if (typeof this.stencilView !== 'undefined' && this.stencilView)
+  if (this.stencilView)
     this.stencilView.detachScene();
 
   return this;
@@ -237,26 +253,34 @@ Positioner.prototype.moveTo = function(position, seconds, opt_easing) {
     endPosition = { x: arguments[0], y: arguments[1], z: arguments[2] };
     seconds = arguments[3];
     opt_easing = arguments[4];
-  } else endPosition = this.parsePosition_(position);
+  } else {
+    endPosition = this.parsePosition_(position);
+  }
 
-  if (seconds == 0) {
+  if (seconds === 0) {
+
     this.setPosition(endPosition);
+
   } else if (this.position_.x !== endPosition.x ||
       this.position_.y !== endPosition.y ||
       this.position_.z !== endPosition.z) {
+
     this.startPosition.x = this.position_.x;
     this.startPosition.y = this.position_.y;
     this.startPosition.z = this.position_.z;
+
     this.targetPosition.x = endPosition.x;
     this.targetPosition.y = endPosition.y;
     this.targetPosition.z = endPosition.z;
+
     this.moveStartTime = new Date();
     this.moveDuration = seconds * 1000;
     this.moving = true;
-    this.moveEasing = typeof opt_easing === 'undefined' ?
-        Easing.prototype.easeInOutQuad : opt_easing;
+
+    this.moveEasing = opt_easing || Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('moveBegin', this));
+
   }
 
   return this;
@@ -276,7 +300,8 @@ Positioner.prototype.moveTo = function(position, seconds, opt_easing) {
 Positioner.prototype.setPosition = function(position) {
   if (arguments.length > 1)
     this.position_ = { x: arguments[0], y: arguments[1], z: arguments[2] };
-  else this.position_ = this.parsePosition_(position);
+  else
+    this.position_ = this.parsePosition_(position);
 
   this.targetPosition.x = this.position_.x;
   this.targetPosition.y = this.position_.y;
@@ -287,7 +312,7 @@ Positioner.prototype.setPosition = function(position) {
   this.dispatch(new voodoo.Event('move', this));
 
   this.view.setPosition(this.position_);
-  if (typeof this.stencilView !== 'undefined' && this.stencilView)
+  if (this.stencilView)
     this.stencilView.setPosition(this.position_);
 
   return this;
@@ -328,6 +353,9 @@ Positioner.prototype.parsePosition_ = function(position) {
   if (typeof position === 'object') {
     if ('x' in position)
       return position;
-    else return { x: position[0], y: position[1], z: position[2] };
-  } else return { x: 0, y: 0, z: 0 };
+    else
+      return { x: position[0], y: position[1], z: position[2] };
+  } else {
+    return { x: 0, y: 0, z: 0 };
+  }
 };

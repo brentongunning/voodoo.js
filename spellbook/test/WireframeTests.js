@@ -18,8 +18,9 @@ WireframeTests = TestCase('WireframeTests');
  * Shutdown the engine between test cases.
  */
 WireframeTests.prototype.tearDown = function() {
-  if (typeof voodoo.engine !== 'undefined' && voodoo.engine !== null)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 
@@ -34,6 +35,7 @@ WireframeTests.prototype.testWireframeExtend = function() {
         var geometry = new THREE.CubeGeometry(1, 1, 1);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
+
         this.scene.add(mesh);
       }
     })

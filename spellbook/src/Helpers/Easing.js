@@ -32,10 +32,12 @@ function makeEaseOut_(f) {
  */
 function makeEaseInOut_(f) {
   var easeOut = makeEaseOut_(f);
+
   return function(t) {
     if (t < 0.5)
       return f(t * 2) / 2;
-    else return 0.5 + easeOut((t - 0.5) * 2) / 2;
+    else
+      return 0.5 + easeOut((t - 0.5) * 2) / 2;
   };
 }
 
@@ -264,7 +266,7 @@ Easing.prototype.easeInOutSine =
  * @return {number} Interpolation.
  */
 Easing.prototype.easeInExpo = function(t) {
-  return (t == 0) ? 0 : Math.pow(2, 10 * (t - 1));
+  return (t === 0) ? 0 : Math.pow(2, 10 * (t - 1));
 };
 
 
@@ -340,8 +342,8 @@ Easing.prototype.easeInOutCirc =
  * @return {number} Interpolation.
  */
 Easing.prototype.easeInElastic = function(t) {
-  if (t == 0) return 0;
-  if (t == 1) return 1;
+  if (t === 0) return 0;
+  if (t === 1) return 1;
 
   var p = 0.3;
   var s = p / 4;
