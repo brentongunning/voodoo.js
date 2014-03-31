@@ -451,20 +451,23 @@ Model['extend'] = function(opt_object) {
   var newTypePrototype = newType.prototype;
   var thisPrototype = this.prototype;
 
+  var name = thisPrototype['name'];
+  var newName = newTypePrototype['name'];
+  if (name && newName && newName !== name)
+    newTypePrototype['name'] = name + '.' + newName;
+
   var viewType = thisPrototype['viewType'];
   var newViewType = newTypePrototype['viewType'];
   if (viewType && newViewType && viewType !== newViewType)
     newTypePrototype['viewType'] = viewType['extend'](newViewType);
 
-  var stencil = thisPrototype['stencilViewType'];
-  var newStencil = newTypePrototype['stencilViewType'];
+  // If the stencil view is undefined, use the original view.
+  var stencil = thisPrototype['stencilViewType'] || viewType;
+  opt_object = (typeof opt_object === 'function' ?
+      opt_object.prototype : opt_object) || {};
+  var newStencil = opt_object['stencilViewType'] || newViewType;
   if (stencil && newStencil && stencil !== newStencil)
     newTypePrototype['stencilViewType'] = stencil['extend'](newStencil);
-
-  var name = thisPrototype['name'];
-  var newName = newTypePrototype['name'];
-  if (name && newName && newName !== name)
-    newTypePrototype['name'] = name + '.' + newName;
 
   newType['extend'] = Model['extend'];
 
