@@ -81,7 +81,7 @@ Model.prototype['construct'] = function(opt_options) {
   if (this['organization'] !== defaultOrganization_)
     id += this['organization'] + '.';
   id += this['name'] + '>';
-  vars.id_ = id;
+  vars['id'] = id;
 
   log_.model_(this, 'Constructing');
 
