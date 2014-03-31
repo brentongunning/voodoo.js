@@ -29,6 +29,9 @@ function Extendable() {
 
   var methodStack = this['extendableMethodStack'];
   for (var name in methodStack) {
+    if (!methodStack.hasOwnProperty(name))
+      continue;
+
     var record = methodStack[name];
     if (this[name] === record.methods[record.current])
       --record.current;
@@ -86,8 +89,10 @@ Extendable['extend'] = function(opt_object) {
   var parentPrototype = this.prototype;
   var childPrototype = Child.prototype;
 
-  for (var property in parentPrototype)
-    childPrototype[property] = parentPrototype[property];
+  for (var property in parentPrototype) {
+    if (parentPrototype.hasOwnProperty(property))
+      childPrototype[property] = parentPrototype[property];
+  }
 
   // Clone the current method stack.
   //
@@ -102,6 +107,9 @@ Extendable['extend'] = function(opt_object) {
   var childMethodStack = childPrototype['extendableMethodStack'] = {};
 
   for (var name in parentMethodStack) {
+    if (!parentMethodStack.hasOwnProperty(name))
+      continue;
+
     var methodRecord = parentMethodStack[name];
     childMethodStack[name] = {
       methods: methodRecord.methods.slice(0),
@@ -178,6 +186,9 @@ Extendable['extend'] = function(opt_object) {
     var base = childPrototype['base'] = {};
 
     for (var name in childMethodStack) {
+      if (!childMethodStack.hasOwnProperty(name))
+        continue;
+
       var record = childMethodStack[name];
       var recordMethods = record.methods;
 
@@ -207,6 +218,9 @@ Extendable['extend'] = function(opt_object) {
   var opt_objectMethodStack = opt_object['extendableMethodStack'];
   if (opt_objectMethodStack) {
     for (var name in opt_objectMethodStack) {
+      if (!opt_objectMethodStack.hasOwnProperty(name))
+        continue;
+
       var record = opt_objectMethodStack[name];
       var recordMethods = record.methods;
 

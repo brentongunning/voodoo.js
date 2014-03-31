@@ -89,9 +89,12 @@ TrackedElement_.prototype.update_ = function() {
     this.lastHeight_ = height;
 
     // Fire callbacks
-    for (var callback in this.callbacks_)
-      this.callbacks_[callback].call(null, this.lastX_, this.lastY_,
-          this.lastWidth_, this.lastHeight_, moved, resized);
+    for (var callback in this.callbacks_) {
+      if (this.callbacks_.hasOwnProperty(callback)) {
+        this.callbacks_[callback].call(null, this.lastX_, this.lastY_,
+            this.lastWidth_, this.lastHeight_, moved, resized);
+      }
+    }
   }
 };
 
