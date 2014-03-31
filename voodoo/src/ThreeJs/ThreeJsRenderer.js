@@ -579,8 +579,8 @@ ThreeJsRenderer_.prototype.render_ = function() {
 
       var seam = engineOptions.seamPixels_;
       var zCamera = this.seamCamera_['position']['z'];
-      var zNear = zCamera + seam;
-      var zFar = zCamera - seam;
+      var zNear = zCamera - seam;
+      var zFar = zCamera + seam;
 
       var context = this.seamRenderer_.context;
       context.enable(context.STENCIL_TEST);
