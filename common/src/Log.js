@@ -63,12 +63,12 @@ Log_.prototype.info_ = function(message) {
  *
  * @this {Log_}
  *
- * @param {Model} model Model to log about.
+ * @param {Object} model Model to log about.
  * @param {string} message Text to log.
  */
 Log_.prototype.model_ = function(model, message) {
   var args = Array.prototype.slice.call(arguments, 1);
-  args.unshift(model['privateModelProperties'].id_);
+  args.unshift(model['privateModelProperties']['id']);
 
   this.info_.apply(this, args);
 };
