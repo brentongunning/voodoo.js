@@ -76,7 +76,6 @@ var Wireframe = this.Wireframe = voodoo.Model.extend({
   name: 'Wireframe',
   organization: 'spellbook',
   viewType: WireframeView_,
-  stencilViewType: WireframeView_,
 
   initialize: function(options) {
     this.base.initialize(options);

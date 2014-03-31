@@ -59,7 +59,6 @@ var Hider = this.Hider = voodoo.Model.extend({
   name: 'Hider',
   organization: 'spellbook',
   viewType: HiderView_,
-  stencilViewType: HiderView_,
 
   initialize: function(options) {
     this.base.initialize(options);

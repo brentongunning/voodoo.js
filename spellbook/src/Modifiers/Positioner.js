@@ -83,7 +83,6 @@ var Positioner = this.Positioner = voodoo.Model.extend({
   name: 'Positioner',
   organization: 'spellbook',
   viewType: PositionerView_,
-  stencilViewType: PositionerView_,
 
   initialize: function(options) {
     this.base.initialize(options);

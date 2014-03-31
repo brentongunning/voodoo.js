@@ -70,7 +70,6 @@ var Rotator = this.Rotator = voodoo.Model.extend({
   name: 'Rotator',
   organization: 'spellbook',
   viewType: RotatorView_,
-  stencilViewType: RotatorView_,
 
   initialize: function(options) {
     this.base.initialize(options);
@@ -134,7 +133,7 @@ var Rotator = this.Rotator = voodoo.Model.extend({
       this.dispatch(new voodoo.Event('rotate', this));
 
       this.view.setRotation(this.rotation_);
-      if (typeof this.stencilView !== 'undefined' && this.stencilView)
+      if (this.stencilView)
         this.stencilView.setRotation(this.rotation_);
     } else {
       if (this.rotating) {
@@ -165,7 +164,7 @@ var Rotator = this.Rotator = voodoo.Model.extend({
         }
 
         this.view.setRotation(this.rotation_);
-        if (typeof this.stencilView !== 'undefined' && this.stencilView)
+        if (this.stencilView)
           this.stencilView.setRotation(this.rotation_);
       }
     }
@@ -286,7 +285,7 @@ Rotator.prototype.setRotation = function(rotation) {
   this.dispatch(new voodoo.Event('rotate', this));
 
   this.view.setRotation(this.rotation_);
-  if (typeof this.stencilView !== 'undefined' && this.stencilView)
+  if (this.stencilView)
     this.stencilView.setRotation(this.rotation_);
 
   return this;

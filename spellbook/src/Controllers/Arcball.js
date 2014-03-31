@@ -127,7 +127,6 @@ var Arcball = this.Arcball = Rotator.extend({
   name: 'Arcball',
   organization: 'spellbook',
   viewType: ArcballView_,
-  stencilViewType: NullView,
 
   initialize: function(options) {
     this.base.initialize(options);
@@ -175,6 +174,8 @@ var Arcball = this.Arcball = Rotator.extend({
 
     this.on('mousedown', function(e) {
       self.arcballSphere_ = self.view.computeArcballSphere();
+      if (self.stencilView)
+        self.stencilView.computeArcballSphere();
       self.arcballAnchorPoint_ = self.mapOntoSphere_(e.page.x, e.page.y);
       self.rotatingArcball = true;
     });

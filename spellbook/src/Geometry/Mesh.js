@@ -125,7 +125,6 @@ var Mesh = this.Mesh = Positioner.extend({
   name: 'Mesh',
   organization: 'spellbook',
   viewType: MeshView_,
-  stencilViewType: MeshView_,
 
   initialize: function(options) {
     this.base.initialize(options);

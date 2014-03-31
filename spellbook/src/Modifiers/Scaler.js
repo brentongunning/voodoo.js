@@ -70,7 +70,6 @@ var Scaler = this.Scaler = voodoo.Model.extend({
   name: 'Scaler',
   organization: 'spellbook',
   viewType: ScalerView_,
-  stencilViewType: ScalerView_,
 
   initialize: function(options) {
     this.base.initialize(options);

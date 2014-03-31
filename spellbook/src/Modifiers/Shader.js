@@ -154,7 +154,6 @@ var Shader = this.Shader = voodoo.Model.extend({
   name: 'Shader',
   organization: 'spellbook',
   viewType: ShaderView_,
-  stencilViewType: ShaderView_,
 
   initialize: function(options) {
     this.base.initialize(options);

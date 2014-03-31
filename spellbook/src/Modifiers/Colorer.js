@@ -84,7 +84,6 @@ var Colorer = this.Colorer = voodoo.Model.extend({
   name: 'Colorer',
   organization: 'spellbook',
   viewType: ColorerView_,
-  stencilViewType: ColorerView_,
 
   initialize: function(options) {
     this.base.initialize(options);
