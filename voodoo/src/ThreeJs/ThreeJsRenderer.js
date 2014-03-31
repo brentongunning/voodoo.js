@@ -84,24 +84,6 @@ ThreeJsRenderer_.prototype.capturePointerEvents_ = function(capture) {
 
 
 /**
- * Resets all dirty flags on all objects in a layer.
- *
- * @private
- *
- * @param {Layer_} layer Layer to clear.
- */
-ThreeJsRenderer_.prototype.clearDirtyFlags_ = function(layer) {
-  if (!layer)
-    return;
-
-  var views = layer.views_;
-  for (var viewIndex = 0, numViews = views.length; viewIndex < numViews;
-      ++viewIndex)
-    views[viewIndex]['scene'].isDirty_ = false;
-};
-
-
-/**
  * Creates and initializes the above and below fullscreen renderers.
  *
  * This is called internally during ThreeJsRenderer_'s constructor.
@@ -313,35 +295,7 @@ ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer) {
   if (!layer)
     return false;
 
-  var frustum = layer.camera_.frustum_;
-  var views = layer.views_;
-
-  for (var viewIndex = 0, numViews = views.length; viewIndex < numViews;
-      ++viewIndex) {
-    var view = views[viewIndex];
-    var scene = view['scene'];
-
-    if (view['loaded'] && scene.isDirty_) {
-      var meshes = scene.meshes_;
-
-      // If a scene has any non-mesh objects, then we have to redraw.
-      if (meshes.length !== scene.objects_.length)
-        return true;
-
-      for (var meshIndex = 0, numMeshes = meshes.length; meshIndex < numMeshes;
-          ++meshIndex) {
-        var mesh = meshes[meshIndex];
-
-        if (mesh['geometry']) {
-          mesh.updateMatrixWorld(true);
-          if (frustum.intersectsObject(mesh))
-            return true;
-        }
-      }
-    }
-  }
-
-  return false;
+  return layer.isRenderNeeded_();
 };
 
 
@@ -393,7 +347,6 @@ ThreeJsRenderer_.prototype.onResize_ = function(event) {
     setRenderSize(this.seamRenderer_, this.seamCanvas_);
 
 
-
   // This code forces webkit to redraw. It's needed because of a bug where
   // Chrome does not repaint some elements under the fullscreen canvas on
   // browser resize
@@ -404,7 +357,6 @@ ThreeJsRenderer_.prototype.onResize_ = function(event) {
   documentBodyStyle.display = 'none';
   var unused = documentBody.offsetHeight;
   documentBodyStyle.display = 'block';
-
 
 
   this.isDirty_ = true;
@@ -665,11 +617,11 @@ ThreeJsRenderer_.prototype.render_ = function() {
 
   this.isDirty_ = false;
 
-  this.clearDirtyFlags_(this.aboveLayer_);
-  this.clearDirtyFlags_(this.belowLayer_);
-  this.clearDirtyFlags_(this.belowStencilLayer_);
-  this.clearDirtyFlags_(this.seamLayer_);
-  this.clearDirtyFlags_(this.seamStencilLayer_);
+  if (this.aboveLayer_) this.aboveLayer_.clearDirtyFlags_();
+  if (this.belowLayer_) this.belowLayer_.clearDirtyFlags_();
+  if (this.belowStencilLayer_) this.belowStencilLayer_.clearDirtyFlags_();
+  if (this.seamLayer_) this.seamLayer_.clearDirtyFlags_();
+  if (this.seamStencilLayer_) this.seamStencilLayer_.clearDirtyFlags_();
 
   if (rendered && this.fpsTimer_)
     this.fpsTimer_.render_();

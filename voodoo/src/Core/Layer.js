@@ -48,6 +48,56 @@ Layer_.prototype.addView_ = function(view) {
 
 
 /**
+ * Resets all dirty flags on all objects in a layer.
+ *
+ * @private
+ */
+Layer_.prototype.clearDirtyFlags_ = function() {
+  for (var viewIndex = 0, numViews = this.views_.length; viewIndex < numViews;
+      ++viewIndex)
+    this.views_[viewIndex]['scene'].isDirty_ = false;
+};
+
+
+/**
+ * Determines if a layer needs to be rendered again.
+ *
+ * @private
+ *
+ * @return {boolean} True if the layer needs to be rendered. False if not.
+ */
+Layer_.prototype.isRenderNeeded_ = function() {
+  var frustum = this.camera_.frustum_;
+  for (var viewIndex = 0, numViews = this.views_.length; viewIndex < numViews;
+      ++viewIndex) {
+    var view = this.views_[viewIndex];
+    var scene = view['scene'];
+
+    if (view['loaded'] && scene.isDirty_) {
+      var meshes = scene.meshes_;
+
+      // If a scene has any non-mesh objects, then we have to redraw.
+      if (meshes.length !== scene.objects_.length)
+        return true;
+
+      for (var meshIndex = 0, numMeshes = meshes.length; meshIndex < numMeshes;
+          ++meshIndex) {
+        var mesh = meshes[meshIndex];
+
+        if (mesh['geometry']) {
+          mesh.updateMatrixWorld(true);
+          if (frustum.intersectsObject(mesh))
+            return true;
+        }
+      }
+    }
+  }
+
+  return false;
+};
+
+
+/**
  * Unregisters a view from this layer.
  *
  * @private
