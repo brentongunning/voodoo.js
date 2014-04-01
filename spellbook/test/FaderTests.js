@@ -57,7 +57,8 @@ FaderTests.prototype.testFaderExtend = function() {
  * Tests that the fadeBegin and fadeEnd events work.
  */
 FaderTests.prototype.testFaderEvents = function() {
-  var instance = new voodoo.Fader();
+  var Fader = voodoo.Fader.extend(DummyModel);
+  var instance = new Fader();
 
   var fadeInBegin = false;
   var fadeInEnd = false;

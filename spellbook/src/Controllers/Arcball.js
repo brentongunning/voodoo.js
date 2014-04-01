@@ -15,6 +15,9 @@
  */
 var ArcballView_ = voodoo.View.extend({
 
+  above: false,
+  below: false,
+
   load: function() {
     this.base.load();
   },

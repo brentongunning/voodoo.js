@@ -60,7 +60,8 @@ PositionerTests.prototype.testPositionerExtend = function() {
  * Tests that the position can be set in multiple ways.
  */
 PositionerTests.prototype.testPositionerSetPosition = function() {
-  var instance = new voodoo.Positioner({position: [2, 3, 4]});
+  var Positioner = voodoo.Positioner.extend(DummyModel);
+  var instance = new Positioner({position: [2, 3, 4]});
 
   var instancePosition = instance.position;
   assertEquals(2, instancePosition.x);
@@ -115,7 +116,8 @@ PositionerTests.prototype.testPositionerSetPosition = function() {
  * Tests that the moveBegin and moveEnd events work.
  */
 PositionerTests.prototype.testPositionerMoveEvents = function() {
-  var instance = new voodoo.Positioner();
+  var Positioner = voodoo.Positioner.extend(DummyModel);
+  var instance = new Positioner();
 
   var moveBegin = false;
   var moveEnd = false;
@@ -152,7 +154,8 @@ PositionerTests.prototype.testPositionerAttachEvents = function() {
         width:400px; height:300px;" id="anchor"></div>
   */
 
-  var instance = new voodoo.Positioner({
+  var Positioner = voodoo.Positioner.extend(DummyModel);
+  var instance = new Positioner({
     element: document.getElementById('anchor'),
     center: false,
     pixelScale: true

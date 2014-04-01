@@ -55,7 +55,8 @@ ScalerTests.prototype.testScalerExtend = function() {
  * Tests that the scale can be set in multiple ways.
  */
 ScalerTests.prototype.testScalerSetScale = function() {
-  var instance = new voodoo.Scaler({scale: 2});
+  var Scaler = voodoo.Scaler.extend(DummyModel);
+  var instance = new Scaler({scale: 2});
 
   var instanceScale = instance.scale;
   assertEquals(2, instanceScale.x);
@@ -117,7 +118,8 @@ ScalerTests.prototype.testScalerSetScale = function() {
  * Tests that the scaleBegin and scaleEnd events work.
  */
 ScalerTests.prototype.testScalerEvents = function() {
-  var instance = new voodoo.Scaler();
+  var Scaler = voodoo.Scaler.extend(DummyModel);
+  var instance = new Scaler();
 
   var scaleBegin = false;
   var scaleEnd = false;

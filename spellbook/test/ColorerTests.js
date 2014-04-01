@@ -56,7 +56,8 @@ ColorerTests.prototype.testColorerExtend = function() {
  * Tests that the changeColor events work.
  */
 ColorerTests.prototype.testColorerEvents = function() {
-  var instance = new voodoo.Colorer();
+  var Colorer = voodoo.Colorer.extend(DummyModel);
+  var instance = new Colorer();
 
   var changeColor = 0;
   instance.on('changeColor', function() { changeColor++; });

@@ -56,7 +56,8 @@ ShaderTests.prototype.testShaderExtend = function() {
  * Tests that the changeAmbient, changeEmissive and changeShading events work.
  */
 ShaderTests.prototype.testShaderEvents = function() {
-  var instance = new voodoo.Shader();
+  var Shader = voodoo.Shader.extend(DummyModel);
+  var instance = new Shader();
 
   var changeAmbient = 0;
   var changeEmissive = 0;

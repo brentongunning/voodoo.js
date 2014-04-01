@@ -60,7 +60,8 @@ RotatorTests.prototype.testRotatorExtend = function() {
  * Tests that the rotation can be set in multiple ways.
  */
 RotatorTests.prototype.testRotatorSetRotation = function() {
-  var instance = new voodoo.Rotator({rotation: [2, 3, 4]});
+  var Rotator = voodoo.Rotator.extend(DummyModel);
+  var instance = new Rotator({rotation: [2, 3, 4]});
 
   var instanceRotation = instance.rotation;
   assertEquals(2, instanceRotation.x);
@@ -117,7 +118,8 @@ RotatorTests.prototype.testRotatorSetRotation = function() {
  * @param {Object} queue Async queue.
  */
 RotatorTests.prototype.testRotatorRotate = function(queue) {
-  var instance = new voodoo.Rotator({
+  var Rotator = voodoo.Rotator.extend(DummyModel);
+  var instance = new Rotator({
     rotation: [0, 0, 0]
   });
 
@@ -152,7 +154,8 @@ RotatorTests.prototype.testRotatorRotate = function(queue) {
  * Tests that the rotateBegin and rotateEnd events work.
  */
 RotatorTests.prototype.testRotatorEvents = function() {
-  var instance = new voodoo.Rotator();
+  var Rotator = voodoo.Rotator.extend(DummyModel);
+  var instance = new Rotator();
 
   var rotateBegin = false;
   var rotateEnd = false;

@@ -58,7 +58,8 @@ HiderTests.prototype.testHiderExtend = function() {
  * Tests that the show and hide events work.
  */
 HiderTests.prototype.testHiderEvents = function() {
-  var instance = new voodoo.Hider();
+  var Hider = voodoo.Hider.extend(DummyModel);
+  var instance = new Hider();
 
   var show = 0;
   var hide = 0;

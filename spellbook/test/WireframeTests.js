@@ -56,7 +56,8 @@ WireframeTests.prototype.testWireframeExtend = function() {
  * Tests that the changeWireframe events work.
  */
 WireframeTests.prototype.testWireframeEvents = function() {
-  var instance = new voodoo.Wireframe();
+  var Wireframe = voodoo.Wireframe.extend(DummyModel);
+  var instance = new Wireframe();
 
   var changeWireframe = 0;
   instance.on('changeWireframe', function() { changeWireframe++; });
