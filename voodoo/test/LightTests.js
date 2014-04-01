@@ -26,8 +26,9 @@ LightTests.prototype.setUp = function() {
  * Shuts down the engine between test cases.
  */
 LightTests.prototype.tearDown = function() {
-  if (voodoo.engine)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 

@@ -269,7 +269,30 @@ View.prototype['triggers'] = null;
  * @return {?} Extended type.
  */
 View['extend'] = function(opt_object) {
-  return Extendable['extend'].apply(this, arguments);
+  /** @type {?} */
+  var baseType = this;
+
+  var newType = Extendable['extend'].call(this, opt_object);
+  var newTypePrototype = newType.prototype;
+  var thisPrototype = baseType.prototype;
+
+  if (baseType !== View) {
+    // The above and below booleans are optimizations to limit which views are
+    // created when one knows that there is nothing to display. They are not
+    // intended to be used to actually change what is displayed on screen, so
+    // if above/below were always overridden to true there should be no
+    // difference. When extending views from each other, we have to be
+    // conservative and create views for a layer when any of the views in the
+    // inheritance chain might have content in that layer.
+    newTypePrototype['above'] = newTypePrototype['above'] ||
+        thisPrototype['above'];
+    newTypePrototype['below'] = newTypePrototype['below'] ||
+        thisPrototype['below'];
+  }
+
+  newType['extend'] = View['extend'];
+
+  return newType;
 };
 
 // Exports

@@ -18,8 +18,9 @@ ExtendableTests = TestCase('ExtendableTests');
  * Shuts down the engine between test cases.
  */
 ExtendableTests.prototype.tearDown = function() {
-  if (voodoo.engine)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 
