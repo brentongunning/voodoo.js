@@ -1,7 +1,7 @@
 Voodoo Javascript Library Source Documentation
 ===================================================
 
-Version 0.8.8 (Public Beta)
+Version 0.8.9 (Public Beta)
 
 ## Overview
 
