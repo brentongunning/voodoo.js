@@ -69,12 +69,12 @@ CacheTests.prototype.setUp = function() {
 
 
 /**
- * Test case shutdown. Runs once after each test.
+ * Shuts down the engine between test cases.
  */
 CacheTests.prototype.tearDown = function() {
-  // Shutdown the engine between test cases.
-  if (voodoo.engine)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 

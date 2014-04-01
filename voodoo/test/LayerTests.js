@@ -24,12 +24,12 @@ LayerTests.prototype.setUp = function() {
 
 
 /**
- * Runs once after each test case.
+ * Shuts down the engine between test cases.
  */
 LayerTests.prototype.tearDown = function() {
-  // Shutdown the engine between test cases.
-  if (voodoo.engine)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 

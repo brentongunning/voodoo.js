@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
-Voodoo Javascript Library - Version 0.8.8 (Public Beta)
+Voodoo Javascript Library - Version 0.8.9 (Public Beta)
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ See license.txt.
 Release Notes
 -------------------------------------------------------------------------------
 
-3-20-2014 - 0.8.9
+3-31-2014 - 0.8.9
 Added Model.loaded property.
 Added Scene.localToPage and Scene.pageToLocal coordinate change functions.
 Change Event to store page coordinates instead of client coordinates.
@@ -53,8 +53,10 @@ Bug Fix: Error when removing event listeners.
 Bug Fix: Crash in min builds on engine initialization.
 Bug Fix: Fire mouseup events when release outside model.
 Bug Fix: Fire mousemove events outside model when user is click-dragging.
+Bug Fix: Extending Views correctly merges the above and below properties.
 Optimization: this.base performance improvements.
 Optimization: Only raycast when there are mouse listeners.
+Many minor perf improvements identified during code cleanup.
 
 2-19-2014 - 0.8.8
 Add 'load' Model event and View.loaded to set when a View has finished loading.

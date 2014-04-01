@@ -15,19 +15,12 @@ UtilityTests = TestCase('UtilityTests');
 
 
 /**
- * Placeholder for utility test case setup.
- */
-UtilityTests.prototype.setUp = function() {
-  // No-op
-};
-
-
-/**
  * Shuts down the engine between test cases.
  */
 UtilityTests.prototype.tearDown = function() {
-  if (voodoo.engine)
-    voodoo.engine.destroy();
+  var voodooEngine = voodoo.engine;
+  if (voodooEngine)
+    voodooEngine.destroy();
 };
 
 
