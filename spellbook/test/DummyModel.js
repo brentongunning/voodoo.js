@@ -8,6 +8,8 @@
 
 /**
  * A fake model that may be used for testing.
+ *
+ * @constructor
  */
 var DummyModel = voodoo.Model.extend({
   name: 'Dummy',

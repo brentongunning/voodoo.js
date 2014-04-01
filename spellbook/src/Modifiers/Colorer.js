@@ -22,18 +22,18 @@ var ColorerView_ = voodoo.View.extend({
     this.base.load();
 
     this.scene.on('add', function(e) {
-      this.setColorToMesh(e.object, this.model.threeJsColor_);
+      this.setColorToMesh_(e.object, this.model.threeJsColor_);
       this.dirty();
     });
 
-    this.setColor(this.model.threeJsColor_);
+    this.setColor_(this.model.threeJsColor_);
   },
 
-  setColor: function(color) {
+  setColor_: function(color) {
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
-      this.setColorToMesh(sceneObject, color);
+      this.setColorToMesh_(sceneObject, color);
     }
 
     this.dirty();
@@ -47,7 +47,7 @@ var ColorerView_ = voodoo.View.extend({
    * @param {THREE.Mesh} mesh Mesh.
    * @param {THREE.Color} color Color.
    */
-  setColorToMesh: function(mesh, color) {
+  setColorToMesh_: function(mesh, color) {
     var material = mesh.material;
     if (material) {
       var materials = material.materials;
@@ -101,7 +101,7 @@ var Colorer = this.Colorer = voodoo.Model.extend({
     Object.defineProperty(this, 'color', {
       get: function() { return that.color_; },
       set: function(color) { that.setColor(color); },
-      enumerable: false
+      enumerable: true
     });
   }
 
@@ -124,9 +124,9 @@ Colorer.prototype.setColor = function(color) {
 
     this.dispatch(new voodoo.Event('changeColor', this));
 
-    this.view.setColor(this.threeJsColor_);
+    this.view.setColor_(this.threeJsColor_);
     if (this.stencilView)
-      this.stencilView.setColor(this.threeJsColor_);
+      this.stencilView.setColor_(this.threeJsColor_);
 
   }
 

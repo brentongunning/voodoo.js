@@ -22,14 +22,14 @@ var HiderView_ = voodoo.View.extend({
     this.base.load();
 
     this.scene.on('add', function(e) {
-      e.object.visible = this.model.visible;
+      e.object.visible = this.model.visible_;
       this.dirty();
     });
 
-    this.setVisible(this.model.visible);
+    this.setVisible_(this.model.visible_);
   },
 
-  setVisible: function(visible) {
+  setVisible_: function(visible) {
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i)
       sceneObjects[i].visible = visible;
@@ -77,9 +77,9 @@ var Hider = this.Hider = voodoo.Model.extend({
         if (visible !== that.visible_) {
           that.visible_ = visible;
 
-          that.view.setVisible(visible);
+          that.view.setVisible_(visible);
           if (that.stencilView)
-            that.stencilView.setVisible(visible);
+            that.stencilView.setVisible_(visible);
 
           if (visible)
             that.dispatch(new voodoo.Event('show', that));
@@ -87,7 +87,7 @@ var Hider = this.Hider = voodoo.Model.extend({
             that.dispatch(new voodoo.Event('hide', that));
         }
       },
-      enumerable: false
+      enumerable: true
     });
   }
 

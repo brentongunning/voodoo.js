@@ -17,27 +17,27 @@
  */
 var MouseLightView_ = LightView_.extend({
 
-  createLight: function() {
+  createLight_: function() {
     return new THREE.PointLight();
   },
 
   load: function() {
     LightView_.prototype.load.call(this);
 
-    this.updateHeight();
+    this.updateHeight_();
   },
 
-  move: function(x, y) {
-    this.light.position.x = x;
-    this.light.position.y = y;
+  move_: function(x, y) {
+    this.light_.position.x = x;
+    this.light_.position.y = y;
     this.dirty();
   },
 
-  updateHeight: function() {
-    if (this.model.height <= 0)
-      this.light.position.z = this.camera.position.z;
+  updateHeight_: function() {
+    if (this.model.height_ <= 0)
+      this.light_.position.z = this.camera.position.z;
     else
-      this.light.position.z = this.model.height;
+      this.light_.position.z = this.model.height_;
 
     this.dirty();
   }
@@ -69,7 +69,7 @@ var MouseLight = this.MouseLight = Light_.extend({
   initialize: function(options) {
     Light_.prototype.initialize.call(this, options);
 
-    this.height = typeof options.height !== 'undefined' ? options.height : 0;
+    this.height_ = typeof options.height !== 'undefined' ? options.height : 0;
   },
 
   setUpViews: function() {
@@ -80,13 +80,13 @@ var MouseLight = this.MouseLight = Light_.extend({
     document.addEventListener('mousemove', function(event) {
       var x = event.clientX + window.pageXOffset;
       var y = event.clientY + window.pageYOffset;
-      that.view.move(x, y);
+      that.view.move_(x, y);
     }, false);
 
     // Respond to camera moves in case the height changes.
-    if (this.height <= 0) {
+    if (this.height_ <= 0) {
       this.on('cameramove', function() {
-        this.view.updateHeight();
+        this.view.updateHeight_();
       });
     }
   }

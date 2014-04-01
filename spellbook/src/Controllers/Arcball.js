@@ -148,7 +148,7 @@ var Arcball = this.Arcball = Rotator.extend({
     this.arcballRadius = typeof options.arcballRadius !== 'undefined' ?
         options.arcballRadius : 0;
 
-    this.rotatingArcball = false;
+    this.rotatingArcball_ = false;
     this.startArcballRotation_ = new THREE.Quaternion(0, 0, 0, 1);
   },
 
@@ -158,7 +158,7 @@ var Arcball = this.Arcball = Rotator.extend({
     var that = this;
 
     this.on('mousemove', function(e) {
-      if (that.rotatingArcball) {
+      if (that.rotatingArcball_) {
         var p = that.mapOntoSphere_(e.page.x, e.page.y);
 
         var a = new THREE.Vector3(
@@ -198,11 +198,11 @@ var Arcball = this.Arcball = Rotator.extend({
         that.stencilView.computeArcballSphere();
 
       that.arcballAnchorPoint_ = that.mapOntoSphere_(e.page.x, e.page.y);
-      that.rotatingArcball = true;
+      that.rotatingArcball_ = true;
     });
 
     this.on('mouseup', function() {
-      that.rotatingArcball = false;
+      that.rotatingArcball_ = false;
       that.startArcballRotation_ = that.currentArcballRotation_;
     });
   },

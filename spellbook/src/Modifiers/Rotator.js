@@ -31,10 +31,11 @@ var RotatorView_ = voodoo.View.extend({
 
       this.dirty();
     });
-    this.setRotation(this.model.rotation_);
+
+    this.setRotation_(this.model.rotation_);
   },
 
-  setRotation: function(rotation) {
+  setRotation_: function(rotation) {
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
@@ -85,20 +86,22 @@ var Rotator = this.Rotator = voodoo.Model.extend({
     else
       this.rotation_ = { x: 0, y: 0, z: 0 };
 
-    this.startRotation = {
+    this.startRotation_ = {
       x: this.rotation_.x,
       y: this.rotation_.y,
       z: this.rotation_.z
     };
-    this.targetRotation = {
+
+    this.targetRotation_ = {
       x: this.rotation_.x,
       y: this.rotation_.y,
       z: this.rotation_.z
     };
-    this.rotationStartTime = null;
+
+    this.rotationStartTime_ = null;
     this.deltaRotating_ = false;
-    this.rotating = false;
-    this.rotationDuration = 0;
+    this.rotating_ = false;
+    this.rotationDuration_ = 0;
 
     var that = this;
     var proxy = {};
@@ -107,27 +110,27 @@ var Rotator = this.Rotator = voodoo.Model.extend({
       get: function() { return that.rotation_.x; },
       set: function(x) { that.setRotation(x, that.rotation_.y,
           that.rotation_.z); },
-      enumerable: false
+      enumerable: true
     });
 
     Object.defineProperty(proxy, 'y', {
       get: function() { return that.rotation_.y; },
       set: function(y) { that.setRotation(that.rotation_.x, y,
           that.rotation_.z); },
-      enumerable: false
+      enumerable: true
     });
 
     Object.defineProperty(proxy, 'z', {
       get: function() { return that.rotation_.z; },
       set: function(z) { that.setRotation(that.rotation_.x,
           that.rotation_.y, z); },
-      enumerable: false
+      enumerable: true
     });
 
     Object.defineProperty(this, 'rotation', {
       get: function() { return proxy; },
       set: function(rotation) { that.setRotation(rotation); },
-      enumerable: false
+      enumerable: true
     });
   },
 
@@ -144,45 +147,45 @@ var Rotator = this.Rotator = voodoo.Model.extend({
 
       this.dispatch(new voodoo.Event('rotate', this));
 
-      this.view.setRotation(this.rotation_);
+      this.view.setRotation_(this.rotation_);
       if (this.stencilView)
-        this.stencilView.setRotation(this.rotation_);
+        this.stencilView.setRotation_(this.rotation_);
 
-    } else if (this.rotating) {
+    } else if (this.rotating_) {
 
       var now = new Date();
-      var duration = now - this.rotationStartTime;
-      var t = duration / this.rotationDuration;
+      var duration = now - this.rotationStartTime_;
+      var t = duration / this.rotationDuration_;
 
       if (t < 1.0) {
-        var i = this.rotationEasing(t);
+        var i = this.rotationEasing_(t);
         var invI = 1 - i;
 
         this.rotation_.x =
-            this.startRotation.x * invI +
-            this.targetRotation.x * i;
+            this.startRotation_.x * invI +
+            this.targetRotation_.x * i;
         this.rotation_.y =
-            this.startRotation.y * invI +
-            this.targetRotation.y * i;
+            this.startRotation_.y * invI +
+            this.targetRotation_.y * i;
         this.rotation_.z =
-            this.startRotation.z * invI +
-            this.targetRotation.z * i;
+            this.startRotation_.z * invI +
+            this.targetRotation_.z * i;
       } else {
-        this.rotation_.x = this.targetRotation.x;
-        this.rotation_.y = this.targetRotation.y;
-        this.rotation_.z = this.targetRotation.z;
+        this.rotation_.x = this.targetRotation_.x;
+        this.rotation_.y = this.targetRotation_.y;
+        this.rotation_.z = this.targetRotation_.z;
       }
 
       this.dispatch(new voodoo.Event('rotate', this));
 
       if (t >= 1.0) {
-        this.rotating = false;
+        this.rotating_ = false;
         this.dispatch(new voodoo.Event('rotateEnd', this));
       }
 
-      this.view.setRotation(this.rotation_);
+      this.view.setRotation_(this.rotation_);
       if (this.stencilView)
-        this.stencilView.setRotation(this.rotation_);
+        this.stencilView.setRotation_(this.rotation_);
     }
   }
 
@@ -220,20 +223,20 @@ Rotator.prototype.rotateTo = function(rotation, seconds, opt_easing) {
       this.rotation_.y !== endRotation.y ||
       this.rotation_.z !== endRotation.z) {
 
-    this.startRotation.x = this.rotation_.x;
-    this.startRotation.y = this.rotation_.y;
-    this.startRotation.z = this.rotation_.z;
+    this.startRotation_.x = this.rotation_.x;
+    this.startRotation_.y = this.rotation_.y;
+    this.startRotation_.z = this.rotation_.z;
 
-    this.targetRotation.x = endRotation.x;
-    this.targetRotation.y = endRotation.y;
-    this.targetRotation.z = endRotation.z;
+    this.targetRotation_.x = endRotation.x;
+    this.targetRotation_.y = endRotation.y;
+    this.targetRotation_.z = endRotation.z;
 
-    this.rotationStartTime = new Date();
+    this.rotationStartTime_ = new Date();
     this.deltaRotating_ = false;
-    this.rotating = true;
-    this.rotationDuration = seconds * 1000;
+    this.rotating_ = true;
+    this.rotationDuration_ = seconds * 1000;
 
-    this.rotationEasing = opt_easing || Easing.prototype.easeInOutQuad;
+    this.rotationEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('rotateBegin', this));
   }
@@ -269,7 +272,7 @@ Rotator.prototype.rotate = function(deltaRotation, opt_continuous) {
   if (opt_continuous) {
 
     this.deltaRotating_ = true;
-    this.rotating = false;
+    this.rotating_ = false;
     this.dispatch(new voodoo.Event('rotateBegin', this));
 
   } else {
@@ -307,18 +310,18 @@ Rotator.prototype.setRotation = function(rotation) {
   else
     this.rotation_ = this.parseRotation_(rotation);
 
-  this.targetRotation.x = this.rotation_.x;
-  this.targetRotation.y = this.rotation_.y;
-  this.targetRotation.z = this.rotation_.z;
+  this.targetRotation_.x = this.rotation_.x;
+  this.targetRotation_.y = this.rotation_.y;
+  this.targetRotation_.z = this.rotation_.z;
 
   this.deltaRotating_ = false;
-  this.rotating = false;
+  this.rotating_ = false;
 
   this.dispatch(new voodoo.Event('rotate', this));
 
-  this.view.setRotation(this.rotation_);
+  this.view.setRotation_(this.rotation_);
   if (this.stencilView)
-    this.stencilView.setRotation(this.rotation_);
+    this.stencilView.setRotation_(this.rotation_);
 
   return this;
 };

@@ -32,10 +32,10 @@ var ScalerView_ = voodoo.View.extend({
       this.dirty();
     });
 
-    this.setScale(this.model.scale_);
+    this.setScale_(this.model.scale_);
   },
 
-  setScale: function(scale) {
+  setScale_: function(scale) {
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
@@ -88,21 +88,21 @@ var Scaler = this.Scaler = voodoo.Model.extend({
 
     this.scale_ = this.fixScale_(this.scale_);
 
-    this.startScale = {
+    this.startScale_ = {
       x: this.scale_.x,
       y: this.scale_.y,
       z: this.scale_.z
     };
 
-    this.targetScale = {
+    this.targetScale_ = {
       x: this.scale_.x,
       y: this.scale_.y,
       z: this.scale_.z
     };
 
-    this.scaleStartTime = null;
-    this.scaleDuration = 0;
-    this.scaling = false;
+    this.scaleStartTime_ = null;
+    this.scaleDuration_ = 0;
+    this.scaling_ = false;
 
     var that = this;
     var proxy = {};
@@ -110,59 +110,59 @@ var Scaler = this.Scaler = voodoo.Model.extend({
     Object.defineProperty(proxy, 'x', {
       get: function() { return that.scale_.x; },
       set: function(x) { that.setScale(x, that.scale_.y, that.scale_.z); },
-      enumerable: false
+      enumerable: true
     });
 
     Object.defineProperty(proxy, 'y', {
       get: function() { return that.scale_.y; },
       set: function(y) { that.setScale(that.scale_.x, y, that.scale_.z); },
-      enumerable: false
+      enumerable: true
     });
 
     Object.defineProperty(proxy, 'z', {
       get: function() { return that.scale_.z; },
       set: function(z) { that.setScale(that.scale_.x, that.scale_.y, z); },
-      enumerable: false
+      enumerable: true
     });
 
     Object.defineProperty(this, 'scale', {
       get: function() { return proxy; },
       set: function(scale) { that.setScale(scale); },
-      enumerable: false
+      enumerable: true
     });
   },
 
   update: function(deltaTime) {
     this.base.update(deltaTime);
 
-    if (this.scaling) {
+    if (this.scaling_) {
       var now = new Date();
-      var duration = now - this.scaleStartTime;
-      var t = duration / this.scaleDuration;
+      var duration = now - this.scaleStartTime_;
+      var t = duration / this.scaleDuration_;
 
       if (t < 1.0) {
-        var i = this.scaleEasing(t);
+        var i = this.scaleEasing_(t);
         var invI = 1 - i;
 
-        this.scale_.x = this.startScale.x * invI + this.targetScale.x * i;
-        this.scale_.y = this.startScale.y * invI + this.targetScale.y * i;
-        this.scale_.z = this.startScale.z * invI + this.targetScale.z * i;
+        this.scale_.x = this.startScale_.x * invI + this.targetScale_.x * i;
+        this.scale_.y = this.startScale_.y * invI + this.targetScale_.y * i;
+        this.scale_.z = this.startScale_.z * invI + this.targetScale_.z * i;
       } else {
-        this.scale_.x = this.targetScale.x;
-        this.scale_.y = this.targetScale.y;
-        this.scale_.z = this.targetScale.z;
+        this.scale_.x = this.targetScale_.x;
+        this.scale_.y = this.targetScale_.y;
+        this.scale_.z = this.targetScale_.z;
       }
 
       this.dispatch(new voodoo.Event('scale', this));
 
       if (t >= 1.0) {
-        this.scaling = false;
+        this.scaling_ = false;
         this.dispatch(new voodoo.Event('scaleEnd', this));
       }
 
-      this.view.setScale(this.scale_);
+      this.view.setScale_(this.scale_);
       if (this.stencilView)
-        this.stencilView.setScale(this.scale_);
+        this.stencilView.setScale_(this.scale_);
     }
   }
 
@@ -202,19 +202,19 @@ Scaler.prototype.scaleTo = function(scale, seconds, opt_easing) {
       this.scale_.y !== endScale.y ||
       this.scale_.z !== endScale.z) {
 
-    this.startScale.x = this.scale_.x;
-    this.startScale.y = this.scale_.y;
-    this.startScale.z = this.scale_.z;
+    this.startScale_.x = this.scale_.x;
+    this.startScale_.y = this.scale_.y;
+    this.startScale_.z = this.scale_.z;
 
-    this.targetScale.x = endScale.x;
-    this.targetScale.y = endScale.y;
-    this.targetScale.z = endScale.z;
+    this.targetScale_.x = endScale.x;
+    this.targetScale_.y = endScale.y;
+    this.targetScale_.z = endScale.z;
 
-    this.scaleStartTime = new Date();
-    this.scaleDuration = seconds * 1000;
-    this.scaling = true;
+    this.scaleStartTime_ = new Date();
+    this.scaleDuration_ = seconds * 1000;
+    this.scaling_ = true;
 
-    this.scaleEasing = opt_easing || Easing.prototype.easeInOutQuad;
+    this.scaleEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('scaleBegin', this));
 
@@ -242,17 +242,17 @@ Scaler.prototype.setScale = function(scale) {
 
   this.scale_ = this.fixScale_(this.scale_);
 
-  this.targetScale.x = this.scale_.x;
-  this.targetScale.y = this.scale_.y;
-  this.targetScale.z = this.scale_.z;
+  this.targetScale_.x = this.scale_.x;
+  this.targetScale_.y = this.scale_.y;
+  this.targetScale_.z = this.scale_.z;
 
-  this.scaling = false;
+  this.scaling_ = false;
 
   this.dispatch(new voodoo.Event('scale', this));
 
-  this.view.setScale(this.scale_);
+  this.view.setScale_(this.scale_);
   if (this.stencilView)
-    this.stencilView.setScale(this.scale_);
+    this.stencilView.setScale_(this.scale_);
 
   return this;
 };

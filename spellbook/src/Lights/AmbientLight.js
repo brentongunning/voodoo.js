@@ -15,7 +15,7 @@
  */
 var AmbientLightView_ = LightView_.extend({
 
-  createLight: function() {
+  createLight_: function() {
     return new THREE.AmbientLight();
   }
 

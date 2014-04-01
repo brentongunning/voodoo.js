@@ -22,24 +22,24 @@ var WireframeView_ = voodoo.View.extend({
     this.base.load();
 
     this.scene.on('add', function(e) {
-      this.setWireframeToMesh(e.object, this.model.wireframe_);
+      this.setWireframeToMesh_(e.object, this.model.wireframe_);
       this.dirty();
     });
 
-    this.setWireframe(this.model.wireframe_);
+    this.setWireframe_(this.model.wireframe_);
   },
 
-  setWireframe: function(wireframe) {
+  setWireframe_: function(wireframe) {
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
-      this.setWireframeToMesh(sceneObject, wireframe);
+      this.setWireframeToMesh_(sceneObject, wireframe);
     }
 
     this.dirty();
   },
 
-  setWireframeToMesh: function(mesh, wireframe) {
+  setWireframeToMesh_: function(mesh, wireframe) {
     var material = mesh.material;
     if (material) {
       var materials = material.materials;
@@ -92,7 +92,7 @@ var Wireframe = this.Wireframe = voodoo.Model.extend({
     Object.defineProperty(this, 'wireframe', {
       get: function() { return that.wireframe_; },
       set: function(wireframe) { that.setWireframe(wireframe); },
-      enumerable: false
+      enumerable: true
     });
   }
 
@@ -112,9 +112,9 @@ Wireframe.prototype.setWireframe = function(wireframe) {
 
     this.dispatch(new voodoo.Event('changeWireframe', this));
 
-    this.view.setWireframe(this.wireframe_);
+    this.view.setWireframe_(this.wireframe_);
     if (this.stencilView)
-      this.stencilView.setWireframe(this.wireframe_);
+      this.stencilView.setWireframe_(this.wireframe_);
   }
 
   return this;

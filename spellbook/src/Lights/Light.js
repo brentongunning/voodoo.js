@@ -17,17 +17,17 @@
  */
 var LightView_ = voodoo.View.extend({
 
-  createLight: function() {
+  createLight_: function() {
     log_.error_('createLight_() undefined.');
   },
 
   load: function() {
-    this.light = this.createLight();
-    this.scene.add(this.light);
+    this.light_ = this.createLight_();
+    this.scene.add(this.light_);
   },
 
-  setColor: function(color) {
-    this.light.color.copy(color);
+  setColor_: function(color) {
+    this.light_.color.copy(color);
   }
 
 });
@@ -61,7 +61,7 @@ var Light_ = voodoo.Model.extend({
       get: function() { return that.color_; },
       set: function(color) {
         var threeJsColor = voodoo.utility.convertCssColorToThreeJsColor(color);
-        this.view.setColor(threeJsColor);
+        this.view.setColor_(threeJsColor);
         that.color_ = color;
       },
       enumerable: true

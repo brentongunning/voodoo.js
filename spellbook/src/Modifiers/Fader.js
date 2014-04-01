@@ -25,20 +25,20 @@ var FaderView_ = voodoo.View.extend({
       var objectMaterial = e.object.material;
 
       if (objectMaterial)
-        objectMaterial.opacity = this.model.alpha;
+        objectMaterial.opacity = this.model.alpha_;
 
       this.dirty();
     });
 
-    this.setAlpha(this.model.alpha);
+    this.setAlpha_(this.model.alpha_);
   },
 
-  setAlpha: function(alpha) {
+  setAlpha_: function(alpha) {
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
       if (sceneObject.material)
-        sceneObject.material.opacity = this.model.alpha;
+        sceneObject.material.opacity = alpha;
     }
 
     this.dirty();
@@ -61,14 +61,14 @@ var FaderStencilView_ = voodoo.View.extend({
     this.base.load();
 
     this.scene.on('add', function(e) {
-      e.object.visible = this.model.alpha > 0;
+      e.object.visible = this.model.alpha_ > 0;
     });
   },
 
-  setAlpha: function(alpha) {
+  setAlpha_: function(alpha) {
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i)
-      sceneObjects[i].visible = this.model.alpha > 0;
+      sceneObjects[i].visible = alpha > 0;
 
     this.dirty();
   }
@@ -106,46 +106,46 @@ var Fader = this.Fader = voodoo.Model.extend({
     this.base.initialize(options);
 
     this.alpha_ = typeof options.alpha !== 'undefined' ? options.alpha : 0;
-    this.startAlpha = this.alpha_;
-    this.targetAlpha = this.alpha_;
+    this.startAlpha_ = this.alpha_;
+    this.targetAlpha_ = this.alpha_;
 
-    this.fadeStartTime = null;
-    this.fadeDuration = 0;
-    this.fading = false;
+    this.fadeStartTime_ = null;
+    this.fadeDuration_ = 0;
+    this.fading_ = false;
 
     var that = this;
     Object.defineProperty(this, 'alpha', {
       get: function() { return that.alpha_; },
       set: function(alpha) { that.setAlpha(alpha); },
-      enumerable: false
+      enumerable: true
     });
   },
 
   update: function(deltaTime) {
     this.base.update(deltaTime);
 
-    if (this.fading) {
+    if (this.fading_) {
       var now = new Date();
-      var duration = now - this.fadeStartTime;
-      var t = duration / this.fadeDuration;
+      var duration = now - this.fadeStartTime_;
+      var t = duration / this.fadeDuration_;
 
       if (t < 1.0) {
-        var i = this.fadeEasing(t);
-        this.alpha_ = this.startAlpha * (1 - i) + this.targetAlpha * i;
+        var i = this.fadeEasing_(t);
+        this.alpha_ = this.startAlpha_ * (1 - i) + this.targetAlpha_ * i;
       } else {
-        this.alpha_ = this.targetAlpha;
+        this.alpha_ = this.targetAlpha_;
       }
 
       this.dispatch(new voodoo.Event('alphaChange', this));
 
       if (t >= 1.0) {
-        this.fading = false;
+        this.fading_ = false;
         this.dispatch(new voodoo.Event('fadeEnd', this));
       }
 
-      this.view.setAlpha(this.alpha_);
+      this.view.setAlpha_(this.alpha_);
       if (this.stencilView)
-        this.stencilView.setAlpha(this.alpha_);
+        this.stencilView.setAlpha_(this.alpha_);
     }
   }
 
@@ -193,14 +193,14 @@ Fader.prototype.fadeTo = function(alpha, seconds, opt_easing) {
 
   } else if (this.alpha_ !== alpha) {
 
-    this.startAlpha = this.alpha_;
-    this.targetAlpha = alpha;
+    this.startAlpha_ = this.alpha_;
+    this.targetAlpha_ = alpha;
 
-    this.fadeStartTime = new Date();
-    this.fadeDuration = seconds * 1000;
-    this.fading = true;
+    this.fadeStartTime_ = new Date();
+    this.fadeDuration_ = seconds * 1000;
+    this.fading_ = true;
 
-    this.fadeEasing = opt_easing || Easing.prototype.easeInOutQuad;
+    this.fadeEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('fadeBegin', this));
 
@@ -219,14 +219,14 @@ Fader.prototype.fadeTo = function(alpha, seconds, opt_easing) {
   */
 Fader.prototype.setAlpha = function(alpha) {
   this.alpha_ = alpha;
-  this.targetAlpha = alpha;
-  this.fading = false;
+  this.targetAlpha_ = alpha;
+  this.fading_ = false;
 
   this.dispatch(new voodoo.Event('alphaChange', this));
 
-  this.view.setAlpha(alpha);
+  this.view.setAlpha_(alpha);
   if (this.stencilView)
-    this.stencilView.setAlpha(alpha);
+    this.stencilView.setAlpha_(alpha);
 
   return this;
 };

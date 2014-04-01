@@ -19,16 +19,16 @@ var MeshView_ = voodoo.View.extend({
     this.base.load();
 
     this.loaded = false;
-    this.pendingAnimation = null;
+    this.pendingAnimation_ = null;
 
-    if (this.model.format === Mesh.Format.JSON)
-      this.loadJson();
+    if (this.model.format_ === Mesh.Format.JSON)
+      this.loadJson_();
   },
 
-  loadJson: function() {
+  loadJson_: function() {
     var that = this;
     var loader = new THREE.JSONLoader();
-    loader.load(this.model.mesh, function(geometry, materials) {
+    loader.load(this.model.mesh_, function(geometry, materials) {
       var mesh;
 
       for (var i = 0, len = i < materials.length; i < len; ++i) {
@@ -37,7 +37,7 @@ var MeshView_ = voodoo.View.extend({
           materials.map.flipY = false;
       }
 
-      if (that.model.animated) {
+      if (that.model.animated_) {
         var material = materials[0];
 
         material.morphTargets = true;
@@ -50,58 +50,62 @@ var MeshView_ = voodoo.View.extend({
         mesh = new THREE.Mesh(geometry, faceMaterial);
       }
 
-      that.mesh = mesh;
+      that.mesh_ = mesh;
 
       that.scene.add(mesh);
       that.triggers.add(mesh);
 
       that.scene.attach(
-          that.model.element,
-          that.model.center,
-          that.model.pixelScale);
+          that.model.element_,
+          that.model.center_,
+          that.model.pixelScale_);
 
       that.loaded = true;
     });
   },
 
-  playAnimation: function(animation) {
+  playAnimation_: function(animation) {
     if (!this.loaded) {
-      this.pendingAnimation = animation;
+      this.pendingAnimation_ = animation;
       return;
     }
 
-    this.mesh.time = 0;
-    this.mesh.duration = animation.duration;
+    this.mesh_.time = 0;
+    this.mesh_.duration = animation.duration;
 
     if (animation.forward)
-      this.mesh.setDirectionForward();
+      this.mesh_.setDirectionForward();
     else
-      this.mesh.setDirectionBackward();
+      this.mesh_.setDirectionBackward();
 
-    this.mesh.setFrameRange(animation.start, animation.end);
+    this.mesh_.setFrameRange(animation.start, animation.end);
   },
 
-  updateAnimation: function(deltaTimeMs) {
+  updateAnimation_: function(deltaTimeMs) {
     if (!this.loaded)
       return;
 
-    if (this.pendingAnimation !== null) {
-      this.playAnimation(this.pendingAnimation);
-      this.pendingAnimation = null;
+    if (this.pendingAnimation_ !== null) {
+      this.playAnimation_(this.pendingAnimation_);
+      this.pendingAnimation_ = null;
     }
 
-    this.mesh.updateAnimation(deltaTimeMs);
-    this.dirty();
+    if (this.mesh_.updateAnimation) {
+      this.mesh_.updateAnimation(deltaTimeMs);
+      this.dirty();
+    }
   },
 
-  getLastTime: function() {
-    return this.loaded ? this.mesh.time : 0;
+  getLastTime_: function() {
+    return this.loaded ? this.mesh_.time : 0;
   },
 
-  setToLastFrame: function() {
-    this.mesh.time = 1;
-    this.mesh.updateAnimation(0);
-    this.dirty();
+  setToLastFrame_: function() {
+    if (this.mesh_.updateAnimation) {
+      this.mesh_.time = 1;
+      this.mesh_.updateAnimation(0);
+      this.dirty();
+    }
   }
 
 });
@@ -113,7 +117,7 @@ var MeshView_ = voodoo.View.extend({
  *
  * Options:
  *
- * - mesh {string}  3D mesh file to load.
+ * - mesh {string} 3D mesh file to load.
  * - format {Mesh.Format} Mesh file format. Default is JSON.
  * - animated {boolean} Whether the mesh supports animations. Default is true.
  *
@@ -134,23 +138,26 @@ var Mesh = this.Mesh = Positioner.extend({
   viewType: MeshView_,
 
   initialize: function(options) {
+    options = options || {};
+
     this.base.initialize(options);
 
-    this.element = options.element;
     log_.assert_(options.element, 'element must be defined');
+    this.element_ = options.element;
 
-    this.mesh = options.mesh;
     log_.assert_(options.mesh, 'mesh must be defined');
-    this.format = options.format || Mesh.Format.JSON;
+    this.mesh_ = options.mesh;
 
-    this.animated = typeof options.animated !== 'undefined' ?
+    this.format_ = options.format || Mesh.Format.JSON;
+
+    this.animated_ = typeof options.animated !== 'undefined' ?
         options.animated : true;
-    this.center = typeof options.center !== 'undefined' ?
+    this.center_ = typeof options.center !== 'undefined' ?
         options.center : true;
-    this.pixelScale = typeof options.pixelScale !== 'undefined' ?
+    this.pixelScale_ = typeof options.pixelScale !== 'undefined' ?
         options.pixelScale : true;
 
-    this.animations = {};
+    this.animations_ = {};
     this.playing_ = false;
     this.looping_ = false;
 
@@ -158,38 +165,40 @@ var Mesh = this.Mesh = Positioner.extend({
 
     Object.defineProperty(this, 'looping', {
       get: function() { return that.looping_; },
-      enumerable: false
+      enumerable: true
     });
 
     Object.defineProperty(this, 'playing', {
       get: function() { return that.playing_; },
       set: function(playing) {
         if (playing)
-          throw 'Cannot set playing to true. Call play()';
+          log_.error_('Cannot set playing to true. Call play()');
         else
           that.stop();
       },
-      enumerable: false
+      enumerable: true
     });
   },
 
   update: function(deltaTime) {
     if (this.playing_) {
       var deltaTimeMs = deltaTime * 1000;
-      this.view.updateAnimation(deltaTimeMs);
+
+      this.view.updateAnimation_(deltaTimeMs);
       if (this.stencilView)
-        this.stencilView.updateAnimation(deltaTimeMs);
+        this.stencilView.updateAnimation_(deltaTimeMs);
 
       if (!this.looping_) {
-        var lastTime = this.view.getLastTime();
+        var lastTime = this.view.getLastTime_();
 
-        if (lastTime < this.lastTime) {
-          this.view.setToLastFrame();
+        if (lastTime < this.lastTime_) {
+          this.view.setToLastFrame_();
           if (this.stencilView)
-            this.stencilView.setToLastFrame();
+            this.stencilView.setToLastFrame_();
+
           this.stop();
         } else {
-          this.lastTime = lastTime;
+          this.lastTime_ = lastTime;
         }
       }
     }
@@ -213,7 +222,7 @@ var Mesh = this.Mesh = Positioner.extend({
  */
 Mesh.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
     opt_forward) {
-  this.animations[name] = {
+  this.animations_[name] = {
     start: start,
     end: end,
     duration: seconds * 1000,
@@ -233,18 +242,18 @@ Mesh.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
  * @return {Mesh}
  */
 Mesh.prototype.play = function(name) {
-  var animation = this.animations[name];
+  var animation = this.animations_[name];
 
-  this.view.playAnimation(animation);
+  this.view.playAnimation_(animation);
   if (this.stencilView)
-    this.stencilView.playAnimation(animation);
+    this.stencilView.playAnimation_(animation);
 
   if (!this.playing_)
     this.dispatch(new voodoo.Event('play', this));
 
   this.playing_ = true;
   this.looping_ = animation.loop;
-  this.lastTime = 0;
+  this.lastTime_ = 0;
 
   return this;
 };
@@ -258,6 +267,7 @@ Mesh.prototype.play = function(name) {
 Mesh.prototype.stop = function() {
   this.dispatch(new voodoo.Event('stop', this));
   this.playing_ = false;
+
   return this;
 };
 

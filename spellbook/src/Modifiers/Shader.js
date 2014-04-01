@@ -22,49 +22,49 @@ var ShaderView_ = voodoo.View.extend({
     this.base.load();
 
     this.scene.on('add', function(e) {
-      this.setAmbientToMesh(e.object, this.model.threeJsAmbient_);
-      this.setEmissiveToMesh(e.object, this.model.threeJsEmissive_);
-      this.setShadingToMesh(e.object, this.model.shading_);
+      this.setAmbientToMesh_(e.object, this.model.threeJsAmbient_);
+      this.setEmissiveToMesh_(e.object, this.model.threeJsEmissive_);
+      this.setShadingToMesh_(e.object, this.model.shading_);
 
       this.dirty();
     });
 
-    this.setAmbient(this.model.threeJsAmbient_);
-    this.setEmissive(this.model.threeJsEmissive_);
-    this.setShading(this.model.shading_);
+    this.setAmbient_(this.model.threeJsAmbient_);
+    this.setEmissive_(this.model.threeJsEmissive_);
+    this.setShading_(this.model.shading_);
   },
 
-  setAmbient: function(ambient, emissive, shadingType) {
+  setAmbient_: function(ambient, emissive, shadingType) {
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
-      this.setAmbientToMesh(sceneObject, ambient);
+      this.setAmbientToMesh_(sceneObject, ambient);
     }
 
     this.dirty();
   },
 
-  setEmissive: function(emissive) {
+  setEmissive_: function(emissive) {
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
-      this.setEmissiveToMesh(sceneObject, emissive);
+      this.setEmissiveToMesh_(sceneObject, emissive);
     }
 
     this.dirty();
   },
 
-  setShading: function(shading) {
+  setShading_: function(shading) {
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
-      this.setShadingToMesh(sceneObject, shading);
+      this.setShadingToMesh_(sceneObject, shading);
     }
 
     this.dirty();
   },
 
-  setAmbientToMesh: function(mesh, ambient) {
+  setAmbientToMesh_: function(mesh, ambient) {
     var material = mesh.material;
     if (material) {
       var materials = material.materials;
@@ -81,7 +81,7 @@ var ShaderView_ = voodoo.View.extend({
     }
   },
 
-  setEmissiveToMesh: function(mesh, emissive) {
+  setEmissiveToMesh_: function(mesh, emissive) {
     var material = mesh.material;
     if (material) {
       var materials = material.materials;
@@ -98,7 +98,7 @@ var ShaderView_ = voodoo.View.extend({
     }
   },
 
-  setShadingToMesh: function(mesh, shading) {
+  setShadingToMesh_: function(mesh, shading) {
     var threeJsShading = THREE.SmoothShading;
     if (shading === Shader.ShadingStyle.Flat)
       threeJsShading = THREE.FlatShading;
@@ -176,19 +176,19 @@ var Shader = this.Shader = voodoo.Model.extend({
     Object.defineProperty(this, 'ambient', {
       get: function() { return that.ambient_; },
       set: function(ambient) { that.setAmbient(ambient); },
-      enumerable: false
+      enumerable: true
     });
 
     Object.defineProperty(this, 'emissive', {
       get: function() { return that.emissive_; },
       set: function(emissive) { that.setEmissive(emissive); },
-      enumerable: false
+      enumerable: true
     });
 
     Object.defineProperty(this, 'shading', {
       get: function() { return that.shading_; },
       set: function(shading) { that.setShading(shading); },
-      enumerable: false
+      enumerable: true
     });
   }
 
@@ -210,9 +210,9 @@ Shader.prototype.setAmbient = function(ambient) {
 
     this.dispatch(new voodoo.Event('changeAmbient', this));
 
-    this.view.setAmbient(this.threeJsAmbient_);
+    this.view.setAmbient_(this.threeJsAmbient_);
     if (this.stencilView)
-      this.stencilView.setAmbient(this.threeJsAmbient_);
+      this.stencilView.setAmbient_(this.threeJsAmbient_);
   }
 
   return this;
@@ -234,9 +234,9 @@ Shader.prototype.setEmissive = function(emissive) {
 
     this.dispatch(new voodoo.Event('changeEmissive', this));
 
-    this.view.setEmissive(this.threeJsEmissive_);
+    this.view.setEmissive_(this.threeJsEmissive_);
     if (this.stencilView)
-      this.stencilView.setEmissive(this.threeJsEmissive_);
+      this.stencilView.setEmissive_(this.threeJsEmissive_);
   }
 
   return this;
@@ -256,9 +256,9 @@ Shader.prototype.setShading = function(shading) {
 
     this.dispatch(new voodoo.Event('changeShading', this));
 
-    this.view.setShading(this.shading_);
+    this.view.setShading_(this.shading_);
     if (this.stencilView)
-      this.stencilView.setShading(this.shading_);
+      this.stencilView.setShading_(this.shading_);
   }
 
   return this;

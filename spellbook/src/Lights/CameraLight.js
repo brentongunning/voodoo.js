@@ -15,17 +15,17 @@
  */
 var CameraLightView_ = LightView_.extend({
 
-  createLight: function() {
+  createLight_: function() {
     return new THREE.PointLight();
   },
 
   load: function() {
     LightView_.prototype.load.apply(this);
-    this.updatePosition();
+    this.updatePosition_();
   },
 
-  updatePosition: function() {
-    var lightPosition = this.light.position;
+  updatePosition_: function() {
+    var lightPosition = this.light_.position;
     var cameraPosition = this.camera.position;
 
     lightPosition.x = cameraPosition.x;
@@ -61,7 +61,7 @@ var CameraLight = this.CameraLight = Light_.extend({
     Light_.prototype.setUpViews.call(this);
 
     this.on('cameramove', function() {
-      this.view.updatePosition();
+      this.view.updatePosition_();
     });
   }
 
