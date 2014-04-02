@@ -59,11 +59,7 @@ var Light_ = voodoo.Model.extend({
     var that = this;
     Object.defineProperty(this, 'color', {
       get: function() { return that.color_; },
-      set: function(color) {
-        var threeJsColor = voodoo.utility.convertCssColorToThreeJsColor(color);
-        this.view.setColor_(threeJsColor);
-        that.color_ = color;
-      },
+      set: function(color) { that.setColor(color); },
       enumerable: true
     });
   },
@@ -73,6 +69,22 @@ var Light_ = voodoo.Model.extend({
   }
 
 });
+
+
+/**
+ * Changes the color for this light.
+ *
+ * @param {string} color CSS color string.
+ *
+ * @return {Light_}
+ */
+Light_.prototype.setColor = function(color) {
+  var threeJsColor = voodoo.utility.convertCssColorToThreeJsColor(color);
+  this.view.setColor_(threeJsColor);
+  this.color_ = color;
+
+  return this;
+};
 
 
 /**

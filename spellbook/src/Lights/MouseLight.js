@@ -22,7 +22,7 @@ var MouseLightView_ = LightView_.extend({
   },
 
   load: function() {
-    LightView_.prototype.load.call(this);
+    this.base.load();
 
     this.updateHeight_();
   },
@@ -30,6 +30,7 @@ var MouseLightView_ = LightView_.extend({
   move_: function(x, y) {
     this.light_.position.x = x;
     this.light_.position.y = y;
+
     this.dirty();
   },
 
@@ -67,19 +68,20 @@ var MouseLight = this.MouseLight = Light_.extend({
   viewType: MouseLightView_,
 
   initialize: function(options) {
-    Light_.prototype.initialize.call(this, options);
+    this.base.initialize(options);
 
     this.height_ = typeof options.height !== 'undefined' ? options.height : 0;
   },
 
   setUpViews: function() {
-    Light_.prototype.setUpViews.call(this);
+    this.base.setUpViews();
 
     // Move the light when the mouse moves.
     var that = this;
     document.addEventListener('mousemove', function(event) {
       var x = event.clientX + window.pageXOffset;
       var y = event.clientY + window.pageYOffset;
+
       that.view.move_(x, y);
     }, false);
 

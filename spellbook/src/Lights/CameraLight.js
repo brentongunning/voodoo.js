@@ -20,7 +20,8 @@ var CameraLightView_ = LightView_.extend({
   },
 
   load: function() {
-    LightView_.prototype.load.apply(this);
+    this.base.load();
+
     this.updatePosition_();
   },
 
@@ -58,7 +59,7 @@ var CameraLight = this.CameraLight = Light_.extend({
   viewType: CameraLightView_,
 
   setUpViews: function() {
-    Light_.prototype.setUpViews.call(this);
+    this.base.setUpViews();
 
     this.on('cameramove', function() {
       this.view.updatePosition_();
