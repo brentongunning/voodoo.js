@@ -33,11 +33,9 @@ LightTests.prototype.tearDown = function() {
 
 
 /**
- * Tests the operations of an ambient light.
- *
- * @param {?} queue Test step queue.
+ * Tests standard lighting will create a camera and ambient light.
  */
-LightTests.prototype.testEnableStandardLighting = function(queue) {
+LightTests.prototype.testEnableStandardLighting = function() {
   var cameraLight = null, ambientLight = null;
 
   var engine = voodoo.engine = new voodoo.Engine({});
@@ -65,7 +63,7 @@ LightTests.prototype.testEnableStandardLighting = function(queue) {
 
 
 /**
- * Tests the operations of a camera light.
+ * Tests disabling standing lighting will not create any default lights.
  */
 LightTests.prototype.testDisableStandardLighting = function() {
   var cameraLight = null, ambientLight = null;
