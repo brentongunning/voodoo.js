@@ -129,17 +129,7 @@ var Fader = this.Fader = voodoo.Model.extend({
 
     Object.defineProperty(this, 'fading', {
       get: function() { return that.fading_; },
-      set: function(fading) {
-        if (!fading && that.fading_) {
-          this.fading_ = false;
-          var elapsed = new Date() - that.fadeStartTime_;
-          that.fadeDuration_ -= elapsed;
-        } else if (fading && !this.fading_) {
-          that.fading_ = true;
-          that.fadeStartTime_ = new Date();
-          that.startAlpha_ = that.alpha_;
-        }
-      },
+      set: function(fading) { that.setFading(fading); },
       enumerable: true
     });
   },
@@ -256,6 +246,29 @@ Fader.prototype.setAlpha = function(alpha) {
 
 
 /**
+ * Get or set whether we are currently fading. This may be used to pause and
+ * resume animations.
+ *
+ * @param {boolean} fading Whether to enable or disable fading.
+ *
+ * @return {Fader}
+ */
+Fader.prototype.setFading = function(fading) {
+  if (!fading && this.fading_) {
+    this.fading_ = false;
+    var elapsed = new Date() - this.fadeStartTime_;
+    this.fadeDuration_ -= elapsed;
+  } else if (fading && !this.fading_) {
+    this.fading_ = true;
+    this.fadeStartTime_ = new Date();
+    this.startAlpha_ = this.alpha_;
+  }
+
+  return this;
+};
+
+
+/**
  * Get or set the alpha value of all scene meshes.
  *
  * @type {number}
@@ -264,9 +277,7 @@ Fader.prototype.alpha = 0;
 
 
 /**
- * Gets whether we are currently animating a fade. The user may also
- * set this to false to pause a fade and then set it to true to resume
- * it later.
+ * Gets or sets whether we are currently animating a fade.
  *
  * @type {boolean}
  */

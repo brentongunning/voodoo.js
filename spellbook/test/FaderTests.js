@@ -121,7 +121,7 @@ FaderTests.prototype.testPause = function() {
     voodooEngine.frame();
 
   assertTrue('Fading:', instance.fading);
-  instance.fading = false;
+  instance.setFading(false);
 
   var start = new Date;
   var voodooEngine = voodoo.engine;
