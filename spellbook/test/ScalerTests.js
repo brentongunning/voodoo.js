@@ -28,23 +28,8 @@ ScalerTests.prototype.tearDown = function() {
  * Tests that the Scale class can be extended from other types.
  */
 ScalerTests.prototype.testScalerExtend = function() {
-  var Base = voodoo.Model.extend({
-    name: 'Base',
-    viewType: voodoo.View.extend({
-      load: function() {
-        this.base.load();
-
-        var geometry = new THREE.CubeGeometry(1, 1, 1);
-        var material = new THREE.MeshBasicMaterial();
-        var mesh = new THREE.Mesh(geometry, material);
-
-        this.scene.add(mesh);
-      }
-    })
-  });
-
-  var ScalerBase = Base.extend(voodoo.Scaler);
-  var BaseScaler = voodoo.Scaler.extend(Base);
+  var ScalerBase = SimpleModel.extend(voodoo.Scaler);
+  var BaseScaler = voodoo.Scaler.extend(SimpleModel);
 
   var instance1 = new ScalerBase({scale: 2});
   var instance2 = new BaseScaler({scale: [1, 1, 0]});

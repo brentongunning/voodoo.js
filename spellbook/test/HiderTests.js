@@ -28,23 +28,8 @@ HiderTests.prototype.tearDown = function() {
  * Tests that the Hider class can be extended from other types.
  */
 HiderTests.prototype.testHiderExtend = function() {
-  var Base = voodoo.Model.extend({
-    name: 'Base',
-    viewType: voodoo.View.extend({
-      load: function() {
-        this.base.load();
-
-        var geometry = new THREE.CubeGeometry(1, 1, 1);
-        var material = new THREE.MeshBasicMaterial();
-        var mesh = new THREE.Mesh(geometry, material);
-
-        this.scene.add(mesh);
-      }
-    })
-  });
-
-  var HiderBase = Base.extend(voodoo.Hider);
-  var BaseHider = voodoo.Hider.extend(Base);
+  var HiderBase = SimpleModel.extend(voodoo.Hider);
+  var BaseHider = voodoo.Hider.extend(SimpleModel);
 
   var instance1 = new HiderBase();
   var instance2 = new BaseHider();

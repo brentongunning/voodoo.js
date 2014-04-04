@@ -114,9 +114,32 @@ var Fader = this.Fader = voodoo.Model.extend({
     this.fading_ = false;
 
     var that = this;
+
     Object.defineProperty(this, 'alpha', {
       get: function() { return that.alpha_; },
       set: function(alpha) { that.setAlpha(alpha); },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'targetAlpha', {
+      get: function() { return that.targetAlpha_; },
+      set: function() { log_.error_('targetAlpha is readonly'); },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'fading', {
+      get: function() { return that.fading_; },
+      set: function(fading) {
+        if (!fading && that.fading_) {
+          this.fading_ = false;
+          var elapsed = new Date() - that.fadeStartTime_;
+          that.fadeDuration_ -= elapsed;
+        } else if (fading && !this.fading_) {
+          that.fading_ = true;
+          that.fadeStartTime_ = new Date();
+          that.startAlpha_ = that.alpha_;
+        }
+      },
       enumerable: true
     });
   },
@@ -238,3 +261,21 @@ Fader.prototype.setAlpha = function(alpha) {
  * @type {number}
  */
 Fader.prototype.alpha = 0;
+
+
+/**
+ * Gets whether we are currently animating a fade. The user may also
+ * set this to false to pause a fade and then set it to true to resume
+ * it later.
+ *
+ * @type {boolean}
+ */
+Fader.prototype.fading = false;
+
+
+/**
+ * Gets the alpha value we are fading to. Readonly.
+ *
+ * @type {number}
+ */
+Fader.prototype.targetAlpha = 0;

@@ -28,21 +28,8 @@ ColorerTests.prototype.tearDown = function() {
  * Tests that the Colorer class can be extended from other types.
  */
 ColorerTests.prototype.testColorerExtend = function() {
-  var Base = voodoo.Model.extend({
-    name: 'Base',
-    viewType: voodoo.View.extend({
-      load: function() {
-        var geometry = new THREE.CubeGeometry(1, 1, 1);
-        var material = new THREE.MeshBasicMaterial();
-        var mesh = new THREE.Mesh(geometry, material);
-
-        this.scene.add(mesh);
-      }
-    })
-  });
-
-  var ColorerBase = Base.extend(voodoo.Colorer);
-  var BaseColorer = voodoo.Colorer.extend(Base);
+  var ColorerBase = SimpleModel.extend(voodoo.Colorer);
+  var BaseColorer = voodoo.Colorer.extend(SimpleModel);
 
   var instance1 = new ColorerBase();
   var instance2 = new BaseColorer();

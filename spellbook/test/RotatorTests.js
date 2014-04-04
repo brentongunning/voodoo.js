@@ -28,23 +28,8 @@ RotatorTests.prototype.tearDown = function() {
  * Tests that the Rotator class can be extended from other types.
  */
 RotatorTests.prototype.testRotatorExtend = function() {
-  var Base = voodoo.Model.extend({
-    name: 'Base',
-    viewType: voodoo.View.extend({
-      load: function() {
-        this.base.load();
-
-        var geometry = new THREE.CubeGeometry(1, 1, 1);
-        var material = new THREE.MeshBasicMaterial();
-        var mesh = new THREE.Mesh(geometry, material);
-
-        this.scene.add(mesh);
-      }
-    })
-  });
-
-  var RotatorBase = Base.extend(voodoo.Rotator);
-  var BaseRotator = voodoo.Rotator.extend(Base);
+  var RotatorBase = SimpleModel.extend(voodoo.Rotator);
+  var BaseRotator = voodoo.Rotator.extend(SimpleModel);
 
   var instance1 = new RotatorBase({rotation: {
     x: 1,

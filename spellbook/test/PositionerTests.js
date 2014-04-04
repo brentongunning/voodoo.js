@@ -28,23 +28,8 @@ PositionerTests.prototype.tearDown = function() {
  * Tests that the Positioner class can be extended from other types.
  */
 PositionerTests.prototype.testPositionerExtend = function() {
-  var Base = voodoo.Model.extend({
-    name: 'Base',
-    viewType: voodoo.View.extend({
-      load: function() {
-        this.base.load();
-
-        var geometry = new THREE.CubeGeometry(1, 1, 1);
-        var material = new THREE.MeshBasicMaterial();
-        var mesh = new THREE.Mesh(geometry, material);
-
-        this.scene.add(mesh);
-      }
-    })
-  });
-
-  var PositionerBase = Base.extend(voodoo.Positioner);
-  var BasePositioner = voodoo.Positioner.extend(Base);
+  var PositionerBase = SimpleModel.extend(voodoo.Positioner);
+  var BasePositioner = voodoo.Positioner.extend(SimpleModel);
 
   var instance1 = new PositionerBase({position: {
     x: 1,

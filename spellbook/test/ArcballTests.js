@@ -43,39 +43,19 @@ ArcballTests.prototype.testArcball = function() {
         width:400px; height:300px;" id="anchor"></div>
   */
 
-  var Cube = voodoo.Arcball.extend({
-    initialize: function(options) {
-      this.base.initialize(options);
-      this.element = options.element;
-    },
+  var Model = voodoo.Arcball.extend(AttachedModel);
+  var model = new Model();
 
-    viewType: voodoo.View.extend({
-      load: function() {
-        this.base.load();
-
-        var geometry = new THREE.CubeGeometry(200, 200, 200);
-        var material = new THREE.MeshLambertMaterial();
-        var mesh = new THREE.Mesh(geometry, material);
-
-        this.scene.add(mesh);
-        this.scene.attach(this.model.element);
-        this.triggers.add(mesh);
-      }
-    })
-  });
-
-  cube = new Cube();
-
-  var cubeRotation = cube.rotation;
-  var startRotationX = cubeRotation.x;
-  var startRotationY = cubeRotation.y;
-  var startRotationZ = cubeRotation.z;
+  var modelRotation = model.rotation;
+  var startRotationX = modelRotation.x;
+  var startRotationY = modelRotation.y;
+  var startRotationZ = modelRotation.z;
 
   fireMouseEvent('mousedown', 600, 550);
   fireMouseEvent('mousemove', 700, 750);
   fireMouseEvent('mouseup', 700, 750);
 
-  assertNotEquals(cubeRotation.x, startRotationX);
-  assertNotEquals(cubeRotation.y, startRotationY);
-  assertNotEquals(cubeRotation.z, startRotationZ);
+  assertNotEquals(modelRotation.x, startRotationX);
+  assertNotEquals(modelRotation.y, startRotationY);
+  assertNotEquals(modelRotation.z, startRotationZ);
 };

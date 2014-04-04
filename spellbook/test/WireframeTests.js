@@ -28,21 +28,8 @@ WireframeTests.prototype.tearDown = function() {
  * Tests that the Wireframe class can be extended from other types.
  */
 WireframeTests.prototype.testWireframeExtend = function() {
-  var Base = voodoo.Model.extend({
-    name: 'Base',
-    viewType: voodoo.View.extend({
-      load: function() {
-        var geometry = new THREE.CubeGeometry(1, 1, 1);
-        var material = new THREE.MeshBasicMaterial();
-        var mesh = new THREE.Mesh(geometry, material);
-
-        this.scene.add(mesh);
-      }
-    })
-  });
-
-  var WireframeBase = Base.extend(voodoo.Wireframe);
-  var BaseWireframe = voodoo.Wireframe.extend(Base);
+  var WireframeBase = SimpleModel.extend(voodoo.Wireframe);
+  var BaseWireframe = voodoo.Wireframe.extend(SimpleModel);
 
   var instance1 = new WireframeBase();
   var instance2 = new BaseWireframe();

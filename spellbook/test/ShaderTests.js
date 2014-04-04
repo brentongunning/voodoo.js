@@ -28,21 +28,8 @@ ShaderTests.prototype.tearDown = function() {
  * Tests that the Shader class can be extended from other types.
  */
 ShaderTests.prototype.testShaderExtend = function() {
-  var Base = voodoo.Model.extend({
-    name: 'Base',
-    viewType: voodoo.View.extend({
-      load: function() {
-        var geometry = new THREE.CubeGeometry(1, 1, 1);
-        var material = new THREE.MeshLambertMaterial();
-        var mesh = new THREE.Mesh(geometry, material);
-
-        this.scene.add(mesh);
-      }
-    })
-  });
-
-  var ShaderBase = Base.extend(voodoo.Shader);
-  var BaseShader = voodoo.Shader.extend(Base);
+  var ShaderBase = SimpleModel.extend(voodoo.Shader);
+  var BaseShader = voodoo.Shader.extend(SimpleModel);
 
   var instance1 = new ShaderBase();
   var instance2 = new BaseShader();

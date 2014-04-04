@@ -25,25 +25,11 @@ FaderTests.prototype.tearDown = function() {
 
 
 /**
- * Tests that the Fader class can be extended from other types.
+ * Tests that the Fader class may be extended from other types.
  */
 FaderTests.prototype.testFaderExtend = function() {
-  var Base = voodoo.Model.extend({
-    name: 'Base',
-    viewType: voodoo.View.extend({
-      load: function() {
-        this.base.load();
-        var geometry = new THREE.CubeGeometry(1, 1, 1);
-        var material = new THREE.MeshBasicMaterial();
-        var mesh = new THREE.Mesh(geometry, material);
-
-        this.scene.add(mesh);
-      }
-    })
-  });
-
-  var FadedBase = Base.extend(voodoo.Fader);
-  var BaseFaded = voodoo.Fader.extend(Base);
+  var FadedBase = SimpleModel.extend(voodoo.Fader);
+  var BaseFaded = voodoo.Fader.extend(SimpleModel);
 
   var instance1 = new FadedBase();
   var instance2 = new BaseFaded();
@@ -54,7 +40,7 @@ FaderTests.prototype.testFaderExtend = function() {
 
 
 /**
- * Tests that the fadeBegin and fadeEnd events work.
+ * Tests that the fadeBegin and fadeEnd events work correctly.
  */
 FaderTests.prototype.testFaderEvents = function() {
   var Fader = voodoo.Fader.extend(DummyModel);
@@ -90,6 +76,8 @@ FaderTests.prototype.testFaderEvents = function() {
 
   instance.fadeIn(0.0001);
 
+  assertEquals(1.0, instance.targetAlpha);
+
   var start = new Date;
   var voodooEngine = voodoo.engine;
   while (!fadeOutEnd && new Date() - start < 1000)
@@ -104,23 +92,10 @@ FaderTests.prototype.testFaderEvents = function() {
 
 
 /**
- * Tests that alpha values can be changed immediately.
+ * Tests that alpha values may be changed immediately.
  */
 FaderTests.prototype.testFaderSetAlpha = function() {
-  var Base = voodoo.Model.extend({
-    name: 'Base',
-    viewType: voodoo.View.extend({
-      load: function() {
-        var geometry = new THREE.CubeGeometry(1, 1, 1);
-        var material = new THREE.MeshBasicMaterial();
-        var mesh = new THREE.Mesh(geometry, material);
-
-        this.scene.add(mesh);
-      }
-    })
-  });
-
-  var FadedBase = Base.extend(voodoo.Fader);
+  var FadedBase = SimpleModel.extend(voodoo.Fader);
   var instance = new FadedBase();
 
   instance.setAlpha(0.5);
@@ -128,4 +103,37 @@ FaderTests.prototype.testFaderSetAlpha = function() {
 
   instance.alpha = 0.8;
   assertEquals(0.8, instance.alpha);
+};
+
+
+/**
+ * Tests that fading may be paused.
+ */
+FaderTests.prototype.testPause = function() {
+  var Fader = voodoo.Fader.extend(DummyModel);
+  var instance = new Fader();
+
+  instance.fadeIn(0.1);
+
+  var start = new Date;
+  var voodooEngine = voodoo.engine;
+  while (new Date() - start < 50)
+    voodooEngine.frame();
+
+  assertTrue('Fading:', instance.fading);
+  instance.fading = false;
+
+  var start = new Date;
+  var voodooEngine = voodoo.engine;
+  while (new Date() - start < 25)
+    voodooEngine.frame();
+
+  instance.fading = true;
+
+  var start = new Date;
+  var voodooEngine = voodoo.engine;
+  while (instance.fading && new Date() - start < 100)
+    voodooEngine.frame();
+
+  assertFalse('Fading:', instance.fading);
 };
