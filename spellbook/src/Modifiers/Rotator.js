@@ -274,7 +274,7 @@ Rotator.prototype.rotate = function(rotation, opt_seconds, opt_easing) {
     this.targetRotation_ = target;
 
     this.rotating_ = true;
-    this.continous_ = false;
+    this.continuous_ = false;
 
     this.rotationStartTime_ = new Date();
     this.rotationDuration_ = opt_seconds * 1000;
@@ -300,13 +300,13 @@ Rotator.prototype.rotate = function(rotation, opt_seconds, opt_easing) {
   *
   * rotation can be specified in several ways. With euler angles:
   *
-  *    rotateContinous([x, y, z])
-  *    rotateContinous({x: 0 y: 0, z: 0})
+  *    rotateContinuous([x, y, z])
+  *    rotateContinuous({x: 0 y: 0, z: 0})
   *
   * or as a quaternion from axis and angle.
   *
-  *    rotateContinous([x, y, z, angle])
-  *    rotateContinous({x: 0, y: 0, z: 0, angle: 0})
+  *    rotateContinuous([x, y, z, angle])
+  *    rotateContinuous({x: 0, y: 0, z: 0, angle: 0})
   *
   * @param {Object} rotation Amount to rotate per second.
   *
