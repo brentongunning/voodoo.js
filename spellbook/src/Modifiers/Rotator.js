@@ -22,7 +22,7 @@ var RotatorView_ = voodoo.View.extend({
     this.base.load();
 
     this.scene.on('add', function(e) {
-      var rotation = this.model.rotation_;
+      var rotation = this.model.eulerRotation_;
       var objectRotation = e.object.rotation;
 
       objectRotation.x = rotation.x;
@@ -32,7 +32,7 @@ var RotatorView_ = voodoo.View.extend({
       this.dirty();
     });
 
-    this.setRotation_(this.model.rotation_);
+    this.setRotation_(this.model.eulerRotation_);
   },
 
   setRotation_: function(rotation) {
@@ -84,46 +84,56 @@ var Rotator = this.Rotator = voodoo.Model.extend({
     if (options.rotation)
       this.rotation_ = this.parseRotation_(options.rotation);
     else
-      this.rotation_ = { x: 0, y: 0, z: 0 };
+      this.rotation_ = new THREE.Quaternion();
 
-    this.startRotation_ = {
-      x: this.rotation_.x,
-      y: this.rotation_.y,
-      z: this.rotation_.z
-    };
+    this.eulerRotation_ = new THREE.Euler();
+    this.eulerRotation_.setFromQuaternion(this.rotation_);
 
-    this.targetRotation_ = {
-      x: this.rotation_.x,
-      y: this.rotation_.y,
-      z: this.rotation_.z
-    };
+    this.startRotation_ = new THREE.Quaternion();
+    this.targetRotation_ = new THREE.Quaternion();
+
+    this.startRotation_.copy(this.rotation_);
+    this.targetRotation_.copy(this.rotation_);
 
     this.rotationStartTime_ = null;
-    this.deltaRotating_ = false;
+    this.deltaRotation_ = null;
     this.rotating_ = false;
     this.rotationDuration_ = 0;
+    this.continuous_ = false;
 
     var that = this;
     var proxy = {};
 
     Object.defineProperty(proxy, 'x', {
-      get: function() { return that.rotation_.x; },
-      set: function(x) { that.setRotation(x, that.rotation_.y,
-          that.rotation_.z); },
+      get: function() { return that.eulerRotation_.x; },
+      set: function(x) {
+        var euler = new THREE.Euler();
+        euler.setFromQuaternion(that.rotation_);
+        euler.x = x;
+        that.setRotation([euler.x, euler.y, euler.z]);
+      },
       enumerable: true
     });
 
     Object.defineProperty(proxy, 'y', {
-      get: function() { return that.rotation_.y; },
-      set: function(y) { that.setRotation(that.rotation_.x, y,
-          that.rotation_.z); },
+      get: function() { return that.eulerRotation_.y; },
+      set: function(y) {
+        var euler = new THREE.Euler();
+        euler.setFromQuaternion(that.rotation_);
+        euler.y = y;
+        that.setRotation([euler.x, euler.y, euler.z]);
+      },
       enumerable: true
     });
 
     Object.defineProperty(proxy, 'z', {
-      get: function() { return that.rotation_.z; },
-      set: function(z) { that.setRotation(that.rotation_.x,
-          that.rotation_.y, z); },
+      get: function() { return that.eulerRotation_.z; },
+      set: function(z) {
+        var euler = new THREE.Euler();
+        euler.setFromQuaternion(that.rotation_);
+        euler.z = z;
+        that.setRotation([euler.x, euler.y, euler.z]);
+      },
       enumerable: true
     });
 
@@ -137,21 +147,7 @@ var Rotator = this.Rotator = voodoo.Model.extend({
   update: function(deltaTime) {
     this.base.update(deltaTime);
 
-    if (this.deltaRotating_) {
-
-      this.rotation_.x += this.deltaRotation_.x * deltaTime;
-      this.rotation_.y += this.deltaRotation_.y * deltaTime;
-      this.rotation_.z += this.deltaRotation_.z * deltaTime;
-
-      this.rotation_ = this.clampRotation_(this.rotation_);
-
-      this.dispatch(new voodoo.Event('rotate', this));
-
-      this.view.setRotation_(this.rotation_);
-      if (this.stencilView)
-        this.stencilView.setRotation_(this.rotation_);
-
-    } else if (this.rotating_) {
+    if (this.rotating_) {
 
       var now = new Date();
       var duration = now - this.rotationStartTime_;
@@ -159,21 +155,22 @@ var Rotator = this.Rotator = voodoo.Model.extend({
 
       if (t < 1.0) {
         var i = this.rotationEasing_(t);
-        var invI = 1 - i;
 
-        this.rotation_.x =
-            this.startRotation_.x * invI +
-            this.targetRotation_.x * i;
-        this.rotation_.y =
-            this.startRotation_.y * invI +
-            this.targetRotation_.y * i;
-        this.rotation_.z =
-            this.startRotation_.z * invI +
-            this.targetRotation_.z * i;
+        this.rotation_.copy(this.startRotation_);
+        this.rotation_.slerp(this.targetRotation_, i);
+        this.eulerRotation_.setFromQuaternion(this.rotation_);
       } else {
-        this.rotation_.x = this.targetRotation_.x;
-        this.rotation_.y = this.targetRotation_.y;
-        this.rotation_.z = this.targetRotation_.z;
+        this.rotation_.copy(this.targetRotation_);
+        this.eulerRotation_.setFromQuaternion(this.rotation_);
+
+        if (this.continuous_) {
+          t = 0;
+          this.startRotation_.copy(this.rotation_);
+          this.targetRotation_.copy(this.deltaRotation_);
+          this.targetRotation_ =
+              this.targetRotation_.multiply(this.rotation_);
+          this.rotationStartTime_ = new Date();
+        }
       }
 
       this.dispatch(new voodoo.Event('rotate', this));
@@ -183,9 +180,9 @@ var Rotator = this.Rotator = voodoo.Model.extend({
         this.dispatch(new voodoo.Event('rotateEnd', this));
       }
 
-      this.view.setRotation_(this.rotation_);
+      this.view.setRotation_(this.eulerRotation_);
       if (this.stencilView)
-        this.stencilView.setRotation_(this.rotation_);
+        this.stencilView.setRotation_(this.eulerRotation_);
     }
   }
 
@@ -195,97 +192,46 @@ var Rotator = this.Rotator = voodoo.Model.extend({
 /**
   * Rotates all scene meshes over time to a specific rotation.
   *
-  * rotation can also be specified as separate components:
-  *    rotateTo(x, y, z, seconds)
+  * rotation can be specified in several ways. With euler angles:
+  *
+  *    rotate([x, y, z])
+  *    rotate({x: 0 y: 0, z: 0})
+  *
+  * or as a quaternion from axis and angle.
+  *
+  *    rotate([x, y, z, angle])
+  *    rotate({x: 0, y: 0, z: 0, angle: 0})
   *
   * @param {Object} rotation Target rotation.
-  * @param {number} seconds Animation duration.
+  * @param {number=} opt_seconds Animation duration. If unspecified,
+  *     default is 0.
   * @param {function(number):number=} opt_easing Optional easing function.
   *     Default is easing.easeInOutQuad.
   *
   * @return {Rotator}
   */
-Rotator.prototype.rotateTo = function(rotation, seconds, opt_easing) {
-  var endRotation;
-  if (arguments.length > 2 && typeof arguments[2] === 'number') {
-    endRotation = { x: arguments[0], y: arguments[1], z: arguments[2] };
-    seconds = arguments[3];
-    opt_easing = arguments[4];
-  } else {
-    endRotation = this.parseRotation_(rotation);
-  }
+Rotator.prototype.rotateTo = function(rotation, opt_seconds, opt_easing) {
+  if (opt_seconds) {
 
-  if (seconds === 0) {
+    // Case: Rotate over time.
 
-    this.setRotation(endRotation);
+    this.startRotation_.copy(this.rotation_);
+    this.targetRotation_ = this.parseRotation_(rotation);
 
-  } else if (this.rotation_.x !== endRotation.x ||
-      this.rotation_.y !== endRotation.y ||
-      this.rotation_.z !== endRotation.z) {
-
-    this.startRotation_.x = this.rotation_.x;
-    this.startRotation_.y = this.rotation_.y;
-    this.startRotation_.z = this.rotation_.z;
-
-    this.targetRotation_.x = endRotation.x;
-    this.targetRotation_.y = endRotation.y;
-    this.targetRotation_.z = endRotation.z;
-
-    this.rotationStartTime_ = new Date();
     this.deltaRotating_ = false;
     this.rotating_ = true;
-    this.rotationDuration_ = seconds * 1000;
+
+    this.rotationStartTime_ = new Date();
+    this.rotationDuration_ = opt_seconds * 1000;
 
     this.rotationEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('rotateBegin', this));
-  }
-
-  return this;
-};
-
-
-/**
-  * Rotates all scene meshes from their current orientation.
-  *
-  * deltaRotation can also be specified as separate components:
-  *    rotate(x, y, z)
-  *
-  * @param {Object} deltaRotation Amount to rotate, either instantaniously or
-  *     per second depending on the continuous parameter.
-  * @param {boolean=} opt_continuous Whether to rotate continuously over time,
-  *     or instantly if false. Default is false.
-  *
-  * @return {Rotator}
-  */
-Rotator.prototype.rotate = function(deltaRotation, opt_continuous) {
-  if (arguments.length > 1) {
-    this.deltaRotation_ = {
-      x: arguments[0],
-      y: arguments[1],
-      z: arguments[2]
-    };
-  } else {
-    this.deltaRotation_ = this.parseRotation_(deltaRotation);
-  }
-
-  if (opt_continuous) {
-
-    this.deltaRotating_ = true;
-    this.rotating_ = false;
-    this.dispatch(new voodoo.Event('rotateBegin', this));
 
   } else {
 
-    var rotation = {
-      x: this.rotation_.x + this.deltaRotation_.x,
-      y: this.rotation_.y + this.deltaRotation_.y,
-      z: this.rotation_.z + this.deltaRotation_.z
-    };
+    // Case: Rotate immediately.
 
-    this.deltaRotating_ = false;
-
-    rotation = this.clampRotation_(rotation);
     this.setRotation(rotation);
 
   }
@@ -295,33 +241,130 @@ Rotator.prototype.rotate = function(deltaRotation, opt_continuous) {
 
 
 /**
+  * Rotates all scene meshes an amount relative their current orientation.
+  *
+  * rotation can be specified in several ways. With euler angles:
+  *
+  *    rotate([x, y, z])
+  *    rotate({x: 0 y: 0, z: 0})
+  *
+  * or as a quaternion from axis and angle.
+  *
+  *    rotate([x, y, z, angle])
+  *    rotate({x: 0, y: 0, z: 0, angle: 0})
+  *
+  * @param {Object} rotation Amount to rotate.
+  * @param {number=} opt_seconds Optional duration in seconds. Default is 0.
+  * @param {function(number):number=} opt_easing Optional easing function.
+  *     Default is easing.easeInOutQuad.
+  *
+  * @return {Rotator}
+  */
+Rotator.prototype.rotate = function(rotation, opt_seconds, opt_easing) {
+  var delta = this.parseRotation_(rotation);
+  var target = new THREE.Quaternion();
+  target.copy(this.rotation_);
+  target = target.multiply(delta);
+
+  if (opt_seconds) {
+
+    // Case: Rotate over time.
+
+    this.startRotation_.copy(this.rotation_);
+    this.targetRotation_ = target;
+
+    this.rotating_ = true;
+    this.continous_ = false;
+
+    this.rotationStartTime_ = new Date();
+    this.rotationDuration_ = opt_seconds * 1000;
+
+    this.rotationEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
+
+    this.dispatch(new voodoo.Event('rotateBegin', this));
+
+  } else {
+
+    // Case: Rotate immediately.
+
+    this.setRotation(target);
+
+  }
+
+  return this;
+};
+
+
+/**
+  * Rotates all scene meshes over time.
+  *
+  * rotation can be specified in several ways. With euler angles:
+  *
+  *    rotateContinous([x, y, z])
+  *    rotateContinous({x: 0 y: 0, z: 0})
+  *
+  * or as a quaternion from axis and angle.
+  *
+  *    rotateContinous([x, y, z, angle])
+  *    rotateContinous({x: 0, y: 0, z: 0, angle: 0})
+  *
+  * @param {Object} rotation Amount to rotate per second.
+  *
+  * @return {Rotator}
+  */
+Rotator.prototype.rotateContinuous = function(rotation) {
+  this.deltaRotation_ = this.parseRotation_(rotation);
+
+  var target = new THREE.Quaternion();
+  target.copy(this.deltaRotation_);
+  target = target.multiply(this.rotation_);
+
+  this.startRotation_.copy(this.rotation_);
+  this.targetRotation_.copy(target);
+
+  this.rotating_ = true;
+  this.continuous_ = true;
+
+  this.rotationStartTime_ = new Date();
+  this.rotationDuration_ = 1000;
+  this.rotationEasing_ = Easing.prototype.linear;
+
+  this.dispatch(new voodoo.Event('rotateBegin', this));
+
+  return this;
+};
+
+
+/**
   * Immediately changes the rotation of all scene meshes.
   *
-  * rotation can also be specified as separate components:
-  *    setRotation(x, y, z)
+  * rotation can be specified in several ways. With euler angles:
+ *
+ *    setRotation([x, y, z])
+ *    setRotation({x: 0 y: 0, z: 0})
+ *
+ * or as a quaternion from axis and angle.
+ *
+ *    setRotation([x, y, z, angle])
+ *    setRotation({x: 0, y: 0, z: 0, angle: 0})
   *
   * @param {Object} rotation Rotation.
   *
   * @return {Rotator}
   */
 Rotator.prototype.setRotation = function(rotation) {
-  if (arguments.length > 1)
-    this.rotation_ = { x: arguments[0], y: arguments[1], z: arguments[2] };
-  else
-    this.rotation_ = this.parseRotation_(rotation);
+  this.rotation_ = this.parseRotation_(rotation);
+  this.eulerRotation_.setFromQuaternion(this.rotation_);
+  this.targetRotation_.copy(this.rotation_);
 
-  this.targetRotation_.x = this.rotation_.x;
-  this.targetRotation_.y = this.rotation_.y;
-  this.targetRotation_.z = this.rotation_.z;
-
-  this.deltaRotating_ = false;
+  this.continuous_ = false;
   this.rotating_ = false;
 
   this.dispatch(new voodoo.Event('rotate', this));
 
-  this.view.setRotation_(this.rotation_);
+  this.view.setRotation_(this.eulerRotation_);
   if (this.stencilView)
-    this.stencilView.setRotation_(this.rotation_);
+    this.stencilView.setRotation_(this.eulerRotation_);
 
   return this;
 };
@@ -337,7 +380,7 @@ Rotator.prototype.setRotation = function(rotation) {
  * 3. Component: object.rotation.z = 0;
  *
  * As a getter, this object will always return an
- * object with x, y, and z properties.
+ * euler angle object with x, y, z properties.
  *
  * @type {Object}
  */
@@ -345,41 +388,78 @@ Rotator.prototype.rotation = null;
 
 
 /**
- * Converts a rotation parameter into an object with x, y, z properties.
+ * Converts a rotation parameter into a quaternion with x, y, z, w properties.
+ *
+ * rotation can be specified in several ways. With euler angles:
+ *
+ *    rotate([x, y, z])
+ *    rotate({x: 0 y: 0, z: 0})
+ *
+ * or as a quaternion from axis and angle.
+ *
+ *    rotate([x, y, z, angle])
+ *    rotate({x: 0, y: 0, z: 0, angle: 0})
  *
  * @private
  *
  * @param {Object} rotation Rotation.
  *
- * @return {Object}
+ * @return {THREE.Quaternion}
  */
 Rotator.prototype.parseRotation_ = function(rotation) {
-  if (typeof rotation === 'object') {
-    if ('x' in rotation)
-      return rotation;
-    else
-      return { x: rotation[0], y: rotation[1], z: rotation[2] };
+  var quaternion = new THREE.Quaternion();
+
+  if (Array.isArray(rotation)) {
+    if (rotation.length === 3) {
+
+      // Case: rotate([x, y, z])
+      var euler = new THREE.Euler(rotation[0], rotation[1], rotation[2]);
+      quaternion.setFromEuler(euler);
+
+    } else if (rotation.length === 4) {
+
+      // Case: rotate([x, y, z, angle])
+      var axis = new THREE.Vector3(rotation[0], rotation[1], rotation[2]);
+      axis.normalize();
+      quaternion.setFromAxisAngle(axis, rotation[3]);
+
+    } else {
+
+      log_.error_('Unable to parse rotation: Incorrect number of elements.');
+
+    }
+  } else if (typeof rotation === 'object') {
+    log_.assert_('x' in rotation, 'Property x is undefined');
+    log_.assert_('y' in rotation, 'Property y is undefined');
+    log_.assert_('z' in rotation, 'Property z is undefined');
+
+    if ('angle' in rotation) {
+
+      // Case rotate({x: 0, y: 0, z: 0, angle: 0})
+      var axis = new THREE.Vector3(rotation[0], rotation[1], rotation[2]);
+      axis.normalize();
+      quaternion.setFromAxisAngle(axis, rotation.angle);
+
+    } else if ('w' in rotation) {
+
+      // Case: Quaternion
+      quaternion = new THREE.Quaternion(
+          rotation.x, rotation.y, rotation.z, rotation.w);
+
+    } else {
+
+      // Case: rotate({x: 0, y: 0, z: 0})
+      var euler = new THREE.Euler(rotation.x, rotation.y, rotation.z);
+      quaternion.setFromEuler(euler);
+
+    }
   } else {
-    return { x: 0, y: 0, z: 0 };
+
+    log_.error_('Unable to parse rotation: Must be array or object.');
+
   }
-};
 
+  quaternion.normalize();
 
-/**
- * Ensures that the rotation is always between 0 and 2pi.
- *
- * @private
- *
- * @param {Object} rotation Rotation.
- *
- * @return {Object}
- */
-Rotator.prototype.clampRotation_ = function(rotation) {
-  var twoPi = Math.PI * 2.0;
-
-  rotation.x %= twoPi;
-  rotation.y %= twoPi;
-  rotation.z %= twoPi;
-
-  return rotation;
+  return quaternion;
 };

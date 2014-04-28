@@ -46,63 +46,72 @@ RotatorTests.prototype.testRotatorExtend = function() {
  */
 RotatorTests.prototype.testRotatorSetRotation = function() {
   var Rotator = voodoo.Rotator.extend(DummyModel);
-  var instance = new Rotator({rotation: [2, 3, 4]});
+  var instance = new Rotator({rotation: [2, 0, 0]});
 
-  var instanceRotation = instance.rotation;
-  assertEquals(2, instanceRotation.x);
-  assertEquals(3, instanceRotation.y);
-  assertEquals(4, instanceRotation.z);
+  var epsilon = 0.0001;
+
+  var r = instance.rotation;
+  assert(r.x > (2 - epsilon) && r.x < (2 + epsilon));
+  assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
+  assert(r.z > (0 - epsilon) && r.z < (0 + epsilon));
 
   instance.rotation.x = 1;
 
-  instanceRotation = instance.rotation;
-  assertEquals(1, instanceRotation.x);
-  assertEquals(3, instanceRotation.y);
-  assertEquals(4, instanceRotation.z);
+  r = instance.rotation;
+  assert(r.x > (1 - epsilon) && r.x < (1 + epsilon));
+  assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
+  assert(r.z > (0 - epsilon) && r.z < (0 + epsilon));
 
-  instance.rotation = [0.25, 0.5, 0.75];
+  instance.rotation = [0.25, 0, 0.75];
 
-  instanceRotation = instance.rotation;
-  assertEquals(0.25, instanceRotation.x);
-  assertEquals(0.5, instanceRotation.y);
-  assertEquals(0.75, instanceRotation.z);
+  r = instance.rotation;
+  assert(r.x > (0.25 - epsilon) && r.x < (0.25 + epsilon));
+  assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
+  assert(r.z > (0.75 - epsilon) && r.z < (0.75 + epsilon));
 
-  instance.rotation = {x: 0.1, y: 0.2, z: 0.3};
+  instance.rotation = {x: 0, y: 0.2, z: 0.3};
 
-  instanceRotation = instance.rotation;
-  assertEquals(0.1, instanceRotation.x);
-  assertEquals(0.2, instanceRotation.y);
-  assertEquals(0.3, instanceRotation.z);
+  r = instance.rotation;
+  assert(r.x > (0 - epsilon) && r.x < (0 + epsilon));
+  assert(r.y > (0.2 - epsilon) && r.y < (0.2 + epsilon));
+  assert(r.z > (0.3 - epsilon) && r.z < (0.3 + epsilon));
 
-  instance.setRotation([1, 2, 3]);
+  instance.setRotation([0, 0.1, 0]);
 
-  instanceRotation = instance.rotation;
-  assertEquals(1, instanceRotation.x);
-  assertEquals(2, instanceRotation.y);
-  assertEquals(3, instanceRotation.z);
+  r = instance.rotation;
+  assert(r.x > (0 - epsilon) && r.x < (0 + epsilon));
+  assert(r.y > (0.1 - epsilon) && r.y < (0.1 + epsilon));
+  assert(r.z > (0 - epsilon) && r.z < (0 + epsilon));
 
-  instance.setRotation(2, 3, 4);
+  instance.rotateTo([0, 0, 3], 0);
 
-  instanceRotation = instance.rotation;
-  assertEquals(2, instanceRotation.x);
-  assertEquals(3, instanceRotation.y);
-  assertEquals(4, instanceRotation.z);
+  r = instance.rotation;
+  assert(r.x > (0 - epsilon) && r.x < (0 + epsilon));
+  assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
+  assert(r.z > (3 - epsilon) && r.z < (3 + epsilon));
 
-  instance.rotateTo(0.1, 0.2, 0.3, 0);
+  instance.setRotation([0, 0.1, 0, 0]);
 
-  instanceRotation = instance.rotation;
-  assertEquals(0.1, instanceRotation.x);
-  assertEquals(0.2, instanceRotation.y);
-  assertEquals(0.3, instanceRotation.z);
+  r = instance.rotation;
+  assert(r.x > (0 - epsilon) && r.x < (0 + epsilon));
+  assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
+  assert(r.z > (0 - epsilon) && r.z < (0 + epsilon));
+
+  instance.setRotation({x: 2, y: 3, z: 4, angle: 0});
+
+  r = instance.rotation;
+  assert(r.x > (0 - epsilon) && r.x < (0 + epsilon));
+  assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
+  assert(r.z > (0 - epsilon) && r.z < (0 + epsilon));
 };
 
 
 /**
- * Tests that the rotate() changes the mesh continuously.
+ * Tests that the rotateContinuous() changes the mesh continuously.
  *
  * @param {Object} queue Async queue.
  */
-RotatorTests.prototype.testRotatorRotate = function(queue) {
+RotatorTests.prototype.testRotatorRotateContinuous = function(queue) {
   var Rotator = voodoo.Rotator.extend(DummyModel);
   var instance = new Rotator({
     rotation: [0, 0, 0]
@@ -112,7 +121,7 @@ RotatorTests.prototype.testRotatorRotate = function(queue) {
     // Focus on the window to start the delta timer.
     window.focus();
     setTimeout(callbacks.add(function() {
-      instance.rotate(0.5, 0.4, 0.3, true);
+      instance.rotateContinuous([0.5, 0.4, 0.3]);
     }), 1100);
   });
 
@@ -150,7 +159,7 @@ RotatorTests.prototype.testRotatorEvents = function() {
   instance.on('rotateEnd', function() { rotateEnd = true; });
   instance.on('rotate', function() { rotate = true; });
 
-  instance.rotateTo(0.5, 0.4, 0.3, 0.0001);
+  instance.rotateTo([0.5, 0.4, 0.3], 0.0001);
 
   var start = new Date;
   var voodooEngine = voodoo.engine;
@@ -165,4 +174,14 @@ RotatorTests.prototype.testRotatorEvents = function() {
   assertEquals(0.5, instanceRotation.x);
   assertEquals(0.4, instanceRotation.y);
   assertEquals(0.3, instanceRotation.z);
+
+  rotateEnd = false;
+  instance.rotate([0.5, 0.4, 0.3], 0.0001);
+
+  var start = new Date;
+  var voodooEngine = voodoo.engine;
+  while (!rotateEnd && new Date() - start < 1000)
+    voodooEngine.frame();
+
+  assert('Rotate End', rotateEnd);
 };

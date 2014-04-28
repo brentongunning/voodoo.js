@@ -188,7 +188,7 @@ var Arcball = this.Arcball = Rotator.extend({
 
         var eulerAngles = new THREE.Euler(0, 0, 0, 'XYZ');
         eulerAngles.setFromQuaternion(that.currentArcballRotation_, 'XYZ');
-        that.setRotation(eulerAngles.x, eulerAngles.y, eulerAngles.z);
+        that.setRotation([eulerAngles.x, eulerAngles.y, eulerAngles.z]);
       }
     });
 
