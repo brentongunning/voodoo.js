@@ -3311,18 +3311,29 @@ THREE.Vector3.prototype.normalize = function() {};
 
 /**
  * @constructor
- * @param {number} x
- * @param {number} y
- * @param {number} z
- * @param {number} w
+ * @param {number=} opt_x
+ * @param {number=} opt_y
+ * @param {number=} opt_z
+ * @param {number=} opt_w
  */
-THREE.Quaternion = function(x, y, z, w) {};
+THREE.Quaternion = function(opt_x, opt_y, opt_z, opt_w) {};
+
+/**
+@param {THREE.Quaternion} q
+*/
+THREE.Quaternion.prototype.copy = function(q){};
 
 /**
  * @param {THREE.Vector3} axis
  * @param {number} angle
  */
 THREE.Quaternion.prototype.setFromAxisAngle = function(axis, angle) {};
+
+
+/**
+ * @param {THREE.Euler} euler
+ */
+THREE.Quaternion.prototype.setFromEuler = function(euler) {};
 
 THREE.Quaternion.prototype.normalize = function() {};
 
@@ -3333,19 +3344,31 @@ THREE.Quaternion.prototype.normalize = function() {};
 THREE.Quaternion.prototype.multiplyQuaternions = function(a, b) {};
 
 /**
- * @constructor
- * @param {number} x
- * @param {number} y
- * @param {number} z
- * @param {string} order
+ * @param {THREE.Quaternion} b
+ * @return {THREE.Quaternion}
  */
-THREE.Euler = function(x, y, z, order) {};
+THREE.Quaternion.prototype.multiply = function(b) {};
+
+/**
+ * @param {THREE.Quaternion} qb
+ * @param {number} t
+ */
+THREE.Quaternion.prototype.slerp = function(qb, t) {};
+
+/**
+ * @constructor
+ * @param {number=} opt_x
+ * @param {number=} opt_y
+ * @param {number=} opt_z
+ * @param {string=} opt_order
+ */
+THREE.Euler = function(opt_x, opt_y, opt_z, opt_order) {};
 
 /**
  * @param {THREE.Quaternion} q
- * @param {string} order
+ * @param {string=} opt_order
  */
-THREE.Euler.prototype.setFromQuaternion = function(q, order) {};
+THREE.Euler.prototype.setFromQuaternion = function(q, opt_order) {};
 
 /**
 @constructor
