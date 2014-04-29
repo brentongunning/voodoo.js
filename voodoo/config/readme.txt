@@ -44,7 +44,7 @@ See license.txt.
 Release Notes
 -------------------------------------------------------------------------------
 
-3-31-2014 - 0.8.9
+4-29-2014 - 0.8.9
 Added Model.loaded property.
 Added Scene.localToPage and Scene.pageToLocal coordinate change functions.
 Change Event to store page coordinates instead of client coordinates.
