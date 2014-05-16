@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: ShaderTests.js
+// File: LightableTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
 // ----------------------------------------------------------------------------
@@ -7,17 +7,17 @@
 
 
 /**
- * Test cases to make sure the Shader class works as expected.
+ * Test cases to make sure the Lightable class works as expected.
  *
  * @constructor
  */
-ShaderTests = TestCase('ShaderTests');
+LightableTests = TestCase('LightableTests');
 
 
 /**
  * Shutdown the engine between test cases.
  */
-ShaderTests.prototype.tearDown = function() {
+LightableTests.prototype.tearDown = function() {
   var voodooEngine = voodoo.engine;
   if (voodooEngine)
     voodooEngine.destroy();
@@ -25,14 +25,14 @@ ShaderTests.prototype.tearDown = function() {
 
 
 /**
- * Tests that the Shader class can be extended from other types.
+ * Tests that the Lightable class can be extended from other types.
  */
-ShaderTests.prototype.testShaderExtend = function() {
-  var ShaderBase = SimpleModel.extend(voodoo.Shader);
-  var BaseShader = voodoo.Shader.extend(SimpleModel);
+LightableTests.prototype.testLightableExtend = function() {
+  var LightableBase = SimpleModel.extend(voodoo.Lightable);
+  var BaseLightable = voodoo.Lightable.extend(SimpleModel);
 
-  var instance1 = new ShaderBase();
-  var instance2 = new BaseShader();
+  var instance1 = new LightableBase();
+  var instance2 = new BaseLightable();
 
   instance1.ambient = 'black';
   instance2.setEmissive('blue');
@@ -42,9 +42,9 @@ ShaderTests.prototype.testShaderExtend = function() {
 /**
  * Tests that the changeAmbient, changeEmissive and changeShading events work.
  */
-ShaderTests.prototype.testShaderEvents = function() {
-  var Shader = voodoo.Shader.extend(DummyModel);
-  var instance = new Shader();
+LightableTests.prototype.testLightableEvents = function() {
+  var Lightable = voodoo.Lightable.extend(DummyModel);
+  var instance = new Lightable();
 
   var changeAmbient = 0;
   var changeEmissive = 0;
@@ -56,11 +56,11 @@ ShaderTests.prototype.testShaderEvents = function() {
 
   instance.ambient = 'yellow';
   instance.emissive = 'red';
-  instance.shading = voodoo.Shader.ShadingStyle.Flat;
+  instance.shading = voodoo.Lightable.ShadingStyle.Flat;
 
   instance.setAmbient('green');
   instance.setEmissive('blue');
-  instance.setShading(voodoo.Shader.ShadingStyle.None);
+  instance.setShading(voodoo.Lightable.ShadingStyle.None);
 
   assertEquals(2, changeEmissive);
   assertEquals(2, changeAmbient);

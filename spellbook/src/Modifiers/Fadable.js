@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: Fader.js
+// File: Fadable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
 // ----------------------------------------------------------------------------
@@ -13,7 +13,7 @@
  * @private
  * @extends {voodoo.View}
  */
-var FaderView_ = voodoo.View.extend({
+var FadableView_ = voodoo.View.extend({
 
   above: false,
   below: false,
@@ -55,7 +55,7 @@ var FaderView_ = voodoo.View.extend({
  * @private
  * @extends {voodoo.View}
  */
-var FaderStencilView_ = voodoo.View.extend({
+var FadableStencilView_ = voodoo.View.extend({
 
   load: function() {
     this.base.load();
@@ -95,12 +95,12 @@ var FaderStencilView_ = voodoo.View.extend({
  *
  * @param {Object=} opt_options Options object.
  */
-var Fader = this.Fader = voodoo.Model.extend({
+var Fadable = this.Fadable = voodoo.Model.extend({
 
-  name: 'Fader',
+  name: 'Fadable',
   organization: 'spellbook',
-  viewType: FaderView_,
-  stencilViewType: FaderStencilView_,
+  viewType: FadableView_,
+  stencilViewType: FadableStencilView_,
 
   initialize: function(options) {
     this.base.initialize(options);
@@ -170,9 +170,9 @@ var Fader = this.Fader = voodoo.Model.extend({
   *
   * @param {number} seconds Animation duration.
   *
-  * @return {Fader}
+  * @return {Fadable}
   */
-Fader.prototype.fadeIn = function(seconds) {
+Fadable.prototype.fadeIn = function(seconds) {
   return this.fadeTo(1.0, seconds);
 };
 
@@ -182,9 +182,9 @@ Fader.prototype.fadeIn = function(seconds) {
   *
   * @param {number} seconds Animation duration.
   *
-  * @return {Fader}
+  * @return {Fadable}
   */
-Fader.prototype.fadeOut = function(seconds) {
+Fadable.prototype.fadeOut = function(seconds) {
   return this.fadeTo(0.0, seconds);
 };
 
@@ -197,9 +197,9 @@ Fader.prototype.fadeOut = function(seconds) {
   * @param {function(number):number=} opt_easing Optional easing function.
   *     Default is easing.easeInOutQuad.
   *
-  * @return {Fader}
+  * @return {Fadable}
   */
-Fader.prototype.fadeTo = function(alpha, seconds, opt_easing) {
+Fadable.prototype.fadeTo = function(alpha, seconds, opt_easing) {
   if (seconds === 0) {
 
     this.setAlpha(alpha);
@@ -228,9 +228,9 @@ Fader.prototype.fadeTo = function(alpha, seconds, opt_easing) {
   *
   * @param {number} alpha Alpha value from 0-1.
   *
-  * @return {Fader}
+  * @return {Fadable}
   */
-Fader.prototype.setAlpha = function(alpha) {
+Fadable.prototype.setAlpha = function(alpha) {
   this.alpha_ = alpha;
   this.targetAlpha_ = alpha;
   this.fading_ = false;
@@ -251,9 +251,9 @@ Fader.prototype.setAlpha = function(alpha) {
  *
  * @param {boolean} fading Whether to enable or disable fading.
  *
- * @return {Fader}
+ * @return {Fadable}
  */
-Fader.prototype.setFading = function(fading) {
+Fadable.prototype.setFading = function(fading) {
   if (!fading && this.fading_) {
     this.fading_ = false;
     var elapsed = new Date() - this.fadeStartTime_;
@@ -273,7 +273,7 @@ Fader.prototype.setFading = function(fading) {
  *
  * @type {number}
  */
-Fader.prototype.alpha = 0;
+Fadable.prototype.alpha = 0;
 
 
 /**
@@ -281,7 +281,7 @@ Fader.prototype.alpha = 0;
  *
  * @type {boolean}
  */
-Fader.prototype.fading = false;
+Fadable.prototype.fading = false;
 
 
 /**
@@ -289,4 +289,4 @@ Fader.prototype.fading = false;
  *
  * @type {number}
  */
-Fader.prototype.targetAlpha = 0;
+Fadable.prototype.targetAlpha = 0;

@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: ColorerTests.js
+// File: ColorableTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
 // ----------------------------------------------------------------------------
@@ -7,17 +7,17 @@
 
 
 /**
- * Test cases to make sure the Colorer class works as expected.
+ * Test cases to make sure the Colorable class works as expected.
  *
  * @constructor
  */
-ColorerTests = TestCase('ColorerTests');
+ColorableTests = TestCase('ColorableTests');
 
 
 /**
  * Shutdown the engine between test cases.
  */
-ColorerTests.prototype.tearDown = function() {
+ColorableTests.prototype.tearDown = function() {
   var voodooEngine = voodoo.engine;
   if (voodooEngine)
     voodooEngine.destroy();
@@ -25,14 +25,14 @@ ColorerTests.prototype.tearDown = function() {
 
 
 /**
- * Tests that the Colorer class can be extended from other types.
+ * Tests that the Colorable class can be extended from other types.
  */
-ColorerTests.prototype.testColorerExtend = function() {
-  var ColorerBase = SimpleModel.extend(voodoo.Colorer);
-  var BaseColorer = voodoo.Colorer.extend(SimpleModel);
+ColorableTests.prototype.testColorableExtend = function() {
+  var ColorableBase = SimpleModel.extend(voodoo.Colorable);
+  var BaseColorable = voodoo.Colorable.extend(SimpleModel);
 
-  var instance1 = new ColorerBase();
-  var instance2 = new BaseColorer();
+  var instance1 = new ColorableBase();
+  var instance2 = new BaseColorable();
 
   instance1.color = 'white';
   instance2.setColor('rgb(10, 20, 30)');
@@ -42,9 +42,9 @@ ColorerTests.prototype.testColorerExtend = function() {
 /**
  * Tests that the changeColor events work.
  */
-ColorerTests.prototype.testColorerEvents = function() {
-  var Colorer = voodoo.Colorer.extend(DummyModel);
-  var instance = new Colorer();
+ColorableTests.prototype.testColorableEvents = function() {
+  var Colorable = voodoo.Colorable.extend(DummyModel);
+  var instance = new Colorable();
 
   var changeColor = 0;
   instance.on('changeColor', function() { changeColor++; });

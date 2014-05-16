@@ -127,11 +127,11 @@ var MeshView_ = voodoo.View.extend({
  * - stop
  *
  * @constructor
- * @extends {Positioner}
+ * @extends {Movable}
  *
  * @param {Object=} opt_options Options object.
  */
-var Mesh = this.Mesh = Positioner.extend({
+var Mesh = this.Mesh = Movable.extend({
 
   name: 'Mesh',
   organization: 'spellbook',

@@ -135,7 +135,7 @@ var ArcballView_ = voodoo.View.extend({
  *
  * @param {Object=} opt_options Options object.
  */
-var Arcball = this.Arcball = Rotator.extend({
+var Arcball = this.Arcball = Rotatable.extend({
 
   name: 'Arcball',
   organization: 'spellbook',

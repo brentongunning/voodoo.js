@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: FaderTests.js
+// File: FadableTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
 // ----------------------------------------------------------------------------
@@ -7,17 +7,17 @@
 
 
 /**
- * Test cases to make sure the Fader class works as expected.
+ * Test cases to make sure the Fadable class works as expected.
  *
  * @constructor
  */
-FaderTests = TestCase('FaderTests');
+FadableTests = TestCase('FadableTests');
 
 
 /**
  * Shutdown the engine between test cases.
  */
-FaderTests.prototype.tearDown = function() {
+FadableTests.prototype.tearDown = function() {
   var voodooEngine = voodoo.engine;
   if (voodooEngine)
     voodooEngine.destroy();
@@ -25,11 +25,11 @@ FaderTests.prototype.tearDown = function() {
 
 
 /**
- * Tests that the Fader class may be extended from other types.
+ * Tests that the Fadable class may be extended from other types.
  */
-FaderTests.prototype.testFaderExtend = function() {
-  var FadedBase = SimpleModel.extend(voodoo.Fader);
-  var BaseFaded = voodoo.Fader.extend(SimpleModel);
+FadableTests.prototype.testFadableExtend = function() {
+  var FadedBase = SimpleModel.extend(voodoo.Fadable);
+  var BaseFaded = voodoo.Fadable.extend(SimpleModel);
 
   var instance1 = new FadedBase();
   var instance2 = new BaseFaded();
@@ -42,9 +42,9 @@ FaderTests.prototype.testFaderExtend = function() {
 /**
  * Tests that the fadeBegin and fadeEnd events work correctly.
  */
-FaderTests.prototype.testFaderEvents = function() {
-  var Fader = voodoo.Fader.extend(DummyModel);
-  var instance = new Fader();
+FadableTests.prototype.testFadableEvents = function() {
+  var Fadable = voodoo.Fadable.extend(DummyModel);
+  var instance = new Fadable();
 
   var fadeInBegin = false;
   var fadeInEnd = false;
@@ -94,8 +94,8 @@ FaderTests.prototype.testFaderEvents = function() {
 /**
  * Tests that alpha values may be changed immediately.
  */
-FaderTests.prototype.testFaderSetAlpha = function() {
-  var FadedBase = SimpleModel.extend(voodoo.Fader);
+FadableTests.prototype.testFadableSetAlpha = function() {
+  var FadedBase = SimpleModel.extend(voodoo.Fadable);
   var instance = new FadedBase();
 
   instance.setAlpha(0.5);
@@ -109,9 +109,9 @@ FaderTests.prototype.testFaderSetAlpha = function() {
 /**
  * Tests that fading may be paused.
  */
-FaderTests.prototype.testPause = function() {
-  var Fader = voodoo.Fader.extend(DummyModel);
-  var instance = new Fader();
+FadableTests.prototype.testPause = function() {
+  var Fadable = voodoo.Fadable.extend(DummyModel);
+  var instance = new Fadable();
 
   instance.fadeIn(0.1);
 

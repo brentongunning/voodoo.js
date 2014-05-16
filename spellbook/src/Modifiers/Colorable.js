@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: Colorer.js
+// File: Colorable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
 // ----------------------------------------------------------------------------
@@ -13,7 +13,7 @@
  * @private
  * @extends {voodoo.View}
  */
-var ColorerView_ = voodoo.View.extend({
+var ColorableView_ = voodoo.View.extend({
 
   above: false,
   below: false,
@@ -84,11 +84,11 @@ var ColorerView_ = voodoo.View.extend({
  *
  * @param {Object=} opt_options Options object.
  */
-var Colorer = this.Colorer = voodoo.Model.extend({
+var Colorable = this.Colorable = voodoo.Model.extend({
 
-  name: 'Colorer',
+  name: 'Colorable',
   organization: 'spellbook',
-  viewType: ColorerView_,
+  viewType: ColorableView_,
 
   initialize: function(options) {
     this.base.initialize(options);
@@ -113,9 +113,9 @@ var Colorer = this.Colorer = voodoo.Model.extend({
   *
   * @param {string} color Css color string.
   *
-  * @return {Colorer}
+  * @return {Colorable}
   */
-Colorer.prototype.setColor = function(color) {
+Colorable.prototype.setColor = function(color) {
   if (color !== this.color_) {
 
     this.color_ = color;
@@ -139,4 +139,4 @@ Colorer.prototype.setColor = function(color) {
  *
  * @type {string}
  */
-Colorer.prototype.color = 'white';
+Colorable.prototype.color = 'white';

@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: ScalerTests.js
+// File: ScalableTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
 // ----------------------------------------------------------------------------
@@ -7,17 +7,17 @@
 
 
 /**
- * Test cases to make sure the Scaler class works as expected.
+ * Test cases to make sure the Scalable class works as expected.
  *
  * @constructor
  */
-ScalerTests = TestCase('ScalerTests');
+ScalableTests = TestCase('ScalableTests');
 
 
 /**
  * Shutdown the engine between test cases.
  */
-ScalerTests.prototype.tearDown = function() {
+ScalableTests.prototype.tearDown = function() {
   var voodooEngine = voodoo.engine;
   if (voodooEngine)
     voodooEngine.destroy();
@@ -27,21 +27,21 @@ ScalerTests.prototype.tearDown = function() {
 /**
  * Tests that the Scale class can be extended from other types.
  */
-ScalerTests.prototype.testScalerExtend = function() {
-  var ScalerBase = SimpleModel.extend(voodoo.Scaler);
-  var BaseScaler = voodoo.Scaler.extend(SimpleModel);
+ScalableTests.prototype.testScalableExtend = function() {
+  var ScalableBase = SimpleModel.extend(voodoo.Scalable);
+  var BaseScalable = voodoo.Scalable.extend(SimpleModel);
 
-  var instance1 = new ScalerBase({scale: 2});
-  var instance2 = new BaseScaler({scale: [1, 1, 0]});
+  var instance1 = new ScalableBase({scale: 2});
+  var instance2 = new BaseScalable({scale: [1, 1, 0]});
 };
 
 
 /**
  * Tests that the scale can be set in multiple ways.
  */
-ScalerTests.prototype.testScalerSetScale = function() {
-  var Scaler = voodoo.Scaler.extend(DummyModel);
-  var instance = new Scaler({scale: 2});
+ScalableTests.prototype.testScalableSetScale = function() {
+  var Scalable = voodoo.Scalable.extend(DummyModel);
+  var instance = new Scalable({scale: 2});
 
   var instanceScale = instance.scale;
   assertEquals(2, instanceScale.x);
@@ -102,9 +102,9 @@ ScalerTests.prototype.testScalerSetScale = function() {
 /**
  * Tests that the scaleBegin and scaleEnd events work.
  */
-ScalerTests.prototype.testScalerEvents = function() {
-  var Scaler = voodoo.Scaler.extend(DummyModel);
-  var instance = new Scaler();
+ScalableTests.prototype.testScalableEvents = function() {
+  var Scalable = voodoo.Scalable.extend(DummyModel);
+  var instance = new Scalable();
 
   var scaleBegin = false;
   var scaleEnd = false;

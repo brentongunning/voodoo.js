@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: Hider.js
+// File: Hidable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
 // ----------------------------------------------------------------------------
@@ -13,7 +13,7 @@
  * @private
  * @extends {voodoo.View}
  */
-var HiderView_ = voodoo.View.extend({
+var HidableView_ = voodoo.View.extend({
 
   above: false,
   below: false,
@@ -58,11 +58,11 @@ var HiderView_ = voodoo.View.extend({
  *
  * @param {Object=} opt_options Options object.
  */
-var Hider = this.Hider = voodoo.Model.extend({
+var Hidable = this.Hidable = voodoo.Model.extend({
 
-  name: 'Hider',
+  name: 'Hidable',
   organization: 'spellbook',
-  viewType: HiderView_,
+  viewType: HidableView_,
 
   initialize: function(options) {
     this.base.initialize(options);
@@ -97,9 +97,9 @@ var Hider = this.Hider = voodoo.Model.extend({
 /**
   * Shows all scene meshes.
   *
-  * @return {Hider}
+  * @return {Hidable}
   */
-Hider.prototype.show = function() {
+Hidable.prototype.show = function() {
   this.visible = true;
 
   return this;
@@ -109,9 +109,9 @@ Hider.prototype.show = function() {
 /**
   * Hides all scene meshes.
   *
-  * @return {Hider}
+  * @return {Hidable}
   */
-Hider.prototype.hide = function() {
+Hidable.prototype.hide = function() {
   this.visible = false;
 
   return this;
@@ -123,4 +123,4 @@ Hider.prototype.hide = function() {
  *
  * @type {boolean}
  */
-Hider.prototype.visible = false;
+Hidable.prototype.visible = false;

@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: RotatorTests.js
+// File: RotatableTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
 // ----------------------------------------------------------------------------
@@ -7,17 +7,17 @@
 
 
 /**
- * Test cases to make sure the Rotator class works as expected.
+ * Test cases to make sure the Rotatable class works as expected.
  *
  * @constructor
  */
-RotatorTests = AsyncTestCase('RotatorTests');
+RotatableTests = AsyncTestCase('RotatableTests');
 
 
 /**
  * Shutdown the engine between test cases.
  */
-RotatorTests.prototype.tearDown = function() {
+RotatableTests.prototype.tearDown = function() {
   var voodooEngine = voodoo.engine;
   if (voodooEngine)
     voodooEngine.destroy();
@@ -25,28 +25,28 @@ RotatorTests.prototype.tearDown = function() {
 
 
 /**
- * Tests that the Rotator class can be extended from other types.
+ * Tests that the Rotatable class can be extended from other types.
  */
-RotatorTests.prototype.testRotatorExtend = function() {
-  var RotatorBase = SimpleModel.extend(voodoo.Rotator);
-  var BaseRotator = voodoo.Rotator.extend(SimpleModel);
+RotatableTests.prototype.testRotatableExtend = function() {
+  var RotatableBase = SimpleModel.extend(voodoo.Rotatable);
+  var BaseRotatable = voodoo.Rotatable.extend(SimpleModel);
 
-  var instance1 = new RotatorBase({rotation: {
+  var instance1 = new RotatableBase({rotation: {
     x: 1,
     y: 2,
     z: 3
   }});
 
-  var instance2 = new BaseRotator({rotation: [1, 1, 0]});
+  var instance2 = new BaseRotatable({rotation: [1, 1, 0]});
 };
 
 
 /**
  * Tests that the rotation can be set in multiple ways.
  */
-RotatorTests.prototype.testRotatorSetRotation = function() {
-  var Rotator = voodoo.Rotator.extend(DummyModel);
-  var instance = new Rotator({rotation: [2, 0, 0]});
+RotatableTests.prototype.testRotatableSetRotation = function() {
+  var Rotatable = voodoo.Rotatable.extend(DummyModel);
+  var instance = new Rotatable({rotation: [2, 0, 0]});
 
   var epsilon = 0.0001;
 
@@ -111,9 +111,9 @@ RotatorTests.prototype.testRotatorSetRotation = function() {
  *
  * @param {Object} queue Async queue.
  */
-RotatorTests.prototype.testRotatorRotateContinuous = function(queue) {
-  var Rotator = voodoo.Rotator.extend(DummyModel);
-  var instance = new Rotator({
+RotatableTests.prototype.testRotatableRotateContinuous = function(queue) {
+  var Rotatable = voodoo.Rotatable.extend(DummyModel);
+  var instance = new Rotatable({
     rotation: [0, 0, 0]
   });
 
@@ -147,9 +147,9 @@ RotatorTests.prototype.testRotatorRotateContinuous = function(queue) {
 /**
  * Tests that the rotateBegin and rotateEnd events work.
  */
-RotatorTests.prototype.testRotatorEvents = function() {
-  var Rotator = voodoo.Rotator.extend(DummyModel);
-  var instance = new Rotator();
+RotatableTests.prototype.testRotatableEvents = function() {
+  var Rotatable = voodoo.Rotatable.extend(DummyModel);
+  var instance = new Rotatable();
 
   var rotateBegin = false;
   var rotateEnd = false;

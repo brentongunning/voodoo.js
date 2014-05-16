@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: Scaler.js
+// File: Scalable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
 // ----------------------------------------------------------------------------
@@ -13,7 +13,7 @@
  * @private
  * @extends {voodoo.View}
  */
-var ScalerView_ = voodoo.View.extend({
+var ScalableView_ = voodoo.View.extend({
 
   above: false,
   below: false,
@@ -72,11 +72,11 @@ var ScalerView_ = voodoo.View.extend({
  *
  * @param {Object=} opt_options Options object.
  */
-var Scaler = this.Scaler = voodoo.Model.extend({
+var Scalable = this.Scalable = voodoo.Model.extend({
 
-  name: 'Scaler',
+  name: 'Scalable',
   organization: 'spellbook',
-  viewType: ScalerView_,
+  viewType: ScalableView_,
 
   initialize: function(options) {
     this.base.initialize(options);
@@ -180,9 +180,9 @@ var Scaler = this.Scaler = voodoo.Model.extend({
   * @param {function(number):number=} opt_easing Optional easing function.
   *     Default is easing.easeInOutQuad.
   *
-  * @return {Scaler}
+  * @return {Scalable}
   */
-Scaler.prototype.scaleTo = function(scale, seconds, opt_easing) {
+Scalable.prototype.scaleTo = function(scale, seconds, opt_easing) {
   var endScale;
   if (arguments.length > 2 && typeof arguments[2] === 'number') {
     endScale = { x: arguments[0], y: arguments[1], z: arguments[2] };
@@ -232,9 +232,9 @@ Scaler.prototype.scaleTo = function(scale, seconds, opt_easing) {
   *
   * @param {Object|number} scale Scale.
   *
-  * @return {Scaler}
+  * @return {Scalable}
   */
-Scaler.prototype.setScale = function(scale) {
+Scalable.prototype.setScale = function(scale) {
   if (arguments.length > 1)
     this.scale_ = { x: arguments[0], y: arguments[1], z: arguments[2] };
   else
@@ -273,7 +273,7 @@ Scaler.prototype.setScale = function(scale) {
  *
  * @type {Object|number}
  */
-Scaler.prototype.scale = 1;
+Scalable.prototype.scale = 1;
 
 
 /**
@@ -285,7 +285,7 @@ Scaler.prototype.scale = 1;
  *
  * @return {Object}
  */
-Scaler.prototype.parseScale_ = function(scale) {
+Scalable.prototype.parseScale_ = function(scale) {
   if (typeof scale === 'number') {
     return { x: scale, y: scale, z: scale };
   } else if (typeof scale === 'object') {
@@ -308,7 +308,7 @@ Scaler.prototype.parseScale_ = function(scale) {
  *
  * @return {Object}
  */
-Scaler.prototype.fixScale_ = function(scale) {
+Scalable.prototype.fixScale_ = function(scale) {
   if (scale.x === 0) scale.x = 0.0000001;
   if (scale.y === 0) scale.y = 0.0000001;
   if (scale.z === 0) scale.z = 0.0000001;

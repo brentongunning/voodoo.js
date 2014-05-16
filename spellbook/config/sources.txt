@@ -5,13 +5,13 @@ Helpers\Easing.js
 Helpers\Helpers.js
 Helpers\NullView.js
 
-Modifiers\Colorer.js
-Modifiers\Fader.js
-Modifiers\Hider.js
-Modifiers\Positioner.js
-Modifiers\Rotator.js
-Modifiers\Scaler.js
-Modifiers\Shader.js
+Modifiers\Colorable.js
+Modifiers\Fadable.js
+Modifiers\Hidable.js
+Modifiers\Lightable.js
+Modifiers\Movable.js
+Modifiers\Rotatable.js
+Modifiers\Scalable.js
 Modifiers\Wireframe.js
 
 Controllers\Arcball.js

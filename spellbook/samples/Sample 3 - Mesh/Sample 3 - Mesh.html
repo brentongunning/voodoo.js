@@ -38,8 +38,8 @@
 		performanceScaling: false
 	});
 
-	var Mesh = voodoo.Mesh.extend(voodoo.Scaler);
-	Mesh = Mesh.extend(voodoo.Colorer);
+	var Mesh = voodoo.Mesh.extend(voodoo.Scalable);
+	Mesh = Mesh.extend(voodoo.Colorable);
 	Mesh = Mesh.extend(voodoo.Wireframe);
 
 	var mesh = new Mesh({

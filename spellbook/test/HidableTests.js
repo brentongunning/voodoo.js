@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: HiderTests.js
+// File: HidableTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
 // ----------------------------------------------------------------------------
@@ -7,17 +7,17 @@
 
 
 /**
- * Test cases to make sure the Hider class works as expected.
+ * Test cases to make sure the Hidable class works as expected.
  *
  * @constructor
  */
-HiderTests = TestCase('HiderTests');
+HidableTests = TestCase('HidableTests');
 
 
 /**
  * Shutdown the engine between test cases.
  */
-HiderTests.prototype.tearDown = function() {
+HidableTests.prototype.tearDown = function() {
   var voodooEngine = voodoo.engine;
   if (voodooEngine)
     voodooEngine.destroy();
@@ -25,14 +25,14 @@ HiderTests.prototype.tearDown = function() {
 
 
 /**
- * Tests that the Hider class can be extended from other types.
+ * Tests that the Hidable class can be extended from other types.
  */
-HiderTests.prototype.testHiderExtend = function() {
-  var HiderBase = SimpleModel.extend(voodoo.Hider);
-  var BaseHider = voodoo.Hider.extend(SimpleModel);
+HidableTests.prototype.testHidableExtend = function() {
+  var HidableBase = SimpleModel.extend(voodoo.Hidable);
+  var BaseHidable = voodoo.Hidable.extend(SimpleModel);
 
-  var instance1 = new HiderBase();
-  var instance2 = new BaseHider();
+  var instance1 = new HidableBase();
+  var instance2 = new BaseHidable();
 
   instance1.show();
   instance2.hide();
@@ -42,9 +42,9 @@ HiderTests.prototype.testHiderExtend = function() {
 /**
  * Tests that the show and hide events work.
  */
-HiderTests.prototype.testHiderEvents = function() {
-  var Hider = voodoo.Hider.extend(DummyModel);
-  var instance = new Hider();
+HidableTests.prototype.testHidableEvents = function() {
+  var Hidable = voodoo.Hidable.extend(DummyModel);
+  var instance = new Hidable();
 
   var show = 0;
   var hide = 0;

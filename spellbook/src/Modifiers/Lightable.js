@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: Shader.js
+// File: Lightable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
 // ----------------------------------------------------------------------------
@@ -13,7 +13,7 @@
  * @private
  * @extends {voodoo.View}
  */
-var ShaderView_ = voodoo.View.extend({
+var LightableView_ = voodoo.View.extend({
 
   above: false,
   below: false,
@@ -100,9 +100,9 @@ var ShaderView_ = voodoo.View.extend({
 
   setShadingToMesh_: function(mesh, shading) {
     var threeJsShading = THREE.SmoothShading;
-    if (shading === Shader.ShadingStyle.Flat)
+    if (shading === Lightable.ShadingStyle.Flat)
       threeJsShading = THREE.FlatShading;
-    else if (shading === Shader.ShadingStyle.None)
+    else if (shading === Lightable.ShadingStyle.None)
       threeJsShading = THREE.NoShading;
 
     var material = mesh.material;
@@ -138,7 +138,7 @@ var ShaderView_ = voodoo.View.extend({
  *
  * - ambient {string=} Initial ambient using CSS notation. Default is black.
  * - emissive {string=} Initial emissive using CSS notation. Default is black.
- * - shading {(Shader.ShadingStyle|string)=} Initial shading type. Default is
+ * - shading {(Lightable.ShadingStyle|string)=} Initial shading type. Default is
  *     smooth.
  *
  * Events:
@@ -152,11 +152,11 @@ var ShaderView_ = voodoo.View.extend({
  *
  * @param {Object=} opt_options Options object.
  */
-var Shader = this.Shader = voodoo.Model.extend({
+var Lightable = this.Lightable = voodoo.Model.extend({
 
-  name: 'Shader',
+  name: 'Lightable',
   organization: 'spellbook',
-  viewType: ShaderView_,
+  viewType: LightableView_,
 
   initialize: function(options) {
     this.base.initialize(options);
@@ -169,7 +169,7 @@ var Shader = this.Shader = voodoo.Model.extend({
     this.threeJsEmissive_ =
         voodoo.utility.convertCssColorToThreeJsColor(this.emissive_);
 
-    this.shading_ = options.shading || Shader.ShadingStyle.Smooth;
+    this.shading_ = options.shading || Lightable.ShadingStyle.Smooth;
 
     var that = this;
 
@@ -200,9 +200,9 @@ var Shader = this.Shader = voodoo.Model.extend({
   *
   * @param {string} ambient Css color string.
   *
-  * @return {Shader}
+  * @return {Lightable}
   */
-Shader.prototype.setAmbient = function(ambient) {
+Lightable.prototype.setAmbient = function(ambient) {
   if (ambient !== this.ambient_) {
     this.ambient_ = ambient;
     this.threeJsAmbient_ =
@@ -224,9 +224,9 @@ Shader.prototype.setAmbient = function(ambient) {
   *
   * @param {string} emissive Css color string.
   *
-  * @return {Shader}
+  * @return {Lightable}
   */
-Shader.prototype.setEmissive = function(emissive) {
+Lightable.prototype.setEmissive = function(emissive) {
   if (emissive !== this.emissive_) {
     this.emissive_ = emissive;
     this.threeJsEmissive_ =
@@ -246,11 +246,11 @@ Shader.prototype.setEmissive = function(emissive) {
 /**
   * Immediately changes the shading style of all scene meshes.
   *
-  * @param {Shader.ShadingStyle|string} shading Shading style.
+  * @param {Lightable.ShadingStyle|string} shading Shading style.
   *
-  * @return {Shader}
+  * @return {Lightable}
   */
-Shader.prototype.setShading = function(shading) {
+Lightable.prototype.setShading = function(shading) {
   if (shading !== this.shading_) {
     this.shading_ = shading;
 
@@ -270,7 +270,7 @@ Shader.prototype.setShading = function(shading) {
  *
  * @type {string}
  */
-Shader.prototype.ambient = 'black';
+Lightable.prototype.ambient = 'black';
 
 
 /**
@@ -278,7 +278,7 @@ Shader.prototype.ambient = 'black';
  *
  * @type {string}
  */
-Shader.prototype.emissive = 'black';
+Lightable.prototype.emissive = 'black';
 
 
 /**
@@ -286,7 +286,7 @@ Shader.prototype.emissive = 'black';
  *
  * @enum {string}
  */
-Shader.ShadingStyle = {
+Lightable.ShadingStyle = {
   Smooth: 'smooth',
   Flat: 'flat',
   None: 'none'
@@ -296,6 +296,6 @@ Shader.ShadingStyle = {
 /**
  * Get or set the ambient color of all scene meshes. Default is smooth.
  *
- * @type {Shader.ShadingStyle|string}
+ * @type {Lightable.ShadingStyle|string}
  */
-Shader.prototype.shading = 'smooth;';
+Lightable.prototype.shading = 'smooth;';

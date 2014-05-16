@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: PositionerTests.js
+// File: MovableTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
 // ----------------------------------------------------------------------------
@@ -7,17 +7,17 @@
 
 
 /**
- * Test cases to make sure the Positioner class works as expected.
+ * Test cases to make sure the Movable class works as expected.
  *
  * @constructor
  */
-PositionerTests = TestCase('PositionerTests');
+MovableTests = TestCase('MovableTests');
 
 
 /**
  * Shutdown the engine between test cases.
  */
-PositionerTests.prototype.tearDown = function() {
+MovableTests.prototype.tearDown = function() {
   var voodooEngine = voodoo.engine;
   if (voodooEngine)
     voodooEngine.destroy();
@@ -25,28 +25,28 @@ PositionerTests.prototype.tearDown = function() {
 
 
 /**
- * Tests that the Positioner class can be extended from other types.
+ * Tests that the Movable class can be extended from other types.
  */
-PositionerTests.prototype.testPositionerExtend = function() {
-  var PositionerBase = SimpleModel.extend(voodoo.Positioner);
-  var BasePositioner = voodoo.Positioner.extend(SimpleModel);
+MovableTests.prototype.testMovableExtend = function() {
+  var MovableBase = SimpleModel.extend(voodoo.Movable);
+  var BaseMovable = voodoo.Movable.extend(SimpleModel);
 
-  var instance1 = new PositionerBase({position: {
+  var instance1 = new MovableBase({position: {
     x: 1,
     y: 2,
     z: 3
   }});
 
-  var instance2 = new BasePositioner({position: [1, 1, 0]});
+  var instance2 = new BaseMovable({position: [1, 1, 0]});
 };
 
 
 /**
  * Tests that the position can be set in multiple ways.
  */
-PositionerTests.prototype.testPositionerSetPosition = function() {
-  var Positioner = voodoo.Positioner.extend(DummyModel);
-  var instance = new Positioner({position: [2, 3, 4]});
+MovableTests.prototype.testMovableSetPosition = function() {
+  var Movable = voodoo.Movable.extend(DummyModel);
+  var instance = new Movable({position: [2, 3, 4]});
 
   var instancePosition = instance.position;
   assertEquals(2, instancePosition.x);
@@ -100,9 +100,9 @@ PositionerTests.prototype.testPositionerSetPosition = function() {
 /**
  * Tests that the moveBegin and moveEnd events work.
  */
-PositionerTests.prototype.testPositionerMoveEvents = function() {
-  var Positioner = voodoo.Positioner.extend(DummyModel);
-  var instance = new Positioner();
+MovableTests.prototype.testMovableMoveEvents = function() {
+  var Movable = voodoo.Movable.extend(DummyModel);
+  var instance = new Movable();
 
   var moveBegin = false;
   var moveEnd = false;
@@ -133,14 +133,14 @@ PositionerTests.prototype.testPositionerMoveEvents = function() {
 /**
  * Tests that the attach and detach events work.
  */
-PositionerTests.prototype.testPositionerAttachEvents = function() {
+MovableTests.prototype.testMovableAttachEvents = function() {
   /*:DOC +=
     <div style="position:absolute; left:400px; top:400px;
         width:400px; height:300px;" id="anchor"></div>
   */
 
-  var Positioner = voodoo.Positioner.extend(DummyModel);
-  var instance = new Positioner({
+  var Movable = voodoo.Movable.extend(DummyModel);
+  var instance = new Movable({
     element: document.getElementById('anchor'),
     center: false,
     pixelScale: true

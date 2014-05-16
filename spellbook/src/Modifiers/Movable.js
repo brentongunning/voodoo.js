@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: Positioner.js
+// File: Movable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
 // ----------------------------------------------------------------------------
@@ -13,7 +13,7 @@
  * @private
  * @extends {voodoo.View}
  */
-var PositionerView_ = voodoo.View.extend({
+var MovableView_ = voodoo.View.extend({
 
   above: false,
   below: false,
@@ -85,11 +85,11 @@ var PositionerView_ = voodoo.View.extend({
  *
  * @param {Object=} opt_options Options object.
  */
-var Positioner = this.Positioner = voodoo.Model.extend({
+var Movable = this.Movable = voodoo.Model.extend({
 
-  name: 'Positioner',
+  name: 'Movable',
   organization: 'spellbook',
-  viewType: PositionerView_,
+  viewType: MovableView_,
 
   initialize: function(options) {
     this.base.initialize(options);
@@ -210,9 +210,9 @@ var Positioner = this.Positioner = voodoo.Model.extend({
   * @param {boolean} center Whether to center the meshes within the element.
   * @param {boolean} pixelScale Whether to scale meshes in pixels, or units.
   *
-  * @return {Positioner}
+  * @return {Movable}
   */
-Positioner.prototype.attach = function(element, center, pixelScale) {
+Movable.prototype.attach = function(element, center, pixelScale) {
   this.view.attachScene_(element, center, pixelScale);
   if (this.stencilView)
     this.stencilView.attachScene_(element, center, pixelScale);
@@ -226,9 +226,9 @@ Positioner.prototype.attach = function(element, center, pixelScale) {
 /**
   * Detaches scene meshes from the attached HTML element.
   *
-  * @return {Positioner}
+  * @return {Movable}
   */
-Positioner.prototype.detach = function() {
+Movable.prototype.detach = function() {
   this.dispatch(new voodoo.Event('detach', this));
 
   this.view.detachScene_();
@@ -250,9 +250,9 @@ Positioner.prototype.detach = function() {
   * @param {function(number):number=} opt_easing Optional easing function.
   *     Default is easing.easeInOutQuad.
   *
-  * @return {Positioner}
+  * @return {Movable}
   */
-Positioner.prototype.moveTo = function(position, seconds, opt_easing) {
+Movable.prototype.moveTo = function(position, seconds, opt_easing) {
   var endPosition;
   if (arguments.length > 2 && typeof arguments[2] === 'number') {
     endPosition = { x: arguments[0], y: arguments[1], z: arguments[2] };
@@ -300,9 +300,9 @@ Positioner.prototype.moveTo = function(position, seconds, opt_easing) {
   *
   * @param {Object} position Position.
   *
-  * @return {Positioner}
+  * @return {Movable}
   */
-Positioner.prototype.setPosition = function(position) {
+Movable.prototype.setPosition = function(position) {
   if (arguments.length > 1)
     this.position_ = { x: arguments[0], y: arguments[1], z: arguments[2] };
   else
@@ -342,7 +342,7 @@ Positioner.prototype.setPosition = function(position) {
  *
  * @type {Object}
  */
-Positioner.prototype.position = null;
+Movable.prototype.position = null;
 
 
 /**
@@ -354,7 +354,7 @@ Positioner.prototype.position = null;
  *
  * @return {Object}
  */
-Positioner.prototype.parsePosition_ = function(position) {
+Movable.prototype.parsePosition_ = function(position) {
   if (typeof position === 'object') {
     if ('x' in position)
       return position;

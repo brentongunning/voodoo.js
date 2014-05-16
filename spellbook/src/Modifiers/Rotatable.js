@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: Rotator.js
+// File: Rotatable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
 // ----------------------------------------------------------------------------
@@ -13,7 +13,7 @@
  * @private
  * @extends {voodoo.View}
  */
-var RotatorView_ = voodoo.View.extend({
+var RotatableView_ = voodoo.View.extend({
 
   above: false,
   below: false,
@@ -72,11 +72,11 @@ var RotatorView_ = voodoo.View.extend({
  *
  * @param {Object=} opt_options Options object.
  */
-var Rotator = this.Rotator = voodoo.Model.extend({
+var Rotatable = this.Rotatable = voodoo.Model.extend({
 
-  name: 'Rotator',
+  name: 'Rotatable',
   organization: 'spellbook',
-  viewType: RotatorView_,
+  viewType: RotatableView_,
 
   initialize: function(options) {
     this.base.initialize(options);
@@ -208,9 +208,9 @@ var Rotator = this.Rotator = voodoo.Model.extend({
   * @param {function(number):number=} opt_easing Optional easing function.
   *     Default is easing.easeInOutQuad.
   *
-  * @return {Rotator}
+  * @return {Rotatable}
   */
-Rotator.prototype.rotateTo = function(rotation, opt_seconds, opt_easing) {
+Rotatable.prototype.rotateTo = function(rotation, opt_seconds, opt_easing) {
   if (opt_seconds) {
 
     // Case: Rotate over time.
@@ -258,9 +258,9 @@ Rotator.prototype.rotateTo = function(rotation, opt_seconds, opt_easing) {
   * @param {function(number):number=} opt_easing Optional easing function.
   *     Default is easing.easeInOutQuad.
   *
-  * @return {Rotator}
+  * @return {Rotatable}
   */
-Rotator.prototype.rotate = function(rotation, opt_seconds, opt_easing) {
+Rotatable.prototype.rotate = function(rotation, opt_seconds, opt_easing) {
   var delta = this.parseRotation_(rotation);
   var target = new THREE.Quaternion();
   target.copy(this.rotation_);
@@ -310,9 +310,9 @@ Rotator.prototype.rotate = function(rotation, opt_seconds, opt_easing) {
   *
   * @param {Object} rotation Amount to rotate per second.
   *
-  * @return {Rotator}
+  * @return {Rotatable}
   */
-Rotator.prototype.rotateContinuous = function(rotation) {
+Rotatable.prototype.rotateContinuous = function(rotation) {
   this.deltaRotation_ = this.parseRotation_(rotation);
 
   var target = new THREE.Quaternion();
@@ -350,9 +350,9 @@ Rotator.prototype.rotateContinuous = function(rotation) {
   *
   * @param {Object} rotation Rotation.
   *
-  * @return {Rotator}
+  * @return {Rotatable}
   */
-Rotator.prototype.setRotation = function(rotation) {
+Rotatable.prototype.setRotation = function(rotation) {
   this.rotation_ = this.parseRotation_(rotation);
   this.eulerRotation_.setFromQuaternion(this.rotation_);
   this.targetRotation_.copy(this.rotation_);
@@ -384,7 +384,7 @@ Rotator.prototype.setRotation = function(rotation) {
  *
  * @type {Object}
  */
-Rotator.prototype.rotation = null;
+Rotatable.prototype.rotation = null;
 
 
 /**
@@ -406,7 +406,7 @@ Rotator.prototype.rotation = null;
  *
  * @return {THREE.Quaternion}
  */
-Rotator.prototype.parseRotation_ = function(rotation) {
+Rotatable.prototype.parseRotation_ = function(rotation) {
   var quaternion = new THREE.Quaternion();
 
   if (Array.isArray(rotation)) {

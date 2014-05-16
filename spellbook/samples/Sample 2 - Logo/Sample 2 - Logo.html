@@ -30,10 +30,10 @@
 		performanceScaling: false
 	});
 
-	var CustomType = voodoo.Image3D.extend(voodoo.Fader);
-	CustomType = CustomType.extend(voodoo.Hider);
-	CustomType = CustomType.extend(voodoo.Scaler);
-	CustomType = CustomType.extend(voodoo.Shader);
+	var CustomType = voodoo.Image3D.extend(voodoo.Fadable);
+	CustomType = CustomType.extend(voodoo.Hidable);
+	CustomType = CustomType.extend(voodoo.Scalable);
+	CustomType = CustomType.extend(voodoo.Lightable);
 	var img3d = new CustomType({
 		element: document.getElementById('GoogleLogo'),
 		heightmap: 'GoogleLogo-depth.png',
