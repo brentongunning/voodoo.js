@@ -75,9 +75,11 @@ MeshTests.prototype.testMeshLoopAnimations = function() {
   }).setAnimation('walk', 0, 23, 0.01, true).play('walk');
 
   assert('Playing', instance.playing);
+  assertEquals('walk', instance.animation);
 
   instance.stop();
   assert('Stopped', !instance.playing);
+  assertEquals('', instance.animation);
 };
 
 
@@ -115,6 +117,7 @@ MeshTests.prototype.testMeshNonLoopAnimations = function(queue) {
 
   queue.call(function(callbacks) {
     instance.setAnimation('walk', 0, 23, 0.01, false).play('walk');
+    assertEquals('walk', instance.animation);
     assert('Looping', !instance.looping);
 
     var start = new Date();
@@ -123,6 +126,7 @@ MeshTests.prototype.testMeshNonLoopAnimations = function(queue) {
       voodooEngine.frame();
 
     assert('Finished', !instance.playing);
+    assertEquals('', instance.animation);
   });
 };
 

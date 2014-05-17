@@ -158,10 +158,16 @@ var Mesh = this.Mesh = Movable.extend({
         options.pixelScale : true;
 
     this.animations_ = {};
+    this.animation_ = '';
     this.playing_ = false;
     this.looping_ = false;
 
     var that = this;
+
+    Object.defineProperty(this, 'animation', {
+      get: function() { return that.animation_; },
+      enumerable: true
+    });
 
     Object.defineProperty(this, 'looping', {
       get: function() { return that.looping_; },
@@ -243,6 +249,7 @@ Mesh.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
  */
 Mesh.prototype.play = function(name) {
   var animation = this.animations_[name];
+  this.animation_ = name;
 
   this.view.playAnimation_(animation);
   if (this.stencilView)
@@ -267,9 +274,18 @@ Mesh.prototype.play = function(name) {
 Mesh.prototype.stop = function() {
   this.dispatch(new voodoo.Event('stop', this));
   this.playing_ = false;
+  this.animation_ = '';
 
   return this;
 };
+
+
+/**
+ * Gets the currently playing animation. Readonly.
+ *
+ * @type {string}
+ */
+Mesh.prototype.animation = '';
 
 
 /**
