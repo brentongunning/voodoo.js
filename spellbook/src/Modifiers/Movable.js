@@ -396,7 +396,7 @@ Movable.prototype.moving = false;
  * 2. Object: object.position = {x: 1, y: 2, z: 3};
  * 3. Component: object.position.z = 0;
  *
- * As a getter, this object will always return an
+ * As a getter, this will always return an
  * object with x, y, and z properties.
  *
  * @type {Object}

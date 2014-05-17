@@ -130,6 +130,15 @@ var Scalable = this.Scalable = voodoo.Model.extend({
       set: function(scale) { that.setScale(scale); },
       enumerable: true
     });
+
+    Object.defineProperty(this, 'targetScale', {
+      get: function() { return {
+        x: that.targetScale_.x,
+        y: that.targetScale_.y,
+        z: that.targetScale_.z
+      }; },
+      enumerable: true
+    });
   },
 
   update: function(deltaTime) {
@@ -268,12 +277,22 @@ Scalable.prototype.setScale = function(scale) {
  * 3. Object: object.scale = {x: 1, y: 2, z: 3};
  * 4. Component: object.scale.z = 0;
  *
- * As a getter, this object will always return an
+ * As a getter, this will always return an
  * object with x, y, and z properties.
  *
  * @type {Object|number}
  */
 Scalable.prototype.scale = 1;
+
+
+/**
+ * Gets the target scale of all scene meshes. Readonly
+ *
+ * Returns an object with x, y, and z properties.
+ *
+ * @type {Object}
+ */
+Scalable.prototype.targetScale = null;
 
 
 /**
