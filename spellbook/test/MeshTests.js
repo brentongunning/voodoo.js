@@ -65,7 +65,7 @@ MeshTests.prototype.testMeshLoopAnimations = function() {
         width:400px; height:300px;" id="anchor"></div>
   */
 
-  var mesh = new voodoo.Mesh({
+  var instance = new voodoo.Mesh({
     element: document.getElementById('anchor'),
     format: voodoo.Mesh.Format.JSON,
     mesh: '/test/test/assets/monster.json',
@@ -74,10 +74,10 @@ MeshTests.prototype.testMeshLoopAnimations = function() {
     pixelScale: false
   }).setAnimation('walk', 0, 23, 0.01, true).play('walk');
 
-  assert('Playing', mesh.playing);
+  assert('Playing', instance.playing);
 
-  mesh.stop();
-  assert('Stopped', !mesh.playing);
+  instance.stop();
+  assert('Stopped', !instance.playing);
 };
 
 
@@ -92,10 +92,10 @@ MeshTests.prototype.testMeshNonLoopAnimations = function(queue) {
         width:400px; height:300px;" id="anchor"></div>
   */
 
-  var mesh;
+  var instance;
 
   queue.call(function(callbacks) {
-    mesh = new voodoo.Mesh({
+    instance = new voodoo.Mesh({
       element: document.getElementById('anchor'),
       format: voodoo.Mesh.Format.JSON,
       mesh: '/test/test/assets/monster.json',
@@ -106,7 +106,7 @@ MeshTests.prototype.testMeshNonLoopAnimations = function(queue) {
   });
 
   queue.call(function(callbacks) {
-    assert('Loaded', mesh.loaded);
+    assert('Loaded', instance.loaded);
 
     // Focus on the window to start the delta timer.
     window.focus();
@@ -114,15 +114,15 @@ MeshTests.prototype.testMeshNonLoopAnimations = function(queue) {
   });
 
   queue.call(function(callbacks) {
-    mesh.setAnimation('walk', 0, 23, 0.01, false).play('walk');
-    assert('Looping', !mesh.looping);
+    instance.setAnimation('walk', 0, 23, 0.01, false).play('walk');
+    assert('Looping', !instance.looping);
 
     var start = new Date();
     var voodooEngine = voodoo.engine;
-    while (mesh.playing && new Date() - start < 1000)
+    while (instance.playing && new Date() - start < 1000)
       voodooEngine.frame();
 
-    assert('Finished', !mesh.playing);
+    assert('Finished', !instance.playing);
   });
 };
 
@@ -138,7 +138,7 @@ MeshTests.prototype.testMeshEvents = function(queue) {
         width:400px; height:300px;" id="anchor"></div>
   */
 
-  var mesh = new voodoo.Mesh({
+  var instance = new voodoo.Mesh({
     element: document.getElementById('anchor'),
     format: voodoo.Mesh.Format.JSON,
     mesh: '/test/test/assets/monster.json',
@@ -149,11 +149,11 @@ MeshTests.prototype.testMeshEvents = function(queue) {
 
   var play = false;
   var stop = false;
-  mesh.on('play', function() { play = true; });
-  mesh.on('stop', function() { stop = true; });
+  instance.on('play', function() { play = true; });
+  instance.on('stop', function() { stop = true; });
 
-  mesh.setAnimation('walk', 0, 23, 0.01, false).play('walk');
-  mesh.playing = false;
+  instance.setAnimation('walk', 0, 23, 0.01, false).play('walk');
+  instance.playing = false;
 
   assert('Play Event', play);
   assert('Stop Event', stop);

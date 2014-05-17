@@ -102,7 +102,7 @@ Image3DTests.prototype.testImage3DEvents = function(queue) {
   var morphEnd = false;
 
   queue.call(function(callbacks) {
-    img3d = new voodoo.Image3D({
+    instance = new voodoo.Image3D({
       element: document.getElementById('anchor'),
       imageSrc: '/test/test/assets/Layers.jpg',
       heightmap: '/test/test/assets/Black.jpg',
@@ -118,7 +118,7 @@ Image3DTests.prototype.testImage3DEvents = function(queue) {
 
   queue.call(function() {
     assert('Images loaded:', loaded);
-    img3d.morph(2, 0.25);
+    instance.morph(2, 0.25);
 
     var start = new Date;
     var voodooEngine = voodoo.engine;
@@ -151,32 +151,32 @@ Image3DTests.prototype.testImage3DChangeSources = function(queue) {
   var changeHeightmap3 = 0;
 
   queue.call(function(callbacks) {
-    img3d = new voodoo.Image3D({
+    instance = new voodoo.Image3D({
       element: anchor,
       imageSrc: layers,
       heightmap: black,
       heightmap2: layers
     }).on('load', callbacks.add(function() {}));
 
-    img3d.on('changeImageSrc', function() { ++changeImageSrc; });
-    img3d.on('changeHeightmap', function() { ++changeHeightmap; });
-    img3d.on('changeHeightmap3', function() { ++changeHeightmap3; });
+    instance.on('changeImageSrc', function() { ++changeImageSrc; });
+    instance.on('changeHeightmap', function() { ++changeHeightmap; });
+    instance.on('changeHeightmap3', function() { ++changeHeightmap3; });
   });
 
   queue.call(function() {
-    img3d.imageSrc = black;
-    assert('ImageSrc:', img3d.imageSrc.indexOf(black) !== -1);
+    instance.imageSrc = black;
+    assert('ImageSrc:', instance.imageSrc.indexOf(black) !== -1);
     assert('img.src:', anchor.src.indexOf(black) !== -1);
 
-    img3d.heightmap = layers;
-    assert('Heightmap:', img3d.heightmap.indexOf(layers) !== -1);
+    instance.heightmap = layers;
+    assert('Heightmap:', instance.heightmap.indexOf(layers) !== -1);
 
-    img3d.heightmap3 = black;
-    assert('Heightmap3:', img3d.heightmap3.indexOf(black) !== -1);
+    instance.heightmap3 = black;
+    assert('Heightmap3:', instance.heightmap3.indexOf(black) !== -1);
 
     anchor.src = layers;
     voodoo.engine.frame();
-    assert('ImageSrc (2):', img3d.imageSrc.indexOf(layers) !== -1);
+    assert('ImageSrc (2):', instance.imageSrc.indexOf(layers) !== -1);
 
     assertEquals('changeImageSrc', 2, changeImageSrc);
     assertEquals('changeHeightmap', 1, changeHeightmap);
@@ -198,7 +198,7 @@ Image3DTests.prototype.testImage3DProperties = function() {
   var layers = '/test/test/assets/Layers.jpg';
   var black = '/test/test/assets/Black.jpg';
 
-  var img3d = new voodoo.Image3D({
+  var instance = new voodoo.Image3D({
     element: anchor,
     imageSrc: layers,
     heightmap: black,
@@ -209,23 +209,79 @@ Image3DTests.prototype.testImage3DProperties = function() {
   var changeMaxHeight = 0;
   var changeTransparent = 0;
 
-  img3d.on('changeGeometryStyle', function() { ++changeGeometryStyle; });
-  img3d.on('changeMaxHeight', function() { ++changeMaxHeight; });
-  img3d.on('changeTransparent', function() { ++changeTransparent; });
+  instance.on('changeGeometryStyle', function() { ++changeGeometryStyle; });
+  instance.on('changeMaxHeight', function() { ++changeMaxHeight; });
+  instance.on('changeTransparent', function() { ++changeTransparent; });
 
-  img3d.geometryStyle = 'smooth';
-  img3d.setGeometryStyle('block');
-  img3d.geometryStyle = voodoo.Image3D.GeometryStyle.Smooth;
+  instance.geometryStyle = 'smooth';
+  instance.setGeometryStyle('block');
+  instance.geometryStyle = voodoo.Image3D.GeometryStyle.Smooth;
 
-  img3d.maxHeight = 200;
-  img3d.setMaxHeight(500);
-  img3d.maxHeight = 1000;
+  instance.maxHeight = 200;
+  instance.setMaxHeight(500);
+  instance.maxHeight = 1000;
 
-  img3d.setTransparent(true);
-  img3d.setTransparent(false);
-  img3d.transparent = true;
+  instance.setTransparent(true);
+  instance.setTransparent(false);
+  instance.transparent = true;
 
   assertEquals('changeGeometryStyle', 2, changeGeometryStyle);
   assertEquals('changeMaxHeight', 2, changeMaxHeight);
   assertEquals('changeTransparent', 2, changeTransparent);
+};
+
+
+/**
+ * Tests that a morph animation may be paused and resumed.
+ *
+ * @param {Object} queue Async queue.
+ */
+Image3DTests.prototype.testPauseMorph = function(queue) {
+  /*:DOC +=
+    <img style="position:absolute; left:400px; top:400px;
+        width:400px; height:300px;" id="anchor"></div>
+  */
+
+  var loaded = false;
+
+  queue.call(function(callbacks) {
+    instance = new voodoo.Image3D({
+      element: document.getElementById('anchor'),
+      imageSrc: '/test/test/assets/Layers.jpg',
+      heightmap: '/test/test/assets/Black.jpg',
+      heightmap2: '/test/test/assets/Layers.jpg'
+    }).on('load', callbacks.add(function() {
+      loaded = true;
+    }));
+  });
+
+  queue.call(function() {
+    assert('Images loaded:', loaded);
+    instance.morph(2, 0.1);
+
+    var start = new Date;
+    var voodooEngine = voodoo.engine;
+    while (new Date() - start < 50)
+      voodooEngine.frame();
+
+    assertTrue('Morphing:', instance.morphing);
+    instance.setMorphing(false);
+
+    // Kill time which shouldn't do anything
+    var start = new Date;
+    var voodooEngine = voodoo.engine;
+    while (new Date() - start < 25)
+      voodooEngine.frame();
+
+    // Resume
+    instance.morphing = true;
+    assertTrue('Morphing:', instance.morphing);
+
+    var start = new Date;
+    var voodooEngine = voodoo.engine;
+    while (instance.morphing && new Date() - start < 100)
+      voodooEngine.frame();
+
+    assertFalse('Morphing:', instance.morphing);
+  });
 };

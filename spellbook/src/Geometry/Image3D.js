@@ -542,8 +542,9 @@ var Image3D = this.Image3D = voodoo.Model.extend({
         options.transparent : true;
 
     this.morphing_ = false;
-    this.startMorphTime_ = 0;
-    this.morphAnimationLength_ = 1;
+    this.morphStartTime_ = 0;
+    this.morphDuration_ = 0;
+    this.morphElapsed_ = 0;
     this.startMorphTargets_ = [1, 0, 0, 0];
     this.currentMorphTargets_ = [1, 0, 0, 0];
     this.endMorphTargets_ = [1, 0, 0, 0];
@@ -573,19 +574,22 @@ var Image3D = this.Image3D = voodoo.Model.extend({
       this.setImageSrc(this.element_.src);
 
     if (this.morphing_) {
-      var now = new Date().getTime();
-      var delta = now - this.startMorphTime_;
-      var time = delta / this.morphAnimationLength_;
+      var now = new Date();
+      var duration = now - this.morphStartTime_;
+      var time = duration / this.morphDuration_;
 
       if (time > 1) {
         // Finish animations
         this.morphing_ = false;
+        this.morphDuration_ = 0;
+        this.morphElapsed_ = 0;
 
         this.view.setMorphTargetInfluences_(this.endMorphTargets_);
         if (this.stencilView)
           this.stencilView.setMorphTargetInfluences_(this.endMorphTargets_);
 
         this.currentMorphTargets_ = this.endMorphTargets_.slice(0);
+        this.startMorphTargets_ = this.currentMorphTargets_.slice(0);
 
         this.dispatch(new voodoo.Event('morphEnd', this));
       } else {
@@ -644,6 +648,11 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     Object.defineProperty(this, 'maxHeight', {
       get: function() { return that.maxHeight_; },
       set: function(maxHeight) { that.setMaxHeight(maxHeight); },
+      enumerable: true
+    });
+    Object.defineProperty(this, 'morphing', {
+      get: function() { return that.morphing_; },
+      set: function(morphing) { that.setMorphing(morphing); },
       enumerable: true
     });
 
@@ -734,8 +743,9 @@ Image3D.prototype.morph = function(index, seconds) {
     // Animate over time
     this.startMorphTargets_ = this.currentMorphTargets_.slice(0);
     this.endMorphTargets_ = morphTargetInfluences.slice(0);
-    this.morphAnimationLength_ = seconds * 1000;
-    this.startMorphTime_ = new Date().getTime();
+    this.morphDuration_ = seconds * 1000;
+    this.morphStartTime_ = new Date();
+    this.morphElapsed_ = 0;
     this.morphing_ = true;
 
     this.dispatch(new voodoo.Event('morphBegin', this));
@@ -745,11 +755,13 @@ Image3D.prototype.morph = function(index, seconds) {
     this.endMorphTargets_ = morphTargetInfluences.slice(0);
     this.currentMorphTargets_ = morphTargetInfluences.slice(0);
 
+    this.morphing_ = false;
+    this.morphDuration_ = 0;
+    this.morphElapsed_ = 0;
+
     this.view.setMorphTargetInfluences_(morphTargetInfluences);
     if (this.stencilView)
       this.stencilView.setMorphTargetInfluences_(morphTargetInfluences);
-
-    this.morphing_ = false;
   }
 
   return this;
@@ -874,6 +886,31 @@ Image3D.prototype.setMaxHeight = function(maxHeight) {
 
 
 /**
+ * Sets whether we are currently morphing. This may be used to pause and
+ * resume animations.
+ *
+ * @param {boolean} morphing Whether to enable or disable morphing.
+ *
+ * @return {Image3D}
+ */
+Image3D.prototype.setMorphing = function(morphing) {
+  if (!morphing && this.morphing_) {
+
+    this.morphing_ = false;
+    this.morphElapsed_ = new Date() - this.morphStartTime_;
+
+  } else if (morphing && !this.morphing_) {
+
+    this.morphing_ = true;
+    this.morphStartTime_ = new Date() - this.morphElapsed_;
+
+  }
+
+  return this;
+};
+
+
+/**
  * Sets whether the texture may be transparent.
  *
  * @param {boolean} transparent Enable transparency.
@@ -961,6 +998,14 @@ Image3D.prototype.imageSrc = '';
  * @type {number}
  */
 Image3D.prototype.maxHeight = 200;
+
+
+/**
+ * Gets or sets whether we are currently morphing between heightmaps.
+ *
+ * @type {boolean}
+ */
+Image3D.prototype.morphing = false;
 
 
 /**
