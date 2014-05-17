@@ -53,12 +53,22 @@ MovableTests.prototype.testMovableSetPosition = function() {
   assertEquals(3, instancePosition.y);
   assertEquals(4, instancePosition.z);
 
+  instanceTargetPosition = instance.targetPosition;
+  assertEquals(2, instanceTargetPosition.x);
+  assertEquals(3, instanceTargetPosition.y);
+  assertEquals(4, instanceTargetPosition.z);
+
   instance.position.x = 1;
 
   instancePosition = instance.position;
   assertEquals(1, instancePosition.x);
   assertEquals(3, instancePosition.y);
   assertEquals(4, instancePosition.z);
+
+  instanceTargetPosition = instance.targetPosition;
+  assertEquals(1, instanceTargetPosition.x);
+  assertEquals(3, instanceTargetPosition.y);
+  assertEquals(4, instanceTargetPosition.z);
 
   instance.position = [0.25, 0.5, 0.75];
 
@@ -67,12 +77,22 @@ MovableTests.prototype.testMovableSetPosition = function() {
   assertEquals(0.5, instancePosition.y);
   assertEquals(0.75, instancePosition.z);
 
+  instanceTargetPosition = instance.targetPosition;
+  assertEquals(0.25, instanceTargetPosition.x);
+  assertEquals(0.5, instanceTargetPosition.y);
+  assertEquals(0.75, instanceTargetPosition.z);
+
   instance.position = {x: 0.1, y: 0.2, z: 0.3};
 
   instancePosition = instance.position;
   assertEquals(0.1, instancePosition.x);
   assertEquals(0.2, instancePosition.y);
   assertEquals(0.3, instancePosition.z);
+
+  instanceTargetPosition = instance.targetPosition;
+  assertEquals(0.1, instanceTargetPosition.x);
+  assertEquals(0.2, instanceTargetPosition.y);
+  assertEquals(0.3, instanceTargetPosition.z);
 
   instance.setPosition([1, 2, 3]);
 
@@ -81,6 +101,11 @@ MovableTests.prototype.testMovableSetPosition = function() {
   assertEquals(2, instancePosition.y);
   assertEquals(3, instancePosition.z);
 
+  instanceTargetPosition = instance.targetPosition;
+  assertEquals(1, instanceTargetPosition.x);
+  assertEquals(2, instanceTargetPosition.y);
+  assertEquals(3, instanceTargetPosition.z);
+
   instance.setPosition(2, 3, 4);
 
   instancePosition = instance.position;
@@ -88,12 +113,22 @@ MovableTests.prototype.testMovableSetPosition = function() {
   assertEquals(3, instancePosition.y);
   assertEquals(4, instancePosition.z);
 
+  instanceTargetPosition = instance.targetPosition;
+  assertEquals(2, instanceTargetPosition.x);
+  assertEquals(3, instanceTargetPosition.y);
+  assertEquals(4, instanceTargetPosition.z);
+
   instance.moveTo(0.1, 0.2, 0.3, 0, voodoo.easing.easeOutBounce);
 
   instancePosition = instance.position;
   assertEquals(0.1, instancePosition.x);
   assertEquals(0.2, instancePosition.y);
   assertEquals(0.3, instancePosition.z);
+
+  instanceTargetPosition = instance.targetPosition;
+  assertEquals(0.1, instanceTargetPosition.x);
+  assertEquals(0.2, instanceTargetPosition.y);
+  assertEquals(0.3, instanceTargetPosition.z);
 };
 
 
@@ -114,6 +149,16 @@ MovableTests.prototype.testMovableMoveEvents = function() {
 
   instance.moveTo(0.5, 0.4, 0.3, 0.0001);
 
+  var instancePosition = instance.position;
+  assertNotEquals(0.5, instancePosition.x);
+  assertNotEquals(0.4, instancePosition.y);
+  assertNotEquals(0.3, instancePosition.z);
+
+  var instanceTargetPosition = instance.targetPosition;
+  assertEquals(0.5, instanceTargetPosition.x);
+  assertEquals(0.4, instanceTargetPosition.y);
+  assertEquals(0.3, instanceTargetPosition.z);
+
   var start = new Date;
   var voodooEngine = voodoo.engine;
   while (!moveEnd && new Date() - start < 1000)
@@ -123,10 +168,15 @@ MovableTests.prototype.testMovableMoveEvents = function() {
   assert('Move End', moveEnd);
   assert('Move', moveEnd);
 
-  var instancePosition = instance.position;
+  instancePosition = instance.position;
   assertEquals(0.5, instancePosition.x);
   assertEquals(0.4, instancePosition.y);
   assertEquals(0.3, instancePosition.z);
+
+  instanceTargetPosition = instance.targetPosition;
+  assertEquals(0.5, instanceTargetPosition.x);
+  assertEquals(0.4, instanceTargetPosition.y);
+  assertEquals(0.3, instanceTargetPosition.z);
 };
 
 

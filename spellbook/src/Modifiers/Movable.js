@@ -150,6 +150,15 @@ var Movable = this.Movable = voodoo.Model.extend({
       set: function(position) { that.setPosition(position); },
       enumerable: true
     });
+
+    Object.defineProperty(this, 'targetPosition', {
+      get: function() { return {
+        x: that.targetPosition_.x,
+        y: that.targetPosition_.y,
+        z: that.targetPosition_.z
+      }; },
+      enumerable: true
+    });
   },
 
   setUpViews: function() {
@@ -343,6 +352,20 @@ Movable.prototype.setPosition = function(position) {
  * @type {Object}
  */
 Movable.prototype.position = null;
+
+
+/**
+ * Gets the position the mesh is animating to. Readonly.
+ *
+ * If the meshes are attached to an HTML element, then this position
+ * is an offset from its attached location. Otherwise, it is an absolute
+ * location on the page in pixels.
+ *
+ * Returns an object an object with x, y, and z properties.
+ *
+ * @type {Object}
+ */
+Movable.prototype.targetPosition = null;
 
 
 /**
