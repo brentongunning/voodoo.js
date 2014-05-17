@@ -103,9 +103,16 @@ var Scalable = this.Scalable = voodoo.Model.extend({
     this.scaleStartTime_ = null;
     this.scaleDuration_ = 0;
     this.scaling_ = false;
+    this.scaleElapsed_ = 0;
 
     var that = this;
     var proxy = {};
+
+    Object.defineProperty(this, 'scaling', {
+      get: function() { return that.scaling_; },
+      set: function(scaling) { that.setScaling(scaling); },
+      enumerable: true
+    });
 
     Object.defineProperty(proxy, 'x', {
       get: function() { return that.scale_.x; },
@@ -166,6 +173,13 @@ var Scalable = this.Scalable = voodoo.Model.extend({
 
       if (t >= 1.0) {
         this.scaling_ = false;
+        this.scaleElapsed_ = 0;
+        this.scaleDuration_ = 0;
+
+        this.startScale_.x = this.scale_.x;
+        this.startScale_.y = this.scale_.y;
+        this.startScale_.z = this.scale_.z;
+
         this.dispatch(new voodoo.Event('scaleEnd', this));
       }
 
@@ -221,6 +235,7 @@ Scalable.prototype.scaleTo = function(scale, seconds, opt_easing) {
 
     this.scaleStartTime_ = new Date();
     this.scaleDuration_ = seconds * 1000;
+    this.scaleElapsed_ = 0;
     this.scaling_ = true;
 
     this.scaleEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
@@ -256,12 +271,39 @@ Scalable.prototype.setScale = function(scale) {
   this.targetScale_.z = this.scale_.z;
 
   this.scaling_ = false;
+  this.scaleElapsed_ = 0;
+  this.scaleDuration_ = 0;
 
   this.dispatch(new voodoo.Event('scale', this));
 
   this.view.setScale_(this.scale_);
   if (this.stencilView)
     this.stencilView.setScale_(this.scale_);
+
+  return this;
+};
+
+
+/**
+ * Sets whether we are currently scaling. This may be used to pause and
+ * resume animations.
+ *
+ * @param {boolean} scaling Whether to enable or disable scaling.
+ *
+ * @return {Scalable}
+ */
+Scalable.prototype.setScaling = function(scaling) {
+  if (!scaling && this.scaling_) {
+
+    this.scaling_ = false;
+    this.scaleElapsed_ = new Date() - this.scaleStartTime_;
+
+  } else if (scaling && !this.scaling_) {
+
+    this.scaling_ = true;
+    this.scaleStartTime_ = new Date() - this.scaleElapsed_;
+
+  }
 
   return this;
 };
@@ -283,6 +325,14 @@ Scalable.prototype.setScale = function(scale) {
  * @type {Object|number}
  */
 Scalable.prototype.scale = 1;
+
+
+/**
+ * Gets or sets whether we are currently animating between scales.
+ *
+ * @type {boolean}
+ */
+Scalable.prototype.scaling = false;
 
 
 /**

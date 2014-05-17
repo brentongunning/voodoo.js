@@ -195,3 +195,77 @@ ScalableTests.prototype.testScalableEvents = function() {
   assertEquals(0.4, instanceTargetScale.y);
   assertEquals(0.3, instanceTargetScale.z);
 };
+
+
+/**
+ * Tests that scales may be paused.
+ */
+ScalableTests.prototype.testPauseScale = function() {
+  var Scalable = voodoo.Scalable.extend(DummyModel);
+  var instance = new Scalable();
+
+  instance.scale = [1, 2, 3];
+  instance.scaleTo(4, 5, 6, 0.1);
+
+  var instanceScale = instance.scale;
+  assertEquals(1, instanceScale.x);
+  assertEquals(2, instanceScale.y);
+  assertEquals(3, instanceScale.z);
+
+  var instanceTargetScale = instance.targetScale;
+  assertEquals(4, instanceTargetScale.x);
+  assertEquals(5, instanceTargetScale.y);
+  assertEquals(6, instanceTargetScale.z);
+
+  var start = new Date;
+  var voodooEngine = voodoo.engine;
+  while (new Date() - start < 50)
+    voodooEngine.frame();
+
+  assertTrue('Scaling:', instance.scaling);
+  instance.setScaling(false);
+
+  var pausedScale = instance.scale;
+  assertNotEquals(1, pausedScale.x);
+  assertNotEquals(2, pausedScale.y);
+  assertNotEquals(3, pausedScale.z);
+  assertNotEquals(4, pausedScale.x);
+  assertNotEquals(5, pausedScale.y);
+  assertNotEquals(6, pausedScale.z);
+
+  instanceTargetScale = instance.targetScale;
+  assertEquals(4, instanceTargetScale.x);
+  assertEquals(5, instanceTargetScale.y);
+  assertEquals(6, instanceTargetScale.z);
+
+  // Kill time which shouldn't do anything
+  var start = new Date;
+  var voodooEngine = voodoo.engine;
+  while (new Date() - start < 25)
+    voodooEngine.frame();
+
+  instanceScale = instance.scale;
+  assertEquals(pausedScale.x, instanceScale.x);
+  assertEquals(pausedScale.y, instanceScale.y);
+  assertEquals(pausedScale.z, instanceScale.z);
+
+  // Resume
+  instance.scaling = true;
+
+  var start = new Date;
+  var voodooEngine = voodoo.engine;
+  while (instance.scaling && new Date() - start < 100)
+    voodooEngine.frame();
+
+  instanceScale = instance.scale;
+  assertEquals(4, instanceScale.x);
+  assertEquals(5, instanceScale.y);
+  assertEquals(6, instanceScale.z);
+
+  instanceTargetScale = instance.targetScale;
+  assertEquals(4, instanceTargetScale.x);
+  assertEquals(5, instanceTargetScale.y);
+  assertEquals(6, instanceTargetScale.z);
+
+  assertFalse('Scaling:', instance.scaling);
+};
