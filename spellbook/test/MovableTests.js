@@ -213,7 +213,7 @@ MovableTests.prototype.testMovableAttachEvents = function() {
 /**
  * Tests that moves may be paused.
  */
-MovableTests.prototype.testPause = function() {
+MovableTests.prototype.testPauseMove = function() {
   var Movable = voodoo.Movable.extend(DummyModel);
   var instance = new Movable();
 

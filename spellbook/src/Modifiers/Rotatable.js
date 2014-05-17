@@ -99,10 +99,22 @@ var Rotatable = this.Rotatable = voodoo.Model.extend({
     this.deltaRotation_ = null;
     this.rotating_ = false;
     this.rotationDuration_ = 0;
-    this.continuous_ = false;
+    this.continuousRotation_ = false;
+    this.rotationElapsed_ = 0;
 
     var that = this;
     var proxy = {};
+
+    Object.defineProperty(this, 'continuousRotation', {
+      get: function() { return that.continuousRotation_; },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'rotating', {
+      get: function() { return that.rotating_; },
+      set: function(rotating) { that.setRotating(rotating); },
+      enumerable: true
+    });
 
     Object.defineProperty(proxy, 'x', {
       get: function() { return that.eulerRotation_.x; },
@@ -178,7 +190,7 @@ var Rotatable = this.Rotatable = voodoo.Model.extend({
         this.rotation_.copy(this.targetRotation_);
         this.eulerRotation_.setFromQuaternion(this.rotation_);
 
-        if (this.continuous_) {
+        if (this.continuousRotation_) {
           t = 0;
           this.startRotation_.copy(this.rotation_);
           this.targetRotation_.copy(this.deltaRotation_);
@@ -192,6 +204,10 @@ var Rotatable = this.Rotatable = voodoo.Model.extend({
 
       if (t >= 1.0) {
         this.rotating_ = false;
+        this.continuousRotation_ = false;
+        this.rotationDuration_ = 0;
+        this.rotationElapsed_ = 0;
+        this.startRotation_.copy(this.rotation_);
         this.dispatch(new voodoo.Event('rotateEnd', this));
       }
 
@@ -233,11 +249,12 @@ Rotatable.prototype.rotateTo = function(rotation, opt_seconds, opt_easing) {
     this.startRotation_.copy(this.rotation_);
     this.targetRotation_ = this.parseRotation_(rotation);
 
-    this.deltaRotating_ = false;
+    this.continuousRotation_ = false;
     this.rotating_ = true;
 
     this.rotationStartTime_ = new Date();
     this.rotationDuration_ = opt_seconds * 1000;
+    this.rotationElapsed_ = 0;
 
     this.rotationEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
 
@@ -289,10 +306,11 @@ Rotatable.prototype.rotate = function(rotation, opt_seconds, opt_easing) {
     this.targetRotation_ = target;
 
     this.rotating_ = true;
-    this.continuous_ = false;
+    this.continuousRotation_ = false;
 
     this.rotationStartTime_ = new Date();
     this.rotationDuration_ = opt_seconds * 1000;
+    this.rotationElapsed_ = 0;
 
     this.rotationEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
 
@@ -338,13 +356,39 @@ Rotatable.prototype.rotateContinuous = function(rotation) {
   this.targetRotation_.copy(target);
 
   this.rotating_ = true;
-  this.continuous_ = true;
+  this.continuousRotation_ = true;
 
   this.rotationStartTime_ = new Date();
   this.rotationDuration_ = 1000;
+  this.rotationElapsed_ = 0;
   this.rotationEasing_ = Easing.prototype.linear;
 
   this.dispatch(new voodoo.Event('rotateBegin', this));
+
+  return this;
+};
+
+
+/**
+ * Sets whether we are currently rotating. This may be used to pause and
+ * resume animations.
+ *
+ * @param {boolean} rotating Whether to enable or disable rotating.
+ *
+ * @return {Rotatable}
+ */
+Rotatable.prototype.setRotating = function(rotating) {
+  if (!rotating && this.rotating_) {
+
+    this.rotating_ = false;
+    this.rotationElapsed_ = new Date() - this.rotationStartTime_;
+
+  } else if (rotating && !this.rotating_) {
+
+    this.rotating_ = true;
+    this.rotationStartTime_ = new Date() - this.rotationElapsed_;
+
+  }
 
   return this;
 };
@@ -372,8 +416,10 @@ Rotatable.prototype.setRotation = function(rotation) {
   this.eulerRotation_.setFromQuaternion(this.rotation_);
   this.targetRotation_.copy(this.rotation_);
 
-  this.continuous_ = false;
+  this.continuousRotation_ = false;
   this.rotating_ = false;
+  this.rotationDuration_ = 0;
+  this.rotationElapsed_ = 0;
 
   this.dispatch(new voodoo.Event('rotate', this));
 
@@ -383,6 +429,22 @@ Rotatable.prototype.setRotation = function(rotation) {
 
   return this;
 };
+
+
+/**
+ * Gets whether we are currently rotating continuously or not.
+ *
+ * @type {boolean}
+ */
+Rotatable.prototype.continuousRotation = false;
+
+
+/**
+ * Gets or sets whether we are currently animating a rotation.
+ *
+ * @type {boolean}
+ */
+Rotatable.prototype.rotating = false;
 
 
 /**

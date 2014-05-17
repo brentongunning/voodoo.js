@@ -109,7 +109,7 @@ FadableTests.prototype.testFadableSetAlpha = function() {
 /**
  * Tests that fading may be paused.
  */
-FadableTests.prototype.testPause = function() {
+FadableTests.prototype.testPauseFade = function() {
   var Fadable = voodoo.Fadable.extend(DummyModel);
   var instance = new Fadable();
 

@@ -160,6 +160,8 @@ RotatableTests.prototype.testRotatableRotateContinuous = function(queue) {
   });
 
   queue.call(function(callbacks) {
+    assertFalse(instance.continuousRotation);
+
     // Focus on the window to start the delta timer.
     window.focus();
     setTimeout(callbacks.add(function() {
@@ -168,6 +170,8 @@ RotatableTests.prototype.testRotatableRotateContinuous = function(queue) {
   });
 
   queue.call(function(callbacks) {
+    assertTrue(instance.continuousRotation);
+
     var start = new Date();
     var voodooEngine = voodoo.engine;
     while (new Date() - start < 1000)
@@ -241,4 +245,76 @@ RotatableTests.prototype.testRotatableEvents = function() {
     voodooEngine.frame();
 
   assert('Rotate End', rotateEnd);
+};
+
+
+/**
+ * Tests that rotations may be paused.
+ */
+RotatableTests.prototype.testPauseRotation = function() {
+  var epsilon = 0.0001;
+
+  var Rotatable = voodoo.Rotatable.extend(DummyModel);
+  var instance = new Rotatable();
+
+  instance.rotation = [0, 0, 0];
+  instance.rotateTo([1, 0, 0], 0.1);
+
+  var r = instance.rotation;
+  assert(r.x > (0 - epsilon) && r.x < (0 + epsilon));
+  assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
+  assert(r.z > (0 - epsilon) && r.z < (0 + epsilon));
+
+  var tr = instance.targetRotation;
+  assert(tr.x > (1 - epsilon) && tr.x < (1 + epsilon));
+  assert(tr.y > (0 - epsilon) && tr.y < (0 + epsilon));
+  assert(tr.z > (0 - epsilon) && tr.z < (0 + epsilon));
+
+  var start = new Date;
+  var voodooEngine = voodoo.engine;
+  while (new Date() - start < 50)
+    voodooEngine.frame();
+
+  assertTrue('Rotating:', instance.rotating);
+  instance.setRotating(false);
+
+  var r2 = instance.rotation;
+  assertFalse(r2.x > (0 - epsilon) && r2.x < (0 + epsilon));
+  assertFalse(r2.x > (1 - epsilon) && r2.x < (1 + epsilon));
+
+  tr = instance.targetRotation;
+  assert(tr.x > (1 - epsilon) && tr.x < (1 + epsilon));
+  assert(tr.y > (0 - epsilon) && tr.y < (0 + epsilon));
+  assert(tr.z > (0 - epsilon) && tr.z < (0 + epsilon));
+
+  // Kill time which shouldn't do anything
+  var start = new Date;
+  var voodooEngine = voodoo.engine;
+  while (new Date() - start < 25)
+    voodooEngine.frame();
+
+  r = instance.rotation;
+  assert(r.x > (r2.x - epsilon) && r.x < (r2.x + epsilon));
+  assert(r.y > (r2.y - epsilon) && r.y < (r2.y + epsilon));
+  assert(r.z > (r2.z - epsilon) && r.z < (r2.z + epsilon));
+
+  // Resume
+  instance.rotating = true;
+
+  var start = new Date;
+  var voodooEngine = voodoo.engine;
+  while (instance.rotating && new Date() - start < 100)
+    voodooEngine.frame();
+
+  r = instance.rotation;
+  assert(r.x > (1 - epsilon) && r.x < (1 + epsilon));
+  assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
+  assert(r.z > (0 - epsilon) && r.z < (0 + epsilon));
+
+  tr = instance.targetRotation;
+  assert(tr.x > (1 - epsilon) && tr.x < (1 + epsilon));
+  assert(tr.y > (0 - epsilon) && tr.y < (0 + epsilon));
+  assert(tr.z > (0 - epsilon) && tr.z < (0 + epsilon));
+
+  assertFalse('Rotating:', instance.rotating);
 };
