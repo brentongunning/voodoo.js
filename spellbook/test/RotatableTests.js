@@ -55,12 +55,22 @@ RotatableTests.prototype.testRotatableSetRotation = function() {
   assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
   assert(r.z > (0 - epsilon) && r.z < (0 + epsilon));
 
+  var tr = instance.targetRotation;
+  assert(tr.x > (2 - epsilon) && tr.x < (2 + epsilon));
+  assert(tr.y > (0 - epsilon) && tr.y < (0 + epsilon));
+  assert(tr.z > (0 - epsilon) && tr.z < (0 + epsilon));
+
   instance.rotation.x = 1;
 
   r = instance.rotation;
   assert(r.x > (1 - epsilon) && r.x < (1 + epsilon));
   assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
   assert(r.z > (0 - epsilon) && r.z < (0 + epsilon));
+
+  tr = instance.targetRotation;
+  assert(tr.x > (1 - epsilon) && tr.x < (1 + epsilon));
+  assert(tr.y > (0 - epsilon) && tr.y < (0 + epsilon));
+  assert(tr.z > (0 - epsilon) && tr.z < (0 + epsilon));
 
   instance.rotation = [0.25, 0, 0.75];
 
@@ -69,12 +79,22 @@ RotatableTests.prototype.testRotatableSetRotation = function() {
   assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
   assert(r.z > (0.75 - epsilon) && r.z < (0.75 + epsilon));
 
+  tr = instance.targetRotation;
+  assert(tr.x > (0.25 - epsilon) && tr.x < (0.25 + epsilon));
+  assert(tr.y > (0 - epsilon) && tr.y < (0 + epsilon));
+  assert(tr.z > (0.75 - epsilon) && tr.z < (0.75 + epsilon));
+
   instance.rotation = {x: 0, y: 0.2, z: 0.3};
 
   r = instance.rotation;
   assert(r.x > (0 - epsilon) && r.x < (0 + epsilon));
   assert(r.y > (0.2 - epsilon) && r.y < (0.2 + epsilon));
   assert(r.z > (0.3 - epsilon) && r.z < (0.3 + epsilon));
+
+  tr = instance.targetRotation;
+  assert(tr.x > (0 - epsilon) && tr.x < (0 + epsilon));
+  assert(tr.y > (0.2 - epsilon) && tr.y < (0.2 + epsilon));
+  assert(tr.z > (0.3 - epsilon) && tr.z < (0.3 + epsilon));
 
   instance.setRotation([0, 0.1, 0]);
 
@@ -83,6 +103,11 @@ RotatableTests.prototype.testRotatableSetRotation = function() {
   assert(r.y > (0.1 - epsilon) && r.y < (0.1 + epsilon));
   assert(r.z > (0 - epsilon) && r.z < (0 + epsilon));
 
+  tr = instance.targetRotation;
+  assert(tr.x > (0 - epsilon) && tr.x < (0 + epsilon));
+  assert(tr.y > (0.1 - epsilon) && tr.y < (0.1 + epsilon));
+  assert(tr.z > (0 - epsilon) && tr.z < (0 + epsilon));
+
   instance.rotateTo([0, 0, 3], 0);
 
   r = instance.rotation;
@@ -90,12 +115,24 @@ RotatableTests.prototype.testRotatableSetRotation = function() {
   assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
   assert(r.z > (3 - epsilon) && r.z < (3 + epsilon));
 
+  tr = instance.targetRotation;
+  assert(tr.x > (0 - epsilon) && tr.x < (0 + epsilon));
+  assert(tr.y > (0 - epsilon) && tr.y < (0 + epsilon));
+  assert(tr.z > (3 - epsilon) && tr.z < (3 + epsilon));
+
   instance.setRotation([0, 0.1, 0, 0]);
+
+  // No angle, so the rotations should be 0.
 
   r = instance.rotation;
   assert(r.x > (0 - epsilon) && r.x < (0 + epsilon));
   assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
   assert(r.z > (0 - epsilon) && r.z < (0 + epsilon));
+
+  tr = instance.targetRotation;
+  assert(tr.x > (0 - epsilon) && tr.x < (0 + epsilon));
+  assert(tr.y > (0 - epsilon) && tr.y < (0 + epsilon));
+  assert(tr.z > (0 - epsilon) && tr.z < (0 + epsilon));
 
   instance.setRotation({x: 2, y: 3, z: 4, angle: 0});
 
@@ -103,6 +140,11 @@ RotatableTests.prototype.testRotatableSetRotation = function() {
   assert(r.x > (0 - epsilon) && r.x < (0 + epsilon));
   assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
   assert(r.z > (0 - epsilon) && r.z < (0 + epsilon));
+
+  tr = instance.targetRotation;
+  assert(tr.x > (0 - epsilon) && tr.x < (0 + epsilon));
+  assert(tr.y > (0 - epsilon) && tr.y < (0 + epsilon));
+  assert(tr.z > (0 - epsilon) && tr.z < (0 + epsilon));
 };
 
 
@@ -148,6 +190,8 @@ RotatableTests.prototype.testRotatableRotateContinuous = function(queue) {
  * Tests that the rotateBegin and rotateEnd events work.
  */
 RotatableTests.prototype.testRotatableEvents = function() {
+  var epsilon = 0.0001;
+
   var Rotatable = voodoo.Rotatable.extend(DummyModel);
   var instance = new Rotatable();
 
@@ -159,7 +203,15 @@ RotatableTests.prototype.testRotatableEvents = function() {
   instance.on('rotateEnd', function() { rotateEnd = true; });
   instance.on('rotate', function() { rotate = true; });
 
-  instance.rotateTo([0.5, 0.4, 0.3], 0.0001);
+  instance.rotateTo([0.5, 0, 0], 0.0001);
+
+  var r = instance.rotation;
+  assertFalse(r.x > (0.5 - epsilon) && r.x < (0.5 + epsilon));
+
+  var tr = instance.targetRotation;
+  assert(tr.x > (0.5 - epsilon) && tr.x < (0.5 + epsilon));
+  assert(tr.y > (0 - epsilon) && tr.y < (0 + epsilon));
+  assert(tr.z > (0 - epsilon) && tr.z < (0 + epsilon));
 
   var start = new Date;
   var voodooEngine = voodoo.engine;
@@ -170,10 +222,15 @@ RotatableTests.prototype.testRotatableEvents = function() {
   assert('Rotate End', rotateEnd);
   assert('Rotate', rotate);
 
-  var instanceRotation = instance.rotation;
-  assertEquals(0.5, instanceRotation.x);
-  assertEquals(0.4, instanceRotation.y);
-  assertEquals(0.3, instanceRotation.z);
+  r = instance.rotation;
+  assert(r.x > (0.5 - epsilon) && r.x < (0.5 + epsilon));
+  assert(r.y > (0 - epsilon) && r.y < (0 + epsilon));
+  assert(r.z > (0 - epsilon) && r.z < (0 + epsilon));
+
+  tr = instance.targetRotation;
+  assert(tr.x > (0.5 - epsilon) && tr.x < (0.5 + epsilon));
+  assert(tr.y > (0 - epsilon) && tr.y < (0 + epsilon));
+  assert(tr.z > (0 - epsilon) && tr.z < (0 + epsilon));
 
   rotateEnd = false;
   instance.rotate([0.5, 0.4, 0.3], 0.0001);

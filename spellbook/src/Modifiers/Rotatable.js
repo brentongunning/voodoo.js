@@ -142,6 +142,21 @@ var Rotatable = this.Rotatable = voodoo.Model.extend({
       set: function(rotation) { that.setRotation(rotation); },
       enumerable: true
     });
+
+
+    Object.defineProperty(this, 'targetRotation', {
+      get: function() {
+        var eulerRotation = new THREE.Euler();
+        eulerRotation.setFromQuaternion(that.targetRotation_);
+
+        return {
+          x: eulerRotation.x,
+          y: eulerRotation.y,
+          z: eulerRotation.z
+        };
+      },
+      enumerable: true
+    });
   },
 
   update: function(deltaTime) {
@@ -379,12 +394,22 @@ Rotatable.prototype.setRotation = function(rotation) {
  * 2. Object: object.rotation = {x: 1, y: 2, z: 3};
  * 3. Component: object.rotation.z = 0;
  *
- * As a getter, this object will always return an
+ * As a getter, this object will always return a
  * euler angle object with x, y, z properties.
  *
  * @type {Object}
  */
 Rotatable.prototype.rotation = null;
+
+
+/**
+ * Get the rotation of all scene meshes. Readonly.
+ *
+ * Returns an a euler angle object with x, y, z properties.
+ *
+ * @type {Object}
+ */
+Rotatable.prototype.targetRotation = null;
 
 
 /**
