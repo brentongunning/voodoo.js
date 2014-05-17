@@ -112,6 +112,7 @@ var Fadable = this.Fadable = voodoo.Model.extend({
     this.fadeStartTime_ = null;
     this.fadeDuration_ = 0;
     this.fading_ = false;
+    this.fadeElapsed_ = 0;
 
     var that = this;
 
@@ -153,6 +154,10 @@ var Fadable = this.Fadable = voodoo.Model.extend({
 
       if (t >= 1.0) {
         this.fading_ = false;
+        this.fadeDuration_ = 0;
+        this.fadeElapsed_ = 0;
+        this.startAlpha_ = this.alpha_;
+
         this.dispatch(new voodoo.Event('fadeEnd', this));
       }
 
@@ -212,6 +217,7 @@ Fadable.prototype.fadeTo = function(alpha, seconds, opt_easing) {
     this.fadeStartTime_ = new Date();
     this.fadeDuration_ = seconds * 1000;
     this.fading_ = true;
+    this.fadeElapsed_ = 0;
 
     this.fadeEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
 
@@ -234,6 +240,8 @@ Fadable.prototype.setAlpha = function(alpha) {
   this.alpha_ = alpha;
   this.targetAlpha_ = alpha;
   this.fading_ = false;
+  this.fadeDuration_ = 0;
+  this.fadeElapsed_ = 0;
 
   this.dispatch(new voodoo.Event('alphaChange', this));
 
@@ -255,13 +263,15 @@ Fadable.prototype.setAlpha = function(alpha) {
  */
 Fadable.prototype.setFading = function(fading) {
   if (!fading && this.fading_) {
+
     this.fading_ = false;
-    var elapsed = new Date() - this.fadeStartTime_;
-    this.fadeDuration_ -= elapsed;
+    this.fadeElapsed_ = new Date() - this.fadeStartTime_;
+
   } else if (fading && !this.fading_) {
+
     this.fading_ = true;
-    this.fadeStartTime_ = new Date();
-    this.startAlpha_ = this.alpha_;
+    this.fadeStartTime_ = new Date() - this.fadeElapsed_;
+
   }
 
   return this;

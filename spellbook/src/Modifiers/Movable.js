@@ -120,9 +120,16 @@ var Movable = this.Movable = voodoo.Model.extend({
     this.moveStartTime_ = null;
     this.moveDuration_ = 0;
     this.moving_ = false;
+    this.moveElapsed_ = 0;
 
     var that = this;
     var proxy = {};
+
+    Object.defineProperty(this, 'moving', {
+      get: function() { return that.moving_; },
+      set: function(moving) { that.setMoving(moving); },
+      enumerable: true
+    });
 
     Object.defineProperty(proxy, 'x', {
       get: function() { return that.position_.x; },
@@ -200,6 +207,13 @@ var Movable = this.Movable = voodoo.Model.extend({
 
       if (t >= 1.0) {
         this.moving_ = false;
+        this.moveDuration_ = 0;
+        this.moveElapsed_ = 0;
+
+        this.startPosition_.x = this.position_.x;
+        this.startPosition_.y = this.position_.y;
+        this.startPosition_.z = this.position_.z;
+
         this.dispatch(new voodoo.Event('moveEnd', this));
       }
 
@@ -290,10 +304,36 @@ Movable.prototype.moveTo = function(position, seconds, opt_easing) {
     this.moveStartTime_ = new Date();
     this.moveDuration_ = seconds * 1000;
     this.moving_ = true;
+    this.moveElapsed_ = 0;
 
     this.moveEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('moveBegin', this));
+
+  }
+
+  return this;
+};
+
+
+/**
+ * Sets whether we are currently moving. This may be used to pause and
+ * resume animations.
+ *
+ * @param {boolean} moving Whether to enable or disable moving.
+ *
+ * @return {Movable}
+ */
+Movable.prototype.setMoving = function(moving) {
+  if (!moving && this.moving_) {
+
+    this.moving_ = false;
+    this.moveElapsed_ = new Date() - this.moveStartTime_;
+
+  } else if (moving && !this.moving_) {
+
+    this.moving_ = true;
+    this.moveStartTime_ = new Date() - this.moveElapsed_;
 
   }
 
@@ -322,6 +362,8 @@ Movable.prototype.setPosition = function(position) {
   this.targetPosition_.z = this.position_.z;
 
   this.moving_ = false;
+  this.moveDuration_ = 0;
+  this.moveElapsed_ = 0;
 
   this.dispatch(new voodoo.Event('move', this));
 
@@ -331,6 +373,14 @@ Movable.prototype.setPosition = function(position) {
 
   return this;
 };
+
+
+/**
+ * Gets or sets whether we are currently animating between positions.
+ *
+ * @type {boolean}
+ */
+Movable.prototype.moving = false;
 
 
 /**

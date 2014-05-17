@@ -208,3 +208,77 @@ MovableTests.prototype.testMovableAttachEvents = function() {
   assert('Detach', detach);
   assert('Attach', attach);
 };
+
+
+/**
+ * Tests that moves may be paused.
+ */
+MovableTests.prototype.testPause = function() {
+  var Movable = voodoo.Movable.extend(DummyModel);
+  var instance = new Movable();
+
+  instance.position = [0, 0, 0];
+  instance.moveTo(600, 700, 800, 0.1);
+
+  var instancePosition = instance.position;
+  assertEquals(0, instancePosition.x);
+  assertEquals(0, instancePosition.y);
+  assertEquals(0, instancePosition.z);
+
+  var instanceTargetPosition = instance.targetPosition;
+  assertEquals(600, instanceTargetPosition.x);
+  assertEquals(700, instanceTargetPosition.y);
+  assertEquals(800, instanceTargetPosition.z);
+
+  var start = new Date;
+  var voodooEngine = voodoo.engine;
+  while (new Date() - start < 50)
+    voodooEngine.frame();
+
+  assertTrue('Moving:', instance.moving);
+  instance.setMoving(false);
+
+  var pausedPosition = instance.position;
+  assertNotEquals(0, pausedPosition.x);
+  assertNotEquals(0, pausedPosition.y);
+  assertNotEquals(0, pausedPosition.z);
+  assertNotEquals(600, pausedPosition.x);
+  assertNotEquals(700, pausedPosition.y);
+  assertNotEquals(800, pausedPosition.z);
+
+  instanceTargetPosition = instance.targetPosition;
+  assertEquals(600, instanceTargetPosition.x);
+  assertEquals(700, instanceTargetPosition.y);
+  assertEquals(800, instanceTargetPosition.z);
+
+  // Kill time which shouldn't do anything
+  var start = new Date;
+  var voodooEngine = voodoo.engine;
+  while (new Date() - start < 25)
+    voodooEngine.frame();
+
+  instancePosition = instance.position;
+  assertEquals(pausedPosition.x, instancePosition.x);
+  assertEquals(pausedPosition.y, instancePosition.y);
+  assertEquals(pausedPosition.z, instancePosition.z);
+
+  // Resume
+  instance.moving = true;
+
+  var start = new Date;
+  var voodooEngine = voodoo.engine;
+  while (instance.moving && new Date() - start < 100)
+    voodooEngine.frame();
+
+  instancePosition = instance.position;
+  assertEquals(600, instancePosition.x);
+  assertEquals(700, instancePosition.y);
+  assertEquals(800, instancePosition.z);
+
+  instanceTargetPosition = instance.targetPosition;
+  assertEquals(600, instanceTargetPosition.x);
+  assertEquals(700, instanceTargetPosition.y);
+  assertEquals(800, instanceTargetPosition.z);
+
+  assertFalse('Moving:', instance.moving);
+};
