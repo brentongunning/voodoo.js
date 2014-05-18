@@ -142,10 +142,12 @@ var Mesh = this.Mesh = Movable.extend({
 
     this.base.initialize(options);
 
-    log_.assert_(options.element, 'element must be defined');
+    log_.assert_(options.element, 'element must be valid.',
+        '(Mesh::initialize)');
     this.element_ = options.element;
 
-    log_.assert_(options.mesh, 'mesh must be defined');
+    log_.assert_(options.mesh, 'mesh must be valid.',
+        '(Mesh::initialize)');
     this.mesh_ = options.mesh;
 
     this.format_ = options.format || Mesh.Format.JSON;
@@ -178,7 +180,8 @@ var Mesh = this.Mesh = Movable.extend({
       get: function() { return that.playing_; },
       set: function(playing) {
         if (playing)
-          log_.error_('Cannot set playing to true. Call play()');
+          log_.error_('Cannot set playing to true. Call play().',
+              '(Mesh::playing)');
         else
           that.stop();
       },
@@ -228,6 +231,16 @@ var Mesh = this.Mesh = Movable.extend({
  */
 Mesh.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
     opt_forward) {
+  log_.assert_(name, 'name must be valid.', '(Mesh::setAnimation)');
+  log_.assert_(typeof name === 'string', name, 'name must be a string.',
+      '(Mesh::setAnimation)');
+  log_.assert_(start >= 0, 'start must be >= 0.', start,
+      '(Mesh::setAnimation)');
+  log_.assert_(end >= 0, 'end must be >= 0.', end,
+      '(Mesh::setAnimation)');
+  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds,
+      '(Mesh::setAnimation)');
+
   this.animations_[name] = {
     start: start,
     end: end,
@@ -248,6 +261,10 @@ Mesh.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
  * @return {Mesh}
  */
 Mesh.prototype.play = function(name) {
+  log_.assert_(name, 'name must be valid.', '(Mesh::setAnimation)');
+  log_.assert_(name in this.animations_, 'Animation does not exist.', name,
+      '(Mesh::setAnimation)');
+
   var animation = this.animations_[name];
   this.animation_ = name;
 

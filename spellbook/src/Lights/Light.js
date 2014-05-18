@@ -18,7 +18,7 @@
 var LightView_ = voodoo.View.extend({
 
   createLight_: function() {
-    log_.error_('createLight_() undefined.');
+    log_.error_('createLight_() undefined.', '(LightView_::createLight_)');
   },
 
   load: function() {

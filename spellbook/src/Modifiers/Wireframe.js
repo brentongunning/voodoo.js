@@ -40,6 +40,9 @@ var WireframeView_ = voodoo.View.extend({
   },
 
   setWireframeToMesh_: function(mesh, wireframe) {
+    log_.assert_(mesh, 'mesh must be valid.',
+        '(WireframeView_::setWireframeToMesh_)');
+
     var material = mesh.material;
     if (material) {
       var materials = material.materials;

@@ -36,6 +36,9 @@ var RotatableView_ = voodoo.View.extend({
   },
 
   setRotation_: function(rotation) {
+    log_.assert_(rotation, 'rotation must be vaild',
+        '(RotatableView_::setRotation_)');
+
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
@@ -242,6 +245,9 @@ var Rotatable = this.Rotatable = voodoo.Model.extend({
   * @return {Rotatable}
   */
 Rotatable.prototype.rotateTo = function(rotation, opt_seconds, opt_easing) {
+  log_.assert_(rotation, 'rotation must be valid.',
+      '(Rotatable::rotateTo)');
+
   if (opt_seconds) {
 
     // Case: Rotate over time.
@@ -293,6 +299,9 @@ Rotatable.prototype.rotateTo = function(rotation, opt_seconds, opt_easing) {
   * @return {Rotatable}
   */
 Rotatable.prototype.rotate = function(rotation, opt_seconds, opt_easing) {
+  log_.assert_(rotation, 'rotation must be valid.',
+      '(Rotatable::rotate)');
+
   var delta = this.parseRotation_(rotation);
   var target = new THREE.Quaternion();
   target.copy(this.rotation_);
@@ -346,6 +355,9 @@ Rotatable.prototype.rotate = function(rotation, opt_seconds, opt_easing) {
   * @return {Rotatable}
   */
 Rotatable.prototype.rotateContinuous = function(rotation) {
+  log_.assert_(rotation, 'rotation must be valid.',
+      '(Rotatable::rotateContinuous)');
+
   this.deltaRotation_ = this.parseRotation_(rotation);
 
   var target = new THREE.Quaternion();
@@ -412,6 +424,9 @@ Rotatable.prototype.setRotating = function(rotating) {
   * @return {Rotatable}
   */
 Rotatable.prototype.setRotation = function(rotation) {
+  log_.assert_(rotation, 'rotation must be valid.',
+      '(Rotatable::setRotation)');
+
   this.rotation_ = this.parseRotation_(rotation);
   this.eulerRotation_.setFromQuaternion(this.rotation_);
   this.targetRotation_.copy(this.rotation_);
@@ -512,13 +527,17 @@ Rotatable.prototype.parseRotation_ = function(rotation) {
 
     } else {
 
-      log_.error_('Unable to parse rotation: Incorrect number of elements.');
+      log_.error_('Unable to parse rotation: Incorrect number of elements.',
+          '(Rotatable::parseRotation_)');
 
     }
   } else if (typeof rotation === 'object') {
-    log_.assert_('x' in rotation, 'Property x is undefined');
-    log_.assert_('y' in rotation, 'Property y is undefined');
-    log_.assert_('z' in rotation, 'Property z is undefined');
+    log_.assert_('x' in rotation, 'Property x is undefined.',
+        '(Rotatable::parseRotation_)');
+    log_.assert_('y' in rotation, 'Property y is undefined.',
+        '(Rotatable::parseRotation_)');
+    log_.assert_('z' in rotation, 'Property z is undefined.',
+        '(Rotatable::parseRotation_)');
 
     if ('angle' in rotation) {
 
@@ -542,7 +561,8 @@ Rotatable.prototype.parseRotation_ = function(rotation) {
     }
   } else {
 
-    log_.error_('Unable to parse rotation: Must be array or object.');
+    log_.error_('Unable to parse rotation: Must be array or object.',
+        '(Rotatable::parseRotation_)');
 
   }
 

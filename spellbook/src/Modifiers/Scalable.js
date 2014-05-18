@@ -36,6 +36,9 @@ var ScalableView_ = voodoo.View.extend({
   },
 
   setScale_: function(scale) {
+    log_.assert_(scale, 'scale must be valid.',
+        '(ScalableView_::setScale_)');
+
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
@@ -217,6 +220,11 @@ Scalable.prototype.scaleTo = function(scale, seconds, opt_easing) {
 
   endScale = this.fixScale_(endScale);
 
+  log_.assert_(typeof seconds === 'number', 'seconds must be a number.',
+      '(Scalable::scaleTo)');
+  log_.assert_(seconds >= 0, 'seconds must be >= 0.',
+      '(Scalable::scaleTo)');
+
   if (seconds === 0) {
 
     this.setScale(endScale);
@@ -259,6 +267,9 @@ Scalable.prototype.scaleTo = function(scale, seconds, opt_easing) {
   * @return {Scalable}
   */
 Scalable.prototype.setScale = function(scale) {
+  log_.assert_(scale, 'scale must be valid.',
+      '(Movable::setScale)');
+
   if (arguments.length > 1)
     this.scale_ = { x: arguments[0], y: arguments[1], z: arguments[2] };
   else

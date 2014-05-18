@@ -15,6 +15,7 @@
  * @return {string} Absolute path url.
  */
 function getAbsoluteUrl(url) {
+  log_.assert_(url, 'url must be valid.', url, '(getAbsoluteUrl)');
   var a = document.createElement('a');
   a.href = url;
   return a.href;

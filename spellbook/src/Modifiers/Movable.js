@@ -36,6 +36,9 @@ var MovableView_ = voodoo.View.extend({
   },
 
   setPosition_: function(position) {
+    log_.assert_(position, 'position must be valid.',
+        '(MovableView_::setPosition_)');
+
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
@@ -236,6 +239,9 @@ var Movable = this.Movable = voodoo.Model.extend({
   * @return {Movable}
   */
 Movable.prototype.attach = function(element, center, pixelScale) {
+  log_.assert_(element, 'element must be valid.',
+      '(Movable::attach)');
+
   this.view.attachScene_(element, center, pixelScale);
   if (this.stencilView)
     this.stencilView.attachScene_(element, center, pixelScale);
@@ -284,6 +290,11 @@ Movable.prototype.moveTo = function(position, seconds, opt_easing) {
   } else {
     endPosition = this.parsePosition_(position);
   }
+
+  log_.assert_(typeof seconds === 'number', 'seconds must be a number.',
+      '(Movable::moveTo)');
+  log_.assert_(seconds >= 0, 'seconds must be >= 0.',
+      '(Movable::moveTo)');
 
   if (seconds === 0) {
 
@@ -352,6 +363,9 @@ Movable.prototype.setMoving = function(moving) {
   * @return {Movable}
   */
 Movable.prototype.setPosition = function(position) {
+  log_.assert_(position, 'position must be valid.',
+      '(Movable::setPosition)');
+
   if (arguments.length > 1)
     this.position_ = { x: arguments[0], y: arguments[1], z: arguments[2] };
   else

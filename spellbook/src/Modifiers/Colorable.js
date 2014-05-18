@@ -30,6 +30,8 @@ var ColorableView_ = voodoo.View.extend({
   },
 
   setColor_: function(color) {
+    log_.assert_(color, 'color must be valid.', '(ColorableView_::setColor)');
+
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
@@ -48,6 +50,11 @@ var ColorableView_ = voodoo.View.extend({
    * @param {THREE.Color} color Color.
    */
   setColorToMesh_: function(mesh, color) {
+    log_.assert_(mesh, 'mesh must be valid.',
+        '(ColorableView_::setColorToMesh_)');
+    log_.assert_(color, 'color must be valid.',
+        '(ColorableView_::setColorToMesh_)');
+
     var material = mesh.material;
     if (material) {
       var materials = material.materials;

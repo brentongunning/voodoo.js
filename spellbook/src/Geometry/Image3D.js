@@ -37,12 +37,17 @@ var Image3DView_ = voodoo.View.extend({
   },
 
   computeNormals_: function(geometry) {
+    log_.assert_(geometry, 'geometry must be valid.',
+        '(Image3DView_::computeNormals_)');
+
     geometry.computeFaceNormals();
     geometry.computeVertexNormals();
     geometry.computeMorphNormals();
   },
 
   getDepth_: function(data, i) {
+    log_.assert_(data, 'data must be valid.', '(Image3DView_::getDepth_)');
+
     var r = data[i];
     var g = data[i + 1];
     var b = data[i + 2];
@@ -51,6 +56,13 @@ var Image3DView_ = voodoo.View.extend({
   },
 
   createSmoothGeometry_: function(geometry, vertices, data, createFaces) {
+    log_.assert_(geometry, 'geometry must be valid.',
+        '(Image3DView_::createSmoothGeometry_)');
+    log_.assert_(vertices, 'vertices must be valid.',
+        '(Image3DView_::createSmoothGeometry_)');
+    log_.assert_(data, 'data must be valid.',
+        '(Image3DView_::createSmoothGeometry_)');
+
     // Constants
     var width = this.model.heightmapWidth_;
     var height = this.model.heightmapHeight_;
@@ -110,6 +122,13 @@ var Image3DView_ = voodoo.View.extend({
   },
 
   createBlockGeometry_: function(geometry, vertices, data, createFaces) {
+    log_.assert_(geometry, 'geometry must be valid.',
+        '(Image3DView_::createBlockGeometry_)');
+    log_.assert_(vertices, 'vertices must be valid.',
+        '(Image3DView_::createBlockGeometry_)');
+    log_.assert_(data, 'data must be valid.',
+        '(Image3DView_::createBlockGeometry_)');
+
     // Constants
     var width = this.model.heightmapWidth_;
     var height = this.model.heightmapHeight_;
@@ -288,6 +307,13 @@ var Image3DView_ = voodoo.View.extend({
   },
 
   createFloatGeometry_: function(geometry, vertices, data, createFaces) {
+    log_.assert_(geometry, 'geometry must be valid.',
+        '(Image3DView_::createFloatGeometry_)');
+    log_.assert_(vertices, 'vertices must be valid.',
+        '(Image3DView_::createFloatGeometry_)');
+    log_.assert_(data, 'data must be valid.',
+        '(Image3DView_::createFloatGeometry_)');
+
     // Constants
     var width = this.model.heightmapWidth_;
     var height = this.model.heightmapHeight_;
@@ -359,6 +385,13 @@ var Image3DView_ = voodoo.View.extend({
   },
 
   createHeightmapGeometry_: function(data, geometry, vertices, createFaces) {
+    log_.assert_(geometry, 'geometry must be valid.',
+        '(Image3DView_::createHeightmapGeometry_)');
+    log_.assert_(vertices, 'vertices must be valid.',
+        '(Image3DView_::createHeightmapGeometry_)');
+    log_.assert_(data, 'data must be valid.',
+        '(Image3DView_::createHeightmapGeometry_)');
+
     switch (this.model.geometryStyle_) {
       case Image3D.GeometryStyle.Smooth:
         this.createSmoothGeometry_(geometry, vertices, data, createFaces);
@@ -390,7 +423,8 @@ var Image3DView_ = voodoo.View.extend({
     // Make sure there are no morph targets for block geometry
     log_.assert_(numValidHeightmaps <= 1 ||
         this.model.geometryStyle_ !== Image3D.GeometryStyle.Block,
-        'Block geometry does not support multiple heightmaps');
+        'Block geometry does not support multiple heightmaps.',
+        '(Image3DView_::createGeometry)');
 
     for (var i = 0; i < 4; ++i) {
       var morphTarget = {
@@ -442,6 +476,10 @@ var Image3DView_ = voodoo.View.extend({
   },
 
   setImage_: function(image, imageSrc) {
+    log_.assert_(image, 'image must be valid.', '(Image3DView_::setImage_)');
+    log_.assert_(imageSrc, 'imageSrc must be valid.',
+        '(Image3DView_::setImage_)');
+
     if (!this.texture_) {
       this.texture_ = new THREE.Texture(undefined);
 
@@ -519,7 +557,8 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     this.base.initialize(options);
 
     this.element_ = options.element;
-    log_.assert_(options.element, 'element must be defined');
+    log_.assert_(options.element, 'element must be valid.',
+        '(Image3D::initalize)');
 
     this.imageSrc_ = options.imageSrc ?
         getAbsoluteUrl(options.imageSrc) :
@@ -532,7 +571,8 @@ var Image3D = this.Image3D = voodoo.Model.extend({
       options.heightmap4 ? getAbsoluteUrl(options.heightmap4) : ''
     ];
 
-    log_.assert_(options.heightmap, 'heightmap must be defined');
+    log_.assert_(options.heightmap, 'heightmap must be valid.',
+        '(Image3D::initalize)');
 
     this.maxHeight_ = typeof options.maxHeight !== 'undefined' ?
         options.maxHeight : 200;
@@ -691,6 +731,11 @@ var Image3D = this.Image3D = voodoo.Model.extend({
   },
 
   loadHeightmaps_: function(callback) {
+    log_.assert_(callback, 'callback must be valid.',
+        '(Image3D::loadHeightmaps_)');
+    log_.assert_(typeof callback === 'function',
+        'callback must be a function.', '(Image3D::loadHeightmaps_)');
+
     this.heightmapWidth_ = 0;
     this.heightmapHeight_ = 0;
 
@@ -707,7 +752,8 @@ var Image3D = this.Image3D = voodoo.Model.extend({
         log_.assert_(
             this.heightmapWidth_ === heightmap.width &&
             this.heightmapHeight_ === heightmap.height,
-            'All heightmaps must be the same size');
+            'All heightmaps must be the same size.',
+            '(Image3D::loadHeightmaps_)');
       }
 
       numLoaded++;
@@ -736,6 +782,9 @@ var Image3D = this.Image3D = voodoo.Model.extend({
  * @return {Image3D}
  */
 Image3D.prototype.morph = function(index, seconds) {
+  log_.assert_(index >= 0 && index < 4, 'index must be between 0 and 4.',
+      index, '(Image3D::morph)');
+
   var morphTargetInfluences = [0, 0, 0, 0];
   morphTargetInfluences[index - 1] = 1;
 
@@ -776,6 +825,9 @@ Image3D.prototype.morph = function(index, seconds) {
  * @return {Image3D}
  */
 Image3D.prototype.setGeometryStyle = function(geometryStyle) {
+  log_.assert_(geometryStyle, 'geometryStyle must be valid.', geometryStyle,
+      '(Image3D::setGeometryStyle)');
+
   if (this.geometryStyle_ !== geometryStyle) {
     this.geometryStyle_ = geometryStyle;
 
@@ -800,6 +852,9 @@ Image3D.prototype.setGeometryStyle = function(geometryStyle) {
  * @return {Image3D}
  */
 Image3D.prototype.setHeightmap = function(heightmap, opt_index) {
+  log_.assert_(heightmap, 'heightmap must be valid.',
+      '(Image3D::setHeightmap)');
+
   heightmap = getAbsoluteUrl(heightmap);
 
   var index = typeof opt_index === 'undefined' ? 0 : opt_index - 1;
@@ -835,6 +890,9 @@ Image3D.prototype.setHeightmap = function(heightmap, opt_index) {
  * @return {Image3D}
  */
 Image3D.prototype.setImageSrc = function(imageSrc) {
+  log_.assert_(imageSrc, 'imageSrc must be valid.',
+      '(Image3D::setImageSrc)');
+
   imageSrc = getAbsoluteUrl(imageSrc);
 
   if (this.imageSrc_ === imageSrc)
@@ -871,6 +929,11 @@ Image3D.prototype.setImageSrc = function(imageSrc) {
  * @return {Image3D}
  */
 Image3D.prototype.setMaxHeight = function(maxHeight) {
+  log_.assert_(typeof maxHeight === 'number', 'maxHeight must be a number.',
+      '(Image3D::setMaxHeight)');
+  log_.assert_(maxHeight >= 0, 'maxHeight must be >= 0.',
+      '(Image3D::setMaxHeight)');
+
   if (this.maxHeight_ !== maxHeight) {
     this.maxHeight_ = maxHeight;
 

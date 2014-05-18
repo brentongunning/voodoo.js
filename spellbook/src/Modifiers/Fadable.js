@@ -124,7 +124,6 @@ var Fadable = this.Fadable = voodoo.Model.extend({
 
     Object.defineProperty(this, 'targetAlpha', {
       get: function() { return that.targetAlpha_; },
-      set: function() { log_.error_('targetAlpha is readonly'); },
       enumerable: true
     });
 
@@ -178,6 +177,9 @@ var Fadable = this.Fadable = voodoo.Model.extend({
   * @return {Fadable}
   */
 Fadable.prototype.fadeIn = function(seconds) {
+  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds,
+      '(Fadable::fadeIn)');
+
   return this.fadeTo(1.0, seconds);
 };
 
@@ -190,6 +192,9 @@ Fadable.prototype.fadeIn = function(seconds) {
   * @return {Fadable}
   */
 Fadable.prototype.fadeOut = function(seconds) {
+  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds,
+      '(Fadable::fadeOut)');
+
   return this.fadeTo(0.0, seconds);
 };
 
@@ -205,6 +210,11 @@ Fadable.prototype.fadeOut = function(seconds) {
   * @return {Fadable}
   */
 Fadable.prototype.fadeTo = function(alpha, seconds, opt_easing) {
+  log_.assert_(alpha >= 0 && alpha <= 1, 'alpha must be between 0 and 1.',
+      alpha, '(Fadable::fadeTo)');
+  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds,
+      '(Fadable::fadeTo)');
+
   if (seconds === 0) {
 
     this.setAlpha(alpha);
@@ -237,6 +247,9 @@ Fadable.prototype.fadeTo = function(alpha, seconds, opt_easing) {
   * @return {Fadable}
   */
 Fadable.prototype.setAlpha = function(alpha) {
+  log_.assert_(alpha >= 0 && alpha <= 1, 'alpha must be between 0 and 1.',
+      alpha, '(Fadable::setAlpha)');
+
   this.alpha_ = alpha;
   this.targetAlpha_ = alpha;
   this.fading_ = false;
