@@ -40,6 +40,9 @@ ThreeJsSceneFactory_.prototype.constructor = ThreeJsSceneFactory_.constructor;
  * @return {ThreeJsScene_} Instantiated Scene.
  */
 ThreeJsSceneFactory_.prototype.createScene_ = function(view) {
+  log_.assert_(view, 'view must be valid.',
+      '(ThreeJsSceneFactory_::createScene_)');
+
   return new ThreeJsScene_(this.scene_, view);
 };
 

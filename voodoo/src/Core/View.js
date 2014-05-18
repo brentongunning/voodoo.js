@@ -44,8 +44,8 @@ var View = Extendable['extend']();
  * @param {Layer_} layer This View's corresponding layer.
  */
 View.prototype['construct'] = function(model, layer) {
-  log_.assert_(model, 'View model passed to initialize cannot be null');
-  log_.assert_(layer, 'View layer passed to initialize cannot be null');
+  log_.assert_(model, 'model must be valid.', '(View::construct)');
+  log_.assert_(layer, 'layer must be valid.', '(View::construct)');
 
   var vars = this['privateViewProperties'] = {};
   var that = this;

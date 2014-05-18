@@ -31,6 +31,13 @@ var defaultTriggerId_ = -1;
  * @param {string|number=} opt_triggerId Optional event identifier.
  */
 function EventTrigger_(view, object, parent, opt_triggerId) {
+  log_.assert_(view, 'view must be valid.',
+      '(EventTrigger_::EventTrigger_)');
+  log_.assert_(object, 'object must be valid.',
+      '(EventTrigger_::EventTrigger_)');
+  log_.assert_(parent, 'parent must be valid.',
+      '(EventTrigger_::EventTrigger_)');
+
   this.view_ = view;
   this.object_ = object;
   this.triggerId_ = typeof opt_triggerId === 'undefined' ?
@@ -48,7 +55,7 @@ function EventTrigger_(view, object, parent, opt_triggerId) {
  * @return {boolean} Whether the triggers are equivalent.
  */
 EventTrigger_.prototype.isEquivalentTo = function(other) {
-  return other !== null &&
+  return !!other &&
       this.model_ === other.model_ &&
       this.triggerId_ === other.triggerId_;
 };

@@ -24,6 +24,7 @@ function TriggersFactory_() {}
  * @return {Triggers} Instantiated Triggers.
  */
 TriggersFactory_.prototype.createTriggers_ = function(view) {
+  log_.error_('createTriggers_() undefined.');
   return null;
 };
 

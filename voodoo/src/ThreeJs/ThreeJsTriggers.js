@@ -21,9 +21,12 @@
  * @param {View} view Owning view.
  */
 function ThreeJsTriggers_(triggers, scene, view) {
-  log_.assert_(triggers, 'Triggers must be valid');
-  log_.assert_(scene, 'Scene must be valid');
-  log_.assert_(view, 'View must be valid');
+  log_.assert_(triggers, 'triggers must be valid.',
+      '(ThreeJsTriggers_::ThreeJsTriggers_)');
+  log_.assert_(scene, 'scene must be valid.',
+      '(ThreeJsTriggers_::ThreeJsTriggers_)');
+  log_.assert_(view, 'view must be valid.',
+      '(ThreeJsTriggers_::ThreeJsTriggers_)');
 
   this.triggers_ = triggers;
   this.scene_ = scene;
@@ -54,7 +57,7 @@ ThreeJsTriggers_.prototype.constructor = ThreeJsTriggers_.constructor;
  * @param {string|number=} opt_triggerId Optional event id.
  */
 ThreeJsTriggers_.prototype['add'] = function(object, opt_triggerId) {
-  log_.assert_(object, 'Object must be valid');
+  log_.assert_(object, 'object must be valid', '(ThreeJsTriggers_::add)');
 
   var trigger = new EventTrigger_(this.view_, object, this, opt_triggerId);
 
@@ -87,6 +90,8 @@ ThreeJsTriggers_.prototype['add'] = function(object, opt_triggerId) {
  * @param {THREE.Object3D} object Object that triggers mouse events.
  */
 ThreeJsTriggers_.prototype['remove'] = function(object) {
+  log_.assert_(object, 'object must be valid.', '(ThreeJsTriggers_::remove)');
+
   for (var i = 0, numTriggers = this.triggers_.length; i < numTriggers; ++i) {
     if (this.triggers_[i].object_ === object)
       this.triggers_.splice(i, 1);

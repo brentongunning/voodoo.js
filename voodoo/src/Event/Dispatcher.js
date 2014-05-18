@@ -40,6 +40,8 @@ Dispatcher_.prototype.destroy_ = function() {
  * @param {Event} event Event description.
  */
 Dispatcher_.prototype.dispatchEvent_ = function(thisArg, event) {
+  log_.assert_(event, 'event must be valid.', '(Dispatcher_::dispatchEvent_)');
+
   var listeners = this.eventListeners_[event['type']];
   if (listeners)
     for (var i = 0, len = listeners.length; i < len; ++i)
@@ -57,6 +59,11 @@ Dispatcher_.prototype.dispatchEvent_ = function(thisArg, event) {
  * @param {function(Event)} listener Event listener.
  */
 Dispatcher_.prototype.off_ = function(type, listener) {
+  log_.assert_(type, 'type must be valid.', '(Dispatcher_::off_)');
+  log_.assert_(listener, 'listener must be valid.', '(Dispatcher_::off_)');
+  log_.assert_(typeof listener === 'function',
+      'listener must be a function.', '(Dispatcher_::off_)');
+
   if (EventHelpers_.isMouseEvent_(type)) {
     EventHelpers_.totalNumMouseEventListeners_--;
     this.numMouseEventListeners_--;
@@ -78,6 +85,11 @@ Dispatcher_.prototype.off_ = function(type, listener) {
  * @param {function(Event)} listener Event listener.
  */
 Dispatcher_.prototype.on_ = function(type, listener) {
+  log_.assert_(type, 'type must be valid.', '(Dispatcher_::on_)');
+  log_.assert_(listener, 'listener must be valid.', '(Dispatcher_::on_)');
+  log_.assert_(typeof listener === 'function',
+      'listener must be a function.', '(Dispatcher_::on_)');
+
   if (EventHelpers_.isMouseEvent_(type)) {
     EventHelpers_.totalNumMouseEventListeners_++;
     this.numMouseEventListeners_++;

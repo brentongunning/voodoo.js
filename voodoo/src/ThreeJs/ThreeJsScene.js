@@ -16,6 +16,11 @@
  * @param {View} view Parent view.
  */
 function ThreeJsScene_(scene, view) {
+  log_.assert_(scene, 'scene must be valid.',
+      '(ThreeJsScene_::ThreeJsScene_)');
+  log_.assert_(view, 'view must be valid.',
+      '(ThreeJsScene_::ThreeJsScene_)');
+
   this.scene_ = scene;
   this.view_ = view;
 
@@ -72,6 +77,8 @@ ThreeJsScene_.prototype.constructor = ThreeJsScene_.constructor;
  * @param {THREE.Object3D} object Object to add.
  */
 ThreeJsScene_.prototype['add'] = function(object) {
+  log_.assert_(object, 'object must be valid.', '(ThreeJsScene_::add)');
+
   if (object['addedToVoodooTriggers'])
     object.visible = true;
   else this.parent_.add(object);
@@ -106,6 +113,8 @@ ThreeJsScene_.prototype['add'] = function(object) {
  *    is in pixels regardless.
  */
 ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
+  log_.assert_(element, 'element must be valid.', '(ThreeJsScene_::attach)');
+
   var center = typeof opt_center !== 'undefined' ? opt_center : true;
   var pixels = typeof opt_pixels !== 'undefined' ? opt_pixels : true;
 
@@ -342,6 +351,9 @@ ThreeJsScene_.prototype['detach'] = function() {
  * @return {Object|Array.<number>} Page-space coordinate.
  */
 ThreeJsScene_.prototype['localToPage'] = function(coordinate) {
+  log_.assert_(coordinate, 'coordinate must be valid.',
+      '(ThreeJsScene_::localToPage)');
+
   var parentPosition = this.parent_.position;
   var parentScale = this.parent_.scale;
 
@@ -400,6 +412,9 @@ ThreeJsScene_.prototype['on'] = function(type, listener) {
  * @return {Object|Array.<number>} Local coordinate.
  */
 ThreeJsScene_.prototype['pageToLocal'] = function(coordinate) {
+  log_.assert_(coordinate, 'coordinate must be valid.',
+      '(ThreeJsScene_::pageToLocal)');
+
   var parentPosition = this.parent_.position;
   var parentScale = this.parent_.scale;
 
@@ -429,6 +444,9 @@ ThreeJsScene_.prototype['pageToLocal'] = function(coordinate) {
  * @param {THREE.Object3D} object Object to remove.
  */
 ThreeJsScene_.prototype['remove'] = function(object) {
+  log_.assert_(object, 'object must be valid.',
+      '(ThreeJsScene_::remove)');
+
   var event = new window['voodoo']['Event']('remove');
   event.object = object;
   this.dispatcher_.dispatchEvent_(this.view_, event);

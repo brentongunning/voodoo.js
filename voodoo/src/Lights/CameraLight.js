@@ -25,7 +25,7 @@ var CameraLightView_ = LightView_['extend']();
  */
 CameraLightView_.prototype['createLight'] = function() {
   log_.assert_(this['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported');
+      'Only ThreeJs is supported.', '(CameraLightView_::CameraLightView_)');
 
   return new THREE.PointLight();
 };
@@ -52,7 +52,7 @@ CameraLightView_.prototype['load'] = function() {
  */
 CameraLightView_.prototype['updatePosition'] = function() {
   log_.assert_(this['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported');
+      'Only ThreeJs is supported.', '(CameraLightView_::updatePosition)');
 
   var lightPosition = this.light['position'];
   var cameraPosition = this['camera']['position'];

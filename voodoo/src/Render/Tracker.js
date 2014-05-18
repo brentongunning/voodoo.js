@@ -35,8 +35,10 @@ function Tracker_() {
  * @return {number} Track id used to release the callback.
  */
 Tracker_.prototype.track_ = function(element, callback) {
-  log_.assert_(element, 'Element must be a valid HTML DOM element');
-  log_.assert_(callback, 'Callback must be a valid function');
+  log_.assert_(element, 'element must be valid.', '(Tracker_::track_)');
+  log_.assert_(callback, 'callback must be valid.', '(Tracker_::track_)');
+  log_.assert_(typeof callback === 'function',
+      'callback must be a function.', '(Tracker_::track_)');
 
   // Find or create the tracked element
   var trackedElement, trackedElementId;
@@ -52,7 +54,8 @@ Tracker_.prototype.track_ = function(element, callback) {
         new TrackedElement_(element);
   }
 
-  log_.assert_(trackedElement, 'TrackedElement not found');
+  log_.assert_(trackedElement, 'TrackedElement not found.',
+      '(Tracker_::track_)');
 
   // Add the callback
   var callbackId = trackedElement.addCallback_(callback);
@@ -77,6 +80,11 @@ Tracker_.prototype.track_ = function(element, callback) {
  * @param {number} trackId Id of the track to release.
  */
 Tracker_.prototype.release_ = function(trackId) {
+  log_.assert_(trackId >= 0, 'trackId must be >= 0.',
+      trackId, '(Tracker_::release_)');
+  log_.assert_(typeof trackId === 'number', 'trackId must be a number.',
+      trackId, '(Tracker_::release_)');
+
   // Find the information for this track id
   var trackInfo = this.tracks_[trackId];
   var trackedElement = trackInfo.trackedElement;

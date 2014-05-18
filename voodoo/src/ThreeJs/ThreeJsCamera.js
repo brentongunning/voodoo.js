@@ -19,6 +19,34 @@
  */
 function ThreeJsCamera_(canvas, fovY, zNear, zFar) {
   log_.info_('Creating ThreeJs Camera');
+
+  log_.assert_(canvas, 'canvas must be valid.',
+      '(ThreeJsCamera_::ThreeJsCamera_)');
+
+  log_.assert_(fovY, 'fovY must be valid.', fovY,
+      '(ThreeJsCamera_::ThreeJsCamera_)');
+  log_.assert_(typeof fovY === 'number', 'fovY must be a number.', fovY,
+      '(ThreeJsCamera_::ThreeJsCamera_)');
+  log_.assert_(fovY > 0, 'fovY must be greater than 0.', fovY,
+      '(ThreeJsCamera_::ThreeJsCamera_)');
+
+  log_.assert_(zNear, 'zNear must be valid.', zNear,
+      '(ThreeJsCamera_::ThreeJsCamera_)');
+  log_.assert_(typeof zNear === 'number', 'zNear must be a number.', zNear,
+      '(ThreeJsCamera_::ThreeJsCamera_)');
+  log_.assert_(zNear > 0, 'zNear must be greater than 0.', zNear,
+      '(ThreeJsCamera_::ThreeJsCamera_)');
+
+  log_.assert_(zFar, 'zFar must be valid.', zFar,
+      '(ThreeJsCamera_::ThreeJsCamera_)');
+  log_.assert_(typeof zFar === 'number', 'zFar must be a number.', zFar,
+      '(ThreeJsCamera_::ThreeJsCamera_)');
+  log_.assert_(zFar > 0, 'zFar must be greater than 0.', zFar,
+      '(ThreeJsCamera_::ThreeJsCamera_)');
+
+  log_.assert_(zNear < zFar, 'zNear must be less than zFar.', zNear, zFar,
+      '(ThreeJsCamera_::ThreeJsCamera_)');
+
   this.camera_ = new THREE.Camera();
   this.frustum_ = new THREE.Frustum();
 
@@ -149,6 +177,23 @@ ThreeJsCamera_.prototype.onResize_ = function() {
  * @param {number} zFar The maximum Z distance to render.
  */
 ThreeJsCamera_.prototype.setZNearAndFar_ = function(zNear, zFar) {
+  log_.assert_(zNear, 'zNear must be valid.', zNear,
+      '(ThreeJsCamera_::setZNearAndFar_)');
+  log_.assert_(typeof zNear === 'number', 'zNear must be a number.', zNear,
+      '(ThreeJsCamera_::setZNearAndFar_)');
+  log_.assert_(zNear > 0, 'zNear must be greater than 0.', zNear,
+      '(ThreeJsCamera_::setZNearAndFar_)');
+
+  log_.assert_(zFar, 'zFar must be valid.', zFar,
+      '(ThreeJsCamera_::setZNearAndFar_)');
+  log_.assert_(typeof zFar === 'number', 'zFar must be a number.', zFar,
+      '(ThreeJsCamera_::setZNearAndFar_)');
+  log_.assert_(zFar > 0, 'zFar must be greater than 0.', zFar,
+      '(ThreeJsCamera_::setZNearAndFar_)');
+
+  log_.assert_(zNear < zFar, 'zNear must be less than zFar.', zNear, zFar,
+      '(ThreeJsCamera_::setZNearAndFar_)');
+
   this.zNear_ = zNear;
   this.zFar_ = zFar;
 

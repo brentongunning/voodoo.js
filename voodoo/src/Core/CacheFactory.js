@@ -28,6 +28,8 @@ function CacheFactory_() {
  * @return {Cache} Instantiated Cache.
  */
 CacheFactory_.prototype.createCache_ = function(model) {
+  log_.assert_(model, 'model must be valid.', '(CacheFactory_::createCache_)');
+
   var cache = new Cache(this.cache_);
 
   cache.modelName_ = model['name'];

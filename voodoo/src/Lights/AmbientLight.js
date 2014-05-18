@@ -25,7 +25,7 @@ var AmbientLightView_ = LightView_['extend']();
  */
 AmbientLightView_.prototype['createLight'] = function() {
   log_.assert_(this['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported');
+      'Only ThreeJs is supported.', '(AmbientLightView_::AmbientLightView_)');
 
   return new THREE.AmbientLight();
 };
