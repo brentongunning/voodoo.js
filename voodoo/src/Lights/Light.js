@@ -40,9 +40,12 @@ LightView_.prototype['createLight'] = function() {
  */
 LightView_.prototype['load'] = function() {
   log_.assert_(this['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported');
+      'Only ThreeJs is supported.', '(LightView_::load)');
 
   this.light = this['createLight']();
+
+  log_.assert_(this.light, 'light must be valid.');
+
   this['scene']['add'](this.light);
 };
 
@@ -56,7 +59,7 @@ LightView_.prototype['load'] = function() {
  */
 LightView_.prototype['unload'] = function() {
   log_.assert_(this['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported');
+      'Only ThreeJs is supported.', '(LightView_::unload)');
 
   this['scene']['remove'](this.light);
 };
@@ -71,7 +74,7 @@ LightView_.prototype['unload'] = function() {
  */
 LightView_.prototype['setColor'] = function(color) {
   log_.assert_(this['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported');
+      'Only ThreeJs is supported.', '(LightView_::setColor)');
 
   var threeJsColor =
       window['voodoo']['utility']['convertCssColorToThreeJsColor'](color);

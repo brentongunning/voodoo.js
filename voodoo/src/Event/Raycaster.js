@@ -28,7 +28,10 @@ function Raycaster_() {}
  *
  * @return {Object}
  */
-Raycaster_.prototype.raycast_ = function() { return null; };
+Raycaster_.prototype.raycast_ = function() {
+  log_.error_('raycast_() undefined.');
+  return null;
+};
 
 
 /**
@@ -38,4 +41,6 @@ Raycaster_.prototype.raycast_ = function() { return null; };
  *
  * @param {Vector2_} mouse Client mouse position.
  */
-Raycaster_.prototype.setMouse_ = function(mouse) {};
+Raycaster_.prototype.setMouse_ = function(mouse) {
+  log_.error_('setMouse_() undefined.');
+};

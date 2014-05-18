@@ -12,9 +12,9 @@
  * @enum {number}
  */
 var LayerPass_ = {
-  'Above': 0,
-  'Below': 1,
-  'BelowStencil': 2,
-  'Seam': 3,
-  'SeamStencil': 4
+  'Above': 1,
+  'Below': 2,
+  'BelowStencil': 3,
+  'Seam': 4,
+  'SeamStencil': 5
 };

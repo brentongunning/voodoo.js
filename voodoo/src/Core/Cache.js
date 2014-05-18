@@ -15,12 +15,14 @@
  * @param {Object} cache The cache object to use.
  */
 function Cache(cache) {
+  log_.assert_(cache, 'cache must be valid.', '(Cache::Cache)');
+
   this.cache_ = cache;
 }
 
 
 /**
- * Removes an object from the cache.
+ * Removes an object from the cache if it exists.
  *
  * @this {Cache}
  *
@@ -31,6 +33,8 @@ function Cache(cache) {
  * specified, uses the current Model's organization.
  */
 Cache.prototype['delete'] = function(key, opt_name, opt_organization) {
+  log_.assert_(key, 'key must be valid.', '(Cache::delete)');
+
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
   delete subcache[key];
@@ -51,6 +55,8 @@ Cache.prototype['delete'] = function(key, opt_name, opt_organization) {
  * @return {Object} The object for the given key.
  */
 Cache.prototype['get'] = function(key, opt_name, opt_organization) {
+  log_.assert_(key, 'key must be valid.', '(Cache::get)');
+
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
   return subcache[key];
@@ -71,6 +77,8 @@ Cache.prototype['get'] = function(key, opt_name, opt_organization) {
  * @return {boolean} True if an object exists in the cache, false if not.
  */
 Cache.prototype['has'] = function(key, opt_name, opt_organization) {
+  log_.assert_(key, 'key must be valid.', '(Cache::has)');
+
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
   return subcache.hasOwnProperty(key);
@@ -90,6 +98,8 @@ Cache.prototype['has'] = function(key, opt_name, opt_organization) {
  * specified, uses the current Model's organization.
  */
 Cache.prototype['set'] = function(key, value, opt_name, opt_organization) {
+  log_.assert_(key, 'key must be valid.', '(Cache::set)');
+
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
   subcache[key] = value;
@@ -111,12 +121,17 @@ Cache.prototype['set'] = function(key, value, opt_name, opt_organization) {
  */
 Cache.prototype.getSubcache_ = function(opt_name, opt_organization) {
   var name, organization;
+
   if (!opt_name) {
+
     name = this.modelName_;
     organization = this.modelOrganization_;
+
   } else {
+
     name = opt_name;
     organization = opt_organization || defaultOrganization_;
+
   }
 
   if (!this.cache_.hasOwnProperty(organization))

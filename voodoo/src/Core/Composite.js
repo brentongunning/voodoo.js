@@ -19,7 +19,10 @@
  * @param {Array.<Object>} objects Objects to aggregate.
  */
 function Composite_(objects) {
-  log_.assert_(objects.length > 0, 'Composite objects must not be empty');
+  log_.assert_(objects, 'objects must be valid.',
+      '(Composite_::Composite_)');
+  log_.assert_(objects.length > 0, 'objects must not be empty.',
+      '(Composite_::Composite_)');
 
   // Take the first view and use it to the composite assuming the rest
   // are the same.
@@ -30,19 +33,27 @@ function Composite_(objects) {
     try {
       // Check if this property is a function
       if (typeof(base[property]) === 'function') {
+
         composite[property] = (function(property, objects) {
+
           // Create a function that wraps calls to all object
           return function() {
+
             var returnVal;
+
             for (var index = 0, numObjects = objects.length;
                 index < numObjects; ++index) {
               var object = objects[index];
               returnVal = object[property].apply(object, arguments);
             }
+
             return returnVal === objects[objects.length - 1] ?
                 composite : returnVal;
+
           };
+
         })(property, objects);
+
       }
     } catch (err) {
       // No-op, ignore property reading errors

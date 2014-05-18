@@ -24,5 +24,6 @@ function SceneFactory_() {}
  * @return {Scene} Instantiated Scene.
  */
 SceneFactory_.prototype.createScene_ = function(view) {
+  log_.error_('createScene_() undefined.');
   return null;
 };

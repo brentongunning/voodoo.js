@@ -16,6 +16,8 @@
  * @param {string|number=} opt_triggerId Optional trigger id.
  */
 this.Event = function(type, opt_model, opt_triggerId) {
+  log_.assert_(type, 'type must be valid.', '(Event::Event)');
+
   this['type'] = type;
   this['model'] = opt_model;
   this['triggerId'] = typeof opt_triggerId === 'undefined' ?

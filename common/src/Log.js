@@ -29,7 +29,7 @@ function Log_(opt_project) {
  *
  * @this {Log_}
  *
- * @param {string} message Text to log.
+ * @param {...?} message Text to log.
  */
 Log_.prototype.log_ = function(message) {
   var args = Array.prototype.slice.call(arguments);
@@ -47,7 +47,7 @@ Log_.prototype.log_ = function(message) {
  *
  * @this {Log_}
  *
- * @param {string} message Text to log.
+ * @param {...?} message Text to log.
  */
 Log_.prototype.info_ = function(message) {
   if (DEBUG)
@@ -64,7 +64,7 @@ Log_.prototype.info_ = function(message) {
  * @this {Log_}
  *
  * @param {Object} model Model to log about.
- * @param {string} message Text to log.
+ * @param {...?} message Text to log.
  */
 Log_.prototype.model_ = function(model, message) {
   var args = Array.prototype.slice.call(arguments, 1);
@@ -82,7 +82,7 @@ Log_.prototype.model_ = function(model, message) {
  *
  * @this {Log_}
  *
- * @param {string} message Text to log.
+ * @param {...?} message Text to log.
  */
 Log_.prototype.warn_ = function(message) {
   if (DEBUG) {
@@ -102,7 +102,7 @@ Log_.prototype.warn_ = function(message) {
  *
  * @this {Log_}
  *
- * @param {string} message Text to log.
+ * @param {...?} message Text to log.
  */
 Log_.prototype.error_ = function(message) {
   var args = Array.prototype.slice.call(arguments);
@@ -128,7 +128,7 @@ Log_.prototype.error_ = function(message) {
  * @this {Log_}
  *
  * @param {?} condition Condition or object to verify.
- * @param {string} message Failure message to log.
+ * @param {...?} message Failure message to log.
  */
 Log_.prototype.assert_ = function(condition, message) {
   if (DEBUG && !condition) {

@@ -16,6 +16,9 @@
  * @param {HTMLElement} element Html DOM element to track.
  */
 function TrackedElement_(element) {
+  log_.assert_(element, 'element must be valid.',
+      '(TrackedElement_::TrackedElement_)');
+
   this.element_ = element;
   this.nextCallbackId_ = 0;
   this.callbacks_ = {};
@@ -39,6 +42,11 @@ function TrackedElement_(element) {
  * @return {number} Callback id used to release.
  */
 TrackedElement_.prototype.addCallback_ = function(callback) {
+  log_.assert_(callback, 'callback must be valid.',
+      '(TrackedElement_::addCallback_)');
+  log_.assert_(typeof callback === 'function', 'callback must be a function.',
+      '(TrackedElement_::addCallback_)');
+
   var id = this.nextCallbackId_++;
 
   this.callbacks_[id] = callback;
@@ -61,6 +69,11 @@ TrackedElement_.prototype.addCallback_ = function(callback) {
  * @param {number} callbackId Id of the callback to remove.
  */
 TrackedElement_.prototype.releaseCallback_ = function(callbackId) {
+  log_.assert_(callbackId >= 0, 'callbackId must be >= 0.',
+      callbackId, '(TrackedElement_::releaseCallback_)');
+  log_.assert_(typeof callbackId === 'number', 'callbackId must be a number.',
+      callbackId, '(TrackedElement_::releaseCallback_)');
+
   delete this.callbacks_[callbackId];
   this.numCallbacks_--;
 };

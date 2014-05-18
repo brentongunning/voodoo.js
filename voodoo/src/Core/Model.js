@@ -67,11 +67,16 @@ Model.prototype['cleanUp'] = function() {
  * @param {Object=} opt_options User options.
  */
 Model.prototype['construct'] = function(opt_options) {
-  log_.assert_(this['name'], 'Model type name cannot be undefined or null');
-  log_.assert_(this['viewType'], 'Model view type cannot be undefined or null');
+  log_.assert_(this['name'], 'Model type name must be valid.',
+      '(Model::Model)');
+  log_.assert_(this['viewType'], 'Model view type must be valid.',
+      '(Model::Model)');
+
   if (!this['viewType'].prototype['above'] &&
-      !this['viewType'].prototype['below'])
-    log_.error_('View must exist on at least one layer');
+      !this['viewType'].prototype['below']) {
+    log_.error_('View must exist on at least one layer.', '(Model::Model)');
+  }
+
   this['stencilViewType'] = this['stencilViewType'] || this['viewType'];
 
   var vars = this['privateModelProperties'] = {};
@@ -385,6 +390,8 @@ Model.prototype['view'] = null;
  * @param {View} view View that loaded.
  */
 Model.prototype['onViewLoad'] = function(view) {
+  log_.assert_(view, 'view must be valid.', '(Model::onViewLoad)');
+
   var vars = this['privateModelProperties'];
 
   vars.numViewsLoaded_++;

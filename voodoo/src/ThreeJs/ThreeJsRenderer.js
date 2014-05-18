@@ -18,6 +18,9 @@
  * @param {Engine} engine Voodoo's central engine.
  */
 function ThreeJsRenderer_(engine) {
+  log_.assert_(engine, 'engine must be valid.',
+      '(ThreeJsRenderer_::ThreeJsRenderer_)');
+
   this.engine_ = engine;
   this.layers_ = [];
 
@@ -150,8 +153,8 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
     this.seamCanvas_.style.zIndex = engineOptions['seamZIndex'];
   }
 
-  this.onResize_(null);
-  this.onScroll_(null);
+  this.onResize_(false);
+  this.onScroll_(false);
 };
 
 
@@ -304,9 +307,9 @@ ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer) {
  *
  * @private
  *
- * @param {Event} event Event.
+ * @param {boolean} rerender Whether to re-render if realtime is enabled.
  */
-ThreeJsRenderer_.prototype.onResize_ = function(event) {
+ThreeJsRenderer_.prototype.onResize_ = function(rerender) {
   this.updateViewportSize_();
 
   var viewportSize = this.viewportSize_;
@@ -361,7 +364,7 @@ ThreeJsRenderer_.prototype.onResize_ = function(event) {
 
   this.isDirty_ = true;
 
-  if (engineOptions['realtime'] && event)
+  if (engineOptions['realtime'] && rerender)
     this.render_();
 };
 
@@ -371,15 +374,15 @@ ThreeJsRenderer_.prototype.onResize_ = function(event) {
  *
  * @private
  *
- * @param {Event} event Event.
+ * @param {boolean} rerender Whether to re-render if realtime is enabled.
  */
-ThreeJsRenderer_.prototype.onScroll_ = function(event) {
+ThreeJsRenderer_.prototype.onScroll_ = function(rerender) {
   this.targetLeft = window.pageXOffset + 'px';
   this.targetTop = window.pageYOffset + 'px';
 
   this.isDirty_ = true;
 
-  if (this.engine_.options_['realtime'] && event)
+  if (this.engine_.options_['realtime'] && rerender)
     this.render_();
 };
 
@@ -398,10 +401,10 @@ ThreeJsRenderer_.prototype.registerWindowEvents_ = function() {
   // window so we can adjust our canvas size
   var that = this;
   window.addEventListener('scroll', function(event) {
-    that.onScroll_.call(that, event);
+    that.onScroll_.call(that, true);
   }, false);
   window.addEventListener('resize', function(event) {
-    that.onResize_.call(that, event);
+    that.onResize_.call(that, true);
   }, false);
 };
 
@@ -448,7 +451,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
 
           this.canvasScale_ = 0.5;
           this.performanceScaling_ = true;
-          this.onResize_(null);
+          this.onResize_(false);
         }
 
       }
@@ -636,6 +639,9 @@ ThreeJsRenderer_.prototype.render_ = function() {
  * @param {string} cursor CSS cursor style.
  */
 ThreeJsRenderer_.prototype.setCursor_ = function(cursor) {
+  log_.assert_(cursor, 'cursor must be valid.',
+      '(ThreeJsRenderer_::setCursor_)');
+
   var engineOptions = this.engine_.options_;
 
   if (engineOptions['aboveLayer'])
@@ -660,6 +666,9 @@ ThreeJsRenderer_.prototype.setCursor_ = function(cursor) {
  */
 ThreeJsRenderer_.prototype.setupFullscreenCanvasRenderer_ =
     function(canvasRenderer) {
+  log_.assert_(canvasRenderer, 'canvasRenderer must be valid.',
+      '(ThreeJsRenderer_::setupFullscreenCanvasRenderer_)');
+
   var canvas = canvasRenderer.domElement;
   var canvasStyle = canvas.style;
 
@@ -789,7 +798,8 @@ ThreeJsRenderer_.prototype.validateAndPrepareWebpage_ = function() {
   // Set the body dimensions to 100% so the canvas sizes can be set to 100%
   // and there will be no scroll bars.
 
-  log_.assert_(document.body, 'document.body is undefined');
+  log_.assert_(document.body, 'document.body is undefined',
+      '(ThreeJsRenderer_::validateAndPrepareWebpage_)');
 
   var documentBodyStyle = document.body.style;
   documentBodyStyle.width = '100%';

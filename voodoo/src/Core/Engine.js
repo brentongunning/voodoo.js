@@ -21,7 +21,7 @@ function Engine(opt_options) {
   var options = new Options(opt_options);
 
   log_.assert_(options['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported');
+      'Only ThreeJs is supported.', '(Engine::Engine)');
 
   log_.info_('Creating Engine');
   log_.info_('   version: ' + VERSION);
@@ -33,7 +33,7 @@ function Engine(opt_options) {
 
   // Check for WebGL support
   if (DEBUG && !window['WebGLRenderingContext']) {
-    log_.error_('WebGL not supported');
+    log_.error_('WebGL not supported.', '(Engine::Engine)');
   }
 
   this.options_ = options;
@@ -59,15 +59,18 @@ function Engine(opt_options) {
 
   // Create the renderer
   switch (options['renderer']) {
+
     case Renderer['ThreeJs']:
       this.renderer_ = new ThreeJsRenderer_(this);
       this.raycaster_ = new ThreeJsRaycaster_(this);
       break;
+
     default:
       this.renderer_ = null;
       this.raycaster_ = null;
-      log_.error_('Unsupported renderer');
+      log_.error_('Unsupported renderer', '(Engine::Engine)');
       break;
+
   }
 
   // Create the dispatcher for engine events
@@ -223,6 +226,8 @@ Engine.prototype['models'] = null;
  * @param {Model} model Model to add.
  */
 Engine.prototype.addModel_ = function(model) {
+  log_.assert_(model, 'model must be valid.', '(Engine::addModel_)');
+
   this.models_.push(model);
   this.dispatcher_.dispatchEvent_(null, new window['voodoo']['Event'](
       'addmodel', model));
@@ -239,6 +244,8 @@ Engine.prototype.addModel_ = function(model) {
  * @param {Model} model Model to remove.
  */
 Engine.prototype.removeModel_ = function(model) {
+  log_.assert_(model, 'model must be valid.', '(Engine::removeModel_)');
+
   this.models_.splice(this.models_.indexOf(model), 1);
   this.dispatcher_.dispatchEvent_(null, new window['voodoo']['Event'](
       'removemodel', model));
@@ -347,7 +354,8 @@ Engine.prototype.validateOptions_ = function() {
   // Check that there is at least one layer
   if (!this.options_['aboveLayer'] &&
       !this.options_['belowLayer']) {
-    log_.error_('At least one layer must be enabled');
+    log_.error_('At least one layer must be enabled.',
+        '(Engine::validateOptions_)');
   }
 };
 

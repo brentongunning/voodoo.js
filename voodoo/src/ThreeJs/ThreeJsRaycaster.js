@@ -15,8 +15,10 @@
  * @param {Engine} engine Voodoo main engine.
  */
 function ThreeJsRaycaster_(engine) {
-  log_.assert_(engine, 'Engine must be defined.');
-  log_.assert_(engine.renderer_, 'Renderer must be defined.');
+  log_.assert_(engine, 'Engine must be defined.',
+      '(ThreeJsRaycaster_::ThreeJsRaycaster_)');
+  log_.assert_(engine.renderer_, 'Renderer must be defined.',
+      '(ThreeJsRaycaster_::ThreeJsRaycaster_)');
 
   this.engine_ = engine;
   this.renderer_ = engine.renderer_;
@@ -54,6 +56,9 @@ ThreeJsRaycaster_.prototype.constructor = ThreeJsRaycaster_.constructor;
  */
 ThreeJsRaycaster_.prototype.findClosestAboveLayerIntersection_ = function(
     currentClosest, stencilIntersections) {
+  log_.assert_(stencilIntersections, 'stencilIntersections must be valid',
+      '(ThreeJsRaycaster_::findClosestAboveLayerIntersection_)');
+
   var triggers = this.renderer_.aboveLayer_.triggersFactory_.triggers_;
 
   for (var i = 0, len = triggers.length; i < len; ++i) {
@@ -112,6 +117,9 @@ ThreeJsRaycaster_.prototype.findClosestAboveLayerIntersection_ = function(
  */
 ThreeJsRaycaster_.prototype.findClosestBelowLayerIntersection_ =
     function(currentClosest, stencilIntersections) {
+  log_.assert_(stencilIntersections, 'stencilIntersections must be valid.',
+      '(ThreeJsRaycaster_::findClosestBelowLayerIntersection_)');
+
   var triggers = this.renderer_.belowLayer_.triggersFactory_.triggers_;
 
   for (var i = 0, len = triggers.length; i < len; ++i) {
@@ -263,6 +271,9 @@ ThreeJsRaycaster_.prototype.raycast_ = function() {
  * @param {Vector2_} mouse Client mouse position.
  */
 ThreeJsRaycaster_.prototype.setMouse_ = function(mouse) {
+  log_.assert_(mouse, 'mouse must be valid.',
+      '(ThreeJsRaycaster_::setMouse_)');
+
   var viewportSize = this.renderer_.viewportSize_;
   var mx = (mouse.x / viewportSize.width) * 2 - 1;
   var my = -(mouse.y / viewportSize.height) * 2 + 1;

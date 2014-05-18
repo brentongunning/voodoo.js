@@ -174,8 +174,10 @@ function Utility() {
  * @return {THREE.Color} The Three.Js color value.
  */
 Utility.prototype['convertCssColorToThreeJsColor'] = function(cssColor) {
-  log_.assert_(cssColor, 'cssColor undefined');
-  log_.assert_(cssColor.length >= 3, 'cssColor too short');
+  log_.assert_(cssColor, 'cssColor undefined.',
+      '(Utility::convertCssColorToThreeJsColor)');
+  log_.assert_(cssColor.length >= 3, 'cssColor too short.',
+      '(Utility::convertCssColorToThreeJsColor)');
 
   cssColor = cssColor.toLowerCase();
 
@@ -187,28 +189,32 @@ Utility.prototype['convertCssColorToThreeJsColor'] = function(cssColor) {
   // Check for rgb color (ie. rgb(255, 0, 0))
   if (cssColor.indexOf('rgb(') === 0) {
     var colors = cssColor.substring(4, cssColor.length - 1).split(',');
-    log_.assert_(colors.length === 3, 'Invalid rgb color');
+    log_.assert_(colors.length === 3, 'Invalid rgb color.',
+        '(Utility::convertCssColorToThreeJsColor)');
     return this.convertRGBColorToThreeJsColor_(colors[0], colors[1], colors[2]);
   }
 
   // Check for rgba color (ie. rgba(255, 0, 0, 0.5))
   if (cssColor.indexOf('rgba(') === 0) {
     var colors = cssColor.substring(5, cssColor.length - 1).split(',');
-    log_.assert_(colors.length === 4, 'Invalid rgba color');
+    log_.assert_(colors.length === 4, 'Invalid rgba color.',
+        '(Utility::convertCssColorToThreeJsColor)');
     return this.convertRGBColorToThreeJsColor_(colors[0], colors[1], colors[2]);
   }
 
   // Parse HSL color (ie. hsl(120, 65%, 45%))
   if (cssColor.indexOf('hsl(') === 0) {
     var parts = cssColor.substring(4, cssColor.length - 1).split(',');
-    log_.assert_(parts.length === 3, 'Invalid hsl color');
+    log_.assert_(parts.length === 3, 'Invalid hsl color.',
+        '(Utility::convertCssColorToThreeJsColor)');
     return this.convertHSLColorToThreeJsColor_(parts[0], parts[1], parts[2]);
   }
 
   // Parse HSLA color (ie. hsla(120, 65%, 45%, 0.5))
   if (cssColor.indexOf('hsla(') === 0) {
     var parts = cssColor.substring(5, cssColor.length - 1).split(',');
-    log_.assert_(parts.length === 4, 'Invalid hsla color');
+    log_.assert_(parts.length === 4, 'Invalid hsla color.',
+        '(Utility::convertCssColorToThreeJsColor)');
     return this.convertHSLColorToThreeJsColor_(parts[0], parts[1], parts[2]);
   }
 
@@ -272,12 +278,18 @@ Utility.prototype.convertRGBColorToThreeJsColor_ = function(r, g, b) {
   g = parseFloat(g) / 255.0;
   b = parseFloat(b) / 255.0;
 
-  log_.assert_(r >= 0.0, 'r value < 0');
-  log_.assert_(r <= 1.0, 'r value > 1');
-  log_.assert_(g >= 0.0, 'g value < 0');
-  log_.assert_(g <= 1.0, 'g value > 1');
-  log_.assert_(b >= 0.0, 'b value < 0');
-  log_.assert_(b <= 1.0, 'b value > 1');
+  log_.assert_(r >= 0.0, 'r value < 0.',
+      '(Utility::convertRGBColorToThreeJsColor_)');
+  log_.assert_(r <= 1.0, 'r value > 1.',
+      '(Utility::convertRGBColorToThreeJsColor_)');
+  log_.assert_(g >= 0.0, 'g value < 0.',
+      '(Utility::convertRGBColorToThreeJsColor_)');
+  log_.assert_(g <= 1.0, 'g value > 1.',
+      '(Utility::convertRGBColorToThreeJsColor_)');
+  log_.assert_(b >= 0.0, 'b value < 0.',
+      '(Utility::convertRGBColorToThreeJsColor_)');
+  log_.assert_(b <= 1.0, 'b value > 1.',
+      '(Utility::convertRGBColorToThreeJsColor_)');
 
   return new THREE.Color().setRGB(r, g, b);
 };
@@ -301,12 +313,18 @@ Utility.prototype.convertHSLColorToThreeJsColor_ = function(h, s, l) {
   s = parseFloat(s) / 100.0;
   l = parseFloat(l) / 100.0;
 
-  log_.assert_(h >= 0.0, 'h value < 0');
-  log_.assert_(h < 360.0, 'h value >= 360');
-  log_.assert_(s >= 0.0, 's value < 0');
-  log_.assert_(s <= 1.0, 's value > 1');
-  log_.assert_(l >= 0.0, 'l value < 0');
-  log_.assert_(l <= 1.0, 'l value > 1');
+  log_.assert_(h >= 0.0, 'h value < 0.',
+      '(Utility::convertHSLColorToThreeJsColor_)');
+  log_.assert_(h < 360.0, 'h value >= 360.',
+      '(Utility::convertHSLColorToThreeJsColor_)');
+  log_.assert_(s >= 0.0, 's value < 0.',
+      '(Utility::convertHSLColorToThreeJsColor_)');
+  log_.assert_(s <= 1.0, 's value > 1.',
+      '(Utility::convertHSLColorToThreeJsColor_)');
+  log_.assert_(l >= 0.0, 'l value < 0.',
+      '(Utility::convertHSLColorToThreeJsColor_)');
+  log_.assert_(l <= 1.0, 'l value > 1.',
+      '(Utility::convertHSLColorToThreeJsColor_)');
 
   var chroma = (1.0 - Math.abs(2.0 * l - 1.0)) * s;
   var hprime = h / 60.0;
@@ -355,7 +373,8 @@ Utility.prototype.convertHSLColorToThreeJsColor_ = function(h, s, l) {
  * @return {THREE.Color} Three.Js color.
  */
 Utility.prototype.convertColorStringToThreeJsColor_ = function(color) {
-  log_.assert_(color in this.colorToHexString, 'Invalid color string');
+  log_.assert_(color in this.colorToHexString, 'Invalid color string.',
+      '(Utility::convertColorStringToThreeJsColor_)');
 
   return this.convertHexStringToThreeJsColor_(
       this.colorToHexString[color.toLowerCase()]);

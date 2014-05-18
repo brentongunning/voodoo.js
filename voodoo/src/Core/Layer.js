@@ -23,7 +23,15 @@
  */
 function Layer_(pass, renderer, camera, sceneFactory, triggersFactory,
     cacheFactory) {
-  log_.assert_(renderer === Renderer['ThreeJs'], 'Only ThreeJs is supported');
+  log_.assert_(pass, 'pass must be valid.', pass, '(Layer_::Layer_)');
+  log_.assert_(renderer === Renderer['ThreeJs'],
+      'Only ThreeJs is supported.', renderer, '(Layer_::Layer_)');
+  log_.assert_(camera, 'camera must be valid.',
+      '(Layer_::Layer_)');
+  log_.assert_(sceneFactory, 'sceneFactory must be valid.',
+      '(Layer_::Layer_)');
+  log_.assert_(triggersFactory, 'triggersFactory must be valid.',
+      '(Layer_::Layer_)');
 
   this.pass_ = pass;
   this.renderer_ = renderer;
@@ -43,6 +51,8 @@ function Layer_(pass, renderer, camera, sceneFactory, triggersFactory,
  * @param {View} view View to add.
  */
 Layer_.prototype.addView_ = function(view) {
+  log_.assert_(view, 'view must be valid.', '(Layer_::addView_)');
+
   this.views_.push(view);
 };
 
@@ -54,8 +64,9 @@ Layer_.prototype.addView_ = function(view) {
  */
 Layer_.prototype.clearDirtyFlags_ = function() {
   for (var viewIndex = 0, numViews = this.views_.length; viewIndex < numViews;
-      ++viewIndex)
+      ++viewIndex) {
     this.views_[viewIndex]['scene'].isDirty_ = false;
+  }
 };
 
 
@@ -106,8 +117,10 @@ Layer_.prototype.isRenderNeeded_ = function() {
  */
 Layer_.prototype.removeView_ = function(view) {
   var index = this.views_.indexOf(view);
-  if (index !== -1)
-    this.views_.splice(index, 1);
+
+  log_.assert_(index !== -1, 'View not found.', '(Layer_::removeView_)');
+
+  this.views_.splice(index, 1);
 };
 
 

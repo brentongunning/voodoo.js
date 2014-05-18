@@ -15,6 +15,9 @@
  * @param {Engine} engine Voodoo main engine.
  */
 function MouseDetector_(engine) {
+  log_.assert_(engine, 'engine must be valid.',
+      '(MouseDetector_::MouseDetector_)');
+
   this.engine_ = engine;
   this.initState_();
 
@@ -166,6 +169,9 @@ MouseDetector_.prototype.initState_ = function() {
  * @param {Event} event Event data.
  */
 MouseDetector_.prototype.onMouseDown_ = function(event) {
+  log_.assert_(event, 'event must be valid.',
+      '(MouseDetector_::onMouseDown_)');
+
   if (this.hoveredTrigger_ !== null) {
     event.preventDefault();
 
@@ -197,6 +203,8 @@ MouseDetector_.prototype.onMouseDown_ = function(event) {
  * @param {Event} event Event data.
  */
 MouseDetector_.prototype.onMouseMove_ = function(event) {
+  log_.assert_(event, 'event must be valid.');
+
   if (this.hoveredTrigger_ !== null)
     event.preventDefault();
 
@@ -217,6 +225,9 @@ MouseDetector_.prototype.onMouseMove_ = function(event) {
  * @param {Event} event Event data.
  */
 MouseDetector_.prototype.onMouseUp_ = function(event) {
+  log_.assert_(event, 'event must be valid.',
+      '(MouseDetector_::onMouseUp_)');
+
   var button = event.button;
 
   if (this.hoveredTrigger_) {

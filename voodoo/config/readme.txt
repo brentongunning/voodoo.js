@@ -44,6 +44,9 @@ See license.txt.
 Release Notes
 -------------------------------------------------------------------------------
 
+5-18-2014 - 0.9.0
+Improved error checking.
+
 4-29-2014 - 0.8.9
 Added Model.loaded property.
 Added Scene.localToPage and Scene.pageToLocal coordinate change functions.
