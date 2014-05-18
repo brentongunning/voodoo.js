@@ -27,7 +27,7 @@
 set op=%~1
 if "%op%"=="" set op=all
 
-set version=0.8.9
+set version=0.9.0
 set project=voodoo
 set namespace=voodoo
 set optlevel=ADVANCED_OPTIMIZATIONS
