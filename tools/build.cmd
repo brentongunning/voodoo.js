@@ -251,8 +251,8 @@ if %dropping%==1 (
   xcopy /S "%project_docs_user%" "%drop_staging%\docs"
   xcopy /S "%project_root%\samples" "%drop_staging%\samples"
   xcopy /S "%project_root%\lib" "%drop_staging%\lib"
-  copy /B /Y "%project_config%\readme.txt" "%drop_staging%"
-  copy /B /Y "%project_config%\license.txt" "%drop_staging%"
+  copy /B /Y "%project_config%\README" "%drop_staging%"
+  copy /B /Y "%project_config%\LICENSE" "%drop_staging%"
   
   "%sevenzip%" a -tzip "%drop_file%" "%drop_staging%\*"
   if errorlevel 1 call :error "Failed to zip"
