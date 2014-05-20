@@ -54,4 +54,4 @@ Voodoo currently builds on Windows. It would be great if someone ported the buil
 
 ## License
   
-This content is released under the (http://opensource.org/licenses/MIT) MIT License.
+This software is released under the MIT License. (http://opensource.org/licenses/MIT)
