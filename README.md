@@ -1,6 +1,8 @@
 Voodoo.js
 ======
 
+Voodoo is a Javascript framework for creating 3D WebGL controls that integrate seamlessly with 2D HTML.
+
 ## Introduction
 
 Folder structure:
@@ -49,3 +51,7 @@ Voodoo currently builds on Windows. It would be great if someone ported the buil
 #### Step 6: Build
 
   Run build.cmd in the root folder.
+
+## License
+  
+This content is released under the (http://opensource.org/licenses/MIT) MIT License.
