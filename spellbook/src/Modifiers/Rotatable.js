@@ -528,15 +528,15 @@ Rotatable.prototype.parseRotation_ = function(rotation) {
     } else {
 
       log_.error_('Unable to parse rotation: Incorrect number of elements.',
-          '(Rotatable::parseRotation_)');
+          rotation, '(Rotatable::parseRotation_)');
 
     }
   } else if (typeof rotation === 'object') {
-    log_.assert_('x' in rotation, 'Property x is undefined.',
+    log_.assert_('x' in rotation, 'Property x is undefined.', rotation,
         '(Rotatable::parseRotation_)');
-    log_.assert_('y' in rotation, 'Property y is undefined.',
+    log_.assert_('y' in rotation, 'Property y is undefined.', rotation,
         '(Rotatable::parseRotation_)');
-    log_.assert_('z' in rotation, 'Property z is undefined.',
+    log_.assert_('z' in rotation, 'Property z is undefined.', rotation,
         '(Rotatable::parseRotation_)');
 
     if ('angle' in rotation) {
@@ -561,7 +561,7 @@ Rotatable.prototype.parseRotation_ = function(rotation) {
     }
   } else {
 
-    log_.error_('Unable to parse rotation: Must be array or object.',
+    log_.error_('Unable to parse rotation: Must be array or object.', rotation,
         '(Rotatable::parseRotation_)');
 
   }

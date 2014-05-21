@@ -366,16 +366,10 @@ Scalable.prototype.targetScale = null;
  * @return {Object}
  */
 Scalable.prototype.parseScale_ = function(scale) {
-  if (typeof scale === 'number') {
+  if (typeof scale === 'number')
     return { x: scale, y: scale, z: scale };
-  } else if (typeof scale === 'object') {
-    if ('x' in scale)
-      return scale;
-    else
-      return { x: scale[0], y: scale[1], z: scale[2] };
-  } else {
-    return { x: 0, y: 0, z: 0 };
-  }
+  else
+    return parseVector3_(scale);
 };
 
 

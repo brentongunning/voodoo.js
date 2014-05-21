@@ -561,14 +561,14 @@ var Image3D = this.Image3D = voodoo.Model.extend({
         '(Image3D::initalize)');
 
     this.imageSrc_ = options.imageSrc ?
-        getAbsoluteUrl(options.imageSrc) :
-        getAbsoluteUrl(options.element.src);
+        getAbsoluteUrl_(options.imageSrc) :
+        getAbsoluteUrl_(options.element.src);
 
     this.heightSources_ = [
-      options.heightmap ? getAbsoluteUrl(options.heightmap) : '',
-      options.heightmap2 ? getAbsoluteUrl(options.heightmap2) : '',
-      options.heightmap3 ? getAbsoluteUrl(options.heightmap3) : '',
-      options.heightmap4 ? getAbsoluteUrl(options.heightmap4) : ''
+      options.heightmap ? getAbsoluteUrl_(options.heightmap) : '',
+      options.heightmap2 ? getAbsoluteUrl_(options.heightmap2) : '',
+      options.heightmap3 ? getAbsoluteUrl_(options.heightmap3) : '',
+      options.heightmap4 ? getAbsoluteUrl_(options.heightmap4) : ''
     ];
 
     log_.assert_(options.heightmap, 'heightmap must be valid.',
@@ -855,7 +855,7 @@ Image3D.prototype.setHeightmap = function(heightmap, opt_index) {
   log_.assert_(heightmap, 'heightmap must be valid.',
       '(Image3D::setHeightmap)');
 
-  heightmap = getAbsoluteUrl(heightmap);
+  heightmap = getAbsoluteUrl_(heightmap);
 
   var index = typeof opt_index === 'undefined' ? 0 : opt_index - 1;
 
@@ -893,7 +893,7 @@ Image3D.prototype.setImageSrc = function(imageSrc) {
   log_.assert_(imageSrc, 'imageSrc must be valid.',
       '(Image3D::setImageSrc)');
 
-  imageSrc = getAbsoluteUrl(imageSrc);
+  imageSrc = getAbsoluteUrl_(imageSrc);
 
   if (this.imageSrc_ === imageSrc)
     return this;

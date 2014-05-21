@@ -98,7 +98,7 @@ var Movable = this.Movable = voodoo.Model.extend({
     this.base.initialize(options);
 
     if (options.position)
-      this.position_ = this.parsePosition_(options.position);
+      this.position_ = parseVector3_(options.position);
     else
       this.position_ = { x: 0, y: 0, z: 0 };
 
@@ -288,7 +288,7 @@ Movable.prototype.moveTo = function(position, seconds, opt_easing) {
     seconds = arguments[3];
     opt_easing = arguments[4];
   } else {
-    endPosition = this.parsePosition_(position);
+    endPosition = parseVector3_(position);
   }
 
   log_.assert_(typeof seconds === 'number', 'seconds must be a number.',
@@ -369,7 +369,7 @@ Movable.prototype.setPosition = function(position) {
   if (arguments.length > 1)
     this.position_ = { x: arguments[0], y: arguments[1], z: arguments[2] };
   else
-    this.position_ = this.parsePosition_(position);
+    this.position_ = parseVector3_(position);
 
   this.targetPosition_.x = this.position_.x;
   this.targetPosition_.y = this.position_.y;
@@ -430,24 +430,3 @@ Movable.prototype.position = null;
  * @type {Object}
  */
 Movable.prototype.targetPosition = null;
-
-
-/**
- * Converts a position parameter into an object with x, y, z properties.
- *
- * @private
- *
- * @param {Object} position Position.
- *
- * @return {Object}
- */
-Movable.prototype.parsePosition_ = function(position) {
-  if (typeof position === 'object') {
-    if ('x' in position)
-      return position;
-    else
-      return { x: position[0], y: position[1], z: position[2] };
-  } else {
-    return { x: 0, y: 0, z: 0 };
-  }
-};
