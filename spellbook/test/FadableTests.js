@@ -137,3 +137,61 @@ FadableTests.prototype.testPauseFade = function() {
 
   assertFalse('Fading:', instance.fading);
 };
+
+
+/**
+ * Tests that there are errors when providing invalid properties.
+ */
+FadableTests.prototype.testInvalidProperties = function() {
+  if (!DEBUG)
+    return;
+
+  var Fadable = voodoo.Fadable.extend(DummyModel);
+  var instance = new Fadable();
+
+  assertException(function() {
+    new voodoo.Fadable({
+      alpha: 'abcde'
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Fadable({
+      alpha: -1
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Fadable({
+      alpha: 2
+    });
+  });
+
+  assertException(function() {
+    instance.alpha = 'abcde';
+  });
+
+  assertException(function() {
+    instance.setAlpha(2);
+  });
+
+  assertException(function() {
+    instance.fading = 'red';
+  });
+
+  assertException(function() {
+    instance.setFading({});
+  });
+
+  assertException(function() {
+    instance.fadeIn('blue');
+  });
+
+  assertException(function() {
+    instance.fadeOut([1, 2, 3]);
+  });
+
+  assertException(function() {
+    instance.fadeTo(-1, 0);
+  });
+};

@@ -36,6 +36,8 @@ ColorableTests.prototype.testColorableExtend = function() {
 
   instance1.color = 'white';
   instance2.setColor('rgb(10, 20, 30)');
+
+  assertEquals('rgb(10, 20, 30)', instance2.color);
 };
 
 
@@ -50,6 +52,9 @@ ColorableTests.prototype.testColorableEvents = function() {
   instance.on('changeColor', function() { changeColor++; });
 
   instance.color = 'black';
+
+  assertEquals('black', instance.color);
+
   instance.setColor('rgb(100, 200, 250)');
 
   assertEquals(2, changeColor);

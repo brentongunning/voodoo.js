@@ -105,7 +105,20 @@ var Fadable = this.Fadable = voodoo.Model.extend({
   initialize: function(options) {
     this.base.initialize(options);
 
-    this.alpha_ = typeof options.alpha !== 'undefined' ? options.alpha : 0;
+    if (typeof options.alpha !== 'undefined') {
+
+      log_.assert_(options.alpha >= 0 && options.alpha <= 1,
+          'alpha must be between 0 and 1.',
+          options.alpha, '(Fadable::setAlpha)');
+
+      this.alpha_ = options.alpha;
+
+    } else {
+
+      this.alpha_ = 0;
+
+    }
+
     this.startAlpha_ = this.alpha_;
     this.targetAlpha_ = this.alpha_;
 
@@ -275,6 +288,9 @@ Fadable.prototype.setAlpha = function(alpha) {
  * @return {Fadable}
  */
 Fadable.prototype.setFading = function(fading) {
+  log_.assert_(typeof fading === 'boolean', 'fading must be a boolean.',
+      fading, '(Fadable::setFading)');
+
   if (!fading && this.fading_) {
 
     this.fading_ = false;
