@@ -23,8 +23,8 @@ var ArcballView_ = voodoo.View.extend({
   },
 
   computeArcballSphere: function() {
-    var modelArcballCenter = this.model.arcballCenter;
-    var modelArcballRadius = this.model.arcballRadius;
+    var modelArcballCenter = this.model.arcballCenter_;
+    var modelArcballRadius = this.model.arcballRadius_;
 
     if (modelArcballCenter && modelArcballRadius) {
       // The arcball sphere is fully defined. use it.
@@ -144,9 +144,24 @@ var Arcball = this.Arcball = Rotatable.extend({
   initialize: function(options) {
     this.base.initialize(options);
 
-    this.arcballCenter = options.arcballCenter || null;
-    this.arcballRadius = typeof options.arcballRadius !== 'undefined' ?
-        options.arcballRadius : 0;
+    if (options.arcballCenter)
+      this.setArcballCenter(options.arcballCenter);
+    if (typeof options.arcballRadius !== 'undefined')
+      this.setArcballRadius(options.arcballRadius);
+
+    var that = this;
+
+    Object.defineProperty(this, 'arcballCenter', {
+      get: function() { return that.arcballCenter_; },
+      set: function(arcballCenter) { that.setArcballCenter(arcballCenter); },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'arcballRadius', {
+      get: function() { return that.arcballRadius_; },
+      set: function(arcballRadius) { that.setArcballRadius(arcballRadius); },
+      enumerable: true
+    });
 
     this.rotatingArcball_ = false;
     this.startArcballRotation_ = new THREE.Quaternion(0, 0, 0, 1);
@@ -234,6 +249,44 @@ var Arcball = this.Arcball = Rotatable.extend({
   }
 
 });
+
+
+/**
+ * Sets a custom center for the arcball rotations.
+ *
+ * @param {Object} arcballCenter Center with x, y, z properies, or null.
+ *
+ * @return {Arcball} This.
+ */
+Arcball.prototype.setArcballCenter = function(arcballCenter) {
+  if (arcballCenter !== null)
+    this.arcballCenter_ = parseVector3_(arcballCenter);
+  else
+    this.arcballCenter_ = null;
+
+  return this;
+};
+
+
+/**
+ * Sets a custom radius for the arcball rotations.
+ *
+ * @param {number} arcballRadius Radius. Must be non-negative.
+ *
+ * @return {Arcball} This.
+ */
+Arcball.prototype.setArcballRadius = function(arcballRadius) {
+  log_.assert_(typeof arcballRadius === 'number',
+      'arcballRadius must be a number.', arcballRadius,
+      '(Arcball::setArcballRadius)');
+  log_.assert_(arcballRadius >= 0,
+      'arcballRadius must be non-negative.', arcballRadius,
+      '(Arcball::setArcballRadius)');
+
+  this.arcballRadius_ = arcballRadius;
+
+  return this;
+};
 
 
 /**

@@ -46,6 +46,9 @@ ArcballTests.prototype.testArcball = function() {
   var Model = voodoo.Arcball.extend(AttachedModel);
   var model = new Model();
 
+  model.arcballCenter = [20, 30, 40];
+  model.arcballRadius = 100;
+
   var modelRotation = model.rotation;
   var startRotationX = modelRotation.x;
   var startRotationY = modelRotation.y;
@@ -58,4 +61,66 @@ ArcballTests.prototype.testArcball = function() {
   assertNotEquals(modelRotation.x, startRotationX);
   assertNotEquals(modelRotation.y, startRotationY);
   assertNotEquals(modelRotation.z, startRotationZ);
+
+  assertEquals(20, model.arcballCenter.x);
+  assertEquals(30, model.arcballCenter.y);
+  assertEquals(40, model.arcballCenter.z);
+  assertEquals(100, model.arcballRadius);
+};
+
+
+/**
+ * Tests that there are errors when providing invalid properties.
+ */
+ArcballTests.prototype.testInvalidProperties = function() {
+  /*:DOC +=
+    <div style="position:absolute; left:400px; top:400px;
+        width:400px; height:300px;" id="anchor"></div>
+  */
+
+  if (!DEBUG)
+    return;
+
+  var Model = voodoo.Arcball.extend(AttachedModel);
+  var model = new Model();
+
+  // Arcball centers must be options with x, y, z properties, or an
+  // array with 3 components, or null.
+
+
+  assertException(function() {
+    model.arcballCenter = 10;
+  });
+
+  assertException(function() {
+    model.setArcballCenter(10);
+  });
+
+  assertException(function() {
+    model.setArcballCenter([1, 2]);
+  });
+
+  assertException(function() {
+    model.setArcballCenter({
+      x: 10,
+      z: 40
+    });
+  });
+
+  // Negative radii are not allowed.
+
+  assertException(function() {
+    model.arcballRadius = -10;
+  });
+
+  assertException(function() {
+    model.setArcballRadius(-10);
+  });
+
+  // Radii must be numbers.
+
+  assertException(function() {
+    model.arcballRadius = [20, 30, 40];
+  });
+
 };
