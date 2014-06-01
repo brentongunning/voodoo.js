@@ -54,3 +54,30 @@ ColorableTests.prototype.testColorableEvents = function() {
 
   assertEquals(2, changeColor);
 };
+
+
+/**
+ * Tests that there are errors when providing invalid properties.
+ */
+ColorableTests.prototype.testInvalidProperties = function() {
+  if (!DEBUG)
+    return;
+
+  var Colorable = voodoo.Colorable.extend(DummyModel);
+  var instance = new Colorable();
+
+  assertException(function() {
+    new Colorable({
+      color: 'abcde'
+    });
+  });
+
+  assertException(function() {
+    instance.color = 'rgb';
+  });
+
+  assertException(function() {
+    instance.setColor(2);
+  });
+};
+

@@ -57,6 +57,7 @@ var AttachedModel = voodoo.Model.extend({
 
   initialize: function(options) {
     this.base.initialize(options);
+
     this.element = options.element;
   },
 

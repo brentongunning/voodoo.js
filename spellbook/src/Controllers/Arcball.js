@@ -146,6 +146,7 @@ var Arcball = this.Arcball = Rotatable.extend({
 
     if (options.arcballCenter)
       this.setArcballCenter(options.arcballCenter);
+
     if (typeof options.arcballRadius !== 'undefined')
       this.setArcballRadius(options.arcballRadius);
 

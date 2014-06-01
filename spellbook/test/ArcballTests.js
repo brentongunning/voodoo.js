@@ -84,9 +84,20 @@ ArcballTests.prototype.testInvalidProperties = function() {
   var Model = voodoo.Arcball.extend(AttachedModel);
   var model = new Model();
 
+  assertException(function() {
+    new voodoo.Arcball({
+      arcballCenter: {}
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Arcball({
+      arcballRadius: 'badRadius'
+    });
+  });
+
   // Arcball centers must be options with x, y, z properties, or an
   // array with 3 components, or null.
-
 
   assertException(function() {
     model.arcballCenter = 10;
