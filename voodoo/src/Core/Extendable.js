@@ -197,7 +197,13 @@ Extendable['extend'] = function(opt_object) {
         return function() {
           if (record.current >= 0) {
             var current = record.current--;
-            var ret = recordMethods[current].apply(base.instance, arguments);
+            try {
+              var ret = recordMethods[current].apply(base.instance, arguments);
+            }
+            catch (e) {
+              record.current = record.methods.length - 1;
+              throw e;
+            }
             ++record.current;
             return ret;
           }
