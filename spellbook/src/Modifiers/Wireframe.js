@@ -88,8 +88,15 @@ var Wireframe = this.Wireframe = voodoo.Model.extend({
   initialize: function(options) {
     this.base.initialize(options);
 
-    this.wireframe_ = typeof options.wireframe !== 'undefined' ?
-        options.wireframe : true;
+    if (typeof options.wireframe !== 'undefined') {
+      log_.assert_(typeof options.wireframe === 'boolean',
+          'wireframe must be a boolean.', options.wireframe,
+          '(Wireframe::initialize)');
+
+      this.wireframe_ = options.wireframe;
+    } else {
+      this.wireframe_ = true;
+    }
 
     var that = this;
     Object.defineProperty(this, 'wireframe', {
@@ -110,6 +117,10 @@ var Wireframe = this.Wireframe = voodoo.Model.extend({
   * @return {Wireframe}
   */
 Wireframe.prototype.setWireframe = function(wireframe) {
+  log_.assert_(typeof wireframe === 'boolean',
+      'wireframe must be a boolean.', wireframe,
+      '(Wireframe::initialize)');
+
   if (wireframe !== this.wireframe_) {
     this.wireframe_ = wireframe;
 

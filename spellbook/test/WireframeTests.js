@@ -54,3 +54,29 @@ WireframeTests.prototype.testWireframeEvents = function() {
 
   assertEquals(2, changeWireframe);
 };
+
+
+/**
+ * Tests that there are errors when providing invalid properties.
+ */
+WireframeTests.prototype.testInvalidProperties = function() {
+  if (!DEBUG)
+    return;
+
+  var Wireframe = voodoo.Wireframe.extend(DummyModel);
+  var instance = new Wireframe();
+
+  assertException(function() {
+    new voodoo.Wireframe({
+      wireframe: 'true'
+    });
+  });
+
+  assertException(function() {
+    instance.wireframe = null;
+  });
+
+  assertException(function() {
+    instance.setWireframe(0);
+  });
+};
