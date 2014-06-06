@@ -304,6 +304,9 @@ Scalable.prototype.setScale = function(scale) {
  * @return {Scalable}
  */
 Scalable.prototype.setScaling = function(scaling) {
+  log_.assert_(typeof scaling === 'boolean', 'scaling must be a boolean.',
+      scaling, '(Scalable::setScaling)');
+
   if (!scaling && this.scaling_) {
 
     this.scaling_ = false;

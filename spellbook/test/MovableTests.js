@@ -356,4 +356,3 @@ MovableTests.prototype.testInvalidProperties = function() {
     instance.position = { x: 1, z: 2 };
   });
 };
-

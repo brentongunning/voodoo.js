@@ -269,3 +269,47 @@ ScalableTests.prototype.testPauseScale = function() {
 
   assertFalse('Scaling:', instance.scaling);
 };
+
+
+/**
+ * Tests that there are errors when providing invalid properties.
+ */
+ScalableTests.prototype.testInvalidProperties = function() {
+  if (!DEBUG)
+    return;
+
+  var Scalable = voodoo.Scalable.extend(DummyModel);
+  var instance = new Scalable({
+    scale: [0, 0, 0]
+  });
+
+  assertException(function() {
+    new Scalable({
+      scale: [0, 1]
+    });
+  });
+
+  assertException(function() {
+    instance.scaleTo({}, 2);
+  });
+
+  assertException(function() {
+    instance.scaleTo([0, 1, 2], false);
+  });
+
+  assertException(function() {
+    instance.setScale([0, 1, 2, 3]);
+  });
+
+  assertException(function() {
+    instance.setScaling();
+  });
+
+  assertException(function() {
+    instance.scale = {x: '1', y: '2', z: '3'};
+  });
+
+  assertException(function() {
+    instance.scaling = 'true';
+  });
+};

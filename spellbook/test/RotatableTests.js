@@ -363,6 +363,6 @@ RotatableTests.prototype.testInvalidProperties = function() {
   });
 
   assertException(function() {
-    instance.rotation = {x: '0', y: '1', z: '2'};
+    instance.rotation = {x: '0', y: '1', z: '2', w: '3'};
   });
 };
