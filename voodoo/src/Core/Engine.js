@@ -279,7 +279,7 @@ Engine.prototype.run_ = function(update, render) {
  * @private
  */
 Engine.prototype.setupDeltaTimer_ = function() {
-  log_.info_('Starting timers');
+  log_.info_('Starting timers.');
 
   var that = this;
   this.lastTicks_ = 0;
@@ -288,6 +288,8 @@ Engine.prototype.setupDeltaTimer_ = function() {
   // Register with the window focus event so we know when the user switches
   // back to our tab. We will reset timing data.
   window.addEventListener('focus', function() {
+    log_.info_('Window focus acquired. Starting delta timer.');
+
     that.lastTicks_ = 0;
     setTimeout(function() {
       that.lastTicks_ = Date.now();
@@ -298,6 +300,8 @@ Engine.prototype.setupDeltaTimer_ = function() {
   // another tab, we stop the timing so that the animations look like they
   // paused.
   window.addEventListener('blur', function() {
+    log_.info_('Window lost focus. Pausing delta timer.');
+
     that.lastTicks_ = 0;
   }, false);
 
