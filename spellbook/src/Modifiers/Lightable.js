@@ -197,7 +197,7 @@ var Lightable = this.Lightable = voodoo.Model.extend({
       log_.assert_(options.shading === 'smooth' ||
           options.shading === 'flat' ||
           options.shading === 'none',
-          'shading must be valid', options.shading, '(Lightable::Lightable');
+          'shading must be valid', options.shading, '(Lightable::initialize');
 
       this.shading_ = options.shading;
     } else {

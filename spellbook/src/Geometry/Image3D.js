@@ -577,10 +577,10 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     if (typeof options.maxHeight !== 'undefined') {
       log_.assert_(typeof options.maxHeight === 'number',
           'maxHeight must be a number.', options.maxHeight,
-          '(Image3D::Image3D)');
+          '(Image3D::initalize)');
 
       log_.assert_(options.maxHeight >= 0, 'maxHeight must be >= 0.',
-          options.maxHeight, '(Image3D::Image3D)');
+          options.maxHeight, '(Image3D::initalize)');
 
       this.maxHeight_ = options.maxHeight;
     } else {
@@ -593,7 +593,7 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     if (typeof options.transparent !== 'undefined') {
       log_.assert_(typeof options.transparent === 'boolean',
           'transparent must be a boolean.', options.transparent,
-          '(Image3D::Image3D)');
+          '(Image3D::initalize)');
 
       this.transparent_ = options.transparent;
     } else {

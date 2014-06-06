@@ -142,22 +142,30 @@ var Mesh = this.Mesh = Movable.extend({
 
     this.base.initialize(options);
 
-    log_.assert_(options.element, 'element must be valid.',
+    log_.assert_(options.mesh, 'mesh must be valid.', options.mesh,
         '(Mesh::initialize)');
-    this.element_ = options.element;
-
-    log_.assert_(options.mesh, 'mesh must be valid.',
-        '(Mesh::initialize)');
+    log_.assert_(typeof options.mesh === 'string', 'mesh must be a string.',
+        options.mesh, '(Mesh::initialize)');
     this.mesh_ = options.mesh;
 
-    this.format_ = options.format || Mesh.Format.JSON;
+    if (typeof options.format !== 'undefined') {
+      log_.assert_(options.format === 'json', 'format must be valid.',
+          options.format, '(Mesh::initialize)');
 
-    this.animated_ = typeof options.animated !== 'undefined' ?
-        options.animated : true;
-    this.center_ = typeof options.center !== 'undefined' ?
-        options.center : true;
-    this.pixelScale_ = typeof options.pixelScale !== 'undefined' ?
-        options.pixelScale : true;
+      this.format_ = options.format;
+    } else {
+      this.format_ = Mesh.Format.JSON;
+    }
+
+    if (typeof options.animated !== 'undefined') {
+      log_.assert_(typeof options.animated === 'boolean',
+          'animated must be a boolean.',
+          options.animated, '(Mesh::initialize)');
+
+      this.animated_ = options.animated;
+    } else {
+      this.animated_ = true;
+    }
 
     this.animations_ = {};
     this.animation_ = '';
@@ -234,10 +242,16 @@ Mesh.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
   log_.assert_(name, 'name must be valid.', '(Mesh::setAnimation)');
   log_.assert_(typeof name === 'string', name, 'name must be a string.',
       '(Mesh::setAnimation)');
+  log_.assert_(typeof start === 'number', 'start must be a number.',
+      start, '(Mesh::setAnimation)');
   log_.assert_(start >= 0, 'start must be >= 0.', start,
       '(Mesh::setAnimation)');
+  log_.assert_(typeof end === 'number', 'end must be a number.',
+      end, '(Mesh::setAnimation)');
   log_.assert_(end >= 0, 'end must be >= 0.', end,
       '(Mesh::setAnimation)');
+  log_.assert_(typeof seconds === 'number', 'seconds must be a number.',
+      seconds, '(Mesh::setAnimation)');
   log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds,
       '(Mesh::setAnimation)');
 

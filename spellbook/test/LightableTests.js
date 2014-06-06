@@ -120,4 +120,3 @@ LightableTests.prototype.testInvalidProperties = function() {
     instance.setShading(null);
   });
 };
-

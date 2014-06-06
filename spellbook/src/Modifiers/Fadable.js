@@ -109,7 +109,7 @@ var Fadable = this.Fadable = voodoo.Model.extend({
 
       log_.assert_(options.alpha >= 0 && options.alpha <= 1,
           'alpha must be between 0 and 1.',
-          options.alpha, '(Fadable::setAlpha)');
+          options.alpha, '(Fadable::initialize)');
 
       this.alpha_ = options.alpha;
 

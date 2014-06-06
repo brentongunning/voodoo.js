@@ -162,3 +162,72 @@ MeshTests.prototype.testMeshEvents = function(queue) {
   assert('Play Event', play);
   assert('Stop Event', stop);
 };
+
+
+/**
+ * Tests that there are errors when providing invalid properties.
+ *
+ * @param {Object} queue Async queue.
+ */
+MeshTests.prototype.testInvalidProperties = function(queue) {
+  /*:DOC +=
+    <div style="position:absolute; left:400px; top:400px;
+        width:400px; height:300px;" id="anchor"></div>
+  */
+
+  if (!DEBUG)
+    return;
+
+  var instance = new voodoo.Mesh({
+    element: document.getElementById('anchor'),
+    format: voodoo.Mesh.Format.JSON,
+    mesh: '/test/test/assets/monster.json',
+    animated: true,
+    center: false,
+    pixelScale: false
+  });
+
+  assertException(function() {
+    new voodoo.Mesh({
+      element: document.getElementById('anchor'),
+      mesh: '/test/test/assets/monster.json',
+      format: 'md5'
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Mesh({
+      element: document.getElementById('anchor'),
+      mesh: 34567,
+      format: 'json'
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Mesh({
+      element: document.getElementById('anchor'),
+      mesh: '/test/test/assets/monster.json',
+      animated: 'false'
+    });
+  });
+
+  assertException(function() {
+    instance.setAnimation(2);
+  });
+
+  assertException(function() {
+    instance.setAnimation('walk', 'ten', '11');
+  });
+
+  assertException(function() {
+    instance.setAnimation('walk', 0, 1, []);
+  });
+
+  assertException(function() {
+    instance.play(1);
+  });
+
+  assertException(function() {
+    instance.play('walk');
+  });
+};
