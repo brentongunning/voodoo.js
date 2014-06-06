@@ -248,3 +248,38 @@ BaseTests.prototype.testBaseOverriddenFunctions = function() {
   assert(baseCalled === false);
   assert(aCalled === true);
 };
+
+
+/**
+ * Tests that exceptions thrown in base calls don't break the stack.
+ */
+BaseTests.prototype.testExceptions = function() {
+  var numThrown = 0;
+  var numCaught = 0;
+
+  Base = voodoo.Extendable.extend({
+    construct: function() {},
+    foo: function() {
+      ++numThrown;
+      throw 'exception';
+    }
+  });
+
+  Derived = Base.extend({
+    foo: function() {
+      this.base.foo();
+    }
+  });
+
+  for (var i = 0; i < 5; ++i) {
+    try {
+      new Derived().foo();
+    }
+    catch (e) {
+      ++numCaught;
+    }
+  }
+
+  assertEquals(5, numThrown);
+  assertEquals(5, numCaught);
+};
