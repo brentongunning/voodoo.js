@@ -157,22 +157,22 @@ var Movable = this.Movable = voodoo.Model.extend({
 
     Object.defineProperty(proxy, 'x', {
       get: function() { return that.position_.x; },
-      set: function(x) { that.setPosition(x, that.position_.y,
-          that.position_.z); },
+      set: function(x) { that.setPosition(
+          [x, that.position_.y, that.position_.z]); },
       enumerable: true
     });
 
     Object.defineProperty(proxy, 'y', {
       get: function() { return that.position_.y; },
-      set: function(y) { that.setPosition(that.position_.x, y,
-          that.position_.z); },
+      set: function(y) { that.setPosition(
+          [that.position_.x, y, that.position_.z]); },
       enumerable: true
     });
 
     Object.defineProperty(proxy, 'z', {
       get: function() { return that.position_.z; },
-      set: function(z) { that.setPosition(that.position_.x,
-          that.position_.y, z); },
+      set: function(z) { that.setPosition(
+          [that.position_.x, that.position_.y, z]); },
       enumerable: true
     });
 
@@ -296,9 +296,6 @@ Movable.prototype.detach = function() {
 /**
   * Moves all scene meshes to another position over time.
   *
-  * position can also be specified as separate components:
-  *    moveTo(x, y, z, seconds)
-  *
   * @param {Object} position Target position.
   * @param {number} seconds Animation duration.
   * @param {function(number):number=} opt_easing Optional easing function.
@@ -307,14 +304,7 @@ Movable.prototype.detach = function() {
   * @return {Movable}
   */
 Movable.prototype.moveTo = function(position, seconds, opt_easing) {
-  var endPosition;
-  if (arguments.length > 2 && typeof arguments[2] === 'number') {
-    endPosition = { x: arguments[0], y: arguments[1], z: arguments[2] };
-    seconds = arguments[3];
-    opt_easing = arguments[4];
-  } else {
-    endPosition = parseVector3_(position);
-  }
+  var endPosition = parseVector3_(position);
 
   log_.assert_(typeof seconds === 'number', 'seconds must be a number.',
       '(Movable::moveTo)');
@@ -383,21 +373,12 @@ Movable.prototype.setMoving = function(moving) {
 /**
   * Immediately changes the position of all scene meshes.
   *
-  * position can also be specified as separate components:
-  *    setPosition(x, y, z)
-  *
   * @param {Object} position Position.
   *
   * @return {Movable}
   */
 Movable.prototype.setPosition = function(position) {
-  log_.assert_(position, 'position must be valid.',
-      '(Movable::setPosition)');
-
-  if (arguments.length > 1)
-    this.position_ = { x: arguments[0], y: arguments[1], z: arguments[2] };
-  else
-    this.position_ = parseVector3_(position);
+  this.position_ = parseVector3_(position);
 
   this.targetPosition_.x = this.position_.x;
   this.targetPosition_.y = this.position_.y;

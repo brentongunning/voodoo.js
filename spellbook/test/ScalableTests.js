@@ -113,18 +113,6 @@ ScalableTests.prototype.testScalableSetScale = function() {
   assertEquals(2, instanceTargetScale.y);
   assertEquals(3, instanceTargetScale.z);
 
-  instance.setScale(2, 3, 4);
-
-  instanceScale = instance.scale;
-  assertEquals(2, instanceScale.x);
-  assertEquals(3, instanceScale.y);
-  assertEquals(4, instanceScale.z);
-
-  instanceTargetScale = instance.targetScale;
-  assertEquals(2, instanceTargetScale.x);
-  assertEquals(3, instanceTargetScale.y);
-  assertEquals(4, instanceTargetScale.z);
-
   instance.scaleTo(0.1, 0);
 
   instanceScale = instance.scale;
@@ -164,7 +152,7 @@ ScalableTests.prototype.testScalableEvents = function() {
   instance.on('scaleEnd', function() { scaleEnd = true; });
   instance.on('scale', function() { scale = true; });
 
-  instance.scaleTo(0.5, 0.4, 0.3, 0.0001);
+  instance.scaleTo([0.5, 0.4, 0.3], 0.0001);
 
   instanceScale = instance.scale;
   assertEquals(1, instanceScale.x);
@@ -205,7 +193,7 @@ ScalableTests.prototype.testPauseScale = function() {
   var instance = new Scalable();
 
   instance.scale = [1, 2, 3];
-  instance.scaleTo(4, 5, 6, 0.1);
+  instance.scaleTo([4, 5, 6], 0.1);
 
   var instanceScale = instance.scale;
   assertEquals(1, instanceScale.x);

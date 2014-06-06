@@ -119,19 +119,19 @@ var Scalable = this.Scalable = voodoo.Model.extend({
 
     Object.defineProperty(proxy, 'x', {
       get: function() { return that.scale_.x; },
-      set: function(x) { that.setScale(x, that.scale_.y, that.scale_.z); },
+      set: function(x) { that.setScale([x, that.scale_.y, that.scale_.z]); },
       enumerable: true
     });
 
     Object.defineProperty(proxy, 'y', {
       get: function() { return that.scale_.y; },
-      set: function(y) { that.setScale(that.scale_.x, y, that.scale_.z); },
+      set: function(y) { that.setScale([that.scale_.x, y, that.scale_.z]); },
       enumerable: true
     });
 
     Object.defineProperty(proxy, 'z', {
       get: function() { return that.scale_.z; },
-      set: function(z) { that.setScale(that.scale_.x, that.scale_.y, z); },
+      set: function(z) { that.setScale([that.scale_.x, that.scale_.y, z]); },
       enumerable: true
     });
 
@@ -198,9 +198,6 @@ var Scalable = this.Scalable = voodoo.Model.extend({
 /**
   * Scales all scene meshes over time.
   *
-  * scale can also be specified as separate components:
-  *    scaleTo(x, y, z, seconds)
-  *
   * @param {number} scale Target scale.
   * @param {number} seconds Animation duration.
   * @param {function(number):number=} opt_easing Optional easing function.
@@ -209,14 +206,7 @@ var Scalable = this.Scalable = voodoo.Model.extend({
   * @return {Scalable}
   */
 Scalable.prototype.scaleTo = function(scale, seconds, opt_easing) {
-  var endScale;
-  if (arguments.length > 2 && typeof arguments[2] === 'number') {
-    endScale = { x: arguments[0], y: arguments[1], z: arguments[2] };
-    seconds = arguments[3];
-    opt_easing = arguments[4];
-  } else {
-    endScale = this.parseScale_(scale);
-  }
+  var endScale = this.parseScale_(scale);
 
   endScale = this.fixScale_(endScale);
 
@@ -259,9 +249,6 @@ Scalable.prototype.scaleTo = function(scale, seconds, opt_easing) {
 /**
   * Immediately changes the scale of all scene meshes.
   *
-  * scale can also be specified as separate components:
-  *    setScale(x, y, z)
-  *
   * @param {Object|number} scale Scale.
   *
   * @return {Scalable}
@@ -270,10 +257,7 @@ Scalable.prototype.setScale = function(scale) {
   log_.assert_(scale, 'scale must be valid.',
       '(Movable::setScale)');
 
-  if (arguments.length > 1)
-    this.scale_ = { x: arguments[0], y: arguments[1], z: arguments[2] };
-  else
-    this.scale_ = this.parseScale_(scale);
+  this.scale_ = this.parseScale_(scale);
 
   this.scale_ = this.fixScale_(this.scale_);
 
