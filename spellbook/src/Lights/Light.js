@@ -22,12 +22,10 @@ var LightView_ = voodoo.View.extend({
   },
 
   load: function() {
+    this.base.load();
+
     this.light_ = this.createLight_();
     this.scene.add(this.light_);
-  },
-
-  setColor_: function(color) {
-    this.light_.color.copy(color);
   }
 
 });
@@ -45,67 +43,12 @@ var LightView_ = voodoo.View.extend({
  *
  * @constructor
  * @private
- * @extends {voodoo.Model}
+ * @extends {Colorable}
  *
  * @param {{color: string}=} opt_options Options object.
  */
-var Light_ = voodoo.Model.extend({
+var Light_ = Colorable.extend({
 
-  stencilViewType: NullView,
-
-  initialize: function(options) {
-    if (typeof options.color !== 'undefined') {
-      log_.assert_(typeof options.color === 'string',
-          'color must be a string.', options.color, '(Light_::initialize)');
-
-      this.color_ = options.color;
-    } else {
-      this.color_ = null;
-    }
-
-    // Create the color property
-    var that = this;
-    Object.defineProperty(this, 'color', {
-      get: function() { return that.color_; },
-      set: function(color) { that.setColor(color); },
-      enumerable: true
-    });
-  },
-
-  setUpViews: function() {
-    this.color = this.color_ ? this.color_ : 'white';
-  }
+  stencilViewType: NullView
 
 });
-
-
-/**
- * Changes the color for this light.
- *
- * @param {string} color CSS color string.
- *
- * @return {Light_}
- */
-Light_.prototype.setColor = function(color) {
-  log_.assert_(typeof color === 'string', 'color must be a string.',
-      color, '(Light_::setColor)');
-
-  if (this.color_ != color) {
-    this.color_ = color;
-
-    var threeJsColor = voodoo.utility.convertCssColorToThreeJsColor(color);
-    this.view.setColor_(threeJsColor);
-
-    this.dispatch(new voodoo.Event('changeColor', this));
-  }
-
-  return this;
-};
-
-
-/**
- * CSS color string for this light.
- *
- * @type {string}
- */
-Light_.prototype.color = '';
