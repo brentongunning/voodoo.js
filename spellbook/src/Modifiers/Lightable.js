@@ -193,7 +193,16 @@ var Lightable = this.Lightable = voodoo.Model.extend({
     this.threeJsEmissive_ =
         voodoo.utility.convertCssColorToThreeJsColor(this.emissive_);
 
-    this.shading_ = options.shading || Lightable.ShadingStyle.Smooth;
+    if (typeof options.shading !== 'undefined') {
+      log_.assert_(options.shading === 'smooth' ||
+          options.shading === 'flat' ||
+          options.shading === 'none',
+          'shading must be valid', options.shading, '(Lightable::Lightable');
+
+      this.shading_ = options.shading;
+    } else {
+      this.shading_ = Lightable.ShadingStyle.Smooth;
+    }
 
     var that = this;
 
@@ -281,8 +290,10 @@ Lightable.prototype.setEmissive = function(emissive) {
   * @return {Lightable}
   */
 Lightable.prototype.setShading = function(shading) {
-  log_.assert_(shading, 'shading must be valid.',
-      '(Lightable::setShading)');
+  log_.assert_(shading === 'smooth' ||
+      shading === 'flat' ||
+      shading === 'none',
+      'shading must be valid', shading, '(Lightable::setShading');
 
   if (shading !== this.shading_) {
     this.shading_ = shading;

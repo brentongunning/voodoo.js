@@ -66,3 +66,58 @@ LightableTests.prototype.testLightableEvents = function() {
   assertEquals(2, changeAmbient);
   assertEquals(2, changeShading);
 };
+
+
+/**
+ * Tests that there are errors when providing invalid properties.
+ */
+LightableTests.prototype.testInvalidProperties = function() {
+  if (!DEBUG)
+    return;
+
+  var Lightable = voodoo.Lightable.extend(DummyModel);
+  var instance = new Lightable();
+
+  assertException(function() {
+    new voodoo.Lightable({
+      ambient: 'abcde'
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Lightable({
+      emissive: []
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Lightable({
+      shading: 'red'
+    });
+  });
+
+  assertException(function() {
+    instance.ambient = {};
+  });
+
+  assertException(function() {
+    instance.emissive = null;
+  });
+
+  assertException(function() {
+    instance.shading = 2;
+  });
+
+  assertException(function() {
+    instance.setAmbient(['red']);
+  });
+
+  assertException(function() {
+    instance.setEmissive({'blue': 2});
+  });
+
+  assertException(function() {
+    instance.setShading(null);
+  });
+};
+
