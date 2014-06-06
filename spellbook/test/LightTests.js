@@ -66,3 +66,30 @@ LightTests.prototype.testMouseLight = function() {
 
   assertEquals('black', mouseLight.color);
 };
+
+
+/**
+ * Tests that there are errors when providing invalid properties.
+ */
+LightTests.prototype.testInvalidProperties = function() {
+  if (!DEBUG)
+    return;
+
+  assertException(function() {
+    new voodoo.AmbientLight({
+      color: []
+    });
+  });
+
+  assertException(function() {
+    new voodoo.CameraLight({
+      color: 2
+    });
+  });
+
+  assertException(function() {
+    new voodoo.MouseLight({
+      color: {}
+    });
+  });
+};
