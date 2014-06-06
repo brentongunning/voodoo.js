@@ -183,8 +183,7 @@ var Mesh = this.Mesh = voodoo.Model.extend({
       get: function() { return that.playing_; },
       set: function(playing) {
         if (playing)
-          log_.error_('Cannot set playing to true. Call play().',
-              '(Mesh::playing)');
+          that.play();
         else
           that.stop();
       },
@@ -265,17 +264,32 @@ Mesh.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
 /**
  * Plays or resumes an animation.
  *
- * @param {string} name Name of the animation.
+ * @param {string=} opt_name Name of the animation. If this unspecified,
+ *   then play() will animate the last animation played.
  *
  * @return {Mesh}
  */
-Mesh.prototype.play = function(name) {
-  log_.assert_(name, 'name must be valid.', '(Mesh::setAnimation)');
-  log_.assert_(name in this.animations_, 'Animation does not exist.', name,
-      '(Mesh::setAnimation)');
+Mesh.prototype.play = function(opt_name) {
+  if (typeof opt_name === 'undefined') {
+    log_.assert_(this.animation_ in this.animations_,
+        'There is no last animation to play.', '(Mesh::play)');
 
-  var animation = this.animations_[name];
-  this.animation_ = name;
+    this.playing_ = true;
+
+    return this;
+  }
+
+  log_.assert_(opt_name, 'name must be valid.', '(Mesh::setAnimation)');
+  log_.assert_(opt_name in this.animations_, 'Animation does not exist.',
+      opt_name, '(Mesh::setAnimation)');
+
+  if (this.animation_ === opt_name) {
+    this.playing_ = true;
+    return this;
+  }
+
+  var animation = this.animations_[opt_name];
+  this.animation_ = opt_name;
 
   this.view.playAnimation_(animation);
   if (this.stencilView)
@@ -300,7 +314,6 @@ Mesh.prototype.play = function(name) {
 Mesh.prototype.stop = function() {
   this.dispatch(new voodoo.Event('stop', this));
   this.playing_ = false;
-  this.animation_ = '';
 
   return this;
 };

@@ -68,7 +68,7 @@ MeshTests.prototype.testMeshLoopAnimations = function() {
 
   instance.stop();
   assert('Stopped', !instance.playing);
-  assertEquals('', instance.animation);
+  assertEquals('walk', instance.animation);
 };
 
 
@@ -107,7 +107,7 @@ MeshTests.prototype.testMeshNonLoopAnimations = function(queue) {
       voodooEngine.frame();
 
     assert('Finished', !instance.playing);
-    assertEquals('', instance.animation);
+    assertEquals('walk', instance.animation);
   });
 };
 
