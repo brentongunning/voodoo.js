@@ -282,3 +282,78 @@ MovableTests.prototype.testPauseMove = function() {
 
   assertFalse('Moving:', instance.moving);
 };
+
+
+/**
+ * Tests that there are errors when providing invalid properties.
+ */
+MovableTests.prototype.testInvalidProperties = function() {
+  /*:DOC +=
+    <div style="position:absolute; left:400px; top:400px;
+        width:400px; height:300px;" id="anchor"></div>
+  */
+
+  if (!DEBUG)
+    return;
+
+  var Movable = voodoo.Movable.extend(DummyModel);
+
+  assertException(function() {
+    new Movable({
+      element: 'abcde'
+    });
+  });
+
+  assertException(function() {
+    new Movable({
+      element: {}
+    });
+  });
+
+  assertException(function() {
+    new Movable({
+      center: 2
+    });
+  });
+
+  assertException(function() {
+    new Movable({
+      pixelScale: 'false'
+    });
+  });
+
+  var instance = new Movable({
+    element: document.getElementById('anchor'),
+    center: false,
+    pixelScale: true
+  });
+
+  assertException(function() {
+    instance.attach(null);
+  });
+
+  assertException(function() {
+    instance.moveTo([0], 1);
+  });
+
+  assertException(function() {
+    instance.moveTo([0, 2, 3], []);
+  });
+
+  assertException(function() {
+    instance.setMoving('true');
+  });
+
+  assertException(function() {
+    instance.setPosition({});
+  });
+
+  assertException(function() {
+    instance.moving = null;
+  });
+
+  assertException(function() {
+    instance.position = { x: 1, z: 2 };
+  });
+};
+

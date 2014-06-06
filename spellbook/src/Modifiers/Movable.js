@@ -69,7 +69,7 @@ var MovableView_ = voodoo.View.extend({
  *
  * Options:
  *
- * - element {HTMLElement} Element to attach to.
+ * - element {HTMLElement=} Optional element to attach to.
  * - center {boolean} Whether to center the mesh on the attached element.
  * - pixelScale {boolean} Whether the scale of the attached mesh is in pixels.
  * - position {Object} Initial position. This can be an array of length 3, or
@@ -102,11 +102,32 @@ var Movable = this.Movable = voodoo.Model.extend({
     else
       this.position_ = { x: 0, y: 0, z: 0 };
 
+    if (options.element) {
+      log_.assert_(options.element instanceof HTMLElement,
+          'element must be an HTMLElement.', '(Movable::initialize)');
+    }
+
     this.element_ = options.element;
-    this.center_ = typeof options.center !== 'undefined' ?
-        options.center : true;
-    this.pixelScale_ = typeof options.pixelScale !== 'undefined' ?
-        options.pixelScale : true;
+
+    if (typeof options.center !== 'undefined') {
+      log_.assert_(typeof options.center === 'boolean',
+          'center must be a boolean.', options.center,
+          '(Movable::initialize)');
+
+      this.center_ = options.center;
+    } else {
+      this.center_ = true;
+    }
+
+    if (typeof options.pixelScale !== 'undefined') {
+      log_.assert_(typeof options.pixelScale === 'boolean',
+          'pixelScale must be a boolean.', options.pixelScale,
+          '(Movable::initialize)');
+
+      this.pixelScale_ = options.pixelScale;
+    } else {
+      this.pixelScale_ = true;
+    }
 
     this.startPosition_ = {
       x: this.position_.x,
@@ -233,14 +254,18 @@ var Movable = this.Movable = voodoo.Model.extend({
   * Attaches scene meshes to an HTML element.
   *
   * @param {HTMLElement} element Element to attach to.
-  * @param {boolean} center Whether to center the meshes within the element.
-  * @param {boolean} pixelScale Whether to scale meshes in pixels, or units.
+  * @param {boolean=} center Whether to center the meshes within the element.
+  *   Default is true.
+  * @param {boolean=} pixelScale Whether to scale meshes in pixels, or units.
+  *   Default is true.
   *
   * @return {Movable}
   */
 Movable.prototype.attach = function(element, center, pixelScale) {
   log_.assert_(element, 'element must be valid.',
       '(Movable::attach)');
+  log_.assert_(element instanceof HTMLElement,
+      'element must be an HTMLElement.', '(Movable::attach)');
 
   this.view.attachScene_(element, center, pixelScale);
   if (this.stencilView)
@@ -336,6 +361,9 @@ Movable.prototype.moveTo = function(position, seconds, opt_easing) {
  * @return {Movable}
  */
 Movable.prototype.setMoving = function(moving) {
+  log_.assert_(typeof moving === 'boolean', 'moving must be a boolean.',
+      moving, '(Movable::setMoving)');
+
   if (!moving && this.moving_) {
 
     this.moving_ = false;
