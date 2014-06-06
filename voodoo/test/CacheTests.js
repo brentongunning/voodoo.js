@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-CacheTests = TestCase('CacheTests');
+var CacheTests = TestCase('CacheTests');
 
 
 /**

@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-ExtendableTests = TestCase('ExtendableTests');
+var ExtendableTests = TestCase('ExtendableTests');
 
 
 /**

@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-UtilityTests = TestCase('UtilityTests');
+var UtilityTests = TestCase('UtilityTests');
 
 
 /**

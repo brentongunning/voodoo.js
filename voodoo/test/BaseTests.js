@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-BaseTests = TestCase('BaseTests');
+var BaseTests = TestCase('BaseTests');
 
 
 /**

@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-ThreeJsTests = TestCase('ThreeJsTests');
+var ThreeJsTests = TestCase('ThreeJsTests');
 
 
 /**

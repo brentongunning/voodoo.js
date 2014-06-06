@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-LayerTests = TestCase('LayerTests');
+var LayerTests = TestCase('LayerTests');
 
 
 /**
