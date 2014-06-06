@@ -318,3 +318,51 @@ RotatableTests.prototype.testPauseRotation = function() {
 
   assertFalse('Rotating:', instance.rotating);
 };
+
+
+/**
+ * Tests that there are errors when providing invalid properties.
+ */
+RotatableTests.prototype.testInvalidProperties = function() {
+  if (!DEBUG)
+    return;
+
+  var Rotatable = voodoo.Rotatable.extend(DummyModel);
+  var instance = new Rotatable({
+    rotation: [0, 0, 0]
+  });
+
+  assertException(function() {
+    new Rotatable({
+      rotation: 'abcde'
+    });
+  });
+
+  assertException(function() {
+    instance.rotateTo({});
+  });
+
+  assertException(function() {
+    instance.rotate(['myRotation']);
+  });
+
+  assertException(function() {
+    instance.rotateContinuous([0, 1, 2, 3, 5]);
+  });
+
+  assertException(function() {
+    instance.setRotating(1);
+  });
+
+  assertException(function() {
+    instance.setRotation(2);
+  });
+
+  assertException(function() {
+    instance.rotating = 'true';
+  });
+
+  assertException(function() {
+    instance.rotation = {x: '0', y: '1', z: '2'};
+  });
+};

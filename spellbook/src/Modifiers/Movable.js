@@ -254,22 +254,22 @@ var Movable = this.Movable = voodoo.Model.extend({
   * Attaches scene meshes to an HTML element.
   *
   * @param {HTMLElement} element Element to attach to.
-  * @param {boolean=} center Whether to center the meshes within the element.
-  *   Default is true.
-  * @param {boolean=} pixelScale Whether to scale meshes in pixels, or units.
-  *   Default is true.
+  * @param {boolean=} opt_center Whether to center the meshes within
+  *   the element. Default is true.
+  * @param {boolean=} opt_pixelScale Whether to scale meshes in pixels,
+  *   or units. Default is true.
   *
   * @return {Movable}
   */
-Movable.prototype.attach = function(element, center, pixelScale) {
+Movable.prototype.attach = function(element, opt_center, opt_pixelScale) {
   log_.assert_(element, 'element must be valid.',
       '(Movable::attach)');
   log_.assert_(element instanceof HTMLElement,
       'element must be an HTMLElement.', '(Movable::attach)');
 
-  this.view.attachScene_(element, center, pixelScale);
+  this.view.attachScene_(element, opt_center, opt_pixelScale);
   if (this.stencilView)
-    this.stencilView.attachScene_(element, center, pixelScale);
+    this.stencilView.attachScene_(element, opt_center, opt_pixelScale);
 
   this.dispatch(new voodoo.Event('attach', this));
 

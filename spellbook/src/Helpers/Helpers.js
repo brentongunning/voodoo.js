@@ -48,6 +48,16 @@ function parseVector3_(vector) {
     log_.assert_('z' in vector, 'vector must contain z property.', vector,
         '(parseVector3_)');
 
+    log_.assert_(typeof vector.x === 'number',
+        'Property x must be a number.', vector,
+        '(parseVector3_)');
+    log_.assert_(typeof vector.y === 'number',
+        'Property y must be a number.', vector,
+        '(parseVector3_)');
+    log_.assert_(typeof vector.z === 'number',
+        'Property z must be a number.', vector,
+        '(parseVector3_)');
+
     return vector;
 
   } else {
@@ -57,6 +67,16 @@ function parseVector3_(vector) {
     log_.assert_(Array.isArray(vector), 'vector must be an array.', vector,
         '(parseVector3_)');
     log_.assert_(vector.length === 3, 'vector must be of length 3.', vector,
+        '(parseVector3_)');
+
+    log_.assert_(typeof vector[0] === 'number',
+        'Property 0 must be a number.', vector,
+        '(parseVector3_)');
+    log_.assert_(typeof vector[1] === 'number',
+        'Property 1 must be a number.', vector,
+        '(parseVector3_)');
+    log_.assert_(typeof vector[2] === 'number',
+        'Property 2 must be a number.', vector,
         '(parseVector3_)');
 
     return { x: vector[0], y: vector[1], z: vector[2] };

@@ -390,6 +390,9 @@ Rotatable.prototype.rotateContinuous = function(rotation) {
  * @return {Rotatable}
  */
 Rotatable.prototype.setRotating = function(rotating) {
+  log_.assert_(typeof rotating === 'boolean', 'rotating must be a boolean.',
+      rotating, '(Rotatable::setRotating)');
+
   if (!rotating && this.rotating_) {
 
     this.rotating_ = false;
@@ -539,7 +542,21 @@ Rotatable.prototype.parseRotation_ = function(rotation) {
     log_.assert_('z' in rotation, 'Property z is undefined.', rotation,
         '(Rotatable::parseRotation_)');
 
+    log_.assert_(typeof rotation.x === 'number',
+        'Property x must be a number.', rotation,
+        '(Rotatable::parseRotation_)');
+    log_.assert_(typeof rotation.y === 'number',
+        'Property y must be a number.', rotation,
+        '(Rotatable::parseRotation_)');
+    log_.assert_(typeof rotation.z === 'number',
+        'Property z must be a number.', rotation,
+        '(Rotatable::parseRotation_)');
+
     if ('angle' in rotation) {
+
+      log_.assert_(typeof rotation.angle === 'number',
+          'Property angle must be a number.', rotation,
+          '(Rotatable::parseRotation_)');
 
       // Case rotate({x: 0, y: 0, z: 0, angle: 0})
       var axis = new THREE.Vector3(rotation[0], rotation[1], rotation[2]);
@@ -547,6 +564,10 @@ Rotatable.prototype.parseRotation_ = function(rotation) {
       quaternion.setFromAxisAngle(axis, rotation.angle);
 
     } else if ('w' in rotation) {
+
+      log_.assert_(typeof rotation.w === 'number',
+          'Property w must be a number.', rotation,
+          '(Rotatable::parseRotation_)');
 
       // Case: Quaternion
       quaternion = new THREE.Quaternion(
