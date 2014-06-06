@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-EventTests = TestCase('EventTests');
+var EventTests = TestCase('EventTests');
 
 
 /**

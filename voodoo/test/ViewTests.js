@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-ViewTests = TestCase('ViewTests');
+var ViewTests = TestCase('ViewTests');
 
 
 /**
