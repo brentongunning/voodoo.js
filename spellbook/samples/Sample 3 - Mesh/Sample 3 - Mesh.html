@@ -38,7 +38,8 @@
 		performanceScaling: false
 	});
 
-	var Mesh = voodoo.Mesh.extend(voodoo.Scalable);
+	var Mesh = voodoo.Mesh.extend(voodoo.Attachable);
+	Mesh = voodoo.Mesh.extend(voodoo.Scalable);
 	Mesh = Mesh.extend(voodoo.Colorable);
 	Mesh = Mesh.extend(voodoo.Wireframe);
 

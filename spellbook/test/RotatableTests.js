@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-RotatableTests = AsyncTestCase('RotatableTests');
+var RotatableTests = AsyncTestCase('RotatableTests');
 
 
 /**

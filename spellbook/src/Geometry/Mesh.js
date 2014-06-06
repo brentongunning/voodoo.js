@@ -55,11 +55,6 @@ var MeshView_ = voodoo.View.extend({
       that.scene.add(mesh);
       that.triggers.add(mesh);
 
-      that.scene.attach(
-          that.model.element_,
-          that.model.center_,
-          that.model.pixelScale_);
-
       that.loaded = true;
     });
   },
@@ -127,11 +122,11 @@ var MeshView_ = voodoo.View.extend({
  * - stop
  *
  * @constructor
- * @extends {Movable}
+ * @extends {voodoo.Model}
  *
  * @param {Object=} opt_options Options object.
  */
-var Mesh = this.Mesh = Movable.extend({
+var Mesh = this.Mesh = voodoo.Model.extend({
 
   name: 'Mesh',
   organization: 'spellbook',

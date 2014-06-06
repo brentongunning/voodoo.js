@@ -50,14 +50,6 @@ var MovableView_ = voodoo.View.extend({
     }
 
     this.dirty();
-  },
-
-  attachScene_: function(element, center, pixels) {
-    this.scene.attach(element, center, pixels);
-  },
-
-  detachScene_: function() {
-    this.scene.detach();
   }
 
 });
@@ -69,16 +61,11 @@ var MovableView_ = voodoo.View.extend({
  *
  * Options:
  *
- * - element {HTMLElement=} Optional element to attach to.
- * - center {boolean} Whether to center the mesh on the attached element.
- * - pixelScale {boolean} Whether the scale of the attached mesh is in pixels.
  * - position {Object} Initial position. This can be an array of length 3, or
  *     an object with x, y, and z properties.
  *
  * Events:
  *
- * - attach
- * - detach
  * - moveBegin
  * - moveEnd
  * - move
@@ -101,33 +88,6 @@ var Movable = this.Movable = voodoo.Model.extend({
       this.position_ = parseVector3_(options.position);
     else
       this.position_ = { x: 0, y: 0, z: 0 };
-
-    if (options.element) {
-      log_.assert_(options.element instanceof HTMLElement,
-          'element must be an HTMLElement.', '(Movable::initialize)');
-    }
-
-    this.element_ = options.element;
-
-    if (typeof options.center !== 'undefined') {
-      log_.assert_(typeof options.center === 'boolean',
-          'center must be a boolean.', options.center,
-          '(Movable::initialize)');
-
-      this.center_ = options.center;
-    } else {
-      this.center_ = true;
-    }
-
-    if (typeof options.pixelScale !== 'undefined') {
-      log_.assert_(typeof options.pixelScale === 'boolean',
-          'pixelScale must be a boolean.', options.pixelScale,
-          '(Movable::initialize)');
-
-      this.pixelScale_ = options.pixelScale;
-    } else {
-      this.pixelScale_ = true;
-    }
 
     this.startPosition_ = {
       x: this.position_.x,
@@ -192,13 +152,6 @@ var Movable = this.Movable = voodoo.Model.extend({
     });
   },
 
-  setUpViews: function() {
-    this.base.setUpViews();
-
-    if (this.element_)
-      this.attach(this.element_, this.center_, this.pixelScale_);
-  },
-
   update: function(deltaTime) {
     this.base.update(deltaTime);
 
@@ -248,49 +201,6 @@ var Movable = this.Movable = voodoo.Model.extend({
   }
 
 });
-
-
-/**
-  * Attaches scene meshes to an HTML element.
-  *
-  * @param {HTMLElement} element Element to attach to.
-  * @param {boolean=} opt_center Whether to center the meshes within
-  *   the element. Default is true.
-  * @param {boolean=} opt_pixelScale Whether to scale meshes in pixels,
-  *   or units. Default is true.
-  *
-  * @return {Movable}
-  */
-Movable.prototype.attach = function(element, opt_center, opt_pixelScale) {
-  log_.assert_(element, 'element must be valid.',
-      '(Movable::attach)');
-  log_.assert_(element instanceof HTMLElement,
-      'element must be an HTMLElement.', '(Movable::attach)');
-
-  this.view.attachScene_(element, opt_center, opt_pixelScale);
-  if (this.stencilView)
-    this.stencilView.attachScene_(element, opt_center, opt_pixelScale);
-
-  this.dispatch(new voodoo.Event('attach', this));
-
-  return this;
-};
-
-
-/**
-  * Detaches scene meshes from the attached HTML element.
-  *
-  * @return {Movable}
-  */
-Movable.prototype.detach = function() {
-  this.dispatch(new voodoo.Event('detach', this));
-
-  this.view.detachScene_();
-  if (this.stencilView)
-    this.stencilView.detachScene_();
-
-  return this;
-};
 
 
 /**

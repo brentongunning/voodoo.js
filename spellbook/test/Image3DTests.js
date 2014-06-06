@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-Image3DTests = AsyncTestCase('Image3DTests');
+var Image3DTests = AsyncTestCase('Image3DTests');
 
 
 /**

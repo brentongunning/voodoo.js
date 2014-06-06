@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-WireframeTests = TestCase('WireframeTests');
+var WireframeTests = TestCase('WireframeTests');
 
 
 /**

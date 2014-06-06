@@ -54,10 +54,14 @@ var Light_ = voodoo.Model.extend({
   stencilViewType: NullView,
 
   initialize: function(options) {
-    if (options.color)
+    if (typeof options.color !== 'undefined') {
+      log_.assert_(typeof options.color === 'string',
+          'color must be a string.', options.color, '(Light_::initialize)');
+
       this.color_ = options.color;
-    else
+    } else {
       this.color_ = null;
+    }
 
     // Create the color property
     var that = this;
@@ -83,6 +87,9 @@ var Light_ = voodoo.Model.extend({
  * @return {Light_}
  */
 Light_.prototype.setColor = function(color) {
+  log_.assert_(typeof color === 'string', 'color must be a string.',
+      color, '(Light_::setColor)');
+
   if (this.color_ != color) {
     this.color_ = color;
 

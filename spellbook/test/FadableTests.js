@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-FadableTests = TestCase('FadableTests');
+var FadableTests = TestCase('FadableTests');
 
 
 /**

@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-ArcballTests = TestCase('ArcballTests');
+var ArcballTests = TestCase('ArcballTests');
 
 
 /**

@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-ScalableTests = TestCase('ScalableTests');
+var ScalableTests = TestCase('ScalableTests');
 
 
 /**

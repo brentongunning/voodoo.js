@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-MovableTests = TestCase('MovableTests');
+var MovableTests = TestCase('MovableTests');
 
 
 /**
@@ -169,36 +169,6 @@ MovableTests.prototype.testMovableMoveEvents = function() {
 
 
 /**
- * Tests that the attach and detach events work.
- */
-MovableTests.prototype.testMovableAttachEvents = function() {
-  /*:DOC +=
-    <div style="position:absolute; left:400px; top:400px;
-        width:400px; height:300px;" id="anchor"></div>
-  */
-
-  var Movable = voodoo.Movable.extend(DummyModel);
-  var instance = new Movable({
-    element: document.getElementById('anchor'),
-    center: false,
-    pixelScale: true
-  });
-
-  var detach = false;
-  var attach = false;
-
-  instance.on('detach', function() { detach = true; });
-  instance.on('attach', function() { attach = true; });
-
-  instance.detach();
-  instance.attach(document.getElementById('anchor'));
-
-  assert('Detach', detach);
-  assert('Attach', attach);
-};
-
-
-/**
  * Tests that moves may be paused.
  */
 MovableTests.prototype.testPauseMove = function() {
@@ -276,11 +246,6 @@ MovableTests.prototype.testPauseMove = function() {
  * Tests that there are errors when providing invalid properties.
  */
 MovableTests.prototype.testInvalidProperties = function() {
-  /*:DOC +=
-    <div style="position:absolute; left:400px; top:400px;
-        width:400px; height:300px;" id="anchor"></div>
-  */
-
   if (!DEBUG)
     return;
 
@@ -288,37 +253,11 @@ MovableTests.prototype.testInvalidProperties = function() {
 
   assertException(function() {
     new Movable({
-      element: 'abcde'
+      position: 'abcde'
     });
   });
 
-  assertException(function() {
-    new Movable({
-      element: {}
-    });
-  });
-
-  assertException(function() {
-    new Movable({
-      center: 2
-    });
-  });
-
-  assertException(function() {
-    new Movable({
-      pixelScale: 'false'
-    });
-  });
-
-  var instance = new Movable({
-    element: document.getElementById('anchor'),
-    center: false,
-    pixelScale: true
-  });
-
-  assertException(function() {
-    instance.attach(null);
-  });
+  var instance = new Movable();
 
   assertException(function() {
     instance.moveTo([0], 1);

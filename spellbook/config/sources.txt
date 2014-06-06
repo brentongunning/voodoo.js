@@ -5,6 +5,7 @@ Helpers\Easing.js
 Helpers\Helpers.js
 Helpers\NullView.js
 
+Modifiers\Attachable.js
 Modifiers\Colorable.js
 Modifiers\Fadable.js
 Modifiers\Hidable.js

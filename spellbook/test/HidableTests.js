@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-HidableTests = TestCase('HidableTests');
+var HidableTests = TestCase('HidableTests');
 
 
 /**

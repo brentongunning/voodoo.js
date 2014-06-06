@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-MeshTests = AsyncTestCase('MeshTests');
+var MeshTests = AsyncTestCase('MeshTests');
 
 
 /**
@@ -39,12 +39,9 @@ MeshTests.prototype.testMeshLoad = function(queue) {
 
   queue.call(function(callbacks) {
     new voodoo.Mesh({
-      element: document.getElementById('anchor'),
       format: voodoo.Mesh.Format.JSON,
       mesh: '/test/test/assets/monster.json',
-      animated: false,
-      center: false,
-      pixelScale: false
+      animated: false
     }).on('load', callbacks.add(function() {
       loaded = true;
     }));
@@ -60,18 +57,10 @@ MeshTests.prototype.testMeshLoad = function(queue) {
  * Tests that the Mesh can play a looping animation.
  */
 MeshTests.prototype.testMeshLoopAnimations = function() {
-  /*:DOC +=
-    <div style="position:absolute; left:400px; top:400px;
-        width:400px; height:300px;" id="anchor"></div>
-  */
-
   var instance = new voodoo.Mesh({
-    element: document.getElementById('anchor'),
     format: voodoo.Mesh.Format.JSON,
     mesh: '/test/test/assets/monster.json',
-    animated: true,
-    center: false,
-    pixelScale: false
+    animated: true
   }).setAnimation('walk', 0, 23, 0.01, true).play('walk');
 
   assert('Playing', instance.playing);
@@ -89,21 +78,13 @@ MeshTests.prototype.testMeshLoopAnimations = function() {
  * @param {Object} queue Async queue.
  */
 MeshTests.prototype.testMeshNonLoopAnimations = function(queue) {
-  /*:DOC +=
-    <div style="position:absolute; left:400px; top:400px;
-        width:400px; height:300px;" id="anchor"></div>
-  */
-
   var instance;
 
   queue.call(function(callbacks) {
     instance = new voodoo.Mesh({
-      element: document.getElementById('anchor'),
       format: voodoo.Mesh.Format.JSON,
       mesh: '/test/test/assets/monster.json',
-      animated: true,
-      center: false,
-      pixelScale: false
+      animated: true
     }).on('load', callbacks.add(function() {}));
   });
 
@@ -137,18 +118,10 @@ MeshTests.prototype.testMeshNonLoopAnimations = function(queue) {
  * @param {Object} queue Async queue.
  */
 MeshTests.prototype.testMeshEvents = function(queue) {
-  /*:DOC +=
-    <div style="position:absolute; left:400px; top:400px;
-        width:400px; height:300px;" id="anchor"></div>
-  */
-
   var instance = new voodoo.Mesh({
-    element: document.getElementById('anchor'),
     format: voodoo.Mesh.Format.JSON,
     mesh: '/test/test/assets/monster.json',
-    animated: true,
-    center: false,
-    pixelScale: false
+    animated: true
   });
 
   var play = false;
@@ -170,26 +143,17 @@ MeshTests.prototype.testMeshEvents = function(queue) {
  * @param {Object} queue Async queue.
  */
 MeshTests.prototype.testInvalidProperties = function(queue) {
-  /*:DOC +=
-    <div style="position:absolute; left:400px; top:400px;
-        width:400px; height:300px;" id="anchor"></div>
-  */
-
   if (!DEBUG)
     return;
 
   var instance = new voodoo.Mesh({
-    element: document.getElementById('anchor'),
     format: voodoo.Mesh.Format.JSON,
     mesh: '/test/test/assets/monster.json',
-    animated: true,
-    center: false,
-    pixelScale: false
+    animated: true
   });
 
   assertException(function() {
     new voodoo.Mesh({
-      element: document.getElementById('anchor'),
       mesh: '/test/test/assets/monster.json',
       format: 'md5'
     });
@@ -197,7 +161,6 @@ MeshTests.prototype.testInvalidProperties = function(queue) {
 
   assertException(function() {
     new voodoo.Mesh({
-      element: document.getElementById('anchor'),
       mesh: 34567,
       format: 'json'
     });
@@ -205,7 +168,6 @@ MeshTests.prototype.testInvalidProperties = function(queue) {
 
   assertException(function() {
     new voodoo.Mesh({
-      element: document.getElementById('anchor'),
       mesh: '/test/test/assets/monster.json',
       animated: 'false'
     });

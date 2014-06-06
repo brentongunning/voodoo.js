@@ -255,7 +255,7 @@ Scalable.prototype.scaleTo = function(scale, seconds, opt_easing) {
   */
 Scalable.prototype.setScale = function(scale) {
   log_.assert_(scale, 'scale must be valid.',
-      '(Movable::setScale)');
+      '(Scalable::setScale)');
 
   this.scale_ = this.parseScale_(scale);
 
