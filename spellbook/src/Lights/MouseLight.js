@@ -56,6 +56,10 @@ var MouseLightView_ = LightView_.extend({
  * - height {number} Height of the point light. A value <= 0 means to use the
  *     camera height.
  *
+ * Events:
+ *
+ * - changeColor
+ *
  * @constructor
  * @extends {Light_}
  *

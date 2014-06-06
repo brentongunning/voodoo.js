@@ -39,6 +39,10 @@ var LightView_ = voodoo.View.extend({
  *
  * This should NOT be instantiated directly.
  *
+ * Events:
+ *
+ * - changeColor
+ *
  * @constructor
  * @private
  * @extends {voodoo.Model}
@@ -79,9 +83,14 @@ var Light_ = voodoo.Model.extend({
  * @return {Light_}
  */
 Light_.prototype.setColor = function(color) {
-  var threeJsColor = voodoo.utility.convertCssColorToThreeJsColor(color);
-  this.view.setColor_(threeJsColor);
-  this.color_ = color;
+  if (this.color_ != color) {
+    this.color_ = color;
+
+    var threeJsColor = voodoo.utility.convertCssColorToThreeJsColor(color);
+    this.view.setColor_(threeJsColor);
+
+    this.dispatch(new voodoo.Event('changeColor', this));
+  }
 
   return this;
 };

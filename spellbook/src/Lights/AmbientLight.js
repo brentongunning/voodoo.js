@@ -31,6 +31,10 @@ var AmbientLightView_ = LightView_.extend({
  *
  * - color {string} CSS color string.
  *
+ * Events:
+ *
+ * - changeColor
+ *
  * @constructor
  * @extends {Light_}
  *

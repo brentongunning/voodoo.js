@@ -70,6 +70,35 @@ ArcballTests.prototype.testArcball = function() {
 
 
 /**
+ * Tests that the changeArcballRadius and changeArcballCenter events work.
+ */
+ArcballTests.prototype.testArcballEvents = function() {
+  /*:DOC +=
+    <div style="position:absolute; left:400px; top:400px;
+        width:400px; height:300px;" id="anchor"></div>
+  */
+
+  var Model = voodoo.Arcball.extend(AttachedModel);
+  var instance = new Model();
+
+  var changeArcballCenter = 0;
+  var changeArcballRadius = 0;
+
+  instance.on('changeArcballCenter', function() { changeArcballCenter++; });
+  instance.on('changeArcballRadius', function() { changeArcballRadius++; });
+
+  instance.arcballCenter = [0, 1, 2];
+  instance.setArcballCenter(null);
+
+  instance.arcballRadius = 2;
+  instance.setArcballRadius(0);
+
+  assertEquals(2, changeArcballCenter);
+  assertEquals(2, changeArcballRadius);
+};
+
+
+/**
  * Tests that there are errors when providing invalid properties.
  */
 ArcballTests.prototype.testInvalidProperties = function() {

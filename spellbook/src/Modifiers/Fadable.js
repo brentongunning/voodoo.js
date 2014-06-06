@@ -88,7 +88,7 @@ var FadableStencilView_ = voodoo.View.extend({
  *
  * - fadeBegin
  * - fadeEnd
- * - alphaChange
+ * - changeAlpha
  *
  * @constructor
  * @extends {voodoo.Model}
@@ -162,7 +162,7 @@ var Fadable = this.Fadable = voodoo.Model.extend({
         this.alpha_ = this.targetAlpha_;
       }
 
-      this.dispatch(new voodoo.Event('alphaChange', this));
+      this.dispatch(new voodoo.Event('changeAlpha', this));
 
       if (t >= 1.0) {
         this.fading_ = false;
@@ -269,7 +269,7 @@ Fadable.prototype.setAlpha = function(alpha) {
   this.fadeDuration_ = 0;
   this.fadeElapsed_ = 0;
 
-  this.dispatch(new voodoo.Event('alphaChange', this));
+  this.dispatch(new voodoo.Event('changeAlpha', this));
 
   this.view.setAlpha_(alpha);
   if (this.stencilView)

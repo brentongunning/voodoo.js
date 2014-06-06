@@ -50,7 +50,7 @@ FadableTests.prototype.testFadableEvents = function() {
   var fadeInEnd = false;
   var fadeOutBegin = false;
   var fadeOutEnd = false;
-  var alphaChange = false;
+  var changeAlpha = false;
 
   instance.on('fadeBegin', function() {
     var instanceAlpha = instance.alpha;
@@ -70,8 +70,8 @@ FadableTests.prototype.testFadableEvents = function() {
     }
   });
 
-  instance.on('alphaChange', function() {
-    alphaChange = true;
+  instance.on('changeAlpha', function() {
+    changeAlpha = true;
   });
 
   instance.fadeIn(0.0001);
@@ -87,7 +87,7 @@ FadableTests.prototype.testFadableEvents = function() {
   assert('Fade Out Begin', fadeOutBegin);
   assert('Fade In End', fadeInEnd);
   assert('Fade Out End', fadeOutEnd);
-  assert('Alpha change', alphaChange);
+  assert('Change alpha', changeAlpha);
 };
 
 

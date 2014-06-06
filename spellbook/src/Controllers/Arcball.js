@@ -129,9 +129,14 @@ var ArcballView_ = voodoo.View.extend({
  *     this will be calculated from the aggegate bounding sphere of meshes.
  *     Default is 0.
  *
+ * Events
+ *
+ * - rotate
+ * - changeArcballCenter
+ * - changeArcballRadius
  *
  * @constructor
- * @extends {voodoo.Model}
+ * @extends {Rotatable}
  *
  * @param {Object=} opt_options Options object.
  */
@@ -260,10 +265,14 @@ var Arcball = this.Arcball = Rotatable.extend({
  * @return {Arcball} This.
  */
 Arcball.prototype.setArcballCenter = function(arcballCenter) {
-  if (arcballCenter !== null)
-    this.arcballCenter_ = parseVector3_(arcballCenter);
-  else
-    this.arcballCenter_ = null;
+  if (arcballCenter !== this.arcballCenter_) {
+    if (arcballCenter !== null)
+      this.arcballCenter_ = parseVector3_(arcballCenter);
+    else
+      this.arcballCenter_ = null;
+
+    this.dispatch(new voodoo.Event('changeArcballCenter', this));
+  }
 
   return this;
 };
@@ -284,10 +293,54 @@ Arcball.prototype.setArcballRadius = function(arcballRadius) {
       'arcballRadius must be non-negative.', arcballRadius,
       '(Arcball::setArcballRadius)');
 
-  this.arcballRadius_ = arcballRadius;
+  if (arcballRadius !== this.arcballRadius_) {
+    this.arcballRadius_ = arcballRadius;
+
+    this.dispatch(new voodoo.Event('changeArcballRadius', this));
+  }
 
   return this;
 };
+
+
+/**
+  * Hide the Rotatable method in the documentaton.
+  *
+  * @ignore
+  */
+Arcball.prototype.rotateTo = Rotatable.prototype.rotateTo;
+
+
+/**
+  * Hide the Rotatable method in the documentaton.
+  *
+  * @ignore
+  */
+Arcball.prototype.rotate = Rotatable.prototype.rotate;
+
+
+/**
+  * Hide the Rotatable method in the documentaton.
+  *
+  * @ignore
+  */
+Arcball.prototype.rotateContinuous = Rotatable.prototype.rotateContinuous;
+
+
+/**
+  * Hide the Rotatable method in the documentaton.
+  *
+  * @ignore
+  */
+Arcball.prototype.setRotating = Rotatable.prototype.setRotating;
+
+
+/**
+  * Hide the Rotatable method in the documentaton.
+  *
+  * @ignore
+  */
+Arcball.prototype.setRotation = Rotatable.prototype.setRotation;
 
 
 /**
@@ -306,3 +359,27 @@ Arcball.prototype.arcballCenter = null;
  * @type {number}
  */
 Arcball.prototype.arcballRadius = 0;
+
+
+/**
+  * Hide the Rotatable property in the documentaton.
+  *
+  * @ignore
+  */
+Arcball.prototype.continuousRotation = Rotatable.prototype.continuousRotation;
+
+
+/**
+  * Hide the Rotatable property in the documentaton.
+  *
+  * @ignore
+  */
+Arcball.prototype.rotating = Rotatable.prototype.rotating;
+
+
+/**
+  * Hide the Rotatable property in the documentaton.
+  *
+  * @ignore
+  */
+Arcball.prototype.targetRotation = Rotatable.prototype.targetRotation;
