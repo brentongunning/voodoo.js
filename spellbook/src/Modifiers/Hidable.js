@@ -67,13 +67,22 @@ var Hidable = this.Hidable = voodoo.Model.extend({
   initialize: function(options) {
     this.base.initialize(options);
 
-    this.visible_ = typeof options.visible !== 'undefined' ?
-        options.visible : true;
+    if (typeof options.visible !== 'undefined') {
+      log_.assert_(typeof options.visible === 'boolean',
+          'visible must be a boolean.', options.visible, '(Hidable::visible)');
+
+      this.visible_ = options.visible;
+    } else {
+      this.visible_ = true;
+    }
 
     var that = this;
     Object.defineProperty(this, 'visible', {
       get: function() { return this.visible_; },
       set: function(visible) {
+        log_.assert_(typeof visible === 'boolean',
+            'visible must be a boolean.', visible, '(Hidable::visible)');
+
         if (visible !== that.visible_) {
           that.visible_ = visible;
 

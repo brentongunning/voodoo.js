@@ -65,3 +65,35 @@ HidableTests.prototype.testHidableEvents = function() {
   assertEquals(2, show);
   assertEquals(2, hide);
 };
+
+
+/**
+ * Tests that there are errors when providing invalid properties.
+ */
+HidableTests.prototype.testInvalidProperties = function() {
+  if (!DEBUG)
+    return;
+
+  var Hidable = voodoo.Hidable.extend(DummyModel);
+  var instance = new Hidable();
+
+  assertException(function() {
+    new voodoo.Hidable({
+      visible: 'abcde'
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Hidable({
+      visible: 1
+    });
+  });
+
+  assertException(function() {
+    instance.visible = 'abcde';
+  });
+
+  assertException(function() {
+    instance.visible = 0;
+  });
+};
