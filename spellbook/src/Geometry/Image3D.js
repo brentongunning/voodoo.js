@@ -574,12 +574,31 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     log_.assert_(options.heightmap, 'heightmap must be valid.',
         '(Image3D::initalize)');
 
-    this.maxHeight_ = typeof options.maxHeight !== 'undefined' ?
-        options.maxHeight : 200;
+    if (typeof options.maxHeight !== 'undefined') {
+      log_.assert_(typeof options.maxHeight === 'number',
+          'maxHeight must be a number.', options.maxHeight,
+          '(Image3D::Image3D)');
+
+      log_.assert_(options.maxHeight >= 0, 'maxHeight must be >= 0.',
+          options.maxHeight, '(Image3D::Image3D)');
+
+      this.maxHeight_ = options.maxHeight;
+    } else {
+      this.maxHeight_ = 200;
+    }
+
     this.geometryStyle_ = options.geometryStyle ||
         Image3D.GeometryStyle.Smooth;
-    this.transparent_ = typeof options.transparent !== 'undefined' ?
-        options.transparent : true;
+
+    if (typeof options.transparent !== 'undefined') {
+      log_.assert_(typeof options.transparent === 'boolean',
+          'transparent must be a boolean.', options.transparent,
+          '(Image3D::Image3D)');
+
+      this.transparent_ = options.transparent;
+    } else {
+      this.transparent_ = true;
+    }
 
     this.morphing_ = false;
     this.morphStartTime_ = 0;
@@ -782,6 +801,10 @@ var Image3D = this.Image3D = voodoo.Model.extend({
  * @return {Image3D}
  */
 Image3D.prototype.morph = function(index, seconds) {
+  log_.assert_(typeof index === 'number', 'index must be a number.',
+      index, '(Image3D::morph)');
+  log_.assert_(typeof seconds === 'number', 'seconds must be a number.',
+      seconds, '(Image3D::morph)');
   log_.assert_(index >= 0 && index < 4, 'index must be between 0 and 4.',
       index, '(Image3D::morph)');
 
@@ -825,7 +848,14 @@ Image3D.prototype.morph = function(index, seconds) {
  * @return {Image3D}
  */
 Image3D.prototype.setGeometryStyle = function(geometryStyle) {
-  log_.assert_(geometryStyle, 'geometryStyle must be valid.', geometryStyle,
+  log_.assert_(typeof geometryStyle === 'string',
+      'geometryStyle must be a string.', geometryStyle,
+      '(Image3D::setGeometryStyle)');
+
+  log_.assert_(geometryStyle === 'smooth' ||
+      geometryStyle === 'block' ||
+      geometryStyle === 'float',
+      'geometryStyle must be valid.', geometryStyle,
       '(Image3D::setGeometryStyle)');
 
   if (this.geometryStyle_ !== geometryStyle) {
@@ -930,8 +960,8 @@ Image3D.prototype.setImageSrc = function(imageSrc) {
  */
 Image3D.prototype.setMaxHeight = function(maxHeight) {
   log_.assert_(typeof maxHeight === 'number', 'maxHeight must be a number.',
-      '(Image3D::setMaxHeight)');
-  log_.assert_(maxHeight >= 0, 'maxHeight must be >= 0.',
+      maxHeight, '(Image3D::setMaxHeight)');
+  log_.assert_(maxHeight >= 0, 'maxHeight must be >= 0.', maxHeight,
       '(Image3D::setMaxHeight)');
 
   if (this.maxHeight_ !== maxHeight) {
@@ -957,6 +987,10 @@ Image3D.prototype.setMaxHeight = function(maxHeight) {
  * @return {Image3D}
  */
 Image3D.prototype.setMorphing = function(morphing) {
+  log_.assert_(typeof morphing === 'boolean',
+      'morphing must be a boolean.', morphing,
+      '(Image3D::setMorphing)');
+
   if (!morphing && this.morphing_) {
 
     this.morphing_ = false;
@@ -982,6 +1016,10 @@ Image3D.prototype.setMorphing = function(morphing) {
  */
 Image3D.prototype.setTransparent = function(transparent) {
   if (this.transparent_ !== transparent) {
+    log_.assert_(typeof transparent === 'boolean',
+        'transparent must be a boolean.', transparent,
+        '(Image3D::setTransparent)');
+
     this.transparent_ = transparent;
 
     this.dispatch(new voodoo.Event('changeTransparent', this));

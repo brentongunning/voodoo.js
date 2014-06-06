@@ -285,3 +285,129 @@ Image3DTests.prototype.testPauseMorph = function(queue) {
     assertFalse('Morphing:', instance.morphing);
   });
 };
+
+
+/**
+ * Tests that there are errors when providing invalid properties.
+ *
+ * @param {Object} queue Async queue.
+ */
+Image3DTests.prototype.testInvalidProperties = function(queue) {
+  /*:DOC +=
+    <img style="position:absolute; left:400px; top:400px;
+        width:400px; height:300px;" id="anchor"></div>
+  */
+
+  if (!DEBUG)
+    return;
+
+  assertException(function() {
+    new voodoo.Image3D({
+      element: 'abcde'
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Image3D({
+      imageSrc: 1
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Image3D({
+      heightmap: []
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Image3D({
+      heightmap4: null
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Image3D({
+      maxHeight: '1234'
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Image3D({
+      geometryStyle: 'badGeometryStye'
+    });
+  });
+
+  assertException(function() {
+    new voodoo.Image3D({
+      transparent: 'maybe'
+    });
+  });
+
+  var instance;
+
+  queue.call(function(callbacks) {
+    instance = new voodoo.Image3D({
+      element: document.getElementById('anchor'),
+      imageSrc: '/test/test/assets/Layers.jpg',
+      heightmap: '/test/test/assets/Black.jpg',
+      heightmap2: '/test/test/assets/Layers.jpg'
+    });
+  });
+
+  queue.call(function(callbacks) {
+
+    assertException(function() {
+      instance.imageSrc = 1234;
+    });
+
+    assertException(function() {
+      instance.heightmap2 = null;
+    });
+
+    assertException(function() {
+      instance.heightmap3 = {};
+    });
+
+    assertException(function() {
+      instance.maxHeight = 'red';
+    });
+
+    assertException(function() {
+      instance.geometryStyle = 1;
+    });
+
+    assertException(function() {
+      instance.transparent = 'false';
+    });
+
+    assertException(function() {
+      instance.setImageSrc(4);
+    });
+
+    assertException(function() {
+      instance.setHeightmap(false);
+    });
+
+    assertException(function() {
+      instance.setMaxHeight(true);
+    });
+
+    assertException(function() {
+      instance.setGeometryStyle(true);
+    });
+
+    assertException(function() {
+      instance.setTransparent([false]);
+    });
+
+    assertException(function() {
+      instance.morph('abcde', 2);
+    });
+
+    assertException(function() {
+      instance.morph(1, false);
+    });
+
+  });
+};
+

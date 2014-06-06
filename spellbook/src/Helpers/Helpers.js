@@ -16,8 +16,12 @@
  */
 function getAbsoluteUrl_(url) {
   log_.assert_(url, 'url must be valid.', url, '(getAbsoluteUrl_)');
+  log_.assert_(typeof url === 'string', 'url must be valid.', url,
+      '(getAbsoluteUrl_)');
+
   var a = document.createElement('a');
   a.href = url;
+
   return a.href;
 }
 

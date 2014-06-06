@@ -85,4 +85,3 @@ ColorableTests.prototype.testInvalidProperties = function() {
     instance.setColor(2);
   });
 };
-
