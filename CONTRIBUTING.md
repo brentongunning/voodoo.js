@@ -5,7 +5,7 @@ Before reporting a bug
 ---
 1. Search issue tracker for similar issues.
 2. Try the latest dev branch version of voodoo.js.
-3. Refer to the [Migration Guide](https://github.com/mrdoob/voodoo.js/wiki/Migration) when upgrading to the dev version.
+3. Refer to the [Migration Guide](https://github.com/brentongunning/voodoo.js/wiki/Migration) when upgrading to the dev version.
 
 
 How to report a bug
