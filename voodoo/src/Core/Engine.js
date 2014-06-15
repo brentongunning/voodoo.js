@@ -237,6 +237,18 @@ Engine.prototype.addModel_ = function(model) {
 
 
 /**
+ * Returns whether the window currently has focus.
+ *
+ * @private
+ *
+ * @return {boolean} Whether we have focus.
+ */
+Engine.prototype.hasFocus_ = function() {
+  return this.lastTicks_ !== 0;
+};
+
+
+/**
  * Adds a model to be updated by the engine.
  *
  * This is called during Model initialization.
@@ -268,10 +280,13 @@ Engine.prototype.run_ = function(update, render) {
     that.run_(update, render);
   });
 
-  if (update)
-    this.update_();
-  if (render)
-    this.renderer_.render_();
+  // Only update and render if we have focus.
+  if (this.hasFocus_()) {
+    if (update)
+      this.update_();
+    if (render)
+      this.renderer_.render_();
+  }
 };
 
 
@@ -286,6 +301,7 @@ Engine.prototype.setupDeltaTimer_ = function() {
   var that = this;
   this.lastTicks_ = 0;
   this.lastDeltaTime_ = 0;
+  this.focusDelayTimerId_ = 0;
 
   // Register with the window focus event so we know when the user switches
   // back to our tab. We will reset timing data.
@@ -293,8 +309,9 @@ Engine.prototype.setupDeltaTimer_ = function() {
     log_.info_('Window focus acquired. Starting delta timer.');
 
     that.lastTicks_ = 0;
-    setTimeout(function() {
+    that.focusDelayTimerId_ = setTimeout(function() {
       that.lastTicks_ = Date.now();
+      that.focusDelayTimerId_ = 0;
     }, that.options_.timerStartOnFocusDelayMs_);
   }, false);
 
@@ -305,6 +322,10 @@ Engine.prototype.setupDeltaTimer_ = function() {
     log_.info_('Window lost focus. Pausing delta timer.');
 
     that.lastTicks_ = 0;
+    if (that.focusDelayTimerId_ !== 0) {
+      clearTimeout(that.focusDelayTimerId_);
+      that.focusDelayTimerId_ = 0;
+    }
   }, false);
 
   // Start animations 1 second after the page loads to minimize hickups
@@ -324,7 +345,7 @@ Engine.prototype.update_ = function() {
   // Calculate the time delta between this frame the last in seconds
   var deltaTime = 0;
   var currTicks = Date.now();
-  if (this.lastTicks_ !== 0) {
+  if (this.hasFocus_()) {
     deltaTime = (currTicks - this.lastTicks_) / 1000.0;
     this.lastTicks_ = currTicks;
   }
