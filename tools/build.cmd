@@ -317,7 +317,7 @@ for /r "%externs_dir%" %%F in (*.js) do (
 )
 echo [Build] Compiling %compiletype% build
 call :delete "%outfile%"
-"%java%" -jar "%root%compiler-latest\compiler.jar" --compilation_level %optimizations% --js_output_file "%outfile%" --warning_level VERBOSE --js "%build_merged%" %externs% --define='DEBUG=%compiledebug%' --define='VERSION='%version%'' --define='NAMESPACE='%namespace%'' --language_in=ECMASCRIPT5_STRICT
+"%java%" -jar "%root%compiler-latest\compiler.jar" --compilation_level %optimizations% --js_output_file "%outfile%" --warning_level VERBOSE --js "%build_merged%" %externs% --define='DEBUG=%compiledebug%' --define='VERSION='%version%.%compiletype%'' --define='NAMESPACE='%namespace%'' --language_in=ECMASCRIPT5_STRICT
 echo.
 endlocal
 if errorlevel 1 call :error "Compilation failed"

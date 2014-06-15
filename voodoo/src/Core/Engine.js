@@ -165,6 +165,8 @@ Engine.prototype['destroy'] = function() {
   this.options_ = null;
   this.modelCacheFactory_ = null;
   this.tracker_ = null;
+
+  nextModelId_ = 0;
 };
 
 
