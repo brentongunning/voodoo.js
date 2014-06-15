@@ -34,8 +34,12 @@ Scene.prototype['add'] = function(object) {};
  * @param {boolean=} opt_pixels If true, one unit is one pixel. If false, one
  *    x unit is the element's width, and one y unit is the unit's height. Z
  *    is in pixels regardless. Default is true.
+ * @param {boolean=} opt_zscale If true, the z dimension is also scaled
+ *    using the average of the width and height. If false, no scaling
+ *    along the z axis is performed. Default is true.
  */
-Scene.prototype['attach'] = function(element, opt_center, opt_pixels) {};
+Scene.prototype['attach'] = function(element, opt_center, opt_pixels,
+    opt_zscale) {};
 
 
 /**

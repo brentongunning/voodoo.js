@@ -111,12 +111,17 @@ ThreeJsScene_.prototype['add'] = function(object) {
  * @param {boolean=} opt_pixels If true, one unit is one pixel. If false, one
  *    x unit is the element's width, and one y unit is the unit's height. Z
  *    is in pixels regardless.
+ * @param {boolean=} opt_zscale If true, the z dimension is also scaled
+ *    using the average of the width and height. If false, no scaling
+ *    along the z axis is performed. Default is true.
  */
-ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
+ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels,
+    opt_zscale) {
   log_.assert_(element, 'element must be valid.', '(ThreeJsScene_::attach)');
 
   var center = typeof opt_center !== 'undefined' ? opt_center : true;
   var pixels = typeof opt_pixels !== 'undefined' ? opt_pixels : true;
+  var zscale = typeof opt_zscale !== 'undefined' ? opt_zscale : true;
 
   // Release the old tracker
   if (this.trackId_ !== null)
@@ -127,189 +132,66 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels) {
   // Attach to the new element and setup the callbacks.
   var that = this;
   if (element) {
-    if (center) {
-      if (pixels) {
-        this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
-            move, resize) {
-              var parent = that.parent_;
-              var parentPosition = parent.position;
-              var parentScale = parent.scale;
+    this.trackId_ = this.tracker_.track_(element, function(x, y, w, h, move,
+        resize) {
+          var parent = that.parent_;
+          var parentPosition = parent.position;
+          var parentScale = parent.scale;
 
-              parentPosition.x = x + w / 2.0;
-              parentPosition.y = y + h / 2.0;
-              parentScale.x = parentScale.y = 1.0;
+          if (center) {
+            parentPosition.x = x + w / 2.0;
+            parentPosition.y = y + h / 2.0;
+          } else {
+            parentPosition.x = x;
+            parentPosition.y = y;
+          }
 
-              that.parent_.updateMatrixWorld(true);
-              that.isDirty_ = true;
+          if (pixels) {
+            parentScale.x = parentScale.y = 1.0;
+          } else {
+            parentScale.x = w;
+            parentScale.y = h;
+          }
 
-              if (move) {
-                var event = new voodooEvent('move');
-                event.object = element;
+          if (zscale) {
+            parentScale.z = (parentScale.x + parentScale.y) / 2.0;
+          } else {
+            parentScale.z = 1.0;
+          }
 
-                var eventPage = event['page'];
-                eventPage['x'] = x;
-                eventPage['y'] = y;
+          that.parent_.updateMatrixWorld(true);
+          that.isDirty_ = true;
 
-                var eventSize = event['size'];
-                eventSize['x'] = w;
-                eventSize['y'] = h;
+          if (move) {
+            var event = new voodooEvent('move');
+            event.object = element;
 
-                that.dispatcher_.dispatchEvent_(null, event);
-              }
+            var eventPage = event['page'];
+            eventPage['x'] = x;
+            eventPage['y'] = y;
 
-              if (resize) {
-                var event = new voodooEvent('resize');
-                event.object = element;
+            var eventSize = event['size'];
+            eventSize['x'] = w;
+            eventSize['y'] = h;
 
-                var eventPage = event['page'];
-                eventPage['x'] = x;
-                eventPage['y'] = y;
+            that.dispatcher_.dispatchEvent_(null, event);
+          }
 
-                var eventSize = event['size'];
-                eventSize['x'] = w;
-                eventSize['y'] = h;
+          if (resize) {
+            var event = new voodooEvent('resize');
+            event.object = element;
 
-                that.dispatcher_.dispatchEvent_(null, event);
-              }
-            });
-      } else {
-        this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
-            move, resize) {
-              var parent = that.parent_;
-              var parentPosition = parent.position;
-              var parentScale = parent.scale;
+            var eventPage = event['page'];
+            eventPage['x'] = x;
+            eventPage['y'] = y;
 
-              parentPosition.x = x + w / 2.0;
-              parentPosition.y = y + h / 2.0;
-              parentScale.x = w;
-              parentScale.y = h;
+            var eventSize = event['size'];
+            eventSize['x'] = w;
+            eventSize['y'] = h;
 
-              that.parent_.updateMatrixWorld(true);
-              that.isDirty_ = true;
-
-              if (move) {
-                var event = new voodooEvent('move');
-                event.object = element;
-
-                var eventPage = event['page'];
-                eventPage['x'] = x;
-                eventPage['y'] = y;
-
-                var eventSize = event['size'];
-                eventSize['x'] = w;
-                eventSize['y'] = h;
-
-                that.dispatcher_.dispatchEvent_(null, event);
-              }
-
-              if (resize) {
-                var event = new voodooEvent('resize');
-                event.object = element;
-
-                var eventPage = event['page'];
-                eventPage['x'] = x;
-                eventPage['y'] = y;
-
-                var eventSize = event['size'];
-                eventSize['x'] = w;
-                eventSize['y'] = h;
-
-                that.dispatcher_.dispatchEvent_(null, event);
-              }
-            });
-      }
-    } else {
-      if (pixels) {
-        this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
-            move, resize) {
-              var parent = that.parent_;
-              var parentPosition = parent.position;
-              var parentScale = parent.scale;
-
-              parentPosition.x = x;
-              parentPosition.y = y;
-              parentScale.x = parentScale.y = 1.0;
-
-              that.parent_.updateMatrixWorld(true);
-              that.isDirty_ = true;
-
-              if (move) {
-                var event = new voodooEvent('move');
-                event.object = element;
-
-                var eventPage = event['page'];
-                eventPage['x'] = x;
-                eventPage['y'] = y;
-
-                var eventSize = event['size'];
-                eventSize['x'] = w;
-                eventSize['y'] = h;
-
-                that.dispatcher_.dispatchEvent_(null, event);
-              }
-
-              if (resize) {
-                var event = new voodooEvent('resize');
-                event.object = element;
-
-                var eventPage = event['page'];
-                eventPage['x'] = x;
-                eventPage['y'] = y;
-
-                var eventSize = event['size'];
-                eventSize['x'] = w;
-                eventSize['y'] = h;
-
-                that.dispatcher_.dispatchEvent_(null, event);
-              }
-            });
-      } else {
-        this.trackId_ = this.tracker_.track_(element, function(x, y, w, h,
-            move, resize) {
-              var parent = that.parent_;
-              var parentPosition = parent.position;
-              var parentScale = parent.scale;
-
-              parentPosition.x = x;
-              parentPosition.y = y;
-              parentScale.x = w;
-              parentScale.y = h;
-
-              that.parent_.updateMatrixWorld(true);
-              that.isDirty_ = true;
-
-              if (move) {
-                var event = new voodooEvent('move');
-                event.object = element;
-
-                var eventPage = event['page'];
-                eventPage['x'] = x;
-                eventPage['y'] = y;
-
-                var eventSize = event['size'];
-                eventSize['x'] = w;
-                eventSize['y'] = h;
-
-                that.dispatcher_.dispatchEvent_(null, event);
-              }
-
-              if (resize) {
-                var event = new voodooEvent('resize');
-                event.object = element;
-
-                var eventPage = event['page'];
-                eventPage['x'] = x;
-                eventPage['y'] = y;
-
-                var eventSize = event['size'];
-                eventSize['x'] = w;
-                eventSize['y'] = h;
-
-                that.dispatcher_.dispatchEvent_(null, event);
-              }
-            });
-      }
-    }
+            that.dispatcher_.dispatchEvent_(null, event);
+          }
+        });
 
     var event = new voodooEvent('attach');
     event.object = element;

@@ -62,7 +62,7 @@ SceneTests.prototype.testAttachCenterPixels = function() {
         this.scene.add(mesh);
         this.triggers.add(mesh);
 
-        this.scene.attach(this.model.element/*, true, true */);
+        this.scene.attach(this.model.element/*, true, true, true */);
       }
     }),
     initialize: function(options) {
@@ -106,7 +106,7 @@ SceneTests.prototype.testAttachTopLeftUnits = function() {
         this.scene.add(mesh);
         this.triggers.add(mesh);
 
-        this.scene.attach(this.model.element, false, false);
+        this.scene.attach(this.model.element, false, false, true);
       }
     }),
     initialize: function(options) {
@@ -148,7 +148,7 @@ SceneTests.prototype.testDetach = function() {
         this.scene.add(mesh);
         this.triggers.add(mesh);
 
-        this.scene.attach(this.model.element, true, false);
+        this.scene.attach(this.model.element, true, false, true);
       },
       detach: function() {
         this.scene.detach();
@@ -264,14 +264,14 @@ SceneTests.prototype.testConvertCoordinates = function() {
     name: 'CustomModel',
     viewType: voodoo.View.extend({
       load: function() {
-        var geometry = new THREE.CubeGeometry(100, 100, 100);
+        var geometry = new THREE.CubeGeometry(1, 1, 1);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
 
         this.scene.add(mesh);
         this.triggers.add(mesh);
 
-        this.scene.attach(this.model.element, true, false);
+        this.scene.attach(this.model.element, true, false, false);
       },
       localToPage: function(coordinate) {
         return this.scene.localToPage(coordinate);
@@ -297,6 +297,60 @@ SceneTests.prototype.testConvertCoordinates = function() {
       assertEquals('Local X', 0.5, local.x);
       assertEquals('Local Y', -0.5, local.y);
       assertEquals('Local Z', 100, local.z);
+    }
+  });
+
+  var anchor = document.getElementById('anchor');
+  var model = new CustomModel({element: anchor});
+
+  model.testCoordinates();
+};
+
+
+/**
+ * Tests that z-scaling works correctly.
+ */
+SceneTests.prototype.testZScaling = function() {
+  /*:DOC +=
+    <div style="position:absolute; left:400px; top:400px;
+        width:200px; height:200px;" id="anchor">
+      <p>anchor</p>
+    </div>
+  */
+
+  var CustomModel = voodoo.Model.extend({
+    name: 'CustomModel',
+    viewType: voodoo.View.extend({
+      load: function() {
+        var geometry = new THREE.CubeGeometry(1, 1, 1);
+        var material = new THREE.MeshBasicMaterial();
+        var mesh = new THREE.Mesh(geometry, material);
+
+        this.scene.add(mesh);
+        this.triggers.add(mesh);
+
+        this.scene.attach(this.model.element, true, false, true);
+      },
+      localToPage: function(coordinate) {
+        return this.scene.localToPage(coordinate);
+      },
+      pageToLocal: function(coordinate) {
+        return this.scene.pageToLocal(coordinate);
+      }
+    }),
+    initialize: function(options) {
+      this.element = options.element;
+    },
+    testCoordinates: function() {
+      var page = this.view.localToPage([0, 0, 0.5]);
+
+      assertEquals('Page Z', 100, page[2]);
+
+      var local = this.view.pageToLocal({
+        x: page[0], y: page[1], z: page[2]
+      });
+
+      assertEquals('Local Z', 0.5, local.z);
     }
   });
 
