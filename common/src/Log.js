@@ -107,11 +107,10 @@ Log_.prototype.warn_ = function(message) {
 Log_.prototype.error_ = function(message) {
   var args = Array.prototype.slice.call(arguments);
   args.unshift('**ERROR**');
-  this.log_.apply(this, args);
 
   throw {
     name: this.project_ + ' exception',
-    message: args.slice(1).join(' '),
+    message: args.join(' '),
     toString: function(){ return this.name + ": " + this.message; } 
   };
 };
