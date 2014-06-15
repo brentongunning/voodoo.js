@@ -63,6 +63,10 @@ var TrafficLightView = voodoo.View.extend({
     // Add the sphere to the scene
     this.scene.add(mesh);
 
+    // Attach to the HTML element
+    this.scene.attach(this.model.element, true, false);
+    mesh.scale.z = 150;
+
     // The triggers tells voodoo that the sphere should respond to mouse
     // events. Add it like the scene.
     this.triggers.add(mesh);
@@ -80,21 +84,6 @@ var TrafficLightView = voodoo.View.extend({
 
     // Also remove the sphere from the triggers.
     this.triggers.remove(this.mesh);
-  },
-
-  // Called from the model each update to position the ball over the div.
-  move: function(x, y, w, h) {
-    var meshPosition = this.mesh.position;
-    var meshScale = this.mesh.scale;
-
-    meshPosition.x = x + w / 2;
-    meshPosition.y = y + h / 2;
-    
-    meshScale.x = w;
-    meshScale.y = h;
-    meshScale.z = (w + h) / 2;
-
-    this.dirty();
   },
 
   // We call this from the model whenever the user hovers over this object.
@@ -130,14 +119,6 @@ var TrafficLight = voodoo.Model.extend({
     // reference them.
     this.on('mouseover', function(event) { this.view.mouseover(); });
     this.on('mouseout', function(event) { this.view.mouseout(); });
-  },
-
-  update: function(deltaTime) {
-    var pos = voodoo.utility.findAbsolutePosition(this.element);
-    var w = this.element.offsetWidth;
-    var h = this.element.offsetHeight;
-
-    this.view.move(pos.x, pos.y, w, h);
   }
 });
 

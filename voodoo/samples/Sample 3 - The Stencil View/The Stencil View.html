@@ -52,9 +52,13 @@ var CubbyView = voodoo.View.extend({
 
     // The z position and scale doesn't change with the divs.
     mesh.position.z = -200;
+    mesh.scale.x = 0.5;
+    mesh.scale.y = 0.5;
     mesh.scale.z = 200;
 
     this.scene.add(mesh);
+
+    this.scene.attach(this.model.element, true, false);
 
     this.mesh = mesh;
   },
@@ -90,19 +94,6 @@ var CubbyView = voodoo.View.extend({
     geometry.computeFaceNormals();
 
     return geometry;
-  },
-
-  move: function(x, y, w, h) {
-    var meshPosition = this.mesh.position;
-    var meshScale = this.mesh.scale;
-
-    meshPosition.x = x + w / 2;
-    meshPosition.y = y + h / 2;
-
-    meshScale.x = w / 2;
-    meshScale.y = h / 2;
-
-    this.dirty();
   }
 });
 
@@ -121,27 +112,16 @@ var CubbyStencilView = voodoo.View.extend({
     // Here out stencil mesh is a flat square exactly where the div's are
     // located. Therefore, the user sees into the box but does not see any
     // of the edges of the box that are outside this area.
-    this.stencilMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2),
+    this.stencilMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1),
         new THREE.MeshBasicMaterial({color:'#AACCFF'}));
 
-    this.scene.add(this.stencilMesh);
+    this.scene.add(this.stencilMesh, true, false);
+
+    this.scene.attach(this.model.element, true, false);
   },
 
   unload: function() {
     this.scene.remove(this.stencilMesh);
-  },
-
-  move: function(x, y, w, h) {
-    var stencilMeshPosition = this.stencilMesh.position;
-    var stencilMeshScale = this.stencilMesh.scale;
-
-    stencilMeshPosition.x = x + w / 2;
-    stencilMeshPosition.y = y + h / 2;
-
-    stencilMeshScale.x = w / 2;
-    stencilMeshScale.y = h / 2;
-
-    this.dirty();
   }
 });
 
@@ -158,17 +138,6 @@ var Cubby = voodoo.Model.extend({
 
   initialize: function(options) {
     this.element = options.element;
-  },
-
-  // Called each frame, we use update to align our model with the div's.
-  update: function(deltaTime) {
-    var pos = voodoo.utility.findAbsolutePosition(this.element);
-
-    // We have to move both the view AND stencil views
-    var elementWidth = this.element.offsetWidth;
-    var elementHeight = this.element.offsetHeight;
-    this.view.move(pos.x, pos.y, elementWidth, elementHeight);
-    this.stencilView.move(pos.x, pos.y, elementWidth, elementHeight);
   }
 });
 
