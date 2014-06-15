@@ -46,6 +46,7 @@ Release Notes
 Optimization: Only render when window has focus.
 Bug Fix: Exceptions thrown no longer break this.base in future calls.
 Improved error checking.
+Minor updates to samples.
 
 4-29-2014 - 0.8.9
 Added Model.loaded property.
