@@ -51,14 +51,14 @@ var CubbyView = voodoo.View.extend({
     var mesh = new THREE.Mesh(this.createGeometry(), material);
 
     // The z position and scale doesn't change with the divs.
-    mesh.position.z = -200;
+    mesh.position.z = -0.5;
     mesh.scale.x = 0.5;
     mesh.scale.y = 0.5;
-    mesh.scale.z = 200;
+    mesh.scale.z = 0.5;
 
     this.scene.add(mesh);
 
-    this.scene.attach(this.model.element, true, false);
+    this.scene.attach(this.model.element, true, false, true);
 
     this.mesh = mesh;
   },
@@ -117,7 +117,7 @@ var CubbyStencilView = voodoo.View.extend({
 
     this.scene.add(this.stencilMesh, true, false);
 
-    this.scene.attach(this.model.element, true, false);
+    this.scene.attach(this.model.element, true, false, true);
   },
 
   unload: function() {
