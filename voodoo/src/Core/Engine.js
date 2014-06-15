@@ -316,12 +316,14 @@ Engine.prototype.setupDeltaTimer_ = function() {
   // Register with the window focus event so we know when the user switches
   // back to our tab. We will reset timing data.
   window.addEventListener('focus', function() {
-    log_.info_('Window focus acquired. Starting delta timer.');
+    log_.info_('Window focus acquired. Starting.');
 
     that.lastTicks_ = 0;
     that.focusDelayTimerId_ = setTimeout(function() {
       that.lastTicks_ = Date.now();
       that.focusDelayTimerId_ = 0;
+
+      that.renderer_.onFocus_();
     }, that.options_.timerStartOnFocusDelayMs_);
   }, false);
 
@@ -329,13 +331,15 @@ Engine.prototype.setupDeltaTimer_ = function() {
   // another tab, we stop the timing so that the animations look like they
   // paused.
   window.addEventListener('blur', function() {
-    log_.info_('Window lost focus. Pausing delta timer.');
+    log_.info_('Window lost focus. Pausing.');
 
     that.lastTicks_ = 0;
     if (that.focusDelayTimerId_ !== 0) {
       clearTimeout(that.focusDelayTimerId_);
       that.focusDelayTimerId_ = 0;
     }
+
+    that.renderer_.onBlur_();
   }, false);
 
   // Start animations 1 second after the page loads to minimize hickups
