@@ -13,7 +13,32 @@
  * @constructor
  */
 function Debug() {
-  // No-op
+  // If not in debug mode, then debug settings should throw an error.
+  if (!DEBUG) {
+    Object.defineProperty(this, 'disableStencils', {
+      get: function() { return false; },
+      set: function(val) { log_.error_(
+          'Debug settings may only be set in debug builds.',
+          '(Debug::disableStencils)'); },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'drawStencils', {
+      get: function() { return false; },
+      set: function(val) { log_.error_(
+          'Debug settings may only be set in debug builds.',
+          '(Debug::drawStencils)'); },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'showFps', {
+      get: function() { return false; },
+      set: function(val) { log_.error_(
+          'Debug settings may only be set in debug builds.',
+          '(Debug::showFps)'); },
+      enumerable: true
+    });
+  }
 }
 
 
