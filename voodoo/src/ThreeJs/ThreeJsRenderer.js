@@ -303,6 +303,37 @@ ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer) {
 
 
 /**
+ * Marks the renderer as dirty forcing a re-render.
+ *
+ * @private
+ */
+ThreeJsRenderer_.prototype.markDirty_ = function() {
+  this.isDirty_ = true;
+};
+
+
+/**
+ * Called when the window loses focus.
+ *
+ * @private
+ */
+ThreeJsRenderer_.prototype.onBlur_ = function() {
+  // No-op.
+};
+
+
+/**
+ * Called when the window regains focus.
+ *
+ * @private
+ */
+ThreeJsRenderer_.prototype.onFocus_ = function() {
+  // Reset the performance scaling detection timer.
+  this.lastValidFpsTime_ = new Date();
+};
+
+
+/**
  * Resizes the canvas whenever the browser is resized
  *
  * @private

@@ -13,8 +13,9 @@
  * @constructor
  */
 function Debug() {
-  // If not in debug mode, then debug settings should throw an error.
   if (!DEBUG) {
+    // Case 1: Not in debug mode. Setting debug settings should throw an error.
+
     Object.defineProperty(this, 'disableStencils', {
       get: function() { return false; },
       set: function(val) { log_.error_(
@@ -36,6 +37,36 @@ function Debug() {
       set: function(val) { log_.error_(
           'Debug settings may only be set in debug builds.',
           '(Debug::showFps)'); },
+      enumerable: true
+    });
+  } else {
+    // Case 2: In debug mode
+
+    this.disableStencils_ = false;
+    this.drawStencils_ = false;
+    this.showFps_ = false;
+
+    Object.defineProperty(this, 'disableStencils', {
+      get: function() { return this.disableStencils_; },
+      set: function(val) {
+        this.disableStencils_ = val;
+        window['voodoo']['engine'].markRendererDirty_();
+      },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'drawStencils', {
+      get: function() { return this.drawStencils_; },
+      set: function(val) {
+        this.drawStencils_ = val;
+        window['voodoo']['engine'].markRendererDirty_();
+      },
+      enumerable: true
+    });
+
+    Object.defineProperty(this, 'showFps', {
+      get: function() { return this.showFps_; },
+      set: function(val) { this.showFps_ = val; },
       enumerable: true
     });
   }

@@ -28,13 +28,14 @@ Scene.prototype['add'] = function(object) {};
  * @param {HTMLElement} element HTML element to attach to. If null, the
  *    local coordinate system is reset back to the top left corner of the page
  *    and scaled in pixels.
- * @param {boolean} center If true, sets the origin to the element's center.
- *    If false, sets the origin to the element's top left corner.
- * @param {boolean} pixels If true, one unit is one pixel. If false, one
+ * @param {boolean=} opt_center If true, sets the origin to the element's
+ *    center. If false, sets the origin to the element's top left corner.
+ *    Default is true.
+ * @param {boolean=} opt_pixels If true, one unit is one pixel. If false, one
  *    x unit is the element's width, and one y unit is the unit's height. Z
- *    is in pixels regardless.
+ *    is in pixels regardless. Default is true.
  */
-Scene.prototype['attach'] = function(element, center, pixels) {};
+Scene.prototype['attach'] = function(element, opt_center, opt_pixels) {};
 
 
 /**

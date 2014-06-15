@@ -38,6 +38,30 @@ RenderingEngine_.prototype.destroy_ = function() {};
 
 
 /**
+ * Marks the renderer as dirty forcing a re-render.
+ *
+ * @private
+ */
+RenderingEngine_.prototype.markDirty_ = function() {};
+
+
+/**
+ * Called when the window loses focus.
+ *
+ * @private
+ */
+RenderingEngine_.prototype.onBlur_ = function() {};
+
+
+/**
+ * Called when the window regains focus.
+ *
+ * @private
+ */
+RenderingEngine_.prototype.onFocus_ = function() {};
+
+
+/**
  * Renders one frame
  *
  * @private
