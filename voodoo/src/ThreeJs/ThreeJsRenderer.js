@@ -303,6 +303,16 @@ ThreeJsRenderer_.prototype.isRenderNeeded_ = function(layer) {
 
 
 /**
+ * Marks the renderer as dirty forcing a re-render.
+ *
+ * @private
+ */
+ThreeJsRenderer_.prototype.markDirty_ = function() {
+  this.isDirty_ = true;
+};
+
+
+/**
  * Resizes the canvas whenever the browser is resized
  *
  * @private

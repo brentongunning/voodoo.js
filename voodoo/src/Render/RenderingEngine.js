@@ -38,6 +38,14 @@ RenderingEngine_.prototype.destroy_ = function() {};
 
 
 /**
+ * Marks the renderer as dirty forcing a re-render.
+ *
+ * @private
+ */
+RenderingEngine_.prototype.markDirty_ = function() {};
+
+
+/**
  * Renders one frame
  *
  * @private

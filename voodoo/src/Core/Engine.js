@@ -249,6 +249,16 @@ Engine.prototype.hasFocus_ = function() {
 
 
 /**
+ * Marks the renderer as dirty forcing a re-render.
+ *
+ * @private
+ */
+Engine.prototype.markRendererDirty_ = function() {
+  this.renderer_.markDirty_();
+};
+
+
+/**
  * Adds a model to be updated by the engine.
  *
  * This is called during Model initialization.
