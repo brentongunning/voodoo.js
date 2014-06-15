@@ -5,7 +5,7 @@ Before reporting a bug
 ---
 1. Search issue tracker for similar issues.
 2. Try the latest dev branch version of voodoo.js.
-3. Refer to the [Migration Guide](https://github.com/brentongunning/voodoo.js/wiki/Migration) when upgrading to the dev version.
+3. Refer to the [Migration Guide](https://github.com/brentongunning/voodoo.js/wiki/Migrating) when upgrading to the dev version.
 
 
 How to report a bug
@@ -21,6 +21,6 @@ How to contribute to voodoo.js
 ---
 1. Make sure you have a GitHub account.
 2. Fork the repository on GitHub.
-3. Check the [Contribution Guidelines](https://github.com/brentongunning/voodoo.js/wiki/How-to-contribute-to-voodoo.js).
+3. Check the [Contribution Guidelines](https://github.com/brentongunning/voodoo.js/wiki/Contribute).
 4. Make changes to your clone of the repository.
 5. Submit a pull request.
