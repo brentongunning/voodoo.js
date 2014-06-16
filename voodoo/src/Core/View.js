@@ -7,23 +7,12 @@
 
 
 /**
- * Base type for a Model's renderables. Every Model has a View.
+ * Base class for a Model's visuals. Every Model has a View.
  *
- * Developers should extend this type and use it to add 3D meshes to the
- * scene. There are two types of Views: regular Views and stencil Views.
- * Regular Views contain the geometry the user actually sees and is required.
- * Instances of Views are created automatically when a Model is created.
- *
- * In order to integrate 2D and 3D seamlessly, several instances of each
- * View may be created behind the scenes. This means each View should not
- * store much state. Instead, state should instead by stored primarily in the
- * Model. Each View instance has a reference to its corresponding Model.
- *
- * Stencil Views are similar to regular Views in that they create 3D meshes and
- * add them to a scene. However, their purpose is not to display objects on
- * screen. Instead, they define the regions visible in the below layer. If no
- * stencil View is provided to the Model, the regular View is used instead so
- * that all content in the below layer is visible.
+ * Developers should extend this base class to their add 3D meshes to the
+ * scene. Voodoo will automatically create instances of your Views when you
+ * instantiate your Model. Since there may be several Views created, each
+ * View should not store much state.
  *
  * @constructor
  *
