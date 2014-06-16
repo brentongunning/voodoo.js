@@ -14,7 +14,7 @@
  *
  * @param {HTMLCanvasElement} canvas HTML canvas element.
  * @param {number} fov Maximum camera field of view in degrees along either
- *     axis.
+ *     axis. If zero, then the camera is an orthographic camera.
  * @param {number} zNear Minimum z distance rendered.
  * @param {number} zFar Maximum z distance rendered.
  */
@@ -24,11 +24,11 @@ function ThreeJsCamera_(canvas, fov, zNear, zFar) {
   log_.assert_(canvas, 'canvas must be valid.',
       '(ThreeJsCamera_::ThreeJsCamera_)');
 
-  log_.assert_(fov, 'fov must be valid.', fov,
+  log_.assert_(typeof fov !== 'undefined', 'fov must be valid.', fov,
       '(ThreeJsCamera_::ThreeJsCamera_)');
   log_.assert_(typeof fov === 'number', 'fov must be a number.', fov,
       '(ThreeJsCamera_::ThreeJsCamera_)');
-  log_.assert_(fov > 0, 'fov must be greater than 0.', fov,
+  log_.assert_(fov >= 0, 'fov must be greater than or equal to 0.', fov,
       '(ThreeJsCamera_::ThreeJsCamera_)');
 
   log_.assert_(zNear, 'zNear must be valid.', zNear,
@@ -71,6 +71,27 @@ ThreeJsCamera_.prototype = new Camera();
  * Set the constructor back.
  */
 ThreeJsCamera_.prototype.constructor = ThreeJsCamera_.constructor;
+
+
+/**
+ * Sets up the projection matrix.
+ *
+ * @private
+ */
+ThreeJsCamera_.prototype.createProjectionMatrix_ = function() {
+  if (this.fov_ === 0) {
+    // Case: Orthographic camera.
+    var halfInnerWidth = window.innerWidth / 2.0;
+    var halfInnerHeight = window.innerHeight / 2.0;
+    this.camera_.projectionMatrix.makeOrthographic(-halfInnerWidth,
+        halfInnerWidth, halfInnerHeight, -halfInnerHeight, this.zNear_,
+        this.zFar_);
+  } else {
+    // Case: Perspective camera.
+    this.camera_.projectionMatrix.makePerspective(this.fovY_,
+        this.aspectRatio_, this.zNear_, this.zFar_);
+  }
+};
 
 
 /**
@@ -193,8 +214,7 @@ ThreeJsCamera_.prototype.setZNearAndFar_ = function(zNear, zFar) {
   this.zNear_ = zNear;
   this.zFar_ = zFar;
 
-  this.camera_.projectionMatrix.makePerspective(this.fovY_,
-      this.aspectRatio_, this.zNear_, this.zFar_);
+  this.createProjectionMatrix_();
 
   this.pendingFrustumUpdate_ = true;
   this.update_();
@@ -216,17 +236,17 @@ ThreeJsCamera_.prototype.update_ = function() {
 
     this.aspectRatio_ = canvasWidth / canvasHeight;
 
+    var fov = this.fov_ || 30;
     if (canvasWidth > canvasHeight) {
-      this.fovY_ = this.fov_ / this.aspectRatio_;
+      this.fovY_ = fov / this.aspectRatio_;
     } else {
-      this.fovY_ = this.fov_;
+      this.fovY_ = fov;
     }
 
     var fovYInRadians = Math.tan(this.fovY_ / 360.0 * Math.PI);
     this.zCamera_ = (canvasHeight / 2.0) / fovYInRadians;
 
-    this.camera_.projectionMatrix.makePerspective(this.fovY_,
-        this.aspectRatio_, this.zNear_, this.zFar_);
+    this.createProjectionMatrix_();
 
     this.camera_.position.z = this.zCamera_;
 

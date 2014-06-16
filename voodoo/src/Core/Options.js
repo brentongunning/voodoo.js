@@ -89,6 +89,7 @@ Options.prototype.doubleClickInterval_ = 500;
 
 /**
  * Maximum camera field of view in degrees along either axis.
+ * If zero, then the camera is an orthographic camera.
  *
  * Default is 30.
  *
