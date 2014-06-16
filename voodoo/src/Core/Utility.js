@@ -7,7 +7,7 @@
 
 
 /**
- * Helper function that are always available when developing models.
+ * Helper functions.
  *
  * This class is instantiated automatically in voodoo.utility.
  *
@@ -228,7 +228,7 @@ Utility.prototype['convertCssColorToThreeJsColor'] = function(cssColor) {
  * top left corner of the page.
  *
  * This may be used to dynamically position models relative to
- * HTML elements.
+ * HTML elements as an alternative to Scene.attach.
  *
  * @param {Element} element HTML element.
  *

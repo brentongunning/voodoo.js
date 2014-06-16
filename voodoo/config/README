@@ -43,12 +43,13 @@ Release Notes
 -------------------------------------------------------------------------------
 
 6-14-2014 - 0.9.0
-Enable z scaling when attached to HTML elements. Added parameter to Scane.attach.
+Enable z scaling when attached to HTML elements. Added parameter to Scene.attach.
 Optimization: Only render when window has focus.
 Bug Fix: Re-render after changing debug settings.
 Bug Fix: Exceptions thrown no longer break this.base in future calls.
 Improved error checking.
 Minor updates to samples.
+Update ThreeJs to r67.
 
 4-29-2014 - 0.8.9
 Added Model.loaded property.
