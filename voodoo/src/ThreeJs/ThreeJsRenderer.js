@@ -170,14 +170,14 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
 
   var engineOptions = this.engine_.options_;
   var renderer = engineOptions['renderer'];
-  var fovY = engineOptions['fovY'];
+  var fov = engineOptions['fov'];
   var zNear = engineOptions.zNear_;
   var zFar = engineOptions.zFar_;
 
   // Create the above layer
   if (engineOptions['aboveLayer']) {
     this.aboveCamera_ = new ThreeJsCamera_(this.aboveCanvas_,
-        fovY, zNear, zFar);
+        fov, zNear, zFar);
 
     this.aboveSceneFactory_ = new ThreeJsSceneFactory_();
 
@@ -194,7 +194,7 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
   // Create the below and stencil layer
   if (engineOptions['belowLayer']) {
     this.belowCamera_ = new ThreeJsCamera_(this.belowCanvas_,
-        fovY, zNear, zFar);
+        fov, zNear, zFar);
 
     this.belowSceneFactory_ = new ThreeJsSceneFactory_();
     this.belowTriggersFactory_ = new ThreeJsTriggersFactory_();
@@ -206,7 +206,7 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
 
     if (engineOptions['stencils']) {
       this.stencilCamera_ = new ThreeJsCamera_(this.belowCanvas_,
-          fovY, zNear, zFar);
+          fov, zNear, zFar);
 
       this.belowStencilSceneFactory_ = new ThreeJsSceneFactory_();
       this.belowStencilTriggersFactory_ = new ThreeJsTriggersFactory_();
@@ -221,7 +221,7 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
   // Create the seam layer and seam stencil layer
   if (engineOptions['seamLayer']) {
     this.seamCamera_ = new ThreeJsCamera_(this.seamCanvas_,
-        fovY, zNear, zFar);
+        fov, zNear, zFar);
 
     this.seamSceneFactory_ = new ThreeJsSceneFactory_();
 
@@ -239,7 +239,7 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
     if (engineOptions['stencils']) {
       if (!this.stencilCamera_)
         this.stencilCamera_ = new ThreeJsCamera_(this.seamCanvas_,
-            fovY, zNear, zFar);
+            fov, zNear, zFar);
 
       this.seamStencilSceneFactory_ = new ThreeJsSceneFactory_();
       this.seamStencilTriggersFactory_ = new ThreeJsTriggersFactory_();

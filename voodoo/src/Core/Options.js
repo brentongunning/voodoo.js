@@ -88,13 +88,13 @@ Options.prototype.doubleClickInterval_ = 500;
 
 
 /**
- * Camera field of view in degrees along the y axis.
+ * Maximum camera field of view in degrees along either axis.
  *
  * Default is 30.
  *
  * @type {number}
  */
-Options.prototype['fovY'] = 30;
+Options.prototype['fov'] = 30;
 
 
 /**

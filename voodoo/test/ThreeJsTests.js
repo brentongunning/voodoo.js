@@ -18,7 +18,7 @@ var ThreeJsTests = TestCase('ThreeJsTests');
  * Placeholder for ThreeJs test case setup.
  */
 ThreeJsTests.prototype.setUp = function() {
-  voodoo.engine = new voodoo.Engine({ fovY: 45});
+  voodoo.engine = new voodoo.Engine();
 };
 
 
@@ -40,7 +40,6 @@ ThreeJsTests.prototype.testCamera = function() {
     name: 'TestModel',
     viewType: voodoo.View.extend({
       load: function() {
-        assertEquals('FovY unexpected', 45, this.camera.fovY);
         assertNotEquals('X position unexpected', 0, this.camera.position.x);
 
         assertNotNull('ZNear unexpected', this.camera.zNear);

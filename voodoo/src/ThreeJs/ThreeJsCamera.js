@@ -13,21 +13,22 @@
  * @private
  *
  * @param {HTMLCanvasElement} canvas HTML canvas element.
- * @param {number} fovY Camera field of view in degrees along the y axis.
+ * @param {number} fov Maximum camera field of view in degrees along either
+ *     axis.
  * @param {number} zNear Minimum z distance rendered.
  * @param {number} zFar Maximum z distance rendered.
  */
-function ThreeJsCamera_(canvas, fovY, zNear, zFar) {
+function ThreeJsCamera_(canvas, fov, zNear, zFar) {
   log_.info_('Creating ThreeJs Camera');
 
   log_.assert_(canvas, 'canvas must be valid.',
       '(ThreeJsCamera_::ThreeJsCamera_)');
 
-  log_.assert_(fovY, 'fovY must be valid.', fovY,
+  log_.assert_(fov, 'fov must be valid.', fov,
       '(ThreeJsCamera_::ThreeJsCamera_)');
-  log_.assert_(typeof fovY === 'number', 'fovY must be a number.', fovY,
+  log_.assert_(typeof fov === 'number', 'fov must be a number.', fov,
       '(ThreeJsCamera_::ThreeJsCamera_)');
-  log_.assert_(fovY > 0, 'fovY must be greater than 0.', fovY,
+  log_.assert_(fov > 0, 'fov must be greater than 0.', fov,
       '(ThreeJsCamera_::ThreeJsCamera_)');
 
   log_.assert_(zNear, 'zNear must be valid.', zNear,
@@ -51,7 +52,7 @@ function ThreeJsCamera_(canvas, fovY, zNear, zFar) {
   this.frustum_ = new THREE.Frustum();
 
   this.canvas_ = canvas;
-  this.fovY_ = fovY;
+  this.fov_ = fov;
   this.zNear_ = zNear;
   this.zFar_ = zFar;
 
@@ -79,11 +80,6 @@ ThreeJsCamera_.prototype.constructor = ThreeJsCamera_.constructor;
  */
 ThreeJsCamera_.prototype.createProperties_ = function() {
   var that = this;
-
-  Object.defineProperty(this, 'fovY', {
-    get: function() { return that.fovY_; },
-    enumerable: true
-  });
 
   Object.defineProperty(this, 'position', {
     get: function() {
@@ -219,6 +215,12 @@ ThreeJsCamera_.prototype.update_ = function() {
     var canvasHeight = parseInt(canvasStyle.height, 10);
 
     this.aspectRatio_ = canvasWidth / canvasHeight;
+
+    if (canvasWidth > canvasHeight) {
+      this.fovY_ = this.fov_ / this.aspectRatio_;
+    } else {
+      this.fovY_ = this.fov_;
+    }
 
     var fovYInRadians = Math.tan(this.fovY_ / 360.0 * Math.PI);
     this.zCamera_ = (canvasHeight / 2.0) / fovYInRadians;

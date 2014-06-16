@@ -14,13 +14,6 @@
 function Camera() {}
 
 
-/**
- * The camera's field of view along the y axis.
- *
- * @type {number}
- */
-Camera.prototype['fovY'] = 0;
-
 // XYZ object for the camera's position.
 Camera.prototype['position'] = {};
 
