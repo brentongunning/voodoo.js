@@ -3240,6 +3240,16 @@ THREE.Matrix4.prototype.multiplyVector3 = function(v){};
 THREE.Matrix4.prototype.makePerspective = function(y,a,n,f){};
 
 /**
+ * @param {number} l
+ * @param {number} r
+ * @param {number} t
+ * @param {number} b
+ * @param {number} n
+ * @param {number} f
+ */
+THREE.Matrix4.prototype.makeOrthographic = function(l,r,t,b,n,f){};
+
+/**
  * @constructor
  */
 THREE.Frustum = function(){};

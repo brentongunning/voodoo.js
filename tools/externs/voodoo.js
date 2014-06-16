@@ -245,9 +245,6 @@ voodoo.View.prototype.triggers;
 /** @constructor */
 voodoo.Camera = function() {};
 
-/** @type {number} */
-voodoo.Camera.prototype.fovY;
-
 /** @type {Object} */
 voodoo.Camera.prototype.position;
 
@@ -278,10 +275,12 @@ voodoo.Scene.prototype.add = function(object) {};
 
 /**
  * @param {HTMLElement} element
- * @param {boolean} center
- * @param {boolean} pixels
+ * @param {boolean=} opt_center
+ * @param {boolean=} opt_pixels
+ * @param {boolean=} opt_zscale
  */
-voodoo.Scene.prototype.attach = function(element, center, pixels) {};
+voodoo.Scene.prototype.attach = function(element, opt_center, opt_pixels,
+    opt_zscale) {};
 
 voodoo.Scene.prototype.detach = function() {};
 
@@ -407,7 +406,7 @@ voodoo.Options.prototype.belowLayer;
 voodoo.Options.prototype.belowZIndex;
 
 /** @type {number} */
-voodoo.Options.prototype.fovY;
+voodoo.Options.prototype.fov;
 
 /** @type {boolean} */
 voodoo.Options.prototype.frameLoop;
