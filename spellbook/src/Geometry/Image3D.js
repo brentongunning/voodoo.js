@@ -534,7 +534,7 @@ var Image3DView_ = voodoo.View.extend({
  * - morphBegin
  * - morphEnd
  * - changeImageSrc
- * - chamgeHeightmap
+ * - changeHeightmap
  * - changeHeightmap2
  * - changeHeightmap3
  * - changeHeightmap4

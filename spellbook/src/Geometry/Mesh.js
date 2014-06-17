@@ -21,6 +21,17 @@ var MeshView_ = voodoo.View.extend({
     this.loaded = false;
     this.pendingAnimation_ = null;
 
+    this.loadMesh_();
+  },
+
+  loadMesh_: function() {
+    if (this.mesh_) {
+      this.scene.remove(this.mesh_);
+      this.triggers.remove(this.mesh_);
+
+      this.mesh_ = null;
+    }
+
     if (this.model.format_ === Mesh.Format.JSON)
       this.loadJson_();
   },
@@ -120,6 +131,7 @@ var MeshView_ = voodoo.View.extend({
  *
  * - play
  * - stop
+ * - changeMesh
  *
  * @constructor
  * @extends {voodoo.Model}
@@ -189,6 +201,12 @@ var Mesh = this.Mesh = voodoo.Model.extend({
       },
       enumerable: true
     });
+
+    Object.defineProperty(this, 'mesh', {
+      get: function() { return that.mesh_; },
+      set: function(mesh) { that.setMesh(mesh); },
+      enumerable: true
+    });
   },
 
   update: function(deltaTime) {
@@ -216,49 +234,6 @@ var Mesh = this.Mesh = voodoo.Model.extend({
   }
 
 });
-
-
-/**
- * Defines an animation.
- *
- * @param {string} name Name of the animation.
- * @param {number} start Start frame.
- * @param {number} end End frame.
- * @param {number} seconds Duration in seconds.
- * @param {boolean=} opt_loop Whether to loop the animation. Default is true.
- * @param {boolean=} opt_forward Whether to play forward, or backward. Default
- *     is true.
- *
- * @return {Mesh}
- */
-Mesh.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
-    opt_forward) {
-  log_.assert_(name, 'name must be valid.', '(Mesh::setAnimation)');
-  log_.assert_(typeof name === 'string', name, 'name must be a string.',
-      '(Mesh::setAnimation)');
-  log_.assert_(typeof start === 'number', 'start must be a number.',
-      start, '(Mesh::setAnimation)');
-  log_.assert_(start >= 0, 'start must be >= 0.', start,
-      '(Mesh::setAnimation)');
-  log_.assert_(typeof end === 'number', 'end must be a number.',
-      end, '(Mesh::setAnimation)');
-  log_.assert_(end >= 0, 'end must be >= 0.', end,
-      '(Mesh::setAnimation)');
-  log_.assert_(typeof seconds === 'number', 'seconds must be a number.',
-      seconds, '(Mesh::setAnimation)');
-  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds,
-      '(Mesh::setAnimation)');
-
-  this.animations_[name] = {
-    start: start,
-    end: end,
-    duration: seconds * 1000,
-    loop: typeof opt_loop !== 'undefined' ? opt_loop : true,
-    forward: typeof opt_forward === 'undefined' ? true : opt_forward
-  };
-
-  return this;
-};
 
 
 /**
@@ -307,12 +282,85 @@ Mesh.prototype.play = function(opt_name) {
 
 
 /**
+ * Defines an animation.
+ *
+ * @param {string} name Name of the animation.
+ * @param {number} start Start frame.
+ * @param {number} end End frame.
+ * @param {number} seconds Duration in seconds.
+ * @param {boolean=} opt_loop Whether to loop the animation. Default is true.
+ * @param {boolean=} opt_forward Whether to play forward, or backward. Default
+ *     is true.
+ *
+ * @return {Mesh}
+ */
+Mesh.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
+    opt_forward) {
+  log_.assert_(name, 'name must be valid.', '(Mesh::setAnimation)');
+  log_.assert_(typeof name === 'string', name, 'name must be a string.',
+      '(Mesh::setAnimation)');
+  log_.assert_(typeof start === 'number', 'start must be a number.',
+      start, '(Mesh::setAnimation)');
+  log_.assert_(start >= 0, 'start must be >= 0.', start,
+      '(Mesh::setAnimation)');
+  log_.assert_(typeof end === 'number', 'end must be a number.',
+      end, '(Mesh::setAnimation)');
+  log_.assert_(end >= 0, 'end must be >= 0.', end,
+      '(Mesh::setAnimation)');
+  log_.assert_(typeof seconds === 'number', 'seconds must be a number.',
+      seconds, '(Mesh::setAnimation)');
+  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds,
+      '(Mesh::setAnimation)');
+
+  this.animations_[name] = {
+    start: start,
+    end: end,
+    duration: seconds * 1000,
+    loop: typeof opt_loop !== 'undefined' ? opt_loop : true,
+    forward: typeof opt_forward === 'undefined' ? true : opt_forward
+  };
+
+  return this;
+};
+
+
+/**
+ * Sets the mesh file. This stops all current animations.
+ *
+ * @param {string} mesh Mesh filename.
+ *
+ * @return {Mesh}
+ */
+Mesh.prototype.setMesh = function(mesh) {
+  log_.assert_(mesh, 'mesh must be valid.', mesh, '(Mesh::setMesh)');
+  log_.assert_(typeof mesh === 'string', 'mesh must be a string.',
+      mesh, '(Mesh::setMesh)');
+
+  if (this.mesh_ === mesh)
+    return this;
+
+  this.mesh_ = mesh;
+
+  this.stop();
+
+  this.dispatch(new voodoo.Event('changeMesh', this));
+
+  if (this.view) this.view.loadMesh_();
+  if (this.stencilView) this.stencilView.loadMesh_();
+
+  return this;
+};
+
+
+/**
  * Pauses an animation.
  *
  * @return {Mesh}
  */
 Mesh.prototype.stop = function() {
-  this.dispatch(new voodoo.Event('stop', this));
+  if (this.playing_)
+    this.dispatch(new voodoo.Event('stop', this));
+
   this.playing_ = false;
 
   return this;
@@ -333,6 +381,14 @@ Mesh.prototype.animation = '';
  * @type {boolean}
  */
 Mesh.prototype.looping = false;
+
+
+/**
+ * Gets or sets the current mesh filename.
+ *
+ * @type {string}
+ */
+Mesh.prototype.mesh = '';
 
 
 /**

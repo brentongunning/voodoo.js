@@ -117,7 +117,7 @@ MeshTests.prototype.testMeshNonLoopAnimations = function(queue) {
  *
  * @param {Object} queue Async queue.
  */
-MeshTests.prototype.testMeshEvents = function(queue) {
+MeshTests.prototype.testMeshAnimationEvents = function(queue) {
   var instance = new voodoo.Mesh({
     format: voodoo.Mesh.Format.JSON,
     mesh: '/test/test/assets/monster.json',
@@ -191,5 +191,43 @@ MeshTests.prototype.testInvalidProperties = function(queue) {
 
   assertException(function() {
     instance.play('walk');
+  });
+};
+
+
+/**
+ * Tests that the Mesh file can be changed.
+ *
+ * @param {Object} queue Async queue.
+ */
+MeshTests.prototype.testMeshChangeFile = function(queue) {
+  /*:DOC +=
+    <div style="position:absolute; left:400px; top:400px;
+        width:400px; height:300px;" id="anchor"></div>
+  */
+
+  var mesh;
+
+  // change mesh
+
+  queue.call(function(callbacks) {
+    mesh = new voodoo.Mesh({
+      format: voodoo.Mesh.Format.JSON,
+      mesh: '/test/test/assets/monster.json'
+    }).on('load', callbacks.add(function() {}));
+  });
+
+  queue.call(function() {
+    var numChangeMesh = 0;
+
+    mesh.on('changeMesh', function() { numChangeMesh++; });
+
+    mesh.mesh = 'errorMesh';
+
+    assertEquals(1, numChangeMesh);
+
+    mesh.setMesh('/test/test/assets/monster.json');
+
+    assertEquals(2, numChangeMesh);
   });
 };
