@@ -65,7 +65,10 @@ Layer_.prototype.addView_ = function(view) {
 Layer_.prototype.clearDirtyFlags_ = function() {
   for (var viewIndex = 0, numViews = this.views_.length; viewIndex < numViews;
       ++viewIndex) {
-    this.views_[viewIndex]['scene'].isDirty_ = false;
+    var scene = this.views_[viewIndex]['scene'];
+
+    scene.isDirty_ = false;
+    scene.forceRender_ = false;
   }
 };
 
@@ -84,7 +87,13 @@ Layer_.prototype.isRenderNeeded_ = function() {
     var view = this.views_[viewIndex];
     var scene = view['scene'];
 
-    if (view['loaded'] && scene.isDirty_) {
+    if (!view['loaded'])
+      continue;
+
+    if (scene.forceRender_)
+      return true;
+
+    if (scene.isDirty_) {
       var meshes = scene.meshes_;
 
       // If a scene has any non-mesh objects, then we have to redraw.

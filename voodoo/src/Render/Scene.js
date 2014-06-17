@@ -127,6 +127,15 @@ Scene.prototype.isDirty_ = true;
 
 
 /**
+ * Whether the scene must be re-rendered.
+ *
+ * @private
+ * @type {boolean}
+ */
+Scene.prototype.forceRender_ = true;
+
+
+/**
  * Array of objects managed by this View's scene.
  *
  * @type {Array.<THREE.Object3D>}

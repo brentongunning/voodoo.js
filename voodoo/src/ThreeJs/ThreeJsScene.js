@@ -349,7 +349,9 @@ ThreeJsScene_.prototype['remove'] = function(object) {
       this.meshes_.splice(index, 1);
   }
 
-  this.isDirty_ = true;
+  // Removing an object forces a re-render no matter what since the
+  // object doesn't exist to check if it's inside the frustum anymore.
+  this.forceRender_ = true;
 };
 
 
