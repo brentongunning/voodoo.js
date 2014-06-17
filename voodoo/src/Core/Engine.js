@@ -273,6 +273,9 @@ Engine.prototype.removeModel_ = function(model) {
   this.models_.splice(this.models_.indexOf(model), 1);
   this.dispatcher_.dispatchEvent_(null, new window['voodoo']['Event'](
       'removemodel', model));
+
+  // Removing objects always forces a re-render.
+  this.renderer_.isDirty_ = true;
 };
 
 
