@@ -23,4 +23,4 @@ Lights\CameraLight.js
 Lights\MouseLight.js
 
 Geometry\Image3D.js
-Geometry\Mesh.js
+Geometry\Model3D.js

@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: MeshTests.js
+// File: Model3DTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
 // ----------------------------------------------------------------------------
@@ -7,17 +7,17 @@
 
 
 /**
- * Test cases to make sure the Mesh class works as expected.
+ * Test cases to make sure the Model3D class works as expected.
  *
  * @constructor
  */
-var MeshTests = AsyncTestCase('MeshTests');
+var Model3DTests = AsyncTestCase('Model3DTests');
 
 
 /**
  * Shutdown the engine between test cases.
  */
-MeshTests.prototype.tearDown = function() {
+Model3DTests.prototype.tearDown = function() {
   var voodooEngine = voodoo.engine;
   if (voodooEngine)
     voodooEngine.destroy();
@@ -25,11 +25,11 @@ MeshTests.prototype.tearDown = function() {
 
 
 /**
- * Tests that the Mesh class can be created on a div.
+ * Tests that the Model3D class can be created on a div.
  *
  * @param {Object} queue Async queue.
  */
-MeshTests.prototype.testMeshLoad = function(queue) {
+Model3DTests.prototype.testModel3DLoad = function(queue) {
   /*:DOC +=
     <div style="position:absolute; left:400px; top:400px;
         width:400px; height:300px;" id="anchor"></div>
@@ -38,9 +38,9 @@ MeshTests.prototype.testMeshLoad = function(queue) {
   var loaded = false;
 
   queue.call(function(callbacks) {
-    new voodoo.Mesh({
-      format: voodoo.Mesh.Format.JSON,
-      mesh: '/test/test/assets/monster.json',
+    new voodoo.Model3D({
+      format: voodoo.Model3D.Format.JSON,
+      modelSrc: '/test/test/assets/monster.json',
       animated: false
     }).on('load', callbacks.add(function() {
       loaded = true;
@@ -48,18 +48,18 @@ MeshTests.prototype.testMeshLoad = function(queue) {
   });
 
   queue.call(function() {
-    assert('Mesh loaded:', loaded);
+    assert('Model3D loaded:', loaded);
   });
 };
 
 
 /**
- * Tests that the Mesh can play a looping animation.
+ * Tests that the Model3D can play a looping animation.
  */
-MeshTests.prototype.testMeshLoopAnimations = function() {
-  var instance = new voodoo.Mesh({
-    format: voodoo.Mesh.Format.JSON,
-    mesh: '/test/test/assets/monster.json',
+Model3DTests.prototype.testModel3DLoopAnimations = function() {
+  var instance = new voodoo.Model3D({
+    format: voodoo.Model3D.Format.JSON,
+    modelSrc: '/test/test/assets/monster.json',
     animated: true
   }).setAnimation('walk', 0, 23, 0.01, true).play('walk');
 
@@ -73,17 +73,17 @@ MeshTests.prototype.testMeshLoopAnimations = function() {
 
 
 /**
- * Tests that the Mesh class can play a non-looping animation.
+ * Tests that the Model3D class can play a non-looping animation.
  *
  * @param {Object} queue Async queue.
  */
-MeshTests.prototype.testMeshNonLoopAnimations = function(queue) {
+Model3DTests.prototype.testModel3DNonLoopAnimations = function(queue) {
   var instance;
 
   queue.call(function(callbacks) {
-    instance = new voodoo.Mesh({
-      format: voodoo.Mesh.Format.JSON,
-      mesh: '/test/test/assets/monster.json',
+    instance = new voodoo.Model3D({
+      format: voodoo.Model3D.Format.JSON,
+      modelSrc: '/test/test/assets/monster.json',
       animated: true
     }).on('load', callbacks.add(function() {}));
   });
@@ -113,14 +113,14 @@ MeshTests.prototype.testMeshNonLoopAnimations = function(queue) {
 
 
 /**
- * Tests that the Mesh class can play a non-looping animation.
+ * Tests that the Model3D class can play a non-looping animation.
  *
  * @param {Object} queue Async queue.
  */
-MeshTests.prototype.testMeshAnimationEvents = function(queue) {
-  var instance = new voodoo.Mesh({
-    format: voodoo.Mesh.Format.JSON,
-    mesh: '/test/test/assets/monster.json',
+Model3DTests.prototype.testModel3DAnimationEvents = function(queue) {
+  var instance = new voodoo.Model3D({
+    format: voodoo.Model3D.Format.JSON,
+    modelSrc: '/test/test/assets/monster.json',
     animated: true
   });
 
@@ -142,33 +142,33 @@ MeshTests.prototype.testMeshAnimationEvents = function(queue) {
  *
  * @param {Object} queue Async queue.
  */
-MeshTests.prototype.testInvalidProperties = function(queue) {
+Model3DTests.prototype.testInvalidProperties = function(queue) {
   if (!DEBUG)
     return;
 
-  var instance = new voodoo.Mesh({
-    format: voodoo.Mesh.Format.JSON,
-    mesh: '/test/test/assets/monster.json',
+  var instance = new voodoo.Model3D({
+    format: voodoo.Model3D.Format.JSON,
+    modelSrc: '/test/test/assets/monster.json',
     animated: true
   });
 
   assertException(function() {
-    new voodoo.Mesh({
-      mesh: '/test/test/assets/monster.json',
+    new voodoo.Model3D({
+      modelSrc: '/test/test/assets/monster.json',
       format: 'md5'
     });
   });
 
   assertException(function() {
-    new voodoo.Mesh({
-      mesh: 34567,
+    new voodoo.Model3D({
+      modelSrc: 34567,
       format: 'json'
     });
   });
 
   assertException(function() {
-    new voodoo.Mesh({
-      mesh: '/test/test/assets/monster.json',
+    new voodoo.Model3D({
+      modelSrc: '/test/test/assets/monster.json',
       animated: 'false'
     });
   });
@@ -196,38 +196,38 @@ MeshTests.prototype.testInvalidProperties = function(queue) {
 
 
 /**
- * Tests that the Mesh file can be changed.
+ * Tests that the Model3D file can be changed.
  *
  * @param {Object} queue Async queue.
  */
-MeshTests.prototype.testMeshChangeFile = function(queue) {
+Model3DTests.prototype.testModel3DChangeFile = function(queue) {
   /*:DOC +=
     <div style="position:absolute; left:400px; top:400px;
         width:400px; height:300px;" id="anchor"></div>
   */
 
-  var mesh;
+  var model;
 
-  // change mesh
+  // change model
 
   queue.call(function(callbacks) {
-    mesh = new voodoo.Mesh({
-      format: voodoo.Mesh.Format.JSON,
-      mesh: '/test/test/assets/monster.json'
+    model = new voodoo.Model3D({
+      format: voodoo.Model3D.Format.JSON,
+      modelSrc: '/test/test/assets/monster.json'
     }).on('load', callbacks.add(function() {}));
   });
 
   queue.call(function() {
-    var numChangeMesh = 0;
+    var numChangeModelSrc = 0;
 
-    mesh.on('changeMesh', function() { numChangeMesh++; });
+    model.on('changeModelSrc', function() { numChangeModelSrc++; });
 
-    mesh.mesh = 'errorMesh';
+    model.modelSrc = 'errorModel';
 
-    assertEquals(1, numChangeMesh);
+    assertEquals(1, numChangeModelSrc);
 
-    mesh.setMesh('/test/test/assets/monster.json');
+    model.setModelSrc('/test/test/assets/monster.json');
 
-    assertEquals(2, numChangeMesh);
+    assertEquals(2, numChangeModelSrc);
   });
 };

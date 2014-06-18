@@ -5,7 +5,7 @@
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
   <meta content="utf-8" http-equiv="encoding">
 
-	<title>Mesh Demo</title>
+	<title>Model3D Demo</title>
 </head>
 
 <style>
@@ -17,7 +17,7 @@
 		height: 500px;
 	}
 
-	#mesh {
+	#model {
 		width: 200px;
 		height: 200px;
 		display: inline-block;
@@ -30,7 +30,7 @@
 
 <body>
 	<div id="spacer"></div>
-	<div id="mesh"></div>
+	<div id="model"></div>
 	<div id="spacer"></div>
 </body>
 
@@ -41,15 +41,15 @@
 		performanceScaling: false
 	});
 
-	var Mesh = voodoo.Mesh.extend(voodoo.Attachable);
-	Mesh = Mesh.extend(voodoo.Scalable);
-	Mesh = Mesh.extend(voodoo.Colorable);
-	Mesh = Mesh.extend(voodoo.Wireframe);
+	var Model3D = voodoo.Model3D.extend(voodoo.Attachable);
+	Model3D = Model3D.extend(voodoo.Scalable);
+	Model3D = Model3D.extend(voodoo.Colorable);
+	Model3D = Model3D.extend(voodoo.Wireframe);
 
-	var mesh = new Mesh({
-		element: document.getElementById('mesh'),
-		format: voodoo.Mesh.Format.JSON,
-		mesh: 'monster.js',
+	var model = new Model3D({
+		element: document.getElementById('model'),
+		format: voodoo.Model3D.Format.JSON,
+		modelSrc: 'monster.js',
 		animated: true,
 		center: false,
 		pixelScale: false

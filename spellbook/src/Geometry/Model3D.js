@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// File: Mesh.js
+// File: Model3D.js
 //
 // Copyright (c) 2014 Voodoojs Authors
 // ----------------------------------------------------------------------------
@@ -7,13 +7,13 @@
 
 
 /**
- * The view that loads a mesh from a file.
+ * The view that loads a model from a file.
  *
  * @constructor
  * @private
  * @extends {voodoo.View}
  */
-var MeshView_ = voodoo.View.extend({
+var Model3DView_ = voodoo.View.extend({
 
   load: function() {
     this.base.load();
@@ -21,25 +21,25 @@ var MeshView_ = voodoo.View.extend({
     this.loaded = false;
     this.pendingAnimation_ = null;
 
-    this.loadMesh_();
+    this.loadModel_();
   },
 
-  loadMesh_: function() {
-    if (this.mesh_) {
-      this.scene.remove(this.mesh_);
-      this.triggers.remove(this.mesh_);
+  loadModel_: function() {
+    if (this.modelMesh_) {
+      this.scene.remove(this.modelMesh_);
+      this.triggers.remove(this.modelMesh_);
 
-      this.mesh_ = null;
+      this.modelMesh_ = null;
     }
 
-    if (this.model.format_ === Mesh.Format.JSON)
+    if (this.model.format_ === Model3D.Format.JSON)
       this.loadJson_();
   },
 
   loadJson_: function() {
     var that = this;
     var loader = new THREE.JSONLoader();
-    loader.load(this.model.mesh_, function(geometry, materials) {
+    loader.load(this.model.modelSrc_, function(geometry, materials) {
       var mesh;
 
       for (var i = 0, len = i < materials.length; i < len; ++i) {
@@ -61,7 +61,7 @@ var MeshView_ = voodoo.View.extend({
         mesh = new THREE.Mesh(geometry, faceMaterial);
       }
 
-      that.mesh_ = mesh;
+      that.modelMesh_ = mesh;
 
       that.scene.add(mesh);
       that.triggers.add(mesh);
@@ -76,15 +76,15 @@ var MeshView_ = voodoo.View.extend({
       return;
     }
 
-    this.mesh_.time = 0;
-    this.mesh_.duration = animation.duration;
+    this.modelMesh_.time = 0;
+    this.modelMesh_.duration = animation.duration;
 
     if (animation.forward)
-      this.mesh_.setDirectionForward();
+      this.modelMesh_.setDirectionForward();
     else
-      this.mesh_.setDirectionBackward();
+      this.modelMesh_.setDirectionBackward();
 
-    this.mesh_.setFrameRange(animation.start, animation.end);
+    this.modelMesh_.setFrameRange(animation.start, animation.end);
   },
 
   updateAnimation_: function(deltaTimeMs) {
@@ -96,20 +96,20 @@ var MeshView_ = voodoo.View.extend({
       this.pendingAnimation_ = null;
     }
 
-    if (this.mesh_.updateAnimation) {
-      this.mesh_.updateAnimation(deltaTimeMs);
+    if (this.modelMesh_.updateAnimation) {
+      this.modelMesh_.updateAnimation(deltaTimeMs);
       this.dirty();
     }
   },
 
   getLastTime_: function() {
-    return this.loaded ? this.mesh_.time : 0;
+    return this.loaded ? this.modelMesh_.time : 0;
   },
 
   setToLastFrame_: function() {
-    if (this.mesh_.updateAnimation) {
-      this.mesh_.time = 1;
-      this.mesh_.updateAnimation(0);
+    if (this.modelMesh_.updateAnimation) {
+      this.modelMesh_.time = 1;
+      this.modelMesh_.updateAnimation(0);
       this.dirty();
     }
   }
@@ -119,55 +119,56 @@ var MeshView_ = voodoo.View.extend({
 
 
 /**
- * A 3D mesh loaded from a file.
+ * A 3D model loaded from a file.
  *
  * Options:
  *
- * - mesh {string} 3D mesh file to load.
- * - format {Mesh.Format} Mesh file format. Default is JSON.
- * - animated {boolean} Whether the mesh supports animations. Default is true.
+ * - modelSrc {string} 3D model file to load.
+ * - format {Model3D.Format} Model file format. Default is JSON.
+ * - animated {boolean} Whether the model supports animations. Default is true.
  *
  * Events:
  *
  * - play
  * - stop
- * - changeMesh
+ * - changeModelSrc
  *
  * @constructor
  * @extends {voodoo.Model}
  *
  * @param {Object=} opt_options Options object.
  */
-var Mesh = this.Mesh = voodoo.Model.extend({
+var Model3D = this.Model3D = voodoo.Model.extend({
 
-  name: 'Mesh',
+  name: 'Model3D',
   organization: 'spellbook',
-  viewType: MeshView_,
+  viewType: Model3DView_,
 
   initialize: function(options) {
     options = options || {};
 
     this.base.initialize(options);
 
-    log_.assert_(options.mesh, 'mesh must be valid.', options.mesh,
-        '(Mesh::initialize)');
-    log_.assert_(typeof options.mesh === 'string', 'mesh must be a string.',
-        options.mesh, '(Mesh::initialize)');
-    this.mesh_ = options.mesh;
+    log_.assert_(options.modelSrc, 'modelSrc must be valid.', options.modelSrc,
+        '(Model3D::initialize)');
+    log_.assert_(typeof options.modelSrc === 'string',
+        'modelSrc must be a string.', options.modelSrc,
+        '(Model3D::initialize)');
+    this.modelSrc_ = options.modelSrc;
 
     if (typeof options.format !== 'undefined') {
       log_.assert_(options.format === 'json', 'format must be valid.',
-          options.format, '(Mesh::initialize)');
+          options.format, '(Model3D::initialize)');
 
       this.format_ = options.format;
     } else {
-      this.format_ = Mesh.Format.JSON;
+      this.format_ = Model3D.Format.JSON;
     }
 
     if (typeof options.animated !== 'undefined') {
       log_.assert_(typeof options.animated === 'boolean',
           'animated must be a boolean.',
-          options.animated, '(Mesh::initialize)');
+          options.animated, '(Model3D::initialize)');
 
       this.animated_ = options.animated;
     } else {
@@ -202,9 +203,9 @@ var Mesh = this.Mesh = voodoo.Model.extend({
       enumerable: true
     });
 
-    Object.defineProperty(this, 'mesh', {
-      get: function() { return that.mesh_; },
-      set: function(mesh) { that.setMesh(mesh); },
+    Object.defineProperty(this, 'modelSrc', {
+      get: function() { return that.modelSrc_; },
+      set: function(modelSrc) { that.setModelSrc(modelSrc); },
       enumerable: true
     });
   },
@@ -242,21 +243,21 @@ var Mesh = this.Mesh = voodoo.Model.extend({
  * @param {string=} opt_name Name of the animation. If this unspecified,
  *   then play() will animate the last animation played.
  *
- * @return {Mesh}
+ * @return {Model3D}
  */
-Mesh.prototype.play = function(opt_name) {
+Model3D.prototype.play = function(opt_name) {
   if (typeof opt_name === 'undefined') {
     log_.assert_(this.animation_ in this.animations_,
-        'There is no last animation to play.', '(Mesh::play)');
+        'There is no last animation to play.', '(Model3D::play)');
 
     this.playing_ = true;
 
     return this;
   }
 
-  log_.assert_(opt_name, 'name must be valid.', '(Mesh::setAnimation)');
+  log_.assert_(opt_name, 'name must be valid.', '(Model3D::setAnimation)');
   log_.assert_(opt_name in this.animations_, 'Animation does not exist.',
-      opt_name, '(Mesh::setAnimation)');
+      opt_name, '(Model3D::setAnimation)');
 
   if (this.animation_ === opt_name) {
     this.playing_ = true;
@@ -292,25 +293,25 @@ Mesh.prototype.play = function(opt_name) {
  * @param {boolean=} opt_forward Whether to play forward, or backward. Default
  *     is true.
  *
- * @return {Mesh}
+ * @return {Model3D}
  */
-Mesh.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
+Model3D.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
     opt_forward) {
-  log_.assert_(name, 'name must be valid.', '(Mesh::setAnimation)');
+  log_.assert_(name, 'name must be valid.', '(Model3D::setAnimation)');
   log_.assert_(typeof name === 'string', name, 'name must be a string.',
-      '(Mesh::setAnimation)');
+      '(Model3D::setAnimation)');
   log_.assert_(typeof start === 'number', 'start must be a number.',
-      start, '(Mesh::setAnimation)');
+      start, '(Model3D::setAnimation)');
   log_.assert_(start >= 0, 'start must be >= 0.', start,
-      '(Mesh::setAnimation)');
+      '(Model3D::setAnimation)');
   log_.assert_(typeof end === 'number', 'end must be a number.',
-      end, '(Mesh::setAnimation)');
+      end, '(Model3D::setAnimation)');
   log_.assert_(end >= 0, 'end must be >= 0.', end,
-      '(Mesh::setAnimation)');
+      '(Model3D::setAnimation)');
   log_.assert_(typeof seconds === 'number', 'seconds must be a number.',
-      seconds, '(Mesh::setAnimation)');
+      seconds, '(Model3D::setAnimation)');
   log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds,
-      '(Mesh::setAnimation)');
+      '(Model3D::setAnimation)');
 
   this.animations_[name] = {
     start: start,
@@ -325,28 +326,29 @@ Mesh.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
 
 
 /**
- * Sets the mesh file. This stops all current animations.
+ * Sets the model file. This stops all current animations.
  *
- * @param {string} mesh Mesh filename.
+ * @param {string} modelSrc Model filename.
  *
- * @return {Mesh}
+ * @return {Model3D}
  */
-Mesh.prototype.setMesh = function(mesh) {
-  log_.assert_(mesh, 'mesh must be valid.', mesh, '(Mesh::setMesh)');
-  log_.assert_(typeof mesh === 'string', 'mesh must be a string.',
-      mesh, '(Mesh::setMesh)');
+Model3D.prototype.setModelSrc = function(modelSrc) {
+  log_.assert_(modelSrc, 'modelSrc must be valid.', modelSrc,
+      '(Model3D::setModelSrc)');
+  log_.assert_(typeof modelSrc === 'string', 'modelSrc must be a string.',
+      modelSrc, '(Model3D::setModelSrc)');
 
-  if (this.mesh_ === mesh)
+  if (this.modelSrc_ === modelSrc)
     return this;
 
-  this.mesh_ = mesh;
+  this.modelSrc_ = modelSrc;
 
   this.stop();
 
-  this.dispatch(new voodoo.Event('changeMesh', this));
+  this.dispatch(new voodoo.Event('changeModelSrc', this));
 
-  if (this.view) this.view.loadMesh_();
-  if (this.stencilView) this.stencilView.loadMesh_();
+  if (this.view) this.view.loadModel_();
+  if (this.stencilView) this.stencilView.loadModel_();
 
   return this;
 };
@@ -355,9 +357,9 @@ Mesh.prototype.setMesh = function(mesh) {
 /**
  * Pauses an animation.
  *
- * @return {Mesh}
+ * @return {Model3D}
  */
-Mesh.prototype.stop = function() {
+Model3D.prototype.stop = function() {
   if (this.playing_)
     this.dispatch(new voodoo.Event('stop', this));
 
@@ -372,31 +374,31 @@ Mesh.prototype.stop = function() {
  *
  * @type {string}
  */
-Mesh.prototype.animation = '';
+Model3D.prototype.animation = '';
 
 
 /**
- * Gets whether the mesh animation is looping.
+ * Gets whether the animation is looping.
  *
  * @type {boolean}
  */
-Mesh.prototype.looping = false;
+Model3D.prototype.looping = false;
 
 
 /**
- * Gets or sets the current mesh filename.
+ * Gets or sets the current model filename.
  *
  * @type {string}
  */
-Mesh.prototype.mesh = '';
+Model3D.prototype.modelSrc = '';
 
 
 /**
- * Gets or sets whether the mesh is playing an animation.
+ * Gets or sets whether playing an animation.
  *
  * @type {boolean}
  */
-Mesh.prototype.playing = false;
+Model3D.prototype.playing = false;
 
 
 /**
@@ -404,6 +406,6 @@ Mesh.prototype.playing = false;
  *
  * @enum {string}
  */
-Mesh.Format = {
+Model3D.Format = {
   JSON: 'json'
 };
