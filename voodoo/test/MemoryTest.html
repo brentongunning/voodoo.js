@@ -1,0 +1,76 @@
+<html>
+
+<head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="utf-8" http-equiv="encoding">
+
+  <title>Voodoo Memory Test</title>
+</head>
+
+<script src="../lib/three.min.js"></script>
+<script src="../build/voodoo-0.9.1.debug.js"></script>
+
+<body>
+
+  <center>
+    <h1>Memory Test</h1>
+    <h3>Description</h3>
+    <p>This test creates and destroys a basic Model and View repeatedly. The memory should not increase over time.</p>
+  </center>
+
+  Count: <span id="count"></span>
+
+  <button onclick="stop()">Stop</button>
+  <button onclick="start()">Start</button>
+
+</body>
+<script>
+
+var MemoryView = voodoo.View.extend({
+
+  load: function() {
+    this.geometry = new THREE.CubeGeometry(1, 1, 1);
+    this.material = new THREE.MeshBasicMaterial();
+    var mesh = new THREE.Mesh(this.geometry, this.material);
+
+    this.scene.add(mesh);
+  }
+
+});
+
+var MemoryModel = voodoo.Model.extend({
+
+  name: 'MemoryModel',
+  viewType: MemoryView
+
+});
+
+var model = new MemoryModel();
+model.destroy();
+
+var count = 0;
+var timerId = 0;
+
+function stop() {
+  if (timerId) {
+    clearInterval(timerId);
+    timerId = 0;
+  }
+}
+
+function start() {
+  if (!timerId) {
+    timerId = setInterval(function() {
+      var model = new MemoryModel();
+      model.destroy();
+
+      ++count;
+      document.getElementById('count').innerHTML = count;
+    }, 10);
+  }
+}
+
+start();
+
+</script>
+</html>
