@@ -33,18 +33,23 @@ function ThreeJsScene_(scene, view) {
   this.parent_ = new THREE.Object3D();
   this.scene_.add(this.parent_);
 
+  // TODO: Remove
+  // This is hack to workaround a memory leak in Three.js.
+  // https://github.com/mrdoob/three.js/issues/4887
+  this.scene_['__objectsAdded'] = [];
+
   this.objects_ = [];
   this.meshes_ = [];
   this.dispatcher_ = new Dispatcher_();
 
-  var sef = this;
+  var that = this;
 
   Object.defineProperty(this, 'objects', {
     get: function() {
       // Create a copy of all the objects. A copy lets the user iterate over
       // them without worrying about invalidating our own list or them changing.
       var objects = [];
-      var children = sef.parent_.children;
+      var children = that.parent_.children;
       for (var i = 0, numChildren = children.length; i < numChildren; ++i) {
         var child = children[i];
         if (child['addedToVoodooScene'])
@@ -362,6 +367,11 @@ ThreeJsScene_.prototype['remove'] = function(object) {
  */
 ThreeJsScene_.prototype.destroy_ = function() {
   this.scene_.remove(this.parent_);
+
+  // TODO: Remove
+  // This is hack to workaround a memory leak in Three.js.
+  // https://github.com/mrdoob/three.js/issues/4887
+  this.scene_['__objectsRemoved'] = [];
 
   if (this.trackId_ !== null)
     this['detach']();
