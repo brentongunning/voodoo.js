@@ -24,13 +24,21 @@ var Model3DView_ = voodoo.View.extend({
     this.loadModel_();
   },
 
-  loadModel_: function() {
+  unload: function() {
     if (this.modelMesh_) {
       this.scene.remove(this.modelMesh_);
       this.triggers.remove(this.modelMesh_);
-
       this.modelMesh_ = null;
     }
+
+    if (this.material_) {
+      this.material_.dispose();
+      this.material_ = null;
+    }
+  },
+
+  loadModel_: function() {
+    this.unload();
 
     if (this.model.format_ === Model3D.Format.JSON)
       this.loadJson_();
@@ -65,6 +73,8 @@ var Model3DView_ = voodoo.View.extend({
 
       that.scene.add(mesh);
       that.triggers.add(mesh);
+
+      that.material_ = material;
 
       that.loaded = true;
     });

@@ -82,12 +82,13 @@ var MouseLight = this.MouseLight = Light_.extend({
 
     // Move the light when the mouse moves.
     var that = this;
-    document.addEventListener('mousemove', function(event) {
+    this.mousemoveListener_ = function(event) {
       var x = event.clientX + window.pageXOffset;
       var y = event.clientY + window.pageYOffset;
 
       that.view.move_(x, y);
-    }, false);
+    };
+    document.addEventListener('mousemove', this.mousemoveListener_, false);
 
     // Respond to camera moves in case the height changes.
     if (this.height_ <= 0) {
@@ -95,6 +96,10 @@ var MouseLight = this.MouseLight = Light_.extend({
         this.view.updateHeight_();
       });
     }
+  },
+
+  tearDownViews: function() {
+    document.removeEventListener('mousemove', this.mousemoveListener_, false);
   }
 
 });

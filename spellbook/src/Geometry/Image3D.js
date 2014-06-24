@@ -25,6 +25,10 @@ var Image3DView_ = voodoo.View.extend({
     this.loaded = false;
   },
 
+  unload: function() {
+    this.destroyMesh_();
+  },
+
   createMaterial_: function() {
     return new THREE.MeshLambertMaterial({
       color: 0xFFFFFF,
@@ -451,9 +455,9 @@ var Image3DView_ = voodoo.View.extend({
     if (!this.texture_)
       return;
 
-    var geometry = this.createGeometry_();
-    var material = this.createMaterial_();
-    this.mesh_ = new THREE.Mesh(geometry, material);
+    this.geometry_ = this.createGeometry_();
+    this.material_ = this.createMaterial_();
+    this.mesh_ = new THREE.Mesh(this.geometry_, this.material_);
 
     this.mesh_.morphTargetInfluences = this.model.currentMorphTargets_;
 
@@ -464,8 +468,26 @@ var Image3DView_ = voodoo.View.extend({
   },
 
   destroyMesh_: function() {
-    this.scene.remove(this.mesh_);
-    this.triggers.remove(this.mesh_);
+    if (this.mesh_) {
+      this.scene.remove(this.mesh_);
+      this.triggers.remove(this.mesh_);
+      this.mesh_ = null;
+    }
+
+    if (this.geometry_) {
+      this.geometry_.dispose();
+      this.geometry_ = null;
+    }
+
+    if (this.material_) {
+      this.material_.dispose();
+      this.material_ = null;
+    }
+
+    if (this.texture_) {
+      this.texture_.dispose();
+      this.texture_ = null;
+    }
   },
 
   setMorphTargetInfluences_: function(influences) {

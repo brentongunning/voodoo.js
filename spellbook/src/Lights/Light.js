@@ -21,6 +21,10 @@ var LightView_ = voodoo.View.extend({
     log_.error_('createLight_() undefined.', '(LightView_::createLight_)');
   },
 
+  getLight_: function() {
+    return this.light_;
+  },
+
   load: function() {
     this.base.load();
 
