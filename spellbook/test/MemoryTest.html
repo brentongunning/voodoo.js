@@ -1,0 +1,213 @@
+<html>
+
+<head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="utf-8" http-equiv="encoding">
+
+  <title>Spellbook Memory Test</title>
+</head>
+
+<script src="../lib/three.min.js"></script>
+<script src="../lib/voodoo.min.js"></script>
+<script src="../lib/spellbook.min.debug.js"></script>
+
+<body>
+
+  <center>
+    <h1>Memory Test</h1>
+    <h3>Description</h3>
+    <p>This test creates and destroys various models. The memory should not increase over time.</p>
+  </center>
+
+  Count: <span id="count"></span>
+
+  <br/>
+
+  <button onclick="stop()">Stop</button>
+  <button onclick="start()">Start</button>
+
+  <br/>
+  Models: 
+  <input id="arcballCheckbox" type="checkbox">Arcball</input>
+
+  <input id="image3DCheckbox" type="checkbox">Image3D</input>
+  <input id="model3DCheckbox" type="checkbox">Model3D</input>
+
+  <input id="ambientLightCheckbox" type="checkbox">AmbientLight</input>
+  <input id="cameraLightCheckbox" type="checkbox">CameraLight</input>
+  <input id="mouseLightCheckbox" type="checkbox">MouseLight</input>
+
+  <input id="attachableCheckbox" type="checkbox">Attachable</input>
+  <input id="colorableCheckbox" type="checkbox">Colorable</input>
+  <input id="fadableCheckbox" type="checkbox">Fadable</input>
+  <input id="hidableCheckbox" type="checkbox">Hidable</input>
+  <input id="lightableCheckbox" type="checkbox">Lightable</input>
+  <input id="movableCheckbox" type="checkbox">Movable</input>
+  <input id="rotatableCheckbox" type="checkbox">Rotatable</input>
+  <input id="scalableCheckbox" type="checkbox">Scalable</input>
+  <input id="wireframeCheckbox" type="checkbox">Wireframe</input>
+
+  <div id="exampleDiv" width=400 height=400></div>
+
+</body>
+<script>
+
+var MemoryView = voodoo.View.extend({
+
+  load: function() {
+    this.geometry = new THREE.CubeGeometry(1, 1, 1);
+    this.material = new THREE.MeshBasicMaterial();
+    var mesh = new THREE.Mesh(this.geometry, this.material);
+
+    this.scene.add(mesh);
+  }
+
+});
+
+var MemoryModel = voodoo.Model.extend({
+
+  name: 'MemoryModel',
+  viewType: MemoryView
+
+});
+
+var count = 0;
+var timerId = 0;
+
+var DummyComponent = voodoo.Model.extend({
+  name: 'DummyComponent',
+  viewType: voodoo.View.extend()
+});
+
+function increaseCount() {
+  ++count;
+  document.getElementById('count').innerHTML = count;
+}
+
+function stop() {
+  if (timerId) {
+    clearInterval(timerId);
+    timerId = 0;
+  }
+}
+
+function start() {
+  if (!timerId) {
+    timerId = setInterval(function() {
+
+      if (document.getElementById('arcballCheckbox').checked) {
+        var Component = DummyComponent.extend(voodoo.Arcbal);
+        var arcball = new Component();
+        arcball.destroy();
+        increaseCount();
+      }
+
+      if (document.getElementById('image3DCheckbox').checked) {
+        var image3D = new voodoo.Image3D({
+          element: document.getElementById('exampleDiv'),
+          imageSrc: 'assets/layers.jpg',
+          heightmap: 'assets/black.jpg',
+        }).on('load', function() {
+          image3D.destroy();
+          increaseCount();
+        });
+      }
+
+      if (document.getElementById('model3DCheckbox').checked) {
+        var model3D = new voodoo.Model3D({
+          modelSrc: 'assets/monster.json',
+        }).on('load', function() {
+          model3D.destroy();
+          increaseCount();
+        });
+      }
+
+      if (document.getElementById('ambientLightCheckbox').checked) {
+        var ambientLight = new voodoo.AmbientLight();
+        ambientLight.destroy();
+        increaseCount();
+      }
+
+      if (document.getElementById('cameraLightCheckbox').checked) {
+        var cameraLight = new voodoo.CameraLight();
+        cameraLight.destroy();
+        increaseCount();
+      }
+
+      if (document.getElementById('mouseLightCheckbox').checked) {
+        var mouseLight = new voodoo.MouseLight();
+        mouseLight.destroy();
+        increaseCount();
+      }
+
+      if (document.getElementById('attachableCheckbox').checked) {
+        var Component = DummyComponent.extend(voodoo.Attachable);
+        var attachable = new Component();
+        attachable.destroy();
+        increaseCount();
+      }
+
+      if (document.getElementById('colorableCheckbox').checked) {
+        var Component = DummyComponent.extend(voodoo.Colorable);
+        var colorable = new Component();
+        colorable.destroy();
+        increaseCount();
+      }
+
+      if (document.getElementById('fadableCheckbox').checked) {
+        var Component = DummyComponent.extend(voodoo.Fadable);
+        var fadable = new Component();
+        fadable.destroy();
+        increaseCount();
+      }
+
+      if (document.getElementById('hidableCheckbox').checked) {
+        var Component = DummyComponent.extend(voodoo.Hidable);
+        var hidable = new Component();
+        hidable.destroy();
+        increaseCount();
+      }
+
+      if (document.getElementById('lightableCheckbox').checked) {
+        var Component = DummyComponent.extend(voodoo.Lightable);
+        var lightable = new Component();
+        lightable.destroy();
+        increaseCount();
+      }
+
+      if (document.getElementById('movableCheckbox').checked) {
+        var Component = DummyComponent.extend(voodoo.Movable);
+        var movable = new Component();
+        movable.destroy();
+        increaseCount();
+      }
+
+      if (document.getElementById('rotatableCheckbox').checked) {
+        var Component = DummyComponent.extend(voodoo.Rotatable);
+        var rotatable = new Component();
+        rotatable.destroy();
+        increaseCount();
+      }
+
+      if (document.getElementById('scalableCheckbox').checked) {
+        var Component = DummyComponent.extend(voodoo.Scalable);
+        var scalable = new Component();
+        scalable.destroy();
+        increaseCount();
+      }
+
+      if (document.getElementById('wireframeCheckbox').checked) {
+        var Component = DummyComponent.extend(voodoo.Wireframe);
+        var wireframe = new Component();
+        wireframe.destroy();
+        increaseCount();
+      }
+      
+    }, 10);
+  }
+}
+
+start();
+
+</script>
+</html>
