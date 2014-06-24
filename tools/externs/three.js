@@ -3516,6 +3516,7 @@ THREE.Geometry.prototype.computeMorphNormals = function(){};
 THREE.Geometry.prototype.computeCentroids = function(){};
 THREE.Geometry.prototype.computeTangents = function(){};
 THREE.Geometry.prototype.computeBoundingBox = function(){};
+THREE.Geometry.prototype.dispose = function(){};
 
 /** @type {Array.<THREE.Vector2>} */
 THREE.Geometry.prototype.faceVertexUvs;
@@ -3536,19 +3537,23 @@ THREE.Geometry.prototype.morphTargets;
 THREE.Texture = function(img){};
 
 /** @type {boolean} */
-THREE.Texture.flipY;
+THREE.Texture.prototype.flipY;
 
 /** @type {Image} */
-THREE.Texture.image;
+THREE.Texture.prototype.image;
+
+THREE.Texture.prototype.dispose = function(){};
 
 /** @constructor */
 THREE.Material = function(){};
 
 /** @type {THREE.Texture?} */
-THREE.Material.bumpMap;
+THREE.Material.prototype.bumpMap;
 
 /** @type {THREE.Texture?} */
-THREE.Material.normalMap;
+THREE.Material.prototype.normalMap;
+
+THREE.Material.prototype.dispose = function(){};
 
 /**
  * @constructor
