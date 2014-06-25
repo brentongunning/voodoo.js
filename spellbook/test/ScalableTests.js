@@ -25,7 +25,25 @@ ScalableTests.prototype.tearDown = function() {
 
 
 /**
- * Tests that the Scale class can be extended from other types.
+ * Tests that the autofit property works. This only tests the properties
+ * work, not that the mesh is actually scaled properly.
+ */
+ScalableTests.prototype.setScalableAutofit = function() {
+  var Scalable = voodoo.Scalable.extend(DummyModel);
+  var instance = new Scalable({autofit: true});
+
+  assertTrue(instance.autofit);
+
+  instance.autofit = false;
+  assertFalse(instance.autofit);
+
+  instance.setAutofit(true);
+  assertTrue(instance.autofit);
+};
+
+
+/**
+ * Tests that the Scalable class can be extended from other types.
  */
 ScalableTests.prototype.testScalableExtend = function() {
   var ScalableBase = SimpleModel.extend(voodoo.Scalable);
@@ -278,6 +296,12 @@ ScalableTests.prototype.testInvalidProperties = function() {
   });
 
   assertException(function() {
+    new Scalable({
+      autofit: 2
+    });
+  });
+
+  assertException(function() {
     instance.scaleTo({}, 2);
   });
 
@@ -286,11 +310,19 @@ ScalableTests.prototype.testInvalidProperties = function() {
   });
 
   assertException(function() {
+    instance.setAutofit();
+  });
+
+  assertException(function() {
     instance.setScale([0, 1, 2, 3]);
   });
 
   assertException(function() {
     instance.setScaling();
+  });
+
+  assertException(function() {
+    instance.autofit = [1, 1, 1];
   });
 
   assertException(function() {

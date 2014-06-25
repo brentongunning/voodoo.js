@@ -21,13 +21,17 @@ var ScalableView_ = voodoo.View.extend({
   load: function() {
     this.base.load();
 
+    this.autofitScale_ = 1.0;
+
     this.scene.on('add', function(e) {
       var scale = this.model.scale_;
       var objectScale = e.object.scale;
 
-      objectScale.x = scale.x;
-      objectScale.y = scale.y;
-      objectScale.z = scale.z;
+      this.updateAutofitScale_(this.scene.objects);
+
+      objectScale.x = scale.x * this.autofitScale_;
+      objectScale.y = scale.y * this.autofitScale_;
+      objectScale.z = scale.z * this.autofitScale_;
 
       this.dirty();
     });
@@ -35,21 +39,37 @@ var ScalableView_ = voodoo.View.extend({
     this.setScale_(this.model.scale_);
   },
 
+  onChangeAutofit_: function() {
+    this.updateAutofitScale_(this.scene.objects);
+  },
+
   setScale_: function(scale) {
     log_.assert_(scale, 'scale must be valid.',
         '(ScalableView_::setScale_)');
 
     var sceneObjects = this.scene.objects;
+
+    this.updateAutofitScale_(sceneObjects);
+
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
       var sceneObjectScale = sceneObject.scale;
 
-      sceneObjectScale.x = scale.x;
-      sceneObjectScale.y = scale.y;
-      sceneObjectScale.z = scale.z;
+      sceneObjectScale.x = scale.x * this.autofitScale_;
+      sceneObjectScale.y = scale.y * this.autofitScale_;
+      sceneObjectScale.z = scale.z * this.autofitScale_;
     }
 
     this.dirty();
+  },
+
+  updateAutofitScale_: function(sceneObjects) {
+    if (this.model.autofit_) {
+      var sphere = computeBoundingSphere(sceneObjects);
+      this.autofitScale_ = 0.5 / sphere.radius;
+    } else {
+      this.autofitScale_ = 1.0;
+    }
   }
 
 });
@@ -63,6 +83,9 @@ var ScalableView_ = voodoo.View.extend({
  *
  * - scale {Object|number} Initial scale. This can be a scalar number, a array
  *     of length 3, or an object with x, y, and z properties.
+ * - autofit {boolean} Whether to automatically unformly scale all meshes to
+ *     fit inside [-0.5, 0.5] along all dimensions. This is useful for when
+ *     attached. The scale property becomes relative to the autofitted size.
  *
  * Events:
  *
@@ -91,6 +114,15 @@ var Scalable = this.Scalable = voodoo.Model.extend({
 
     this.scale_ = this.fixScale_(this.scale_);
 
+    if (typeof options.autofit !== 'undefined') {
+      log_.assert_(typeof options.autofit === 'boolean',
+          'autofit must be a boolean', options.autofit,
+          '(Scalable::initialize)');
+      this.autofit_ = options.autofit;
+    } else {
+      this.autofit_ = false;
+    }
+
     this.startScale_ = {
       x: this.scale_.x,
       y: this.scale_.y,
@@ -110,6 +142,12 @@ var Scalable = this.Scalable = voodoo.Model.extend({
 
     var that = this;
     var proxy = {};
+
+    Object.defineProperty(this, 'autofit', {
+      get: function() { return that.autofit_; },
+      set: function(autofit) { that.setAutofit(autofit); },
+      enumerable: true
+    });
 
     Object.defineProperty(this, 'scaling', {
       get: function() { return that.scaling_; },
@@ -247,6 +285,33 @@ Scalable.prototype.scaleTo = function(scale, seconds, opt_easing) {
 
 
 /**
+ * Gets or sets Whether to automatically unformly scale all meshes to fit
+ * inside [-0.5, 0.5] along all dimensions. This is useful for when attached.
+ * The scale property becomes relative to the autofitted size.
+ *
+ * Default is false.
+ *
+ * @param {boolean} autofit Whether to autofit or not.
+ *
+ * @return {Scalable}
+ */
+Scalable.prototype.setAutofit = function(autofit) {
+  log_.assert_(typeof autofit === 'boolean', 'autofit must be a boolean',
+      autofit, '(Scalable::setAutofit)');
+
+  if (this.autofit_ != autofit) {
+    this.autofit_ = autofit;
+
+    this.view.onChangeAutofit_();
+    if (this.stencilView)
+      this.stencilView.onChangeAutofit_();
+  }
+
+  return this;
+};
+
+
+/**
   * Immediately changes the scale of all scene meshes.
   *
   * @param {Object|number} scale Scale.
@@ -305,6 +370,18 @@ Scalable.prototype.setScaling = function(scaling) {
 
   return this;
 };
+
+
+/**
+ * Gets or sets Whether to automatically unformly scale all meshes to fit
+ * inside [-0.5, 0.5] along all dimensions. This is useful for when attached.
+ * The scale property becomes relative to the autofitted size.
+ *
+ * Default is false.
+ *
+ * @type {boolean}
+ */
+Scalable.prototype.autofit = false;
 
 
 /**

@@ -52,10 +52,13 @@
 		modelSrc: 'monster.js',
 		animated: true,
 		center: false,
-		pixelScale: false
-	}).setScale(0.0005).on('load', function() {
+		pixelScale: false,
+		autofit: true
+	}).on('load', function() {
 		window.console.log('loaded');
-	}).setAnimation('walk', 0, 23, 1, true).setAnimation('walk2', 0, 23, 1, false).play('walk');
+	}).setAnimation('walk', 0, 23, 1, true)
+	  .setAnimation('walk2', 0, 23, 1, false)
+	  .play('walk');
 
 </script>
 

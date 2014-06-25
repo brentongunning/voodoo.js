@@ -31,70 +31,10 @@ var ArcballView_ = voodoo.View.extend({
       this.arcballCenter_ = modelArcballCenter;
       this.arcballRadius_ = modelArcballRadius;
     } else {
-      // Find the average center of all meshes.
-      this.arcballCenter_ = { x: 0, y: 0, z: 0 };
-      this.arcballRadius_ = 0;
-      var numObjects = 0;
+      var sphere = computeBoundingSphere(this.scene.objects);
 
-      var geometryCenters = [];
-
-      var sceneObjects = this.scene.objects;
-      for (var i = 0, len = sceneObjects.length; i < len; ++i) {
-        var sceneObject = sceneObjects[i];
-        var geometry = sceneObject['geometry'];
-
-        if (geometry) {
-          var sceneObjectPosition = sceneObject.position;
-          var sceneObjectScale = sceneObject.scale;
-          var geometryBoundingSphereCenter = geometry.boundingSphere.center;
-
-          var px = sceneObjectPosition.x * sceneObjectScale.x +
-              geometryBoundingSphereCenter.x * sceneObjectScale.x;
-          var py = sceneObjectPosition.y * sceneObjectScale.y +
-              geometryBoundingSphereCenter.y * sceneObjectScale.y;
-          var pz = sceneObjectPosition.z * sceneObjectScale.z +
-              geometryBoundingSphereCenter.z * sceneObjectScale.z;
-
-          geometryCenters.push([px, py, pz]);
-
-          this.arcballCenter_.x += px;
-          this.arcballCenter_.y += py;
-          this.arcballCenter_.z += pz;
-
-          numObjects++;
-        }
-      }
-
-      if (numObjects !== 0) {
-        this.arcballCenter_.x /= numObjects;
-        this.arcballCenter_.y /= numObjects;
-        this.arcballCenter_.z /= numObjects;
-      } else return;
-
-      // Determine the radius
-      for (var i = 0, len = sceneObjects.length; i < len; ++i) {
-        var sceneObject = sceneObjects[i];
-        var geometry = sceneObject['geometry'];
-
-        if (geometry) {
-          var sceneObjectScale = sceneObject.scale;
-          var geometryBoundingSphere = geometry.boundingSphere;
-
-          var geometryCenter = geometryCenters[i];
-
-          var dx = geometryCenter[0] - this.arcballCenter_.x;
-          var dy = geometryCenter[1] - this.arcballCenter_.y;
-          var dz = geometryCenter[2] - this.arcballCenter_.z;
-
-          var scale = Math.max(sceneObjectScale.x,
-              Math.max(sceneObjectScale.y, sceneObjectScale.z));
-
-          var distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-          var radius = distance + geometryBoundingSphere.radius * scale;
-          if (radius > this.arcballRadius_)
-            this.arcballRadius_ = radius;
-        }
-      }
+      this.arcballCenter_ = sphere.center;
+      this.arcballRadius_ = sphere.radius;
 
       // If there are relevant properties, copy them over.
       if (modelArcballCenter)

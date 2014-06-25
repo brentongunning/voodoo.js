@@ -83,3 +83,81 @@ function parseVector3_(vector) {
 
   }
 }
+
+
+/**
+ * Calculates the bounding sphere of a group of Three.js scene objects.
+ *
+ * @param {Array.<Object>} sceneObjects Scene objects.
+ *
+ * @return {Object} Bounding sphere obect with center and radius properties.
+ */
+function computeBoundingSphere(sceneObjects) {
+  var center = { x: 0, y: 0, z: 0 };
+  var radius = 0;
+
+  var numObjects = 0;
+  var geometryCenters = [];
+
+  for (var i = 0, len = sceneObjects.length; i < len; ++i) {
+    var sceneObject = sceneObjects[i];
+    var geometry = sceneObject['geometry'];
+
+    if (geometry) {
+      var sceneObjectPosition = sceneObject.position;
+      var sceneObjectScale = sceneObject.scale;
+      var geometryBoundingSphereCenter = geometry.boundingSphere.center;
+
+      var px = sceneObjectPosition.x * sceneObjectScale.x +
+          geometryBoundingSphereCenter.x * sceneObjectScale.x;
+      var py = sceneObjectPosition.y * sceneObjectScale.y +
+          geometryBoundingSphereCenter.y * sceneObjectScale.y;
+      var pz = sceneObjectPosition.z * sceneObjectScale.z +
+          geometryBoundingSphereCenter.z * sceneObjectScale.z;
+
+      geometryCenters.push([px, py, pz]);
+
+      center.x += px;
+      center.y += py;
+      center.z += pz;
+
+      numObjects++;
+    }
+  }
+
+  if (numObjects !== 0) {
+    center.x /= numObjects;
+    center.y /= numObjects;
+    center.z /= numObjects;
+  }
+
+  // Determine the radius
+  for (var i = 0, len = sceneObjects.length; i < len; ++i) {
+    var sceneObject = sceneObjects[i];
+    var geometry = sceneObject['geometry'];
+
+    if (geometry) {
+      var sceneObjectScale = sceneObject.scale;
+      var geometryBoundingSphere = geometry.boundingSphere;
+
+      var geometryCenter = geometryCenters[i];
+
+      var dx = geometryCenter[0] - center.x;
+      var dy = geometryCenter[1] - center.y;
+      var dz = geometryCenter[2] - center.z;
+
+      var scale = Math.max(sceneObjectScale.x,
+          Math.max(sceneObjectScale.y, sceneObjectScale.z));
+
+      var distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      var objectRadius = distance + geometryBoundingSphere.radius * scale;
+      if (objectRadius > radius)
+        radius = objectRadius;
+    }
+  }
+
+  return {
+    center: center,
+    radius: radius
+  };
+}
