@@ -36,7 +36,7 @@ var CachingBoxView = voodoo.View.extend({
       material = this.cache.get('blueMaterial');
     } else {
       material = new THREE.MeshLambertMaterial({color: 0xFF0000, ambient: 0x000000});
-      geometry = new THREE.CubeGeometry(100, 100, 100);
+      geometry = new THREE.BoxGeometry(100, 100, 100);
 
       // Store the geometry
       this.cache.set('geometry', geometry);

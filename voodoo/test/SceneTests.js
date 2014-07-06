@@ -55,7 +55,7 @@ SceneTests.prototype.testAttachCenterPixels = function() {
     name: 'CustomModel',
     viewType: voodoo.View.extend({
       load: function() {
-        var geometry = new THREE.CubeGeometry(100, 100, 100);
+        var geometry = new THREE.BoxGeometry(100, 100, 100);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
 
@@ -97,7 +97,7 @@ SceneTests.prototype.testAttachTopLeftUnits = function() {
     name: 'CustomModel',
     viewType: voodoo.View.extend({
       load: function() {
-        var geometry = new THREE.CubeGeometry(1, 1, 100);
+        var geometry = new THREE.BoxGeometry(1, 1, 100);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
 
@@ -141,7 +141,7 @@ SceneTests.prototype.testDetach = function() {
     name: 'CustomModel',
     viewType: voodoo.View.extend({
       load: function() {
-        var geometry = new THREE.CubeGeometry(1, 1, 100);
+        var geometry = new THREE.BoxGeometry(1, 1, 100);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
 
@@ -208,7 +208,7 @@ SceneTests.prototype.testSceneEvents = function() {
         this.scene.on('move', function() { sceneMove++; });
         this.scene.on('resize', function() { sceneResize++; });
 
-        var geometry = new THREE.CubeGeometry(1, 1, 100);
+        var geometry = new THREE.BoxGeometry(1, 1, 100);
         var material = new THREE.MeshBasicMaterial();
         this.mesh = new THREE.Mesh(geometry, material);
 
@@ -264,7 +264,7 @@ SceneTests.prototype.testConvertCoordinates = function() {
     name: 'CustomModel',
     viewType: voodoo.View.extend({
       load: function() {
-        var geometry = new THREE.CubeGeometry(1, 1, 1);
+        var geometry = new THREE.BoxGeometry(1, 1, 1);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
 
@@ -322,7 +322,7 @@ SceneTests.prototype.testZScaling = function() {
     name: 'CustomModel',
     viewType: voodoo.View.extend({
       load: function() {
-        var geometry = new THREE.CubeGeometry(1, 1, 1);
+        var geometry = new THREE.BoxGeometry(1, 1, 1);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
 

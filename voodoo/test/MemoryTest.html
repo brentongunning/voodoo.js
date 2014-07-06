@@ -29,7 +29,7 @@
 var MemoryView = voodoo.View.extend({
 
   load: function() {
-    this.geometry = new THREE.CubeGeometry(1, 1, 1);
+    this.geometry = new THREE.BoxGeometry(1, 1, 1);
     this.material = new THREE.MeshBasicMaterial();
     var mesh = new THREE.Mesh(this.geometry, this.material);
 
