@@ -242,7 +242,8 @@ Movable.prototype.moveTo = function(position, seconds, opt_easing) {
     this.moving_ = true;
     this.moveElapsed_ = 0;
 
-    this.moveEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
+    this.moveEasing_ = opt_easing ? getEasing_(opt_easing) :
+        Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('moveBegin', this));
 

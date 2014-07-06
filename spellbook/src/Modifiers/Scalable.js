@@ -237,7 +237,8 @@ Scalable.prototype.scaleTo = function(scale, seconds, opt_easing) {
     this.scaleElapsed_ = 0;
     this.scaling_ = true;
 
-    this.scaleEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
+    this.scaleEasing_ = opt_easing ? getEasing_(opt_easing) :
+        Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('scaleBegin', this));
 

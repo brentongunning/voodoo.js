@@ -107,6 +107,7 @@ MovableTests.prototype.testMovableSetPosition = function() {
   assertEquals(3, instanceTargetPosition.z);
 
   instance.moveTo([0.1, 0.2, 0.3], 0, voodoo.easing.easeOutBounce);
+  instance.moveTo([0.1, 0.2, 0.3], 0, 'easeOutBounce');
 
   instancePosition = instance.position;
   assertEquals(0.1, instancePosition.x);

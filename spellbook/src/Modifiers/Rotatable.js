@@ -262,7 +262,8 @@ Rotatable.prototype.rotateTo = function(rotation, opt_seconds, opt_easing) {
     this.rotationDuration_ = opt_seconds * 1000;
     this.rotationElapsed_ = 0;
 
-    this.rotationEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
+    this.rotationEasing_ = opt_easing ? getEasing_(opt_easing) :
+        Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('rotateBegin', this));
 
@@ -321,7 +322,8 @@ Rotatable.prototype.rotate = function(rotation, opt_seconds, opt_easing) {
     this.rotationDuration_ = opt_seconds * 1000;
     this.rotationElapsed_ = 0;
 
-    this.rotationEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
+    this.rotationEasing_ = opt_easing ? getEasing_(opt_easing) :
+        Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('rotateBegin', this));
 

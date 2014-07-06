@@ -217,8 +217,9 @@ Fadable.prototype.fadeOut = function(seconds) {
   *
   * @param {number} alpha Alpha value from 0-1.
   * @param {number} seconds Animation duration.
-  * @param {function(number):number=} opt_easing Optional easing function.
-  *     Default is easing.easeInOutQuad.
+  * @param {function(number):number|string=} opt_easing Optional easing
+  *   function. If a string, uses a function from the built in easings.
+  *   Default is 'easeInOutQuad'.
   *
   * @return {Fadable}
   */
@@ -242,7 +243,8 @@ Fadable.prototype.fadeTo = function(alpha, seconds, opt_easing) {
     this.fading_ = true;
     this.fadeElapsed_ = 0;
 
-    this.fadeEasing_ = opt_easing || Easing.prototype.easeInOutQuad;
+    this.fadeEasing_ = opt_easing ? getEasing_(opt_easing) :
+        Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('fadeBegin', this));
 

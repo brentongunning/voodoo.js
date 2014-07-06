@@ -24,12 +24,12 @@
     <option>Circular</option>
     <option>Elastic</option>
     <option>Back</option>
-    <option>Bounce</option>
+    <option selected>Bounce</option>
 	</select>
 
 	<select id="easeType">
     <option>Ease In</option>
-    <option>Ease Out</option>
+    <option selected>Ease Out</option>
     <option>Ease In and Out</option>
 	</select>
 
@@ -41,74 +41,72 @@
   	var func = document.getElementById('funcType').value;
   	var ease = document.getElementById('easeType').value;
 
-    var voodooEasing = voodoo.easing;
-
   	switch (func) {
   		case 'Linear':
   			switch(ease) {
-  				case 'Ease In': return voodooEasing.linear;
-  				case 'Ease Out': return voodooEasing.linear;
-  				case 'Ease In and Out': return voodooEasing.linear;
+  				case 'Ease In': return 'linear';
+  				case 'Ease Out': return 'linear';
+  				case 'Ease In and Out': return 'linear';
   			}
   		case 'Quadratic':
   			switch(ease) {
-  				case 'Ease In': return voodooEasing.easeInQuad;
-  				case 'Ease Out': return voodooEasing.easeOutQuad;
-  				case 'Ease In and Out': return voodooEasing.easeInOutQuad;
+  				case 'Ease In': return 'easeInQuad';
+  				case 'Ease Out': return 'easeOutQuad';
+  				case 'Ease In and Out': return 'easeInOutQuad';
   			}
   		case 'Cubic':
   			switch(ease) {
-  				case 'Ease In': return voodooEasing.easeInCubic;
-  				case 'Ease Out': return voodooEasing.easeOutCubic;
-  				case 'Ease In and Out': return voodooEasing.easeInOutCubic;
+  				case 'Ease In': return 'easeInCubic';
+  				case 'Ease Out': return 'easeOutCubic';
+  				case 'Ease In and Out': return 'easeInOutCubic';
   			}
   		case 'Quartic':
   			switch(ease) {
-  				case 'Ease In': return voodooEasing.easeInQuart;
-  				case 'Ease Out': return voodooEasing.easeOutQuart;
-  				case 'Ease In and Out': return voodooEasing.easeInOutQuart;
+  				case 'Ease In': return 'easeInQuart';
+  				case 'Ease Out': return 'easeOutQuart';
+  				case 'Ease In and Out': return 'easeInOutQuart';
   			}
   		case 'Quintic':
   			switch(ease) {
-  				case 'Ease In': return voodooEasing.easeInQuint;
-  				case 'Ease Out': return voodooEasing.easeOutQuint;
-  				case 'Ease In and Out': return voodooEasing.easeInOutQuint;
+  				case 'Ease In': return 'easeInQuint';
+  				case 'Ease Out': return 'easeOutQuint';
+  				case 'Ease In and Out': return 'easeInOutQuint';
   			}
   		case 'Sine':
   			switch(ease) {
-  				case 'Ease In': return voodooEasing.easeInSine;
-  				case 'Ease Out': return voodooEasing.easeOutSine;
-  				case 'Ease In and Out': return voodooEasing.easeInOutSine;
+  				case 'Ease In': return 'easeInSine';
+  				case 'Ease Out': return 'easeOutSine';
+  				case 'Ease In and Out': return 'easeInOutSine';
   			}
   		case 'Exponential':
   			switch(ease) {
-  				case 'Ease In': return voodooEasing.easeInExpo;
-  				case 'Ease Out': return voodooEasing.easeOutExpo;
-  				case 'Ease In and Out': return voodooEasing.easeInOutExpo;
+  				case 'Ease In': return 'easeInExpo';
+  				case 'Ease Out': return 'easeOutExpo';
+  				case 'Ease In and Out': return 'easeInOutExpo';
   			}
   		case 'Circular':
   			switch(ease) {
-  				case 'Ease In': return voodooEasing.easeInCirc;
-  				case 'Ease Out': return voodooEasing.easeOutCirc;
-  				case 'Ease In and Out': return voodooEasing.easeInOutCirc;
+  				case 'Ease In': return 'easeInCirc';
+  				case 'Ease Out': return 'easeOutCirc';
+  				case 'Ease In and Out': return 'easeInOutCirc';
   			}
   		case 'Elastic':
   			switch(ease) {
-  				case 'Ease In': return voodooEasing.easeInElastic;
-  				case 'Ease Out': return voodooEasing.easeOutElastic;
-  				case 'Ease In and Out': return voodooEasing.easeInOutElastic;
+  				case 'Ease In': return 'easeInElastic';
+  				case 'Ease Out': return 'easeOutElastic';
+  				case 'Ease In and Out': return 'easeInOutElastic';
   			}
   		case 'Back':
   			switch(ease) {
-  				case 'Ease In': return voodooEasing.easeInBack;
-  				case 'Ease Out': return voodooEasing.easeOutBack;
-  				case 'Ease In and Out': return voodooEasing.easeInOutBack;
+  				case 'Ease In': return 'easeInBack';
+  				case 'Ease Out': return 'easeOutBack';
+  				case 'Ease In and Out': return 'easeInOutBack';
   			}
   		case 'Bounce':
   			switch(ease) {
-  				case 'Ease In': return voodooEasing.easeInBounce;
-  				case 'Ease Out': return voodooEasing.easeOutBounce;
-  				case 'Ease In and Out': return voodooEasing.easeInOutBounce;
+  				case 'Ease In': return 'easeInBounce';
+  				case 'Ease Out': return 'easeOutBounce';
+  				case 'Ease In and Out': return 'easeInOutBounce';
   			}
   	}
   }
