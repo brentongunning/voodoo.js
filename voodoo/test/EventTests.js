@@ -42,7 +42,7 @@ EventTests.prototype.testMouseEvents = function() {
     name: 'CustomModel',
     viewType: voodoo.View.extend({
       load: function() {
-        var geometry = new THREE.CubeGeometry(100, 100, 100);
+        var geometry = new THREE.BoxGeometry(100, 100, 100);
         var material = new THREE.MeshBasicMaterial();
         var mesh = new THREE.Mesh(geometry, material);
 
@@ -120,7 +120,7 @@ EventTests.prototype.testStencilClicks = function() {
   var CustomView = voodoo.View.extend();
 
   CustomView.prototype.load = function() {
-    var geometry = new THREE.CubeGeometry(1000, 1000, 100);
+    var geometry = new THREE.BoxGeometry(1000, 1000, 100);
     var material = new THREE.MeshBasicMaterial();
     this.mesh = new THREE.Mesh(geometry, material);
     this.mesh.position.set(500, 600, -50.001);
@@ -154,7 +154,7 @@ EventTests.prototype.testStencilClicks = function() {
   var CustomStencilView = voodoo.View.extend();
 
   CustomStencilView.prototype.load = function() {
-    var geometry = new THREE.CubeGeometry(0, 0, 0.1);
+    var geometry = new THREE.BoxGeometry(0, 0, 0.1);
     var material = new THREE.MeshBasicMaterial();
     var mesh = new THREE.Mesh(geometry, material);
 
@@ -182,7 +182,7 @@ EventTests.prototype.testMultipleTriggerIds = function() {
   var CustomView = voodoo.View.extend();
 
   CustomView.prototype.load = function() {
-    var geometry = new THREE.CubeGeometry(1000, 1000, 100);
+    var geometry = new THREE.BoxGeometry(1000, 1000, 100);
     var material = new THREE.MeshBasicMaterial();
     var mesh = new THREE.Mesh(geometry, material);
     var mesh2 = new THREE.Mesh(geometry, material);

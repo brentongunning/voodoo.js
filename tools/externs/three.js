@@ -3114,6 +3114,7 @@ var THREE = {
     "KeyFrameAnimation": function () {},
     "CubeCamera": function () {},
     "CombinedCamera": function () {},
+    "BoxGeometry": function() {},
     "CircleGeometry": function () {},
     "CubeGeometry": function () {},
     "CylinderGeometry": function () {},
