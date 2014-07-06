@@ -88,11 +88,13 @@ function parseVector3_(vector) {
 /**
  * Calculates the bounding sphere of a group of Three.js scene objects.
  *
+ * @private
+ *
  * @param {Array.<Object>} sceneObjects Scene objects.
  *
  * @return {Object} Bounding sphere obect with center and radius properties.
  */
-function computeBoundingSphere(sceneObjects) {
+function computeBoundingSphere_(sceneObjects) {
   var center = { x: 0, y: 0, z: 0 };
   var radius = 0;
 

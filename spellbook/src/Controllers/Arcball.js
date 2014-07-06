@@ -31,7 +31,7 @@ var ArcballView_ = voodoo.View.extend({
       this.arcballCenter_ = modelArcballCenter;
       this.arcballRadius_ = modelArcballRadius;
     } else {
-      var sphere = computeBoundingSphere(this.scene.objects);
+      var sphere = computeBoundingSphere_(this.scene.objects);
 
       this.arcballCenter_ = sphere.center;
       this.arcballRadius_ = sphere.radius;
