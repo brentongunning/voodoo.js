@@ -75,6 +75,13 @@ var MouseLight = this.MouseLight = Light_.extend({
     this.base.initialize(options);
 
     this.height_ = typeof options.height !== 'undefined' ? options.height : 0;
+
+    var that = this;
+    Object.defineProperty(this, 'height', {
+      get: function() { return that.height_; },
+      set: function(height) { that.setHeight(height); },
+      enumerable: true
+    });
   },
 
   setUpViews: function() {
@@ -103,3 +110,32 @@ var MouseLight = this.MouseLight = Light_.extend({
   }
 
 });
+
+
+/**
+ * Sets the height of the point light. A value <= 0 means to use the camera
+ *     height.
+ *
+ * @param {number} height Height of the point light.
+ *
+ * @return {MouseLight}
+ */
+MouseLight.prototype.setHeight = function(height) {
+  log_.assert_(typeof height === 'number', 'height must be a number.',
+      height, '(MouseLight::setHeight)');
+
+  this.height_ = height;
+
+  this.view.updateHeight_();
+
+  return this;
+};
+
+
+/**
+ * Get or set the height of the point light. A value <= 0 means to use the
+ *     camera height.
+ *
+ * @type {number}
+ */
+MouseLight.prototype.height = 0;

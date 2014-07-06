@@ -63,6 +63,8 @@ LightTests.prototype.testMouseLight = function() {
   var mouseLight = new voodoo.MouseLight();
 
   mouseLight.setColor('black');
+  mouseLight.setHeight(100);
+  mouseLight.height = 0;
 
   assertEquals('black', mouseLight.color);
 };
