@@ -45,15 +45,15 @@
 	Model3D = Model3D.extend(voodoo.Scalable);
 	Model3D = Model3D.extend(voodoo.Colorable);
 	Model3D = Model3D.extend(voodoo.Wireframe);
+	Model3D = Model3D.extend(voodoo.Autofit);
 
 	var model = new Model3D({
 		element: document.getElementById('model'),
 		format: voodoo.Model3D.Format.JSON,
 		modelSrc: 'monster.js',
 		animated: true,
-		center: false,
-		pixelScale: false,
-		autofit: true
+		center: true,
+		pixelScale: false
 	}).on('load', function() {
 		window.console.log('loaded');
 	}).setAnimation('walk', 0, 23, 1, true)
