@@ -54,7 +54,7 @@
 		  load: function() {
 		  	this.base.load();
 
-		  	var geometry = new THREE.CubeGeometry(200, 200, 200);
+		  	var geometry = new THREE.BoxGeometry(200, 200, 200);
 		  	var material = new THREE.MeshLambertMaterial({color: 0xFF0000, ambient: 0x000000});
 		  	var mesh = new THREE.Mesh(geometry, material);
 

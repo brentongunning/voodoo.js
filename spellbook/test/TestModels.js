@@ -34,7 +34,7 @@ var SimpleModel = voodoo.Model.extend({
     load: function() {
       this.base.load();
 
-      var geometry = new THREE.CubeGeometry(200, 200, 200);
+      var geometry = new THREE.BoxGeometry(200, 200, 200);
       var material = new THREE.MeshBasicMaterial();
       var mesh = new THREE.Mesh(geometry, material);
 
@@ -65,7 +65,7 @@ var AttachedModel = voodoo.Model.extend({
     load: function() {
       this.base.load();
 
-      var geometry = new THREE.CubeGeometry(200, 200, 200);
+      var geometry = new THREE.BoxGeometry(200, 200, 200);
       var material = new THREE.MeshLambertMaterial();
       var mesh = new THREE.Mesh(geometry, material);
 
