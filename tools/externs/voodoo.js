@@ -20,6 +20,13 @@ voodoo.Cache = function() {};
  * @param {string=} opt_name
  * @param {string=} opt_organization
  */
+voodoo.Cache.prototype.addRef = function(key, opt_name, opt_organization) {};
+
+/**
+ * @param {string} key
+ * @param {string=} opt_name
+ * @param {string=} opt_organization
+ */
 voodoo.Cache.prototype.delete = function(key, opt_name, opt_organization) {};
 
 /**
@@ -38,6 +45,13 @@ voodoo.Cache.prototype.get = function(key, opt_name, opt_organization) {};
  * @return {boolean}
  */
 voodoo.Cache.prototype.has = function(key, opt_name, opt_organization) {};
+
+/**
+ * @param {string} key
+ * @param {string=} opt_name
+ * @param {string=} opt_organization
+ */
+voodoo.Cache.prototype.release = function(key, opt_name, opt_organization) {};
 
 /**
  * @param {string} key
