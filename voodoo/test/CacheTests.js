@@ -132,6 +132,47 @@ CacheTests.prototype.testModelCacheWithNoOrganization = function() {
 
 
 /**
+ * Tests the reference counting ability of the cache.
+ */
+CacheTests.prototype.testReferenceCounting = function() {
+  var ReferenceCountingCacheModel = voodoo.Model.extend({
+    name: 'RefCountCacheModel',
+    viewType: voodoo.View.extend(),
+    has: function() { return this.cache.has('refTest'); },
+    set: function() { this.cache.set('refTest', 'testVal'); },
+    release: function() {this.cache.release('refTest'); },
+    addRef: function() {this.cache.addRef('refTest'); }
+  });
+
+  var model = new ReferenceCountingCacheModel();
+
+  assertFalse(model.has());
+
+  model.set();
+  assertTrue(model.has());
+
+  model.addRef();
+  assertTrue(model.has());
+
+  model.addRef();
+  assertTrue(model.has());
+
+  model.release();
+  assertTrue(model.has());
+
+  model.release();
+  assertTrue(model.has());
+
+  model.release();
+  assertFalse(model.has());
+
+  assertException(function() {
+    model.addRef();
+  });
+};
+
+
+/**
  * Tests that the views are successfully
  */
 CacheTests.prototype.testViewCache = function() {

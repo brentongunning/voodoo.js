@@ -7,8 +7,8 @@
 
 
 /**
- * A storage cache where geometry, materials, and other data may be stored
- * and shared between different instances of 3D controls.
+ * A reference-counted storage cache where geometry, materials, and other data
+ * may be stored and shared between different 3D components.
  *
  * @constructor
  *
@@ -22,7 +22,31 @@ function Cache(cache) {
 
 
 /**
- * Removes an object from the cache if it exists.
+ * Increases the reference count of an object in the cache. This should
+ * normally be paired with a call to release later.
+ *
+ * @this {Cache}
+ *
+ * @param {string} key Storage key.
+ * @param {string=} opt_name Optional model name. If not specified, uses the
+ * current Model's name.
+ * @param {string=} opt_organization Optional organization name. If not
+ * specified, uses the current Model's organization.
+ */
+Cache.prototype['addRef'] = function(key, opt_name, opt_organization) {
+  log_.assert_(key, 'key must be valid.', '(Cache::addRef)');
+
+  var subcache = this.getSubcache_(opt_name, opt_organization);
+
+  log_.assert_(subcache.hasOwnProperty(key), 'key must exist in cache.',
+      '(Cache::addRef)');
+
+  subcache[key].count++;
+};
+
+
+/**
+ * Removes an object from the cache regardless of its current reference count.
  *
  * @this {Cache}
  *
@@ -59,7 +83,7 @@ Cache.prototype['get'] = function(key, opt_name, opt_organization) {
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
-  return subcache[key];
+  return subcache[key].obj;
 };
 
 
@@ -86,7 +110,33 @@ Cache.prototype['has'] = function(key, opt_name, opt_organization) {
 
 
 /**
- * Stores an object in the cache under a given key.
+ * Decreases the reference count of an object in the cache. Once the object's
+ * reference count reaches zero, the object is deleted from the cache.
+ *
+ * @this {Cache}
+ *
+ * @param {string} key Storage key.
+ * @param {string=} opt_name Optional model name. If not specified, uses the
+ * current Model's name.
+ * @param {string=} opt_organization Optional organization name. If not
+ * specified, uses the current Model's organization.
+ */
+Cache.prototype['release'] = function(key, opt_name, opt_organization) {
+  log_.assert_(key, 'key must be valid.', '(Cache::release)');
+
+  var subcache = this.getSubcache_(opt_name, opt_organization);
+
+  if (subcache.hasOwnProperty(key)) {
+    if (--subcache[key].count <= 0)
+      delete subcache[key];
+  }
+};
+
+
+/**
+ * Stores an object in the cache under a given key. If the key is not yet in
+ * the cace, this will set its reference count to 1. If the key is already in
+ * the cache, the reference count will remain the same.
  *
  * @this {Cache}
  *
@@ -102,7 +152,14 @@ Cache.prototype['set'] = function(key, value, opt_name, opt_organization) {
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
-  subcache[key] = value;
+  if (subcache.hasOwnProperty(key)) {
+    subcache[key].obj = value;
+  } else {
+    subcache[key] = {
+      obj: value,
+      count: 1
+    };
+  }
 };
 
 
