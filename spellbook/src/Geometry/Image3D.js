@@ -59,10 +59,10 @@ var Image3DView_ = voodoo.View.extend({
     return avg / 255.0 * this.model.maxHeight_;
   },
 
-  createSmoothGeometry_: function(geometry, vertices, data, createFaces) {
+  createSmoothGeometry_: function(geometry, verticesOwner, data, createFaces) {
     log_.assert_(geometry, 'geometry must be valid.',
         '(Image3DView_::createSmoothGeometry_)');
-    log_.assert_(vertices, 'vertices must be valid.',
+    log_.assert_(verticesOwner, 'verticesOwner must be valid.',
         '(Image3DView_::createSmoothGeometry_)');
     log_.assert_(data, 'data must be valid.',
         '(Image3DView_::createSmoothGeometry_)');
@@ -79,45 +79,54 @@ var Image3DView_ = voodoo.View.extend({
     var THREEVector2 = THREE.Vector2;
 
     // Vertices
-    var i = 0;
+    var numVertices = width * height;
+    var vertices = verticesOwner.vertices = new Array(numVertices);
+    var pixelIndex = 0;
+    var vertexIndex = 0;
     for (var y = 0; y < height; ++y) {
       for (var x = 0; x < width; ++x) {
-        var depth = this.getDepth_(data, i);
-        vertices.push(new THREEVector3(
+        var depth = this.getDepth_(data, pixelIndex);
+        vertices[vertexIndex++] = new THREEVector3(
             x * invWidthMinusOne,
             y * invHeightMinusOne,
-            depth));
-        i += 4;
+            depth);
+        pixelIndex += 4;
       }
     }
 
-    var geometryFaces = geometry.faces;
-    var geometryFaceVertexUvs = geometry.faceVertexUvs[0];
-
     // Indices
     if (createFaces) {
+      var numFaces = (width - 1) * (height - 1) * 2;
+      geometry.faces = new Array(numFaces);
+      geometry.faceVertexUvs[0] = new Array(numFaces);
+      var faceIdx = 0;
+      var uvIdx = 0;
+
+      var geometryFaces = geometry.faces;
+      var geometryFaceVertexUvs = geometry.faceVertexUvs[0];
+
       var yi = 0, yi2 = width;
       for (var y = 0; y < height - 1; ++y) {
         for (var x = 0; x < width - 1; ++x) {
           var x2 = x + 1;
-          geometryFaces.push(new THREEFace3(yi + x, yi + x2, yi2 + x2));
-          geometryFaces.push(new THREEFace3(yi + x, yi2 + x2, yi2 + x));
+          geometryFaces[faceIdx++] = new THREEFace3(yi + x, yi + x2, yi2 + x2);
+          geometryFaces[faceIdx++] = new THREEFace3(yi + x, yi2 + x2, yi2 + x);
 
           var u1 = x * invWidthMinusOne;
           var u2 = x2 * invWidthMinusOne;
           var v1 = y * invHeightMinusOne;
           var v2 = (y + 1) * invHeightMinusOne;
 
-          geometryFaceVertexUvs.push([
+          geometryFaceVertexUvs[uvIdx++] = [
             new THREEVector2(u1, v1),
             new THREEVector2(u2, v1),
             new THREEVector2(u2, v2)
-          ]);
-          geometryFaceVertexUvs.push([
+          ];
+          geometryFaceVertexUvs[uvIdx++] = [
             new THREEVector2(u1, v1),
             new THREEVector2(u2, v2),
             new THREEVector2(u1, v2)
-          ]);
+          ];
         }
         yi += width;
         yi2 += width;
@@ -125,13 +134,15 @@ var Image3DView_ = voodoo.View.extend({
     }
   },
 
-  createBlockGeometry_: function(geometry, vertices, data, createFaces) {
+  createBlockGeometry_: function(geometry, verticesOwner, data, createFaces) {
     log_.assert_(geometry, 'geometry must be valid.',
         '(Image3DView_::createBlockGeometry_)');
-    log_.assert_(vertices, 'vertices must be valid.',
+    log_.assert_(verticesOwner, 'verticesOwner must be valid.',
         '(Image3DView_::createBlockGeometry_)');
     log_.assert_(data, 'data must be valid.',
         '(Image3DView_::createBlockGeometry_)');
+
+    var vertices = verticesOwner.vertices;
 
     // Constants
     var width = this.model.heightmapWidth_;
@@ -158,6 +169,15 @@ var Image3DView_ = voodoo.View.extend({
       depths[y] = line;
     }
 
+    if (createFaces) {
+      var numFaces = (width - 1) * (height - 1) * 10;
+      geometry.faces = new Array(numFaces);
+      geometry.faceVertexUvs[0] = new Array(numFaces);
+    }
+
+    var numVertices = width * height * 12;
+    vertices = geometry.vertices = new Array(numVertices);
+
     var geometryFaces = geometry.faces;
     var geometryFaceVertexUvs = geometry.faceVertexUvs[0];
 
@@ -166,6 +186,9 @@ var Image3DView_ = voodoo.View.extend({
     var THREEVector2 = THREE.Vector2;
 
     var v = 0;
+    var faceIdx = 0;
+    var uvIdx = 0;
+    var vertexIdx = 0;
     for (var y = 0; y < height; ++y) {
       for (var x = 0; x < width; ++x) {
         var depth = depths[y][x];
@@ -189,47 +212,47 @@ var Image3DView_ = voodoo.View.extend({
         // Front
 
         var j = v;
-        vertices.push(new THREEVector3(x1, y1, depth));
-        vertices.push(new THREEVector3(x2, y1, depth));
-        vertices.push(new THREEVector3(x2, y2, depth));
-        vertices.push(new THREEVector3(x1, y2, depth));
+        vertices[vertexIdx++] = new THREEVector3(x1, y1, depth);
+        vertices[vertexIdx++] = new THREEVector3(x2, y1, depth);
+        vertices[vertexIdx++] = new THREEVector3(x2, y2, depth);
+        vertices[vertexIdx++] = new THREEVector3(x1, y2, depth);
 
         if (createFaces) {
           v += 4;
 
-          geometryFaces.push(new THREEFace3(j, j + 1, j + 2));
-          geometryFaces.push(new THREEFace3(j, j + 2, j + 3));
-          geometryFaceVertexUvs.push([
+          geometryFaces[faceIdx++] = new THREEFace3(j, j + 1, j + 2);
+          geometryFaces[faceIdx++] = new THREEFace3(j, j + 2, j + 3);
+          geometryFaceVertexUvs[uvIdx++] = [
             new THREEVector2(u1, v1),
             new THREEVector2(u2, v1),
             new THREEVector2(u2, v2)
-          ]);
-          geometryFaceVertexUvs.push([
+          ];
+          geometryFaceVertexUvs[uvIdx++] = [
             new THREEVector2(u1, v1),
             new THREEVector2(u2, v2),
             new THREEVector2(u1, v2)
-          ]);
+          ];
         }
 
         // Left
 
         if (depth > depthLeft) {
-          vertices.push(new THREEVector3(x1, y1, depthLeft));
-          vertices.push(new THREEVector3(x1, y2, depthLeft));
+          vertices[vertexIdx++] = new THREEVector3(x1, y1, depthLeft);
+          vertices[vertexIdx++] = new THREEVector3(x1, y2, depthLeft);
 
           if (createFaces) {
-            geometryFaces.push(new THREEFace3(j, j + 3, v + 1));
-            geometryFaces.push(new THREEFace3(j, v + 1, v));
-            geometryFaceVertexUvs.push([
+            geometryFaces[faceIdx++] = new THREEFace3(j, j + 3, v + 1);
+            geometryFaces[faceIdx++] = new THREEFace3(j, v + 1, v);
+            geometryFaceVertexUvs[uvIdx++] = [
               new THREEVector2(u1, v1),
               new THREEVector2(u1, v2),
               new THREEVector2(u1, v2)
-            ]);
-            geometryFaceVertexUvs.push([
+            ];
+            geometryFaceVertexUvs[uvIdx++] = [
               new THREEVector2(u1, v1),
               new THREEVector2(u1, v2),
               new THREEVector2(u1, v1)
-            ]);
+            ];
 
             v += 2;
           }
@@ -238,22 +261,22 @@ var Image3DView_ = voodoo.View.extend({
         // Right
 
         if (depth > depthRight) {
-          vertices.push(new THREEVector3(x2, y1, depthRight));
-          vertices.push(new THREEVector3(x2, y2, depthRight));
+          vertices[vertexIdx++] = new THREEVector3(x2, y1, depthRight);
+          vertices[vertexIdx++] = new THREEVector3(x2, y2, depthRight);
 
           if (createFaces) {
-            geometryFaces.push(new THREEFace3(j + 2, j + 1, v + 0));
-            geometryFaces.push(new THREEFace3(j + 2, v + 0, v + 1));
-            geometryFaceVertexUvs.push([
+            geometryFaces[faceIdx++] = new THREEFace3(j + 2, j + 1, v + 0);
+            geometryFaces[faceIdx++] = new THREEFace3(j + 2, v + 0, v + 1);
+            geometryFaceVertexUvs[uvIdx++] = [
               new THREEVector2(u2, v2),
               new THREEVector2(u2, v1),
               new THREEVector2(u2, v1)
-            ]);
-            geometryFaceVertexUvs.push([
+            ];
+            geometryFaceVertexUvs[uvIdx++] = [
               new THREEVector2(u2, v2),
               new THREEVector2(u2, v1),
               new THREEVector2(u2, v2)
-            ]);
+            ];
 
             v += 2;
           }
@@ -262,22 +285,22 @@ var Image3DView_ = voodoo.View.extend({
         // Top
 
         if (depth > depthTop) {
-          vertices.push(new THREEVector3(x1, y1, depthTop));
-          vertices.push(new THREEVector3(x2, y1, depthTop));
+          vertices[vertexIdx++] = new THREEVector3(x1, y1, depthTop);
+          vertices[vertexIdx++] = new THREEVector3(x2, y1, depthTop);
 
           if (createFaces) {
-            geometryFaces.push(new THREEFace3(j + 1, j, v));
-            geometryFaces.push(new THREEFace3(j + 1, v, v + 1));
-            geometryFaceVertexUvs.push([
+            geometryFaces[faceIdx++] = new THREEFace3(j + 1, j, v);
+            geometryFaces[faceIdx++] = new THREEFace3(j + 1, v, v + 1);
+            geometryFaceVertexUvs[uvIdx++] = [
               new THREEVector2(u2, v1),
               new THREEVector2(u1, v1),
               new THREEVector2(u1, v1)
-            ]);
-            geometryFaceVertexUvs.push([
+            ];
+            geometryFaceVertexUvs[uvIdx++] = [
               new THREEVector2(u2, v1),
               new THREEVector2(u1, v1),
               new THREEVector2(u2, v1)
-            ]);
+            ];
 
             v += 2;
           }
@@ -286,34 +309,40 @@ var Image3DView_ = voodoo.View.extend({
         // Bottom
 
         if (depth > depthBottom) {
-          vertices.push(new THREEVector3(x1, y2, depthBottom));
-          vertices.push(new THREEVector3(x2, y2, depthBottom));
+          vertices[vertexIdx++] = new THREEVector3(x1, y2, depthBottom);
+          vertices[vertexIdx++] = new THREEVector3(x2, y2, depthBottom);
 
           if (createFaces) {
-            geometryFaces.push(new THREEFace3(j + 3, j + 2, v + 1));
-            geometryFaces.push(new THREEFace3(j + 3, v + 1, v));
-            geometryFaceVertexUvs.push([
+            geometryFaces[faceIdx++] = new THREEFace3(j + 3, j + 2, v + 1);
+            geometryFaces[faceIdx++] = new THREEFace3(j + 3, v + 1, v);
+            geometryFaceVertexUvs[uvIdx++] = [
               new THREEVector2(u1, v2),
               new THREEVector2(u2, v2),
               new THREEVector2(u2, v2)
-            ]);
-            geometryFaceVertexUvs.push([
+            ];
+            geometryFaceVertexUvs[uvIdx++] = [
               new THREEVector2(u1, v2),
               new THREEVector2(u2, v2),
               new THREEVector2(u1, v2)
-            ]);
+            ];
 
             v += 2;
           }
         }
       }
     }
+
+    vertices.length = vertexIdx;
+    if (createFaces) {
+      geometryFaces.length = faceIdx;
+      geometryFaceVertexUvs.length = uvIdx;
+    }
   },
 
-  createFloatGeometry_: function(geometry, vertices, data, createFaces) {
+  createFloatGeometry_: function(geometry, verticesOwner, data, createFaces) {
     log_.assert_(geometry, 'geometry must be valid.',
         '(Image3DView_::createFloatGeometry_)');
-    log_.assert_(vertices, 'vertices must be valid.',
+    log_.assert_(verticesOwner, 'verticesOwner must be valid.',
         '(Image3DView_::createFloatGeometry_)');
     log_.assert_(data, 'data must be valid.',
         '(Image3DView_::createFloatGeometry_)');
@@ -335,7 +364,11 @@ var Image3DView_ = voodoo.View.extend({
     var THREEFace3 = THREE.Face3;
     var THREEVector2 = THREE.Vector2;
 
+    var numVertices = width * height * 4;
+    var vertices = verticesOwner.vertices = new Array(numVertices);
+
     var i = 0;
+    var vertexIdx = 0;
     for (var y = 0; y < height; ++y) {
       for (var x = 0; x < width; ++x) {
         var depth = this.getDepth_(data, i);
@@ -345,20 +378,24 @@ var Image3DView_ = voodoo.View.extend({
         var y1 = y * invHeight;
         var y2 = (y + 1) * invHeight;
 
-        vertices.push(new THREEVector3(x1, y1, depth));
-        vertices.push(new THREEVector3(x2, y1, depth));
-        vertices.push(new THREEVector3(x2, y2, depth));
-        vertices.push(new THREEVector3(x1, y2, depth));
+        vertices[vertexIdx++] = new THREEVector3(x1, y1, depth);
+        vertices[vertexIdx++] = new THREEVector3(x2, y1, depth);
+        vertices[vertexIdx++] = new THREEVector3(x2, y2, depth);
+        vertices[vertexIdx++] = new THREEVector3(x1, y2, depth);
 
         i += 4;
       }
     }
 
-    var geometryFaces = geometry.faces;
-    var geometryFaceVertexUvs = geometry.faceVertexUvs[0];
-
     if (createFaces) {
+      var numFaces = width * height * 2;
+      var geometryFaces = geometry.faces = new Array(numFaces);
+      var geometryFaceVertexUvs = geometry.faceVertexUvs[0] =
+          new Array(numFaces);
+
       i = 0;
+      var faceIdx = 0;
+      var uvIdx = 0;
       for (var y = 0; y < height; ++y) {
         for (var x = 0; x < width; ++x) {
           var xr = x * widthRatio;
@@ -368,19 +405,19 @@ var Image3DView_ = voodoo.View.extend({
           var v1 = (yr + 0.5) * invTextureHeight;
           var v2 = (yr + heightRatio - 0.5) * invTextureHeight;
 
-          geometryFaces.push(new THREEFace3(i, i + 1, i + 2));
-          geometryFaces.push(new THREEFace3(i, i + 2, i + 3));
+          geometryFaces[faceIdx++] = new THREEFace3(i, i + 1, i + 2);
+          geometryFaces[faceIdx++] = new THREEFace3(i, i + 2, i + 3);
 
-          geometryFaceVertexUvs.push([
+          geometryFaceVertexUvs[uvIdx++] = [
             new THREEVector2(u1, v1),
             new THREEVector2(u2, v1),
             new THREEVector2(u2, v2)
-          ]);
-          geometryFaceVertexUvs.push([
+          ];
+          geometryFaceVertexUvs[uvIdx++] = [
             new THREEVector2(u1, v1),
             new THREEVector2(u2, v2),
             new THREEVector2(u1, v2)
-          ]);
+          ];
 
           i += 4;
         }
@@ -388,23 +425,24 @@ var Image3DView_ = voodoo.View.extend({
     }
   },
 
-  createHeightmapGeometry_: function(data, geometry, vertices, createFaces) {
+  createHeightmapGeometry_: function(data, geometry, verticesOwner,
+      createFaces) {
     log_.assert_(geometry, 'geometry must be valid.',
         '(Image3DView_::createHeightmapGeometry_)');
-    log_.assert_(vertices, 'vertices must be valid.',
+    log_.assert_(verticesOwner, 'verticesOwner must be valid.',
         '(Image3DView_::createHeightmapGeometry_)');
     log_.assert_(data, 'data must be valid.',
         '(Image3DView_::createHeightmapGeometry_)');
 
     switch (this.model.geometryStyle_) {
       case Image3D.GeometryStyle.Smooth:
-        this.createSmoothGeometry_(geometry, vertices, data, createFaces);
+        this.createSmoothGeometry_(geometry, verticesOwner, data, createFaces);
         break;
       case Image3D.GeometryStyle.Block:
-        this.createBlockGeometry_(geometry, vertices, data, createFaces);
+        this.createBlockGeometry_(geometry, verticesOwner, data, createFaces);
         break;
       case Image3D.GeometryStyle.Float:
-        this.createFloatGeometry_(geometry, vertices, data, createFaces);
+        this.createFloatGeometry_(geometry, verticesOwner, data, createFaces);
         break;
     }
   },
@@ -422,7 +460,7 @@ var Image3DView_ = voodoo.View.extend({
     }
 
     this.createHeightmapGeometry_(modelHeightmapData[0],
-        geometry, geometry.vertices, true);
+        geometry, geometry, true);
 
     // Make sure there are no morph targets for block geometry
     log_.assert_(numValidHeightmaps <= 1 ||
@@ -440,7 +478,7 @@ var Image3DView_ = voodoo.View.extend({
         morphTarget.vertices = geometry.vertices;
       } else {
         this.createHeightmapGeometry_(modelHeightmapData[i], geometry,
-            morphTarget.vertices, false);
+            morphTarget, false);
       }
 
       geometry.morphTargets.push(morphTarget);
