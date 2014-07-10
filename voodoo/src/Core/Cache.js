@@ -34,6 +34,9 @@ function Cache(cache) {
  * specified, uses the current Model's organization.
  */
 Cache.prototype['addRef'] = function(key, opt_name, opt_organization) {
+  if (DEBUG && window['voodoo']['debug']['disableCache'])
+    return;
+
   log_.assert_(key, 'key must be valid.', '(Cache::addRef)');
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
@@ -57,6 +60,9 @@ Cache.prototype['addRef'] = function(key, opt_name, opt_organization) {
  * specified, uses the current Model's organization.
  */
 Cache.prototype['delete'] = function(key, opt_name, opt_organization) {
+  if (DEBUG && window['voodoo']['debug']['disableCache'])
+    return;
+
   log_.assert_(key, 'key must be valid.', '(Cache::delete)');
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
@@ -79,6 +85,9 @@ Cache.prototype['delete'] = function(key, opt_name, opt_organization) {
  * @return {Object} The object for the given key.
  */
 Cache.prototype['get'] = function(key, opt_name, opt_organization) {
+  if (DEBUG && window['voodoo']['debug']['disableCache'])
+    return null;
+
   log_.assert_(key, 'key must be valid.', '(Cache::get)');
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
@@ -101,6 +110,9 @@ Cache.prototype['get'] = function(key, opt_name, opt_organization) {
  * @return {boolean} True if an object exists in the cache, false if not.
  */
 Cache.prototype['has'] = function(key, opt_name, opt_organization) {
+  if (DEBUG && window['voodoo']['debug']['disableCache'])
+    return false;
+
   log_.assert_(key, 'key must be valid.', '(Cache::has)');
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
@@ -122,6 +134,9 @@ Cache.prototype['has'] = function(key, opt_name, opt_organization) {
  * specified, uses the current Model's organization.
  */
 Cache.prototype['release'] = function(key, opt_name, opt_organization) {
+  if (DEBUG && window['voodoo']['debug']['disableCache'])
+    return;
+
   log_.assert_(key, 'key must be valid.', '(Cache::release)');
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
@@ -148,6 +163,9 @@ Cache.prototype['release'] = function(key, opt_name, opt_organization) {
  * specified, uses the current Model's organization.
  */
 Cache.prototype['set'] = function(key, value, opt_name, opt_organization) {
+  if (DEBUG && window['voodoo']['debug']['disableCache'])
+    return;
+
   log_.assert_(key, 'key must be valid.', '(Cache::set)');
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
