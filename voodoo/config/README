@@ -44,6 +44,7 @@ Release Notes
 
 6-17-2014 0.9.1
 Cache now supports reference counting.
+Added Debug.disableCache.
 Bug Fix: Memory leak when creating/destroying models repeatedly.
 Bug Fix: Removing objects always makes the scene dirty.
 

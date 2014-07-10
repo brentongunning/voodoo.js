@@ -16,6 +16,14 @@ function Debug() {
   if (!DEBUG) {
     // Case 1: Not in debug mode. Setting debug settings should throw an error.
 
+    Object.defineProperty(this, 'disableCache', {
+      get: function() { return false; },
+      set: function(val) {log_.error_(
+          'Debug settings may only be set in debug builds.',
+          '(Debug::disableCache)'); },
+      enumerable: true
+    });
+
     Object.defineProperty(this, 'disableStencils', {
       get: function() { return false; },
       set: function(val) { log_.error_(
@@ -42,9 +50,16 @@ function Debug() {
   } else {
     // Case 2: In debug mode
 
+    this.disableCache_ = false;
     this.disableStencils_ = false;
     this.drawStencils_ = false;
     this.showFps_ = false;
+
+    Object.defineProperty(this, 'disableCache', {
+      get: function() { return this.disableCache_; },
+      set: function(val) { this.disableCache_ = val; },
+      enumerable: true
+    });
 
     Object.defineProperty(this, 'disableStencils', {
       get: function() { return this.disableStencils_; },
@@ -71,6 +86,16 @@ function Debug() {
     });
   }
 }
+
+
+/**
+ * Whether to disable caching for Models and Views.
+ *
+ * Default is false.
+ *
+ * @type {boolean}
+ */
+Debug.prototype['disableCache'] = false;
 
 
 /**

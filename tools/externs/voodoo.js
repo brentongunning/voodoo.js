@@ -355,6 +355,9 @@ voodoo.Triggers.prototype.remove = function(object) {};
 voodoo.Debug = function() {};
 
 /** @type {boolean} */
+voodoo.Debug.prototype.disableCache;
+
+/** @type {boolean} */
 voodoo.Debug.prototype.disableStencils;
 
 /** @type {boolean} */
