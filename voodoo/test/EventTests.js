@@ -341,6 +341,10 @@ EventTests.prototype.testLoadEvent = function() {
     finishLoading: function() {
       this.view.finishLoading();
       this.stencilView.finishLoading();
+
+      // Do it again to test edge cases. This should still work.
+      this.view.finishLoading();
+      this.stencilView.finishLoading();
     }
   });
 

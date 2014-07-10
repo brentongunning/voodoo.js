@@ -55,8 +55,10 @@ View.prototype['construct'] = function(model, layer) {
     get: function() { return vars.isLoaded_; },
     set: function(val) {
       vars.isLoaded_ = val;
-      if (vars.isLoaded_)
+      if (!vars.hasLoaded_ && val) {
+        vars.hasLoaded_ = true;
         vars.model_['onViewLoad'](that);
+      }
     },
     enumerable: true
   });
@@ -95,9 +97,12 @@ View.prototype['construct'] = function(model, layer) {
 
   // Call the user's load function.
   vars.isLoaded_ = true;
+  vars.hasLoaded_ = false;
   this['load']();
-  if (vars.isLoaded_)
+  if (vars.isLoaded_) {
+    vars.hasLoaded_ = true;
     model['onViewLoad'](this);
+  }
 };
 
 
