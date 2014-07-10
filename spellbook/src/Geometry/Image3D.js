@@ -416,10 +416,8 @@ var Image3D = this.Image3D = voodoo.Model.extend({
         notifiers: []
       });
 
-      for (var i = 0, len = notifiers.length; i < len; ++i) {
-        window.console.log('notify');
+      for (var i = 0, len = notifiers.length; i < len; ++i)
         notifiers[i](heightmapData);
-      }
 
       callback();
     }
@@ -439,6 +437,7 @@ var Image3D = this.Image3D = voodoo.Model.extend({
 
         var that = this;
         cacheVal.notifiers.push(function(data) {
+          log_.model_(that, 'Using cached heightmap ' + index);
           that.heightmapData_[index] = data;
           callback();
         });
@@ -1219,6 +1218,9 @@ Image3D.prototype.createGeometry_ = function() {
   if (this.cache.has(this.geometryKey_)) {
     this.cache.addRef(this.geometryKey_);
     this.geometry_ = this.cache.get(this.geometryKey_);
+
+    log_.model_(this, 'Using cached geometry');
+
     return;
   }
 
