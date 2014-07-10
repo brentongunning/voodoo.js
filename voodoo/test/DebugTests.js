@@ -129,6 +129,6 @@ DebugTests.prototype.testDisableCache = function() {
     model.testDisabledCache();
     voodooDebug.disableCache = false;
   }
-  
+
   model.testEnabledCache();
 };
