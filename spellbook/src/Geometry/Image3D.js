@@ -15,7 +15,8 @@
  */
 var Image3DView_ = voodoo.View.extend({
 
-  below: false,
+  above: true,
+  below: true,
 
   load: function() {
     this.base.load();
@@ -29,6 +30,22 @@ var Image3DView_ = voodoo.View.extend({
     this.destroyMesh_();
   },
 
+  createGeometry_: function() {
+    var modelGeometry = this.model.geometry_;
+    log_.assert_(modelGeometry, 'modelGeometry must be valid.',
+        '(Image3DView_::createGeometry_)');
+
+    var geometry = new THREE.Geometry();
+
+    geometry.vertices = modelGeometry.vertices;
+    geometry.faces = modelGeometry.faces;
+    geometry.faceVertexUvs = modelGeometry.faceVertexUvs;
+    geometry.morphTargets = modelGeometry.morphTargets;
+    geometry.morphNormals = modelGeometry.morphNormals;
+
+    return geometry;
+  },
+
   createMaterial_: function() {
     return new THREE.MeshLambertMaterial({
       color: 0xFFFFFF,
@@ -38,455 +55,6 @@ var Image3DView_ = voodoo.View.extend({
       morphTargets: true,
       morphNormals: true
     });
-  },
-
-  computeNormals_: function(geometry) {
-    log_.assert_(geometry, 'geometry must be valid.',
-        '(Image3DView_::computeNormals_)');
-
-    geometry.computeFaceNormals();
-    geometry.computeVertexNormals();
-    geometry.computeMorphNormals();
-  },
-
-  getDepth_: function(data, i) {
-    log_.assert_(data, 'data must be valid.', '(Image3DView_::getDepth_)');
-
-    var r = data[i];
-    var g = data[i + 1];
-    var b = data[i + 2];
-    var avg = (r + g + b) / 3.0;
-    return avg / 255.0 * this.model.maxHeight_;
-  },
-
-  createSmoothGeometry_: function(geometry, verticesOwner, data, createFaces) {
-    log_.assert_(geometry, 'geometry must be valid.',
-        '(Image3DView_::createSmoothGeometry_)');
-    log_.assert_(verticesOwner, 'verticesOwner must be valid.',
-        '(Image3DView_::createSmoothGeometry_)');
-    log_.assert_(data, 'data must be valid.',
-        '(Image3DView_::createSmoothGeometry_)');
-
-    // Constants
-    var width = this.model.heightmapWidth_;
-    var height = this.model.heightmapHeight_;
-    var invWidthMinusOne = 1.0 / (width - 1);
-    var invHeightMinusOne = 1.0 / (height - 1);
-    var stride = width * 4;
-
-    var THREEVector3 = THREE.Vector3;
-    var THREEFace3 = THREE.Face3;
-    var THREEVector2 = THREE.Vector2;
-
-    // Vertices
-    var numVertices = width * height;
-    var vertices = verticesOwner.vertices = new Array(numVertices);
-    var pixelIndex = 0;
-    var vertexIndex = 0;
-    for (var y = 0; y < height; ++y) {
-      for (var x = 0; x < width; ++x) {
-        var depth = this.getDepth_(data, pixelIndex);
-        vertices[vertexIndex++] = new THREEVector3(
-            x * invWidthMinusOne,
-            y * invHeightMinusOne,
-            depth);
-        pixelIndex += 4;
-      }
-    }
-
-    // Indices
-    if (createFaces) {
-      var numFaces = (width - 1) * (height - 1) * 2;
-      geometry.faces = new Array(numFaces);
-      geometry.faceVertexUvs[0] = new Array(numFaces);
-      var faceIdx = 0;
-      var uvIdx = 0;
-
-      var geometryFaces = geometry.faces;
-      var geometryFaceVertexUvs = geometry.faceVertexUvs[0];
-
-      var yi = 0, yi2 = width;
-      for (var y = 0; y < height - 1; ++y) {
-        for (var x = 0; x < width - 1; ++x) {
-          var x2 = x + 1;
-          geometryFaces[faceIdx++] = new THREEFace3(yi + x, yi + x2, yi2 + x2);
-          geometryFaces[faceIdx++] = new THREEFace3(yi + x, yi2 + x2, yi2 + x);
-
-          var u1 = x * invWidthMinusOne;
-          var u2 = x2 * invWidthMinusOne;
-          var v1 = y * invHeightMinusOne;
-          var v2 = (y + 1) * invHeightMinusOne;
-
-          geometryFaceVertexUvs[uvIdx++] = [
-            new THREEVector2(u1, v1),
-            new THREEVector2(u2, v1),
-            new THREEVector2(u2, v2)
-          ];
-          geometryFaceVertexUvs[uvIdx++] = [
-            new THREEVector2(u1, v1),
-            new THREEVector2(u2, v2),
-            new THREEVector2(u1, v2)
-          ];
-        }
-        yi += width;
-        yi2 += width;
-      }
-    }
-  },
-
-  createBlockGeometry_: function(geometry, verticesOwner, data, createFaces) {
-    log_.assert_(geometry, 'geometry must be valid.',
-        '(Image3DView_::createBlockGeometry_)');
-    log_.assert_(verticesOwner, 'verticesOwner must be valid.',
-        '(Image3DView_::createBlockGeometry_)');
-    log_.assert_(data, 'data must be valid.',
-        '(Image3DView_::createBlockGeometry_)');
-
-    var vertices = verticesOwner.vertices;
-
-    // Constants
-    var width = this.model.heightmapWidth_;
-    var height = this.model.heightmapHeight_;
-    var invWidth = 1.0 / width;
-    var invHeight = 1.0 / height;
-    var textureImage = this.texture_.image;
-    var textureImageWidth = textureImage.width;
-    var textureImageHeight = textureImage.height;
-    var widthRatio = textureImageWidth / width;
-    var heightRatio = textureImageHeight / height;
-    var invTextureWidth = 1.0 / textureImageWidth;
-    var invTextureHeight = 1.0 / textureImageHeight;
-
-    // Precalculate depth
-    var depths = new Array(height);
-    var i = 0;
-    for (var y = 0; y < height; ++y) {
-      var line = new Array(width);
-      for (var x = 0; x < width; ++x) {
-        line[x] = this.getDepth_(data, i);
-        i += 4;
-      }
-      depths[y] = line;
-    }
-
-    if (createFaces) {
-      var numFaces = (width - 1) * (height - 1) * 10;
-      geometry.faces = new Array(numFaces);
-      geometry.faceVertexUvs[0] = new Array(numFaces);
-    }
-
-    var numVertices = width * height * 12;
-    vertices = geometry.vertices = new Array(numVertices);
-
-    var geometryFaces = geometry.faces;
-    var geometryFaceVertexUvs = geometry.faceVertexUvs[0];
-
-    var THREEVector3 = THREE.Vector3;
-    var THREEFace3 = THREE.Face3;
-    var THREEVector2 = THREE.Vector2;
-
-    var v = 0;
-    var faceIdx = 0;
-    var uvIdx = 0;
-    var vertexIdx = 0;
-    for (var y = 0; y < height; ++y) {
-      for (var x = 0; x < width; ++x) {
-        var depth = depths[y][x];
-        var depthLeft = x > 0 ? depths[y][x - 1] : 0;
-        var depthTop = y > 0 ? depths[y - 1][x] : 0;
-        var depthRight = x < width - 1 ? depths[y][x + 1] : 0;
-        var depthBottom = y < height - 1 ? depths[y + 1][x] : 0;
-
-        var x1 = x * invWidth;
-        var x2 = (x + 1) * invWidth;
-        var y1 = y * invHeight;
-        var y2 = (y + 1) * invHeight;
-
-        var xr = x * widthRatio;
-        var yr = y * heightRatio;
-        var u1 = (xr + 0.5) * invTextureWidth;
-        var u2 = (xr + widthRatio - 0.5) * invTextureWidth;
-        var v1 = (yr + 0.5) * invTextureHeight;
-        var v2 = (yr + heightRatio - 0.5) * invTextureHeight;
-
-        // Front
-
-        var j = v;
-        vertices[vertexIdx++] = new THREEVector3(x1, y1, depth);
-        vertices[vertexIdx++] = new THREEVector3(x2, y1, depth);
-        vertices[vertexIdx++] = new THREEVector3(x2, y2, depth);
-        vertices[vertexIdx++] = new THREEVector3(x1, y2, depth);
-
-        if (createFaces) {
-          v += 4;
-
-          geometryFaces[faceIdx++] = new THREEFace3(j, j + 1, j + 2);
-          geometryFaces[faceIdx++] = new THREEFace3(j, j + 2, j + 3);
-          geometryFaceVertexUvs[uvIdx++] = [
-            new THREEVector2(u1, v1),
-            new THREEVector2(u2, v1),
-            new THREEVector2(u2, v2)
-          ];
-          geometryFaceVertexUvs[uvIdx++] = [
-            new THREEVector2(u1, v1),
-            new THREEVector2(u2, v2),
-            new THREEVector2(u1, v2)
-          ];
-        }
-
-        // Left
-
-        if (depth > depthLeft) {
-          vertices[vertexIdx++] = new THREEVector3(x1, y1, depthLeft);
-          vertices[vertexIdx++] = new THREEVector3(x1, y2, depthLeft);
-
-          if (createFaces) {
-            geometryFaces[faceIdx++] = new THREEFace3(j, j + 3, v + 1);
-            geometryFaces[faceIdx++] = new THREEFace3(j, v + 1, v);
-            geometryFaceVertexUvs[uvIdx++] = [
-              new THREEVector2(u1, v1),
-              new THREEVector2(u1, v2),
-              new THREEVector2(u1, v2)
-            ];
-            geometryFaceVertexUvs[uvIdx++] = [
-              new THREEVector2(u1, v1),
-              new THREEVector2(u1, v2),
-              new THREEVector2(u1, v1)
-            ];
-
-            v += 2;
-          }
-        }
-
-        // Right
-
-        if (depth > depthRight) {
-          vertices[vertexIdx++] = new THREEVector3(x2, y1, depthRight);
-          vertices[vertexIdx++] = new THREEVector3(x2, y2, depthRight);
-
-          if (createFaces) {
-            geometryFaces[faceIdx++] = new THREEFace3(j + 2, j + 1, v + 0);
-            geometryFaces[faceIdx++] = new THREEFace3(j + 2, v + 0, v + 1);
-            geometryFaceVertexUvs[uvIdx++] = [
-              new THREEVector2(u2, v2),
-              new THREEVector2(u2, v1),
-              new THREEVector2(u2, v1)
-            ];
-            geometryFaceVertexUvs[uvIdx++] = [
-              new THREEVector2(u2, v2),
-              new THREEVector2(u2, v1),
-              new THREEVector2(u2, v2)
-            ];
-
-            v += 2;
-          }
-        }
-
-        // Top
-
-        if (depth > depthTop) {
-          vertices[vertexIdx++] = new THREEVector3(x1, y1, depthTop);
-          vertices[vertexIdx++] = new THREEVector3(x2, y1, depthTop);
-
-          if (createFaces) {
-            geometryFaces[faceIdx++] = new THREEFace3(j + 1, j, v);
-            geometryFaces[faceIdx++] = new THREEFace3(j + 1, v, v + 1);
-            geometryFaceVertexUvs[uvIdx++] = [
-              new THREEVector2(u2, v1),
-              new THREEVector2(u1, v1),
-              new THREEVector2(u1, v1)
-            ];
-            geometryFaceVertexUvs[uvIdx++] = [
-              new THREEVector2(u2, v1),
-              new THREEVector2(u1, v1),
-              new THREEVector2(u2, v1)
-            ];
-
-            v += 2;
-          }
-        }
-
-        // Bottom
-
-        if (depth > depthBottom) {
-          vertices[vertexIdx++] = new THREEVector3(x1, y2, depthBottom);
-          vertices[vertexIdx++] = new THREEVector3(x2, y2, depthBottom);
-
-          if (createFaces) {
-            geometryFaces[faceIdx++] = new THREEFace3(j + 3, j + 2, v + 1);
-            geometryFaces[faceIdx++] = new THREEFace3(j + 3, v + 1, v);
-            geometryFaceVertexUvs[uvIdx++] = [
-              new THREEVector2(u1, v2),
-              new THREEVector2(u2, v2),
-              new THREEVector2(u2, v2)
-            ];
-            geometryFaceVertexUvs[uvIdx++] = [
-              new THREEVector2(u1, v2),
-              new THREEVector2(u2, v2),
-              new THREEVector2(u1, v2)
-            ];
-
-            v += 2;
-          }
-        }
-      }
-    }
-
-    vertices.length = vertexIdx;
-    if (createFaces) {
-      geometryFaces.length = faceIdx;
-      geometryFaceVertexUvs.length = uvIdx;
-    }
-  },
-
-  createFloatGeometry_: function(geometry, verticesOwner, data, createFaces) {
-    log_.assert_(geometry, 'geometry must be valid.',
-        '(Image3DView_::createFloatGeometry_)');
-    log_.assert_(verticesOwner, 'verticesOwner must be valid.',
-        '(Image3DView_::createFloatGeometry_)');
-    log_.assert_(data, 'data must be valid.',
-        '(Image3DView_::createFloatGeometry_)');
-
-    // Constants
-    var width = this.model.heightmapWidth_;
-    var height = this.model.heightmapHeight_;
-    var invWidth = 1.0 / width;
-    var invHeight = 1.0 / height;
-    var textureImage = this.texture_.image;
-    var textureImageWidth = textureImage.width;
-    var textureImageHeight = textureImage.height;
-    var widthRatio = textureImageWidth / width;
-    var heightRatio = textureImageHeight / height;
-    var invTextureWidth = 1.0 / textureImageWidth;
-    var invTextureHeight = 1.0 / textureImageHeight;
-
-    var THREEVector3 = THREE.Vector3;
-    var THREEFace3 = THREE.Face3;
-    var THREEVector2 = THREE.Vector2;
-
-    var numVertices = width * height * 4;
-    var vertices = verticesOwner.vertices = new Array(numVertices);
-
-    var i = 0;
-    var vertexIdx = 0;
-    for (var y = 0; y < height; ++y) {
-      for (var x = 0; x < width; ++x) {
-        var depth = this.getDepth_(data, i);
-
-        var x1 = x * invWidth;
-        var x2 = (x + 1) * invWidth;
-        var y1 = y * invHeight;
-        var y2 = (y + 1) * invHeight;
-
-        vertices[vertexIdx++] = new THREEVector3(x1, y1, depth);
-        vertices[vertexIdx++] = new THREEVector3(x2, y1, depth);
-        vertices[vertexIdx++] = new THREEVector3(x2, y2, depth);
-        vertices[vertexIdx++] = new THREEVector3(x1, y2, depth);
-
-        i += 4;
-      }
-    }
-
-    if (createFaces) {
-      var numFaces = width * height * 2;
-      var geometryFaces = geometry.faces = new Array(numFaces);
-      var geometryFaceVertexUvs = geometry.faceVertexUvs[0] =
-          new Array(numFaces);
-
-      i = 0;
-      var faceIdx = 0;
-      var uvIdx = 0;
-      for (var y = 0; y < height; ++y) {
-        for (var x = 0; x < width; ++x) {
-          var xr = x * widthRatio;
-          var yr = y * heightRatio;
-          var u1 = (xr + 0.5) * invTextureWidth;
-          var u2 = (xr + widthRatio - 0.5) * invTextureWidth;
-          var v1 = (yr + 0.5) * invTextureHeight;
-          var v2 = (yr + heightRatio - 0.5) * invTextureHeight;
-
-          geometryFaces[faceIdx++] = new THREEFace3(i, i + 1, i + 2);
-          geometryFaces[faceIdx++] = new THREEFace3(i, i + 2, i + 3);
-
-          geometryFaceVertexUvs[uvIdx++] = [
-            new THREEVector2(u1, v1),
-            new THREEVector2(u2, v1),
-            new THREEVector2(u2, v2)
-          ];
-          geometryFaceVertexUvs[uvIdx++] = [
-            new THREEVector2(u1, v1),
-            new THREEVector2(u2, v2),
-            new THREEVector2(u1, v2)
-          ];
-
-          i += 4;
-        }
-      }
-    }
-  },
-
-  createHeightmapGeometry_: function(data, geometry, verticesOwner,
-      createFaces) {
-    log_.assert_(geometry, 'geometry must be valid.',
-        '(Image3DView_::createHeightmapGeometry_)');
-    log_.assert_(verticesOwner, 'verticesOwner must be valid.',
-        '(Image3DView_::createHeightmapGeometry_)');
-    log_.assert_(data, 'data must be valid.',
-        '(Image3DView_::createHeightmapGeometry_)');
-
-    switch (this.model.geometryStyle_) {
-      case Image3D.GeometryStyle.Smooth:
-        this.createSmoothGeometry_(geometry, verticesOwner, data, createFaces);
-        break;
-      case Image3D.GeometryStyle.Block:
-        this.createBlockGeometry_(geometry, verticesOwner, data, createFaces);
-        break;
-      case Image3D.GeometryStyle.Float:
-        this.createFloatGeometry_(geometry, verticesOwner, data, createFaces);
-        break;
-    }
-  },
-
-  createGeometry_: function() {
-    var geometry = new THREE.Geometry();
-
-    var modelHeightmaps = this.model.heightmaps_;
-    var modelHeightmapData = this.model.heightmapData_;
-
-    var numValidHeightmaps = 0;
-    for (var i = 0; i < 4; ++i) {
-      if (modelHeightmaps[i])
-        ++numValidHeightmaps;
-    }
-
-    this.createHeightmapGeometry_(modelHeightmapData[0],
-        geometry, geometry, true);
-
-    // Make sure there are no morph targets for block geometry
-    log_.assert_(numValidHeightmaps <= 1 ||
-        this.model.geometryStyle_ !== Image3D.GeometryStyle.Block,
-        'Block geometry does not support multiple heightmaps.',
-        '(Image3DView_::createGeometry)');
-
-    for (var i = 0; i < 4; ++i) {
-      var morphTarget = {
-        name: 'target' + i.toString(),
-        vertices: []
-      };
-
-      if (!modelHeightmaps[i] || i === 0) {
-        morphTarget.vertices = geometry.vertices;
-      } else {
-        this.createHeightmapGeometry_(modelHeightmapData[i], geometry,
-            morphTarget, false);
-      }
-
-      geometry.morphTargets.push(morphTarget);
-    }
-
-    this.computeNormals_(geometry);
-
-    return geometry;
   },
 
   createMesh_: function() {
@@ -552,10 +120,10 @@ var Image3DView_ = voodoo.View.extend({
     this.texture_.image = image;
     this.texture_.sourceFile = imageSrc;
 
-    this.rebuildGeometry_();
+    this.rebuildMesh_();
   },
 
-  rebuildGeometry_: function() {
+  rebuildMesh_: function() {
     if (this.mesh_)
       this.destroyMesh_();
 
@@ -613,6 +181,13 @@ var Image3D = this.Image3D = voodoo.Model.extend({
   organization: 'spellbook',
   viewType: Image3DView_,
 
+  cleanUp: function() {
+    this.freeHeightmap_(0);
+    this.freeHeightmap_(1);
+    this.freeHeightmap_(2);
+    this.freeHeightmap_(3);
+  },
+
   initialize: function(options) {
     this.base.initialize(options);
 
@@ -630,6 +205,8 @@ var Image3D = this.Image3D = voodoo.Model.extend({
       options.heightmap3 ? getAbsoluteUrl_(options.heightmap3) : '',
       options.heightmap4 ? getAbsoluteUrl_(options.heightmap4) : ''
     ];
+
+    this.heightmapKeys_ = ['', '', '', ''];
 
     log_.assert_(options.heightmap, 'heightmap must be valid.',
         '(Image3D::initalize)');
@@ -679,7 +256,13 @@ var Image3D = this.Image3D = voodoo.Model.extend({
       var src = that.imageSrc_;
       that.imageSrc_ = null;
       that.setImageSrc(src);
+
+      that.rebuildGeometry_();
     });
+  },
+
+  tearDownViews: function() {
+    this.destroyGeometry_();
   },
 
   update: function(deltaTime) {
@@ -782,11 +365,29 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     });
   },
 
+  freeHeightmap_: function(index) {
+    log_.assert_(index >= 0 && index < 4, 'index must be between 0 and 3.',
+        index, '(Image3D::freeHeightmap_)');
+
+    var key = this.heightmapKeys_[index];
+    if (key != '') {
+      this.cache.release(key);
+      this.heightmapKeys_[index] = '';
+    }
+  },
+
   loadHeightmap_: function(heightmapSrc, index, callback) {
+    log_.assert_(index >= 0 && index < 4, 'index must be between 0 and 3.',
+        index, '(Image3D::loadHeightmap_)');
+    log_.assert_(callback, 'callback must be valid.',
+        '(Image3D::loadHeightmap_)');
+    log_.assert_(typeof callback === 'function',
+        'callback must be a function.', '(Image3D::loadHeightmap_)');
+
     if (!heightmapSrc)
       return;
 
-    function onLoad(index) {
+    function onLoad(index, heightmapKey) {
       var heightmap = this.heightmaps_[index];
       var heightmapWidth = heightmap.width;
       var heightmapHeight = heightmap.height;
@@ -797,16 +398,76 @@ var Image3D = this.Image3D = voodoo.Model.extend({
 
       var context = canvas.getContext('2d');
       context.drawImage(heightmap, 0, 0, heightmapWidth, heightmapHeight);
-      this.heightmapData_[index] = context.getImageData(0, 0,
+      var heightmapData = context.getImageData(0, 0,
           heightmapWidth, heightmapHeight).data;
+      this.heightmapData_[index] = heightmapData;
+
+      this.heightmapKeys_[index] = heightmapKey;
+
+      var notifiers = [];
+      if (this.cache.has(heightmapKey)) {
+        notifiers = this.cache.get(heightmapKey).notifiers;
+        this.cache.addRef(heightmapKey);
+      }
+
+      this.cache.set(heightmapKey, {
+        heightmap: heightmap,
+        heightmapData: heightmapData,
+        notifiers: []
+      });
+
+      for (var i = 0, len = notifiers.length; i < len; ++i) {
+        window.console.log('notify');
+        notifiers[i](heightmapData);
+      }
 
       callback();
     }
 
-    var heightmap = new Image();
-    heightmap.onload = onLoad.bind(this, index);
-    this.heightmaps_[index] = heightmap;
-    heightmap.src = heightmapSrc;
+    this.freeHeightmap_(index);
+
+    var heightmapKey = heightmapSrc;
+    if (this.cache.has(heightmapKey)) {
+      // Case 1: Heightmap exists in cache.
+      this.cache.addRef(heightmapKey);
+
+      var cacheVal = this.cache.get(heightmapKey);
+      if (!cacheVal.heightmapData) {
+        // Heightmap has not finished loading.
+
+        this.heightmaps_[index] = cacheVal.heightmap;
+
+        var that = this;
+        cacheVal.notifiers.push(function(data) {
+          that.heightmapData_[index] = data;
+          callback();
+        });
+      } else {
+        // Heightmap is fully loaded.
+
+        this.heightmaps_[index] = this.cache.get(heightmapKey);
+        this.heightmapData_[index] = this.cache.get(heightmapKey);
+
+        callback();
+      }
+    } else {
+      // Case 2: Heightmap does not exist in cache yet.
+
+      var heightmap = new Image();
+
+      heightmap.addEventListener('load',
+          onLoad.bind(this, index, heightmapKey), false);
+
+      this.cache.set(heightmapKey, {
+        heightmap: heightmap,
+        heightmapData: null,
+        notifiers: []
+      });
+
+      this.heightmaps_[index] = heightmap;
+
+      heightmap.src = heightmapSrc;
+    }
   },
 
   loadHeightmaps_: function(callback) {
@@ -923,9 +584,7 @@ Image3D.prototype.setGeometryStyle = function(geometryStyle) {
 
     this.dispatch(new voodoo.Event('changeGeometryStyle', this));
 
-    this.view.rebuildGeometry_();
-    if (this.stencilView)
-      this.stencilView.rebuildGeometry_();
+    this.rebuildGeometry_();
   }
 
   return this;
@@ -963,9 +622,7 @@ Image3D.prototype.setHeightmap = function(heightmap, opt_index) {
   var that = this;
 
   that.loadHeightmap_(heightmap, index, function() {
-    that.view.rebuildGeometry_();
-    if (that.stencilView)
-      that.stencilView.rebuildGeometry_();
+    that.rebuildGeometry_();
   });
 
   return this;
@@ -1029,9 +686,7 @@ Image3D.prototype.setMaxHeight = function(maxHeight) {
 
     this.dispatch(new voodoo.Event('changeMaxHeight', this));
 
-    this.view.rebuildGeometry_();
-    if (this.stencilView)
-      this.stencilView.rebuildGeometry_();
+    this.rebuildGeometry_();
   }
 
   return this;
@@ -1090,6 +745,578 @@ Image3D.prototype.setTransparent = function(transparent) {
   }
 
   return this;
+};
+
+
+/**
+ * Sets up the normals on the geometry.
+ *
+ * @private
+ *
+ * @param {THREE.Geometry} geometry Geometry.
+ */
+Image3D.prototype.computeNormals_ = function(geometry) {
+  log_.assert_(geometry, 'geometry must be valid.',
+      '(Image3D::computeNormals_)');
+
+  geometry.computeFaceNormals();
+  geometry.computeVertexNormals();
+  geometry.computeMorphNormals();
+};
+
+
+/**
+ * Creates geometry with the smooth style.
+ *
+ * @private
+ *
+ * @param {THREE.Geometry} geometry Geometry.
+ * @param {Object} verticesOwner Parent of the vertices object.
+ * @param {Object} data Color data.
+ * @param {boolean} createFaces Whether to create the faces or just vertices.
+ */
+Image3D.prototype.createSmoothGeometry_ = function(geometry, verticesOwner,
+    data, createFaces) {
+  log_.assert_(geometry, 'geometry must be valid.',
+      '(Image3D::createSmoothGeometry_)');
+  log_.assert_(verticesOwner, 'verticesOwner must be valid.',
+      '(Image3D::createSmoothGeometry_)');
+  log_.assert_(data, 'data must be valid.',
+      '(Image3D::createSmoothGeometry_)');
+
+  // Constants
+  var width = this.heightmapWidth_;
+  var height = this.heightmapHeight_;
+  var invWidthMinusOne = 1.0 / (width - 1);
+  var invHeightMinusOne = 1.0 / (height - 1);
+  var stride = width * 4;
+
+  var THREEVector3 = THREE.Vector3;
+  var THREEFace3 = THREE.Face3;
+  var THREEVector2 = THREE.Vector2;
+
+  // Vertices
+  var numVertices = width * height;
+  var vertices = verticesOwner.vertices = new Array(numVertices);
+  var pixelIndex = 0;
+  var vertexIndex = 0;
+  for (var y = 0; y < height; ++y) {
+    for (var x = 0; x < width; ++x) {
+      var depth = this.getDepth_(data, pixelIndex);
+      vertices[vertexIndex++] = new THREEVector3(
+          x * invWidthMinusOne,
+          y * invHeightMinusOne,
+          depth);
+      pixelIndex += 4;
+    }
+  }
+
+  // Indices
+  if (createFaces) {
+    var numFaces = (width - 1) * (height - 1) * 2;
+    geometry.faces = new Array(numFaces);
+    geometry.faceVertexUvs[0] = new Array(numFaces);
+    var faceIdx = 0;
+    var uvIdx = 0;
+
+    var geometryFaces = geometry.faces;
+    var geometryFaceVertexUvs = geometry.faceVertexUvs[0];
+
+    var yi = 0, yi2 = width;
+    for (var y = 0; y < height - 1; ++y) {
+      for (var x = 0; x < width - 1; ++x) {
+        var x2 = x + 1;
+        geometryFaces[faceIdx++] = new THREEFace3(yi + x, yi + x2, yi2 + x2);
+        geometryFaces[faceIdx++] = new THREEFace3(yi + x, yi2 + x2, yi2 + x);
+
+        var u1 = x * invWidthMinusOne;
+        var u2 = x2 * invWidthMinusOne;
+        var v1 = y * invHeightMinusOne;
+        var v2 = (y + 1) * invHeightMinusOne;
+
+        geometryFaceVertexUvs[uvIdx++] = [
+          new THREEVector2(u1, v1),
+          new THREEVector2(u2, v1),
+          new THREEVector2(u2, v2)
+        ];
+        geometryFaceVertexUvs[uvIdx++] = [
+          new THREEVector2(u1, v1),
+          new THREEVector2(u2, v2),
+          new THREEVector2(u1, v2)
+        ];
+      }
+      yi += width;
+      yi2 += width;
+    }
+  }
+};
+
+
+/**
+ * Creates geometry with the block style.
+ *
+ * @private
+ *
+ * @param {THREE.Geometry} geometry Geometry.
+ * @param {Object} verticesOwner Parent of the vertices object.
+ * @param {Object} data Color data.
+ * @param {boolean} createFaces Whether to create the faces or just vertices.
+ */
+Image3D.prototype.createBlockGeometry_ = function(geometry, verticesOwner,
+    data, createFaces) {
+  log_.assert_(geometry, 'geometry must be valid.',
+      '(Image3D::createBlockGeometry_)');
+  log_.assert_(verticesOwner, 'verticesOwner must be valid.',
+      '(Image3D::createBlockGeometry_)');
+  log_.assert_(data, 'data must be valid.',
+      '(Image3D::createBlockGeometry_)');
+
+  var vertices = verticesOwner.vertices;
+
+  // Constants
+  var width = this.heightmapWidth_;
+  var height = this.heightmapHeight_;
+  var invWidth = 1.0 / width;
+  var invHeight = 1.0 / height;
+  var textureImage = this.texture_.image;
+  var textureImageWidth = textureImage.width;
+  var textureImageHeight = textureImage.height;
+  var widthRatio = textureImageWidth / width;
+  var heightRatio = textureImageHeight / height;
+  var invTextureWidth = 1.0 / textureImageWidth;
+  var invTextureHeight = 1.0 / textureImageHeight;
+
+  // Precalculate depth
+  var depths = new Array(height);
+  var i = 0;
+  for (var y = 0; y < height; ++y) {
+    var line = new Array(width);
+    for (var x = 0; x < width; ++x) {
+      line[x] = this.getDepth_(data, i);
+      i += 4;
+    }
+    depths[y] = line;
+  }
+
+  if (createFaces) {
+    var numFaces = (width - 1) * (height - 1) * 10;
+    geometry.faces = new Array(numFaces);
+    geometry.faceVertexUvs[0] = new Array(numFaces);
+  }
+
+  var numVertices = width * height * 12;
+  vertices = geometry.vertices = new Array(numVertices);
+
+  var geometryFaces = geometry.faces;
+  var geometryFaceVertexUvs = geometry.faceVertexUvs[0];
+
+  var THREEVector3 = THREE.Vector3;
+  var THREEFace3 = THREE.Face3;
+  var THREEVector2 = THREE.Vector2;
+
+  var v = 0;
+  var faceIdx = 0;
+  var uvIdx = 0;
+  var vertexIdx = 0;
+  for (var y = 0; y < height; ++y) {
+    for (var x = 0; x < width; ++x) {
+      var depth = depths[y][x];
+      var depthLeft = x > 0 ? depths[y][x - 1] : 0;
+      var depthTop = y > 0 ? depths[y - 1][x] : 0;
+      var depthRight = x < width - 1 ? depths[y][x + 1] : 0;
+      var depthBottom = y < height - 1 ? depths[y + 1][x] : 0;
+
+      var x1 = x * invWidth;
+      var x2 = (x + 1) * invWidth;
+      var y1 = y * invHeight;
+      var y2 = (y + 1) * invHeight;
+
+      var xr = x * widthRatio;
+      var yr = y * heightRatio;
+      var u1 = (xr + 0.5) * invTextureWidth;
+      var u2 = (xr + widthRatio - 0.5) * invTextureWidth;
+      var v1 = (yr + 0.5) * invTextureHeight;
+      var v2 = (yr + heightRatio - 0.5) * invTextureHeight;
+
+      // Front
+
+      var j = v;
+      vertices[vertexIdx++] = new THREEVector3(x1, y1, depth);
+      vertices[vertexIdx++] = new THREEVector3(x2, y1, depth);
+      vertices[vertexIdx++] = new THREEVector3(x2, y2, depth);
+      vertices[vertexIdx++] = new THREEVector3(x1, y2, depth);
+
+      if (createFaces) {
+        v += 4;
+
+        geometryFaces[faceIdx++] = new THREEFace3(j, j + 1, j + 2);
+        geometryFaces[faceIdx++] = new THREEFace3(j, j + 2, j + 3);
+        geometryFaceVertexUvs[uvIdx++] = [
+          new THREEVector2(u1, v1),
+          new THREEVector2(u2, v1),
+          new THREEVector2(u2, v2)
+        ];
+        geometryFaceVertexUvs[uvIdx++] = [
+          new THREEVector2(u1, v1),
+          new THREEVector2(u2, v2),
+          new THREEVector2(u1, v2)
+        ];
+      }
+
+      // Left
+
+      if (depth > depthLeft) {
+        vertices[vertexIdx++] = new THREEVector3(x1, y1, depthLeft);
+        vertices[vertexIdx++] = new THREEVector3(x1, y2, depthLeft);
+
+        if (createFaces) {
+          geometryFaces[faceIdx++] = new THREEFace3(j, j + 3, v + 1);
+          geometryFaces[faceIdx++] = new THREEFace3(j, v + 1, v);
+          geometryFaceVertexUvs[uvIdx++] = [
+            new THREEVector2(u1, v1),
+            new THREEVector2(u1, v2),
+            new THREEVector2(u1, v2)
+          ];
+          geometryFaceVertexUvs[uvIdx++] = [
+            new THREEVector2(u1, v1),
+            new THREEVector2(u1, v2),
+            new THREEVector2(u1, v1)
+          ];
+
+          v += 2;
+        }
+      }
+
+      // Right
+
+      if (depth > depthRight) {
+        vertices[vertexIdx++] = new THREEVector3(x2, y1, depthRight);
+        vertices[vertexIdx++] = new THREEVector3(x2, y2, depthRight);
+
+        if (createFaces) {
+          geometryFaces[faceIdx++] = new THREEFace3(j + 2, j + 1, v + 0);
+          geometryFaces[faceIdx++] = new THREEFace3(j + 2, v + 0, v + 1);
+          geometryFaceVertexUvs[uvIdx++] = [
+            new THREEVector2(u2, v2),
+            new THREEVector2(u2, v1),
+            new THREEVector2(u2, v1)
+          ];
+          geometryFaceVertexUvs[uvIdx++] = [
+            new THREEVector2(u2, v2),
+            new THREEVector2(u2, v1),
+            new THREEVector2(u2, v2)
+          ];
+
+          v += 2;
+        }
+      }
+
+      // Top
+
+      if (depth > depthTop) {
+        vertices[vertexIdx++] = new THREEVector3(x1, y1, depthTop);
+        vertices[vertexIdx++] = new THREEVector3(x2, y1, depthTop);
+
+        if (createFaces) {
+          geometryFaces[faceIdx++] = new THREEFace3(j + 1, j, v);
+          geometryFaces[faceIdx++] = new THREEFace3(j + 1, v, v + 1);
+          geometryFaceVertexUvs[uvIdx++] = [
+            new THREEVector2(u2, v1),
+            new THREEVector2(u1, v1),
+            new THREEVector2(u1, v1)
+          ];
+          geometryFaceVertexUvs[uvIdx++] = [
+            new THREEVector2(u2, v1),
+            new THREEVector2(u1, v1),
+            new THREEVector2(u2, v1)
+          ];
+
+          v += 2;
+        }
+      }
+
+      // Bottom
+
+      if (depth > depthBottom) {
+        vertices[vertexIdx++] = new THREEVector3(x1, y2, depthBottom);
+        vertices[vertexIdx++] = new THREEVector3(x2, y2, depthBottom);
+
+        if (createFaces) {
+          geometryFaces[faceIdx++] = new THREEFace3(j + 3, j + 2, v + 1);
+          geometryFaces[faceIdx++] = new THREEFace3(j + 3, v + 1, v);
+          geometryFaceVertexUvs[uvIdx++] = [
+            new THREEVector2(u1, v2),
+            new THREEVector2(u2, v2),
+            new THREEVector2(u2, v2)
+          ];
+          geometryFaceVertexUvs[uvIdx++] = [
+            new THREEVector2(u1, v2),
+            new THREEVector2(u2, v2),
+            new THREEVector2(u1, v2)
+          ];
+
+          v += 2;
+        }
+      }
+    }
+  }
+
+  vertices.length = vertexIdx;
+  if (createFaces) {
+    geometryFaces.length = faceIdx;
+    geometryFaceVertexUvs.length = uvIdx;
+  }
+};
+
+
+/**
+ * Creates geometry with the float style.
+ *
+ * @private
+ *
+ * @param {THREE.Geometry} geometry Geometry.
+ * @param {Object} verticesOwner Parent of the vertices object.
+ * @param {Object} data Color data.
+ * @param {boolean} createFaces Whether to create the faces or just vertices.
+ */
+Image3D.prototype.createFloatGeometry_ = function(geometry, verticesOwner,
+    data, createFaces) {
+  log_.assert_(geometry, 'geometry must be valid.',
+      '(Image3D::createFloatGeometry_)');
+  log_.assert_(verticesOwner, 'verticesOwner must be valid.',
+      '(Image3D::createFloatGeometry_)');
+  log_.assert_(data, 'data must be valid.',
+      '(Image3D::createFloatGeometry_)');
+
+  // Constants
+  var width = this.heightmapWidth_;
+  var height = this.heightmapHeight_;
+  var invWidth = 1.0 / width;
+  var invHeight = 1.0 / height;
+  var textureImage = this.texture_.image;
+  var textureImageWidth = textureImage.width;
+  var textureImageHeight = textureImage.height;
+  var widthRatio = textureImageWidth / width;
+  var heightRatio = textureImageHeight / height;
+  var invTextureWidth = 1.0 / textureImageWidth;
+  var invTextureHeight = 1.0 / textureImageHeight;
+
+  var THREEVector3 = THREE.Vector3;
+  var THREEFace3 = THREE.Face3;
+  var THREEVector2 = THREE.Vector2;
+
+  var numVertices = width * height * 4;
+  var vertices = verticesOwner.vertices = new Array(numVertices);
+
+  var i = 0;
+  var vertexIdx = 0;
+  for (var y = 0; y < height; ++y) {
+    for (var x = 0; x < width; ++x) {
+      var depth = this.getDepth_(data, i);
+
+      var x1 = x * invWidth;
+      var x2 = (x + 1) * invWidth;
+      var y1 = y * invHeight;
+      var y2 = (y + 1) * invHeight;
+
+      vertices[vertexIdx++] = new THREEVector3(x1, y1, depth);
+      vertices[vertexIdx++] = new THREEVector3(x2, y1, depth);
+      vertices[vertexIdx++] = new THREEVector3(x2, y2, depth);
+      vertices[vertexIdx++] = new THREEVector3(x1, y2, depth);
+
+      i += 4;
+    }
+  }
+
+  if (createFaces) {
+    var numFaces = width * height * 2;
+    var geometryFaces = geometry.faces = new Array(numFaces);
+    var geometryFaceVertexUvs = geometry.faceVertexUvs[0] =
+        new Array(numFaces);
+
+    i = 0;
+    var faceIdx = 0;
+    var uvIdx = 0;
+    for (var y = 0; y < height; ++y) {
+      for (var x = 0; x < width; ++x) {
+        var xr = x * widthRatio;
+        var yr = y * heightRatio;
+        var u1 = (xr + 0.5) * invTextureWidth;
+        var u2 = (xr + widthRatio - 0.5) * invTextureWidth;
+        var v1 = (yr + 0.5) * invTextureHeight;
+        var v2 = (yr + heightRatio - 0.5) * invTextureHeight;
+
+        geometryFaces[faceIdx++] = new THREEFace3(i, i + 1, i + 2);
+        geometryFaces[faceIdx++] = new THREEFace3(i, i + 2, i + 3);
+
+        geometryFaceVertexUvs[uvIdx++] = [
+          new THREEVector2(u1, v1),
+          new THREEVector2(u2, v1),
+          new THREEVector2(u2, v2)
+        ];
+        geometryFaceVertexUvs[uvIdx++] = [
+          new THREEVector2(u1, v1),
+          new THREEVector2(u2, v2),
+          new THREEVector2(u1, v2)
+        ];
+
+        i += 4;
+      }
+    }
+  }
+};
+
+
+/**
+ * Internal helper to create the vertices for a geometry.
+ *
+ * @private
+ *
+ * @param {Object} data Color data.
+ * @param {THREE.Geometry} geometry Geometry.
+ * @param {Object} verticesOwner Parent of the vertices object.
+ * @param {boolean} createFaces Whether to create the faces or just vertices.
+ */
+Image3D.prototype.createHeightmapGeometry_ = function(data, geometry,
+    verticesOwner, createFaces) {
+  log_.assert_(geometry, 'geometry must be valid.',
+      '(Image3D::createHeightmapGeometry_)');
+  log_.assert_(verticesOwner, 'verticesOwner must be valid.',
+      '(Image3D::createHeightmapGeometry_)');
+  log_.assert_(data, 'data must be valid.',
+      '(Image3D::createHeightmapGeometry_)');
+
+  switch (this.geometryStyle_) {
+    case Image3D.GeometryStyle.Smooth:
+      this.createSmoothGeometry_(geometry, verticesOwner, data, createFaces);
+      break;
+    case Image3D.GeometryStyle.Block:
+      this.createBlockGeometry_(geometry, verticesOwner, data, createFaces);
+      break;
+    case Image3D.GeometryStyle.Float:
+      this.createFloatGeometry_(geometry, verticesOwner, data, createFaces);
+      break;
+  }
+};
+
+
+/**
+ * Creates the geometry locally on the Model. Views will pick up copies of it.
+ *
+ * @private
+ */
+Image3D.prototype.createGeometry_ = function() {
+  this.geometryKey_ = 'imageSrc: ' + this.imageSrc_ + ', ';
+  this.geometryKey_ += 'heightSrc1: ' + this.heightSources_[0] + ', ';
+  this.geometryKey_ += 'heightSrc2: ' + this.heightSources_[1] + ', ';
+  this.geometryKey_ += 'heightSrc3: ' + this.heightSources_[2] + ', ';
+  this.geometryKey_ += 'heightSrc4: ' + this.heightSources_[3] + ', ';
+  this.geometryKey_ += 'maxHeight: ' + this.maxHeight_ + ', ';
+  this.geometryKey_ += 'geometryStyle: ' + this.geometryStyle_;
+  this.geometryKey_ += ' (geometry)';
+
+  // If the geometry is already in the cache, use it.
+  if (this.cache.has(this.geometryKey_)) {
+    this.cache.addRef(this.geometryKey_);
+    this.geometry_ = this.cache.get(this.geometryKey_);
+    return;
+  }
+
+  var geometry = new THREE.Geometry();
+
+  var numValidHeightmaps = 0;
+  for (var i = 0; i < 4; ++i) {
+    if (this.heightmaps_[i])
+      ++numValidHeightmaps;
+  }
+
+  this.createHeightmapGeometry_(
+      this.heightmapData_[0],
+      geometry,
+      geometry,
+      true);
+
+  // Make sure there are no morph targets for block geometry
+  log_.assert_(numValidHeightmaps <= 1 ||
+      this.geometryStyle_ !== Image3D.GeometryStyle.Block,
+      'Block geometry does not support multiple heightmaps.',
+      '(Image3D::createGeometry)');
+
+  for (var i = 0; i < 4; ++i) {
+    var morphTarget = {
+      name: 'target' + i.toString(),
+      vertices: []
+    };
+
+    if (!this.heightmaps_[i] || i === 0) {
+      morphTarget.vertices = geometry.vertices;
+    } else {
+      this.createHeightmapGeometry_(
+          this.heightmapData_[i],
+          geometry,
+          morphTarget,
+          false);
+    }
+
+    geometry.morphTargets.push(morphTarget);
+  }
+
+  this.computeNormals_(geometry);
+
+  this.geometry_ = geometry;
+  this.cache.set(this.geometryKey_, this.geometry_);
+};
+
+
+/**
+ * Destroys the local model geometry.
+ *
+ * @private
+ */
+Image3D.prototype.destroyGeometry_ = function() {
+  if (this.geometry_) {
+    this.cache.release(this.geometryKey_);
+    this.geometryKey_ = '';
+
+    this.geometry_.dispose();
+    this.geometry_ = null;
+  }
+};
+
+
+/**
+ * Helper method to get the depth value of a heightmap pixel.
+ *
+ * @private
+ *
+ * @param {Object} data Color data.
+ * @param {number} i Index.
+ *
+ * @return {number} Depth value.
+ */
+Image3D.prototype.getDepth_ = function(data, i) {
+  log_.assert_(data, 'data must be valid.', '(Image3D::getDepth_)');
+
+  var r = data[i];
+  var g = data[i + 1];
+  var b = data[i + 2];
+  var avg = (r + g + b) / 3.0;
+  return avg / 255.0 * this.maxHeight_;
+};
+
+
+/**
+ * Destroys and recreates the geometry on all views.
+ *
+ * @private
+ */
+Image3D.prototype.rebuildGeometry_ = function() {
+  this.destroyGeometry_();
+  this.createGeometry_();
+
+  this.view.rebuildMesh_();
+  if (this.stencilView)
+    this.stencilView.rebuildMesh_();
 };
 
 
