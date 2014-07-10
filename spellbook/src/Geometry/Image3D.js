@@ -28,6 +28,11 @@ var Image3DView_ = voodoo.View.extend({
 
   unload: function() {
     this.destroyMesh_();
+
+    if (this.texture_) {
+      this.texture_.dispose();
+      this.texture_ = null;
+    }
   },
 
   createGeometry_: function() {
@@ -35,15 +40,30 @@ var Image3DView_ = voodoo.View.extend({
     log_.assert_(modelGeometry, 'modelGeometry must be valid.',
         '(Image3DView_::createGeometry_)');
 
-    var geometry = new THREE.Geometry();
+    var geometryKey = this.model.geometryKey_;
+    if (this.cache.has(geometryKey)) {
+      // Geometry was already created.
 
-    geometry.vertices = modelGeometry.vertices;
-    geometry.faces = modelGeometry.faces;
-    geometry.faceVertexUvs = modelGeometry.faceVertexUvs;
-    geometry.morphTargets = modelGeometry.morphTargets;
-    geometry.morphNormals = modelGeometry.morphNormals;
+      this.geometryKey_ = geometryKey;
+      this.cache.addRef(geometryKey);
 
-    return geometry;
+      return this.cache.get(geometryKey);
+    } else {
+      // Geometry not yet created.
+
+      var geometry = new THREE.Geometry();
+
+      geometry.vertices = modelGeometry.vertices;
+      geometry.faces = modelGeometry.faces;
+      geometry.faceVertexUvs = modelGeometry.faceVertexUvs;
+      geometry.morphTargets = modelGeometry.morphTargets;
+      geometry.morphNormals = modelGeometry.morphNormals;
+
+      this.cache.set(geometryKey, geometry);
+      this.geometryKey_ = geometryKey;
+
+      return geometry;
+    }
   },
 
   createMaterial_: function() {
@@ -81,6 +101,9 @@ var Image3DView_ = voodoo.View.extend({
     }
 
     if (this.geometry_) {
+      this.cache.release(this.geometryKey_);
+      this.geometryKey_ = null;
+
       this.geometry_.dispose();
       this.geometry_ = null;
     }
@@ -88,11 +111,6 @@ var Image3DView_ = voodoo.View.extend({
     if (this.material_) {
       this.material_.dispose();
       this.material_ = null;
-    }
-
-    if (this.texture_) {
-      this.texture_.dispose();
-      this.texture_ = null;
     }
   },
 
@@ -182,6 +200,8 @@ var Image3D = this.Image3D = voodoo.Model.extend({
   viewType: Image3DView_,
 
   cleanUp: function() {
+    this.base.cleanUp();
+
     this.freeHeightmap_(0);
     this.freeHeightmap_(1);
     this.freeHeightmap_(2);
@@ -256,12 +276,12 @@ var Image3D = this.Image3D = voodoo.Model.extend({
       var src = that.imageSrc_;
       that.imageSrc_ = null;
       that.setImageSrc(src);
-
-      that.rebuildGeometry_();
     });
   },
 
   tearDownViews: function() {
+    this.base.tearDownViews();
+
     this.destroyGeometry_();
   },
 
@@ -272,8 +292,9 @@ var Image3D = this.Image3D = voodoo.Model.extend({
       return;
 
     if (this.element_.tagName.toLowerCase() === 'img' &&
-        this.element_.src !== this.imageSrc_)
+        this.element_.src !== this.imageSrc_) {
       this.setImageSrc(this.element_.src);
+    }
 
     if (this.morphing_) {
       var now = new Date();
@@ -370,7 +391,7 @@ var Image3D = this.Image3D = voodoo.Model.extend({
         index, '(Image3D::freeHeightmap_)');
 
     var key = this.heightmapKeys_[index];
-    if (key != '') {
+    if (key !== '') {
       this.cache.release(key);
       this.heightmapKeys_[index] = '';
     }
@@ -506,6 +527,7 @@ var Image3D = this.Image3D = voodoo.Model.extend({
       if (this.heightSources_[i] !== '')
         numToLoad++;
     }
+
     for (var i = 0; i < 4; ++i)
       this.loadHeightmap_(this.heightSources_[i], i, onLoad.bind(this, i));
   }
@@ -654,6 +676,8 @@ Image3D.prototype.setImageSrc = function(imageSrc) {
     this.dispatch(new voodoo.Event('changeImageSrc', this));
 
   function onLoad(index) {
+    this.rebuildGeometry_();
+
     this.view.setImage_(this.image_, this.imageSrc_);
     if (this.stencilView)
       this.stencilView.setImage_(this.image_, this.imageSrc_);
@@ -877,9 +901,8 @@ Image3D.prototype.createBlockGeometry_ = function(geometry, verticesOwner,
   var height = this.heightmapHeight_;
   var invWidth = 1.0 / width;
   var invHeight = 1.0 / height;
-  var textureImage = this.texture_.image;
-  var textureImageWidth = textureImage.width;
-  var textureImageHeight = textureImage.height;
+  var textureImageWidth = this.image_.width;
+  var textureImageHeight = this.image_.height;
   var widthRatio = textureImageWidth / width;
   var heightRatio = textureImageHeight / height;
   var invTextureWidth = 1.0 / textureImageWidth;
@@ -898,7 +921,7 @@ Image3D.prototype.createBlockGeometry_ = function(geometry, verticesOwner,
   }
 
   if (createFaces) {
-    var numFaces = (width - 1) * (height - 1) * 10;
+    var numFaces = width * height * 10;
     geometry.faces = new Array(numFaces);
     geometry.faceVertexUvs[0] = new Array(numFaces);
   }
@@ -1092,9 +1115,8 @@ Image3D.prototype.createFloatGeometry_ = function(geometry, verticesOwner,
   var height = this.heightmapHeight_;
   var invWidth = 1.0 / width;
   var invHeight = 1.0 / height;
-  var textureImage = this.texture_.image;
-  var textureImageWidth = textureImage.width;
-  var textureImageHeight = textureImage.height;
+  var textureImageWidth = this.image_.width;
+  var textureImageHeight = this.image_.height;
   var widthRatio = textureImageWidth / width;
   var heightRatio = textureImageHeight / height;
   var invTextureWidth = 1.0 / textureImageWidth;
@@ -1313,6 +1335,10 @@ Image3D.prototype.getDepth_ = function(data, i) {
  * @private
  */
 Image3D.prototype.rebuildGeometry_ = function() {
+  // If the texture image is not yet loaded, wait for
+  if (!this.image_)
+    return;
+
   this.destroyGeometry_();
   this.createGeometry_();
 

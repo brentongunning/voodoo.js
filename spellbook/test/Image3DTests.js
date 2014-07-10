@@ -150,13 +150,17 @@ Image3DTests.prototype.testImage3DChangeSources = function(queue) {
   var changeHeightmap = 0;
   var changeHeightmap3 = 0;
 
+  var loaded = false;
+
   queue.call(function(callbacks) {
     instance = new voodoo.Image3D({
       element: anchor,
       imageSrc: layers,
       heightmap: black,
       heightmap2: layers
-    }).on('load', callbacks.add(function() {}));
+    }).on('load', callbacks.add(function() {
+      loaded = true;
+    }));
 
     instance.on('changeImageSrc', function() { ++changeImageSrc; });
     instance.on('changeHeightmap', function() { ++changeHeightmap; });
@@ -164,6 +168,8 @@ Image3DTests.prototype.testImage3DChangeSources = function(queue) {
   });
 
   queue.call(function() {
+    assert('Images loaded:', loaded);
+
     instance.imageSrc = black;
     assert('ImageSrc:', instance.imageSrc.indexOf(black) !== -1);
     assert('img.src:', anchor.src.indexOf(black) !== -1);

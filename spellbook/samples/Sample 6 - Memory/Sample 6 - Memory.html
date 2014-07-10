@@ -9,8 +9,16 @@
 </head>
 
 <style>
-	#spacer {
-		height: 500px;
+	.container {
+		margin-left: auto;
+		margin-right: auto;
+		width: 1000px;
+	}
+
+	.block {
+		width: 200px;
+		height: 200px;
+		display: inline-block;
 	}
 </style>
 
@@ -19,6 +27,7 @@
 <script src="../../lib/spellbook.min.debug.js"></script>
 
 <body>
+		<button onclick="createModels()">Create Models</button>
 </body>
 
 <script type="text/javascript">
@@ -30,21 +39,26 @@
 
 	new voodoo.MouseLight();
 
-	for (var i = 0, len = 100; i < len; ++i) {
-		var div = document.createElement('div');
-		div.style.width = '200px';
-		div.style.height = '200px';
-		div.style.marginLeft = 'auto';
-		div.style.marginRight = 'auto';
-		document.body.appendChild(div);
+	function createModels() {
+		for (var y = 0, height = 10; y < height; ++y) {
+			var container = document.createElement('div');
+			container.className = 'container';
+			document.body.appendChild(container);
 
-		var img3d = new voodoo.Image3D({
-			element: div,
-			heightmap: 'Italy-depth.jpg',
-			imageSrc: 'Italy.jpg',
-			geometryStyle: 'smooth',
-			maxHeight: 200
-		});
+			for (var x = 0, width = 5; x < width; ++x) {
+				var div = document.createElement('div');
+				div.className = 'block';
+				container.appendChild(div);
+
+				var img3d = new voodoo.Image3D({
+					element: div,
+					heightmap: 'Italy-depth.jpg',
+					imageSrc: 'Italy.jpg',
+					geometryStyle: 'smooth',
+					maxHeight: 200
+				});
+			}	
+		}
 	}
 
 </script>
