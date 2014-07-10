@@ -3519,7 +3519,7 @@ THREE.Geometry.prototype.computeTangents = function(){};
 THREE.Geometry.prototype.computeBoundingBox = function(){};
 THREE.Geometry.prototype.dispose = function(){};
 
-/** @type {Array.<THREE.Vector2>} */
+/** @type {Array.<THREE.Vector2>|Array.<Array.<THREE.Vector2>>} */
 THREE.Geometry.prototype.faceVertexUvs;
 
 /** @type {Array.<THREE.Face3>} */
