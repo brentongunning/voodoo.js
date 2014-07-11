@@ -20,8 +20,6 @@ var Model3DView_ = voodoo.View.extend({
 
     this.loaded = false;
     this.pendingAnimation_ = null;
-
-    this.loadModel_();
   },
 
   unload: function() {
@@ -31,53 +29,100 @@ var Model3DView_ = voodoo.View.extend({
       this.modelMesh_ = null;
     }
 
-    if (this.material_) {
-      this.material_.dispose();
-      this.material_ = null;
+    if (this.geometry_) {
+      this.geometry_.dispose();
+      this.geometry_ = null;
+    }
+
+    if (this.materials_) {
+      for (var i = 0, len = this.materials_.length; i < len; ++i)
+        this.materials_[i].dispose();
+
+      this.materials_ = null;
     }
   },
 
-  loadModel_: function() {
+  reloadModel_: function() {
     this.unload();
+
+    // Clone the geometry and materials
+    var modelGeometry = this.model.geometry_;
+    log_.assert_(modelGeometry, 'modelGeometry must be valid.',
+        '(Model3DView_::reloadModel_)');
+
+    /*var geometry = new THREE.Geometry();
+
+    geometry.vertices = modelGeometry.vertices;
+    geometry.colors = modelGeometry.colors;
+    geometry.faces = modelGeometry.faces;
+    geometry.faceVertexUvs = modelGeometry.faceVertexUvs;
+    geometry.morphTargets = modelGeometry.morphTargets;
+    geometry.morphColors = modelGeometry.morphColors;
+    geometry.morphNormals = modelGeometry.morphNormals;
+    geometry.skinWeights = modelGeometry.skinWeights;
+    geometry.skinIndices = modelGeometry.skinIndices;
+    geometry.dynamic = modelGeometry.dynamic;
+
+    this.geometry_ = geometry;*/
+    this.geometry_ = modelGeometry.clone();
+
+    var modelMaterials = this.model.materials_;
+    log_.assert_(modelMaterials, 'modelMaterials must be valid.',
+        '(Model3DView_::reloadModel_)');
+
+    this.materials_ = [];
+    for (var i = 0, len = modelMaterials.length; i < len; ++i) {
+      /*this.materials_.push(modelMaterials[i].clone());
+      this.materials_[i].map = modelMaterials[i].map.clone();
+
+      this.materials_[i] = new THREE.MeshLambertMaterial({
+        color: 0xFF0000,
+        ambient: 0x000000,
+        map: modelMaterials[i].map.clone(),
+        transparent: false,
+        morphTargets: true,
+        morphNormals: true
+      });
+      this.materials_[i].name = modelMaterials[i].name;
+      this.materials_[i].opacity = 1;
+      this.materials_[i].blending = 1;
+      this.materials_[i].blendSrc = 204;
+      this.materials_[i].blendDst = 205;
+      this.materials_[i].blendEquation = 100;
+      this.materials_[i].visible = true;
+      this.materials_[i].needsUpdate = true;
+      this.materials_[i].morphTargets = false;
+      this.materials_[i].morphNormals = false;
+      this.materials_[i].wireframe = true;*/
+
+      this.materials_.push(new THREE.MeshBasicMaterial({
+        color: 0xFF0000
+      }));
+    }
 
     if (this.model.format_ === Model3D.Format.JSON)
       this.loadJson_();
   },
 
   loadJson_: function() {
-    var that = this;
-    var loader = new THREE.JSONLoader();
-    loader.load(this.model.modelSrc_, function(geometry, materials) {
-      var mesh;
+    if (this.model.animated_) {
+      var material = this.materials_[0];
 
-      for (var i = 0, len = i < materials.length; i < len; ++i) {
-        var material = materials[i];
-        if (material && material.map)
-          materials.map.flipY = false;
-      }
-
-      if (that.model.animated_) {
-        var material = materials[0];
-
-        material.morphTargets = true;
+      material.morphTargets = true;
+      if (material.map)
         material.map.flipY = false;
 
-        var faceMaterial = new THREE.MeshFaceMaterial(materials);
-        mesh = new THREE.MorphAnimMesh(geometry, faceMaterial);
-      } else {
-        var faceMaterial = new THREE.MeshFaceMaterial(materials);
-        mesh = new THREE.Mesh(geometry, faceMaterial);
-      }
+      var faceMaterial = new THREE.MeshFaceMaterial(this.materials_);
+      this.modelMesh_ = new THREE.MorphAnimMesh(this.geometry_, faceMaterial);
+    } else {
+      var faceMaterial = new THREE.MeshFaceMaterial(this.materials_);
+      this.modelMesh_ = new THREE.Mesh(this.geometry_, faceMaterial);
+    }
 
-      that.modelMesh_ = mesh;
+    this.scene.add(this.modelMesh_);
+    this.triggers.add(this.modelMesh_);
 
-      that.scene.add(mesh);
-      that.triggers.add(mesh);
-
-      that.material_ = material;
-
-      that.loaded = true;
-    });
+    this.loaded = true;
   },
 
   playAnimation_: function(animation) {
@@ -218,6 +263,14 @@ var Model3D = this.Model3D = voodoo.Model.extend({
       set: function(modelSrc) { that.setModelSrc(modelSrc); },
       enumerable: true
     });
+  },
+
+  setUpViews: function() {
+    this.loadModel_();
+  },
+
+  tearDownViews: function() {
+    this.unloadModel_();
   },
 
   update: function(deltaTime) {
@@ -376,6 +429,69 @@ Model3D.prototype.stop = function() {
   this.playing_ = false;
 
   return this;
+};
+
+
+/**
+ * Loads the 3D model in json format.
+ *
+ * @private
+ */
+Model3D.prototype.loadJson_ = function() {
+  var that = this;
+  var loader = new THREE.JSONLoader();
+  loader.load(this.modelSrc_, function(geometry, materials) {
+    // Flip the materials. Otherwise, they are upside down.
+    for (var i = 0, len = materials.length; i < len; ++i) {
+      var material = materials[i];
+      if (material && material.map)
+        materials.map.flipY = false;
+    }
+
+    //geometry.computeFaceNormals();
+    //geometry.computeVertexNormals();
+    //geometry.computeMorphNormals();
+
+    that.geometry_ = geometry;
+    that.materials_ = materials;
+
+    that.view.reloadModel_();
+    if (that.stencilView)
+      that.stencilView.reloadModel_();
+  });
+};
+
+
+/**
+ * Loads the 3D model.
+ *
+ * @private
+ */
+Model3D.prototype.loadModel_ = function() {
+  this.unloadModel_();
+
+  if (this.format_ === Model3D.Format.JSON)
+    this.loadJson_();
+};
+
+
+/**
+ * Destroys the 3D model.
+ *
+ * @private
+ */
+Model3D.prototype.unloadModel_ = function() {
+  if (this.geometry_) {
+    this.geometry_.dispose();
+    this.geometry_ = null;
+  }
+
+  if (this.materials_) {
+    for (var i = 0, len = this.materials_.length; i < len; ++i)
+      this.materials_[i].dispose();
+
+    this.materials_ = null;
+  }
 };
 
 

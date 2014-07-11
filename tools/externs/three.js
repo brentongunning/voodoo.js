@@ -3517,6 +3517,7 @@ THREE.Geometry.prototype.computeMorphNormals = function(){};
 THREE.Geometry.prototype.computeCentroids = function(){};
 THREE.Geometry.prototype.computeTangents = function(){};
 THREE.Geometry.prototype.computeBoundingBox = function(){};
+THREE.Geometry.prototype.computeBoundingSphere = function(){};
 THREE.Geometry.prototype.dispose = function(){};
 
 /** @type {Array.<THREE.Vector2>|Array.<Array.<THREE.Vector2>>} */

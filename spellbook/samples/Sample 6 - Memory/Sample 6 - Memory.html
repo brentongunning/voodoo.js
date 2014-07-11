@@ -27,7 +27,8 @@
 <script src="../../lib/spellbook.min.debug.js"></script>
 
 <body>
-		<button onclick="createModels()">Create Models</button>
+		<button onclick="createImage3Ds()">Create 50 Image3Ds</button>
+		<button onclick="createModel3Ds()">Create 50 Model3Ds</button>
 </body>
 
 <script type="text/javascript">
@@ -39,7 +40,7 @@
 
 	new voodoo.MouseLight();
 
-	function createModels() {
+	function createImage3Ds() {
 		for (var y = 0, height = 10; y < height; ++y) {
 			var container = document.createElement('div');
 			container.className = 'container';
@@ -56,6 +57,31 @@
 					imageSrc: 'Italy.jpg',
 					geometryStyle: 'smooth',
 					maxHeight: 200
+				});
+			}	
+		}
+	}
+
+	function createModel3Ds() {
+		var CustomModel3D = voodoo.Autofit.extend(voodoo.Model3D);
+		CustomModel3D = voodoo.Attachable.extend(CustomModel3D);
+
+		for (var y = 0, height = 10; y < height; ++y) {
+			var container = document.createElement('div');
+			container.className = 'container';
+			document.body.appendChild(container);
+
+			for (var x = 0, width = 5; x < width; ++x) {
+				var div = document.createElement('div');
+				div.className = 'block';
+				container.appendChild(div);
+
+				var model3D = new CustomModel3D({
+					element: div,
+					modelSrc: 'monster.js',
+					center: true,
+					pixelScale: false,
+					animated: true
 				});
 			}	
 		}
