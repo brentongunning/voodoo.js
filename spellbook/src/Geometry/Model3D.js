@@ -182,6 +182,10 @@ var Model3D = this.Model3D = voodoo.Model.extend({
   organization: 'spellbook',
   viewType: Model3DView_,
 
+  cleanUp: function() {
+    this.unloadModel_();
+  },
+
   initialize: function(options) {
     options = options || {};
 
@@ -391,7 +395,7 @@ Model3D.prototype.setModelSrc = function(modelSrc) {
 
   this.dispatch(new voodoo.Event('changeModelSrc', this));
 
-  this.loadJson_();
+  this.loadModel_();
 
   return this;
 };
@@ -419,19 +423,62 @@ Model3D.prototype.stop = function() {
  */
 Model3D.prototype.loadJson_ = function() {
   var that = this;
-  var loader = new THREE.JSONLoader();
-  loader.load(this.modelSrc_, function(geometry, materials) {
-    // Flip the materials. Otherwise, they are upside down.
-    for (var i = 0, len = materials.length; i < len; ++i) {
-      var material = materials[i];
-      if (material && material.map)
-        materials.map.flipY = false;
-    }
 
-    that.view.reloadModel_(geometry, materials);
-    if (that.stencilView)
-      that.stencilView.reloadModel_(geometry, materials);
-  });
+  var modelKey = '(Model3D model) ';
+  modelKey += 'modelSrc: ' + this.modelSrc_;
+  this.modelKey_ = modelKey;
+
+  if (this.cache.has(modelKey)) {
+    log_.model_(this, 'Using cached model');
+
+    this.cache.addRef(modelKey);
+    var cacheEntry = this.cache.get(modelKey);
+
+    if (cacheEntry.geometry) {
+      var geometry = cacheEntry.geometry;
+      var materials = cacheEntry.materials;
+
+      this.view.reloadModel_(geometry, materials);
+      if (this.stencilView)
+        this.stencilView.reloadModel_(geometry, materials);
+    } else {
+      cacheEntry.notifiers.push(function(geometry, materials) {
+        that.view.reloadModel_(geometry, materials);
+        if (that.stencilView)
+          that.stencilView.reloadModel_(geometry, materials);
+      });
+    }
+  } else {
+    that.cache.set(modelKey, {
+      geometry: null,
+      materials: null,
+      notifiers: []
+    });
+
+    var loader = new THREE.JSONLoader();
+    loader.load(this.modelSrc_, function(geometry, materials) {
+      // Flip the materials. Otherwise, they are upside down.
+      for (var i = 0, len = materials.length; i < len; ++i) {
+        var material = materials[i];
+        if (material && material.map)
+          materials.map.flipY = false;
+      }
+
+      that.view.reloadModel_(geometry, materials);
+      if (that.stencilView)
+        that.stencilView.reloadModel_(geometry, materials);
+
+      var notifiers = that.cache.get(modelKey).notifiers;
+      for (var i = 0, len = notifiers.length; i < len; ++i)
+        notifiers[i](geometry, materials);
+
+      that.cache.set(modelKey, {
+        geometry: geometry,
+        materials: materials,
+        notifiers: []
+      });
+    });
+  }
 };
 
 
@@ -441,8 +488,21 @@ Model3D.prototype.loadJson_ = function() {
  * @private
  */
 Model3D.prototype.loadModel_ = function() {
+  this.unloadModel_();
+
   if (this.format_ === Model3D.Format.JSON)
     this.loadJson_();
+};
+
+
+/**
+ * Unloads the current model.
+ *
+ * @private
+ */
+Model3D.prototype.unloadModel_ = function() {
+  if (this.modelKey_)
+    this.cache.release(this.modelKey_);
 };
 
 

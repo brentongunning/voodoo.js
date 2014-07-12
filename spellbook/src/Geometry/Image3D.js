@@ -1227,14 +1227,14 @@ Image3D.prototype.createHeightmapGeometry_ = function(data, geometry,
  * @private
  */
 Image3D.prototype.createGeometry_ = function() {
-  this.geometryKey_ = 'imageSrc: ' + this.imageSrc_ + ', ';
+  this.geometryKey_ = '(Image3D geometry) ';
+  this.geometryKey_ += 'imageSrc: ' + this.imageSrc_ + ', ';
   this.geometryKey_ += 'heightSrc1: ' + this.heightSources_[0] + ', ';
   this.geometryKey_ += 'heightSrc2: ' + this.heightSources_[1] + ', ';
   this.geometryKey_ += 'heightSrc3: ' + this.heightSources_[2] + ', ';
   this.geometryKey_ += 'heightSrc4: ' + this.heightSources_[3] + ', ';
   this.geometryKey_ += 'maxHeight: ' + this.maxHeight_ + ', ';
   this.geometryKey_ += 'geometryStyle: ' + this.geometryStyle_;
-  this.geometryKey_ += ' (geometry)';
 
   // If the geometry is already in the cache, use it.
   if (this.cache.has(this.geometryKey_)) {
