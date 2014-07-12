@@ -58,12 +58,38 @@ var Model3DView_ = voodoo.View.extend({
     var modelKey = this.model.modelKey_;
     this.modelKey_ = modelKey;
 
+    var that = this;
+
+    function onLoad() {
+      var mesh;
+
+      if (that.model.animated_) {
+        for (var i = 0, len = that.modelMaterials_.length; i < len; ++i)
+          that.modelMaterials_[i].morphTargets = true;
+
+        var faceMaterial = new THREE.MeshFaceMaterial(that.modelMaterials_);
+        mesh = new THREE.MorphAnimMesh(that.modelGeometry_, faceMaterial);
+      } else {
+        var faceMaterial = new THREE.MeshFaceMaterial(that.modelMaterials_);
+        mesh = new THREE.Mesh(that.modelGeometry_, faceMaterial);
+      }
+
+      that.modelMesh_ = mesh;
+
+      that.scene.add(mesh);
+      that.triggers.add(mesh);
+
+      that.loaded = true;
+    }
+
     if (this.cache.has(modelKey)) {
       this.cache.addRef(modelKey);
       var cacheEntry = this.cache.get(modelKey);
 
       this.modelGeometry_ = cacheEntry.geometry;
       this.modelMaterials_ = cacheEntry.materials;
+
+      onLoad();
     } else {
       // Clone the geometry and materials.
       // For geometry, we do a shallow copy of only the important properties.
@@ -89,45 +115,40 @@ var Model3DView_ = voodoo.View.extend({
       cloneGeometry.animations = geometry.animations;
 
       var cloneMaterials = [];
+      this.modelGeometry_ = cloneGeometry;
+      this.modelMaterials_ = cloneMaterials;
+
+      var numMaterialsLoaded = 0;
       for (var i = 0, len = materials.length; i < len; ++i) {
         var material = materials[i];
         var clonedMaterial = material.clone();
         cloneMaterials.push(clonedMaterial);
 
         if (clonedMaterial.map) {
+          var texturePath = THREE.Loader.prototype.extractUrlBase(
+              this.model.modelSrc_);
+          var imagePath = texturePath + material.map.sourceFile;
           clonedMaterial.map = THREE.ImageUtils.loadTexture(
-              material.map.sourceFile);
+              imagePath, null, function() {
+                numMaterialsLoaded++;
+                if (numMaterialsLoaded === len)
+                  onLoad();
+              });
+        } else {
+          numMaterialsLoaded++;
+          if (numMaterialsLoaded === materials.length)
+            onLoad();
         }
       }
 
-      this.modelGeometry_ = cloneGeometry;
-      this.modelMaterials_ = cloneMaterials;
+      if (len === 0)
+        onLoad();
 
       this.cache.set(modelKey, {
         geometry: cloneGeometry,
         materials: cloneMaterials
       });
     }
-
-    var mesh;
-
-    if (this.model.animated_) {
-      for (var i = 0, len = this.modelMaterials_.length; i < len; ++i)
-        this.modelMaterials_[i].morphTargets = true;
-
-      var faceMaterial = new THREE.MeshFaceMaterial(this.modelMaterials_);
-      mesh = new THREE.MorphAnimMesh(this.modelGeometry_, faceMaterial);
-    } else {
-      var faceMaterial = new THREE.MeshFaceMaterial(this.modelMaterials_);
-      mesh = new THREE.Mesh(this.modelGeometry_, faceMaterial);
-    }
-
-    this.modelMesh_ = mesh;
-
-    this.scene.add(mesh);
-    this.triggers.add(mesh);
-
-    this.loaded = true;
   },
 
   playAnimation_: function(animation) {
