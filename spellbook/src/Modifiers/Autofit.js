@@ -22,20 +22,20 @@ var AutofitView_ = voodoo.View.extend({
     this.base.load();
 
     this.scene.on('add', function(e) {
-      this.autofitMesh_(e.object);
+      this.autofitMeshGeometry_(e.object);
       this.dirty();
     });
 
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
       var sceneObject = sceneObjects[i];
-      this.autofitMesh_(sceneObject);
+      this.autofitMeshGeometry_(sceneObject);
     }
 
     this.dirty();
   },
 
-  autofitMesh_: function(sceneObject) {
+  autofitMeshGeometry_: function(sceneObject) {
     var geometry = sceneObject['geometry'];
     if (!geometry)
       return;
@@ -46,6 +46,10 @@ var AutofitView_ = voodoo.View.extend({
     var boundingSphere = geometry.boundingSphere;
     var center = boundingSphere.center;
     var radius = boundingSphere.radius;
+
+    if (center.x === 0 && center.y === 0 && center.z === 0 && radius === 0.5)
+      return;
+
     var radius2 = radius * 2;
 
     var vertices = geometry.vertices;
@@ -58,20 +62,25 @@ var AutofitView_ = voodoo.View.extend({
     }
 
     var morphTargets = geometry.morphTargets;
-    for (var i = 0, len = morphTargets.length; i < len; ++i) {
-      var morphTarget = morphTargets[i];
-      var morphTargetVertices = morphTarget.vertices;
+    if (morphTargets) {
+      for (var i = 0, len = morphTargets.length; i < len; ++i) {
+        var morphTarget = morphTargets[i];
+        var morphTargetVertices = morphTarget.vertices;
 
-      for (var j = 0, len2 = vertices.length; j < len2; ++j) {
-        var vertex = morphTargetVertices[j];
+        if (morphTargetVertices) {
+          for (var j = 0, len2 = morphTargetVertices.length; j < len2; ++j) {
+            var vertex = morphTargetVertices[j];
 
-        vertex.x = (vertex.x - center.x) / radius2;
-        vertex.y = (vertex.y - center.y) / radius2;
-        vertex.z = (vertex.z - center.z) / radius2;
+            vertex.x = (vertex.x - center.x) / radius2;
+            vertex.y = (vertex.y - center.y) / radius2;
+            vertex.z = (vertex.z - center.z) / radius2;
+          }
+        }
       }
     }
 
     geometry.verticesNeedUpdate = true;
+    geometry.morphTargetsNeedUpdate = true;
     geometry.computeBoundingSphere();
   }
 

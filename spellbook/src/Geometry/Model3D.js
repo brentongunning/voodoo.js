@@ -29,98 +29,81 @@ var Model3DView_ = voodoo.View.extend({
       this.modelMesh_ = null;
     }
 
-    if (this.geometry_) {
-      this.geometry_.dispose();
-      this.geometry_ = null;
+    if (this.modelGeometry_) {
+      this.modelGeometry_.dispose();
+      this.modelGeometry_ = null;
     }
 
-    if (this.materials_) {
-      for (var i = 0, len = this.materials_.length; i < len; ++i)
-        this.materials_[i].dispose();
+    if (this.modelMaterials_) {
+      for (var i = 0, len = this.modelMaterials_.length; i < len; ++i)
+        this.modelMaterials_[i].dispose();
 
-      this.materials_ = null;
+      this.modelMaterials_ = null;
     }
   },
 
-  reloadModel_: function() {
+  reloadModel_: function(geometry, materials) {
+    log_.assert_(geometry, 'geometry must be valid.',
+        '(Model3DView_::reloadModel_)');
+    log_.assert_(materials, 'materials must be valid.',
+        '(Model3DView_::reloadModel_)');
+
     this.unload();
 
-    // Clone the geometry and materials
-    var modelGeometry = this.model.geometry_;
-    log_.assert_(modelGeometry, 'modelGeometry must be valid.',
-        '(Model3DView_::reloadModel_)');
+    // Clone the geometry and materials.
+    // For geometry, we do a shallow copy of only the important properties.
 
-    /*var geometry = new THREE.Geometry();
+    var cloneGeometry = new THREE.Geometry();
 
-    geometry.vertices = modelGeometry.vertices;
-    geometry.colors = modelGeometry.colors;
-    geometry.faces = modelGeometry.faces;
-    geometry.faceVertexUvs = modelGeometry.faceVertexUvs;
-    geometry.morphTargets = modelGeometry.morphTargets;
-    geometry.morphColors = modelGeometry.morphColors;
-    geometry.morphNormals = modelGeometry.morphNormals;
-    geometry.skinWeights = modelGeometry.skinWeights;
-    geometry.skinIndices = modelGeometry.skinIndices;
-    geometry.dynamic = modelGeometry.dynamic;
+    cloneGeometry.name = geometry.name;
+    cloneGeometry.vertices = geometry.vertices;
+    cloneGeometry.colors = geometry.colors;
+    cloneGeometry.faces = geometry.faces;
+    cloneGeometry.faceVertexUvs = geometry.faceVertexUvs;
+    cloneGeometry.morphTargets = geometry.morphTargets;
+    cloneGeometry.morphColors = geometry.morphColors;
+    cloneGeometry.morphNormals = geometry.morphNormals;
+    cloneGeometry.skinWeights = geometry.skinWeights;
+    cloneGeometry.skinIndices = geometry.skinIndices;
+    cloneGeometry.hasTangents = geometry.hasTangents;
+    cloneGeometry.dynamic = geometry.dynamic;
+    cloneGeometry.lineDistances = geometry.lineDistances;
+    cloneGeometry.boundingSphere = geometry.boundingSphere;
+    cloneGeometry.boundingBox = geometry.boundingBox;
+    cloneGeometry.animation = geometry.animation;
+    cloneGeometry.animations = geometry.animations;
 
-    this.geometry_ = geometry;*/
-    this.geometry_ = modelGeometry.clone();
+    this.modelGeometry_ = cloneGeometry;
 
-    var modelMaterials = this.model.materials_;
-    log_.assert_(modelMaterials, 'modelMaterials must be valid.',
-        '(Model3DView_::reloadModel_)');
+    this.modelMaterials_ = [];
+    for (var i = 0, len = materials.length; i < len; ++i) {
+      var material = materials[i];
+      var clonedMaterial = material.clone();
+      this.modelMaterials_.push(clonedMaterial);
 
-    this.materials_ = [];
-    for (var i = 0, len = modelMaterials.length; i < len; ++i) {
-      /*this.materials_.push(modelMaterials[i].clone());
-      this.materials_[i].map = modelMaterials[i].map.clone();
-
-      this.materials_[i] = new THREE.MeshLambertMaterial({
-        color: 0xFF0000,
-        ambient: 0x000000,
-        map: modelMaterials[i].map.clone(),
-        transparent: false,
-        morphTargets: true,
-        morphNormals: true
-      });
-      this.materials_[i].name = modelMaterials[i].name;
-      this.materials_[i].opacity = 1;
-      this.materials_[i].blending = 1;
-      this.materials_[i].blendSrc = 204;
-      this.materials_[i].blendDst = 205;
-      this.materials_[i].blendEquation = 100;
-      this.materials_[i].visible = true;
-      this.materials_[i].needsUpdate = true;
-      this.materials_[i].morphTargets = false;
-      this.materials_[i].morphNormals = false;
-      this.materials_[i].wireframe = true;*/
-
-      this.materials_.push(new THREE.MeshBasicMaterial({
-        color: 0xFF0000
-      }));
+      if (clonedMaterial.map) {
+        clonedMaterial.map = THREE.ImageUtils.loadTexture(
+            material.map.sourceFile);
+      }
     }
 
-    if (this.model.format_ === Model3D.Format.JSON)
-      this.loadJson_();
-  },
+    var mesh;
 
-  loadJson_: function() {
     if (this.model.animated_) {
-      var material = this.materials_[0];
+      for (var i = 0, len = this.modelMaterials_.length; i < len; ++i)
+        this.modelMaterials_[i].morphTargets = true;
 
-      material.morphTargets = true;
-      if (material.map)
-        material.map.flipY = false;
-
-      var faceMaterial = new THREE.MeshFaceMaterial(this.materials_);
-      this.modelMesh_ = new THREE.MorphAnimMesh(this.geometry_, faceMaterial);
+      var faceMaterial = new THREE.MeshFaceMaterial(this.modelMaterials_);
+      mesh = new THREE.MorphAnimMesh(cloneGeometry, faceMaterial);
     } else {
-      var faceMaterial = new THREE.MeshFaceMaterial(this.materials_);
-      this.modelMesh_ = new THREE.Mesh(this.geometry_, faceMaterial);
+      var faceMaterial = new THREE.MeshFaceMaterial(this.modelMaterials_);
+      mesh = new THREE.Mesh(cloneGeometry, faceMaterial);
     }
 
-    this.scene.add(this.modelMesh_);
-    this.triggers.add(this.modelMesh_);
+    this.modelMesh_ = mesh;
+
+    this.scene.add(mesh);
+    this.triggers.add(mesh);
 
     this.loaded = true;
   },
@@ -266,11 +249,9 @@ var Model3D = this.Model3D = voodoo.Model.extend({
   },
 
   setUpViews: function() {
-    this.loadModel_();
-  },
+    this.base.setUpViews();
 
-  tearDownViews: function() {
-    this.unloadModel_();
+    this.loadModel_();
   },
 
   update: function(deltaTime) {
@@ -410,8 +391,7 @@ Model3D.prototype.setModelSrc = function(modelSrc) {
 
   this.dispatch(new voodoo.Event('changeModelSrc', this));
 
-  if (this.view) this.view.loadModel_();
-  if (this.stencilView) this.stencilView.loadModel_();
+  this.loadJson_();
 
   return this;
 };
@@ -448,16 +428,9 @@ Model3D.prototype.loadJson_ = function() {
         materials.map.flipY = false;
     }
 
-    //geometry.computeFaceNormals();
-    //geometry.computeVertexNormals();
-    //geometry.computeMorphNormals();
-
-    that.geometry_ = geometry;
-    that.materials_ = materials;
-
-    that.view.reloadModel_();
+    that.view.reloadModel_(geometry, materials);
     if (that.stencilView)
-      that.stencilView.reloadModel_();
+      that.stencilView.reloadModel_(geometry, materials);
   });
 };
 
@@ -468,30 +441,8 @@ Model3D.prototype.loadJson_ = function() {
  * @private
  */
 Model3D.prototype.loadModel_ = function() {
-  this.unloadModel_();
-
   if (this.format_ === Model3D.Format.JSON)
     this.loadJson_();
-};
-
-
-/**
- * Destroys the 3D model.
- *
- * @private
- */
-Model3D.prototype.unloadModel_ = function() {
-  if (this.geometry_) {
-    this.geometry_.dispose();
-    this.geometry_ = null;
-  }
-
-  if (this.materials_) {
-    for (var i = 0, len = this.materials_.length; i < len; ++i)
-      this.materials_[i].dispose();
-
-    this.materials_ = null;
-  }
 };
 
 
