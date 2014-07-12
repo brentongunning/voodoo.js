@@ -23,6 +23,11 @@ var Model3DView_ = voodoo.View.extend({
   },
 
   unload: function() {
+    if (this.modelKey_) {
+      this.cache.release(this.modelKey_);
+      this.modelKey_ = null;
+    }
+
     if (this.modelMesh_) {
       this.scene.remove(this.modelMesh_);
       this.triggers.remove(this.modelMesh_);
@@ -50,41 +55,58 @@ var Model3DView_ = voodoo.View.extend({
 
     this.unload();
 
-    // Clone the geometry and materials.
-    // For geometry, we do a shallow copy of only the important properties.
+    var modelKey = this.model.modelKey_;
+    this.modelKey_ = modelKey;
 
-    var cloneGeometry = new THREE.Geometry();
+    if (this.cache.has(modelKey)) {
+      this.cache.addRef(modelKey);
+      var cacheEntry = this.cache.get(modelKey);
 
-    cloneGeometry.name = geometry.name;
-    cloneGeometry.vertices = geometry.vertices;
-    cloneGeometry.colors = geometry.colors;
-    cloneGeometry.faces = geometry.faces;
-    cloneGeometry.faceVertexUvs = geometry.faceVertexUvs;
-    cloneGeometry.morphTargets = geometry.morphTargets;
-    cloneGeometry.morphColors = geometry.morphColors;
-    cloneGeometry.morphNormals = geometry.morphNormals;
-    cloneGeometry.skinWeights = geometry.skinWeights;
-    cloneGeometry.skinIndices = geometry.skinIndices;
-    cloneGeometry.hasTangents = geometry.hasTangents;
-    cloneGeometry.dynamic = geometry.dynamic;
-    cloneGeometry.lineDistances = geometry.lineDistances;
-    cloneGeometry.boundingSphere = geometry.boundingSphere;
-    cloneGeometry.boundingBox = geometry.boundingBox;
-    cloneGeometry.animation = geometry.animation;
-    cloneGeometry.animations = geometry.animations;
+      this.modelGeometry_ = cacheEntry.geometry;
+      this.modelMaterials_ = cacheEntry.materials;
+    } else {
+      // Clone the geometry and materials.
+      // For geometry, we do a shallow copy of only the important properties.
 
-    this.modelGeometry_ = cloneGeometry;
+      var cloneGeometry = new THREE.Geometry();
 
-    this.modelMaterials_ = [];
-    for (var i = 0, len = materials.length; i < len; ++i) {
-      var material = materials[i];
-      var clonedMaterial = material.clone();
-      this.modelMaterials_.push(clonedMaterial);
+      cloneGeometry.name = geometry.name;
+      cloneGeometry.vertices = geometry.vertices;
+      cloneGeometry.colors = geometry.colors;
+      cloneGeometry.faces = geometry.faces;
+      cloneGeometry.faceVertexUvs = geometry.faceVertexUvs;
+      cloneGeometry.morphTargets = geometry.morphTargets;
+      cloneGeometry.morphColors = geometry.morphColors;
+      cloneGeometry.morphNormals = geometry.morphNormals;
+      cloneGeometry.skinWeights = geometry.skinWeights;
+      cloneGeometry.skinIndices = geometry.skinIndices;
+      cloneGeometry.hasTangents = geometry.hasTangents;
+      cloneGeometry.dynamic = geometry.dynamic;
+      cloneGeometry.lineDistances = geometry.lineDistances;
+      cloneGeometry.boundingSphere = geometry.boundingSphere;
+      cloneGeometry.boundingBox = geometry.boundingBox;
+      cloneGeometry.animation = geometry.animation;
+      cloneGeometry.animations = geometry.animations;
 
-      if (clonedMaterial.map) {
-        clonedMaterial.map = THREE.ImageUtils.loadTexture(
-            material.map.sourceFile);
+      var cloneMaterials = [];
+      for (var i = 0, len = materials.length; i < len; ++i) {
+        var material = materials[i];
+        var clonedMaterial = material.clone();
+        cloneMaterials.push(clonedMaterial);
+
+        if (clonedMaterial.map) {
+          clonedMaterial.map = THREE.ImageUtils.loadTexture(
+              material.map.sourceFile);
+        }
       }
+
+      this.modelGeometry_ = cloneGeometry;
+      this.modelMaterials_ = cloneMaterials;
+
+      this.cache.set(modelKey, {
+        geometry: cloneGeometry,
+        materials: cloneMaterials
+      });
     }
 
     var mesh;
@@ -94,10 +116,10 @@ var Model3DView_ = voodoo.View.extend({
         this.modelMaterials_[i].morphTargets = true;
 
       var faceMaterial = new THREE.MeshFaceMaterial(this.modelMaterials_);
-      mesh = new THREE.MorphAnimMesh(cloneGeometry, faceMaterial);
+      mesh = new THREE.MorphAnimMesh(this.modelGeometry_, faceMaterial);
     } else {
       var faceMaterial = new THREE.MeshFaceMaterial(this.modelMaterials_);
-      mesh = new THREE.Mesh(cloneGeometry, faceMaterial);
+      mesh = new THREE.Mesh(this.modelGeometry_, faceMaterial);
     }
 
     this.modelMesh_ = mesh;
