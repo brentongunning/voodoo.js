@@ -3698,3 +3698,11 @@ THREE.Projector = function() {};
  * @return {THREE.Vector3}
  */
 THREE.Projector.prototype.unprojectVector = function(vector, camera) {};
+
+THREE.Loader = function(){};
+
+/**
+ * @param {string} url
+ * @return {string}
+ */
+THREE.Loader.prototype.extractUrlBase = function(url){};
