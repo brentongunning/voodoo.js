@@ -31,12 +31,14 @@ voodoo.Cache.prototype.delete = function(key, opt_name, opt_organization) {};
 
 /**
  * @param {string} key
- * @param {string=} opt_name
+ * @param {function(Object)=} opt_onGet
+ * @param {function(string)=} opt_onError
+ * @param {number=} opt_timeout
+ * @param {string=} opt_name Optional
  * @param {string=} opt_organization
- * @return {Object}
+ * @return {?Object}
  */
-voodoo.Cache.prototype.get = function(key, opt_name, opt_organization) {};
-
+voodoo.Cache.prototype.get = function(key, opt_onGet, opt_onError, opt_timeout, opt_name, opt_organization) {};
 
 /**
  * @param {string} key
@@ -55,11 +57,11 @@ voodoo.Cache.prototype.release = function(key, opt_name, opt_organization) {};
 
 /**
  * @param {string} key
- * @param {Object} value
+ * @param {Object=} opt_value
  * @param {string=} opt_name
  * @param {string=} opt_organization
  */
-voodoo.Cache.prototype.set = function(key, value, opt_name, opt_organization) {};
+voodoo.Cache.prototype.set = function(key, opt_value, opt_name, opt_organization) {};
 
 // ----------------------------------------------------------------------------
 // Extendable
