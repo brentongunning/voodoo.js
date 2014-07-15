@@ -11,7 +11,7 @@
  *
  * @constructor
  */
-var CacheTests = TestCase('CacheTests');
+var CacheTests = AsyncTestCase('CacheTests');
 
 
 /**
@@ -75,6 +75,125 @@ CacheTests.prototype.tearDown = function() {
   var voodooEngine = voodoo.engine;
   if (voodooEngine)
     voodooEngine.destroy();
+};
+
+
+/**
+ * Tests the asynchronous gets and sets.
+ *
+ * @param {Object} queue Async queue.
+ */
+CacheTests.prototype.testAsync = function(queue) {
+  var numCreated = 0;
+  var numCached = 0;
+
+  var MyModel = voodoo.Model.extend({
+    name: 'MyModel',
+    viewType: voodoo.View.extend(),
+
+    initialize: function() {
+      var that = this;
+
+      if (this.cache.has('key')) {
+
+        assertUndefined(this.cache.get('key'));
+
+        this.cache.get('key', function(val) {
+          that.cache.addRef('key');
+          assertEquals('val', val);
+          ++numCached;
+        });
+
+      } else {
+        this.cache.set('key');
+
+        // Set the cache in 100ms
+        window.setTimeout(function() {
+          that.cache.set('key', 'val');
+          ++numCreated;
+        }, 100);
+      }
+    },
+
+    cleanUp: function() {
+      this.cache.release('key');
+    }
+  });
+
+  queue.call(function(callbacks) {
+    // Create 10 objects
+    for (var i = 0; i < 10; ++i)
+      new MyModel();
+
+    // Wait 150ms for them all to be created.
+    window.setTimeout(callbacks.add(function() {}), 150);
+  });
+
+  queue.call(function() {
+    assertEquals(1, numCreated);
+    assertEquals(9, numCached);
+  });
+};
+
+
+/**
+ * Tests the asynchronous gets and sets can time out.
+ *
+ * @param {Object} queue Async queue.
+ */
+CacheTests.prototype.testTimeout = function(queue) {
+  var numCreated = 0;
+  var numCached = 0;
+  var numTimedOut = 0;
+
+  var MyModel = voodoo.Model.extend({
+    name: 'MyModel',
+    viewType: voodoo.View.extend(),
+
+    initialize: function() {
+      var that = this;
+
+      if (this.cache.has('key')) {
+
+        assertUndefined(this.cache.get('key'));
+
+        this.cache.get('key', function(val) {
+          that.cache.addRef('key');
+          assertEquals('val', val);
+          ++numCached;
+        }, function(msg) {
+          ++numTimedOut;
+        }, 10);
+
+      } else {
+        this.cache.set('key');
+
+        // Set the cache in 100ms
+        window.setTimeout(function() {
+          that.cache.set('key', 'val');
+          ++numCreated;
+        }, 100);
+      }
+    },
+
+    cleanUp: function() {
+      this.cache.release('key');
+    }
+  });
+
+  queue.call(function(callbacks) {
+    // Create 10 objects
+    for (var i = 0; i < 10; ++i)
+      new MyModel();
+
+    // Wait 150ms for them all to be created.
+    window.setTimeout(callbacks.add(function() {}), 150);
+  });
+
+  queue.call(function() {
+    assertEquals(1, numCreated);
+    assertEquals(9, numTimedOut);
+  });
 };
 
 

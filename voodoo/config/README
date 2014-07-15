@@ -43,7 +43,7 @@ Release Notes
 -------------------------------------------------------------------------------
 
 6-17-2014 0.9.1
-Cache now supports reference counting.
+Cache now supports reference counting and asynchronous gets/sets.
 Added Debug.disableCache.
 Bug Fix: Setting View.loaded more than once caused Model.loaded to be false.
 Bug Fix: Memory leak when creating/destroying models repeatedly.

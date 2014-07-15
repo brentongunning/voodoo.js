@@ -72,27 +72,132 @@ Cache.prototype['delete'] = function(key, opt_name, opt_organization) {
 
 
 /**
- * Gets the object stored under a given key.
+ * Gets the value stored for a given key.
+ *
+ * This function may be either synchronous or asynchronous. If synchronous,
+ * the caller should not proivde opt_onGet, opt_onError, or opt_timeout
+ * arguments. The value at the key will be returned immediately.
+ *
+ * If asynchronous, the opt_onGet parameter should be specified with a callback
+ * function that accepts a single parameter, the value at the key. This will
+ * be called when the given key is assigned a non-null value. If asynchronous,
+ * this function will not return a value. op_onError may be specified with a
+ * callback function too that accepts a single parameter: the error message.
+ * This will be called if the get operation times out.
  *
  * @this {Cache}
  *
  * @param {string} key Storage key.
+ * @param {function(Object)=} opt_onGet Optional asynchronous getter.
+ * @param {function(string)=} opt_onError Optional error handler.
+ * @param {number=} opt_timeout Optional asynchronous timeout in milliseconds.
+ *     Default is 2000.
  * @param {string=} opt_name Optional model name. If not specified, uses the
  * current Model's name.
  * @param {string=} opt_organization Optional organization name. If not
  * specified, uses the current Model's organization.
  *
- * @return {Object} The object for the given key.
+ * @return {?Object} The object for the given key.
  */
-Cache.prototype['get'] = function(key, opt_name, opt_organization) {
+Cache.prototype['get'] = function(key, opt_onGet, opt_onError, opt_timeout,
+    opt_name, opt_organization) {
   if (DEBUG && window['voodoo']['debug']['disableCache'])
     return null;
 
   log_.assert_(key, 'key must be valid.', '(Cache::get)');
 
+  var numArgs = arguments.length;
+  var arg1 = arguments[1];
+
+  var onGet = opt_onGet;
+  var onErr = opt_onError;
+  var timeout = opt_timeout;
+
+  // Look for opt_onGet
+  if (typeof arg1 === 'function') {
+    // Case: Found opt_onGet. It won't be opt_Error because opt_onError must
+    // always be speciied with opt_onGet.
+
+    var arg2 = arguments[2];
+
+    // Look for opt_onError
+    if (typeof arg2 === 'function') {
+      // Case: Found opt_onError.
+
+      var arg3 = arguments[3];
+
+      // Look for opt_timeout
+      if (typeof arg3 == 'number') {
+        // Case: Found opt_timeout.
+      } else {
+        // Case: Did not find opt_timeout.
+        timeout = null;
+
+        // Any other parameters must be opt_name and opt_organization.
+        opt_name = arg3;
+        opt_organization = arguments[4];
+      }
+    } else {
+      // Case: Did not find opt_onError.
+      onErr = null;
+
+      // Look for opt_timeout.
+      if (typeof arg2 === 'number') {
+        // Case: Found opt_timeout.
+      } else {
+        // Case: Did not find opt_timeout.
+        timeout = null;
+
+        // Any other parameters must be opt_name and opt_organization.
+        opt_name = arg2;
+        opt_organization = arguments[3];
+      }
+    }
+  } else {
+    // Case: Did not find opt_onGet. The function must be synchronous.
+    onGet = null;
+    onErr = null;
+    timeout = null;
+    opt_name = arg1;
+    opt_organization = arguments[2];
+  }
+
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
-  return subcache[key].obj;
+  if (onGet) {
+    // Asynchronous
+
+    // See if there is already a value.
+    var record = subcache[key];
+    var obj = record.obj;
+    if (obj) {
+      onGet(obj);
+      return null;
+    }
+
+    timeout = timeout || 2000;
+
+    var timedOut = false;
+    var timeoutTimerId;
+    if (onErr) {
+      timeoutTimerId = window.setTimeout(function() {
+        onErr('Cache::get timeout');
+        timedOut = true;
+      }, timeout);
+    }
+
+    // If not, set up a notifier for when a non-null value is set.
+    record.notifiers.push(function(val) {
+      window.clearTimeout(timeoutTimerId);
+      if (!timedOut)
+        onGet(val);
+    });
+
+    return null;
+  } else {
+    // Synchronous
+    return subcache[key].obj;
+  }
 };
 
 
@@ -156,13 +261,14 @@ Cache.prototype['release'] = function(key, opt_name, opt_organization) {
  * @this {Cache}
  *
  * @param {string} key Storage key.
- * @param {Object} value Value to store.
+ * @param {Object=} opt_value Value to store. If unspecified, then this
+ *   function reserves the key for later, and used for asynchronous gets.
  * @param {string=} opt_name Optional model name. If not specified, uses the
  * current Model's name.
  * @param {string=} opt_organization Optional organization name. If not
  * specified, uses the current Model's organization.
  */
-Cache.prototype['set'] = function(key, value, opt_name, opt_organization) {
+Cache.prototype['set'] = function(key, opt_value, opt_name, opt_organization) {
   if (DEBUG && window['voodoo']['debug']['disableCache'])
     return;
 
@@ -171,11 +277,21 @@ Cache.prototype['set'] = function(key, value, opt_name, opt_organization) {
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
   if (subcache.hasOwnProperty(key)) {
-    subcache[key].obj = value;
+    var record = subcache[key];
+
+    record.obj = opt_value;
+
+    if (opt_value) {
+      var notifiers = record.notifiers;
+      for (var i = 0, len = notifiers.length; i < len; ++i)
+        notifiers[i](opt_value);
+      record.notifiers = [];
+    }
   } else {
     subcache[key] = {
-      obj: value,
-      count: 1
+      obj: opt_value,
+      count: 1,
+      notifiers: []
     };
   }
 };
