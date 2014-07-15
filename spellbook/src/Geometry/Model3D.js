@@ -474,29 +474,18 @@ Model3D.prototype.loadJson_ = function() {
   if (this.cache.has(modelKey)) {
     log_.model_(this, 'Using cached model');
 
-    this.cache.addRef(modelKey);
-    var cacheEntry = this.cache.get(modelKey);
+    this.cache.get(modelKey, function(cacheEntry) {
+      that.cache.addRef(modelKey);
 
-    if (cacheEntry.geometry) {
       var geometry = cacheEntry.geometry;
       var materials = cacheEntry.materials;
 
-      this.view.reloadModel_(geometry, materials);
-      if (this.stencilView)
-        this.stencilView.reloadModel_(geometry, materials);
-    } else {
-      cacheEntry.notifiers.push(function(geometry, materials) {
-        that.view.reloadModel_(geometry, materials);
-        if (that.stencilView)
-          that.stencilView.reloadModel_(geometry, materials);
-      });
-    }
-  } else {
-    that.cache.set(modelKey, {
-      geometry: null,
-      materials: null,
-      notifiers: []
+      that.view.reloadModel_(geometry, materials);
+      if (that.stencilView)
+        that.stencilView.reloadModel_(geometry, materials);
     });
+  } else {
+    that.cache.set(modelKey);
 
     var loader = new THREE.JSONLoader();
     loader.load(this.modelSrc_, function(geometry, materials) {
@@ -511,14 +500,9 @@ Model3D.prototype.loadJson_ = function() {
       if (that.stencilView)
         that.stencilView.reloadModel_(geometry, materials);
 
-      var notifiers = that.cache.get(modelKey).notifiers;
-      for (var i = 0, len = notifiers.length; i < len; ++i)
-        notifiers[i](geometry, materials);
-
       that.cache.set(modelKey, {
         geometry: geometry,
-        materials: materials,
-        notifiers: []
+        materials: materials
       });
     });
   }

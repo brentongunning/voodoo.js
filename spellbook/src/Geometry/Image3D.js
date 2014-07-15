@@ -425,20 +425,10 @@ var Image3D = this.Image3D = voodoo.Model.extend({
 
       this.heightmapKeys_[index] = heightmapKey;
 
-      var notifiers = [];
-      if (this.cache.has(heightmapKey)) {
-        notifiers = this.cache.get(heightmapKey).notifiers;
-        this.cache.addRef(heightmapKey);
-      }
-
       this.cache.set(heightmapKey, {
         heightmap: heightmap,
-        heightmapData: heightmapData,
-        notifiers: []
+        heightmapData: heightmapData
       });
-
-      for (var i = 0, len = notifiers.length; i < len; ++i)
-        notifiers[i](heightmapData);
 
       callback();
     }
@@ -448,44 +438,27 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     var heightmapKey = heightmapSrc;
     if (this.cache.has(heightmapKey)) {
       // Case 1: Heightmap exists in cache.
-      this.cache.addRef(heightmapKey);
 
-      var cacheVal = this.cache.get(heightmapKey);
-      if (!cacheVal.heightmapData) {
-        // Heightmap has not finished loading.
+      var that = this;
 
-        this.heightmaps_[index] = cacheVal.heightmap;
+      this.cache.get(heightmapKey, function(val) {
+        that.cache.addRef(heightmapKey);
 
-        var that = this;
-        cacheVal.notifiers.push(function(data) {
-          log_.model_(that, 'Using cached heightmap ' + index);
-          that.heightmapData_[index] = data;
-          callback();
-        });
-      } else {
-        // Heightmap is fully loaded.
-
-        this.heightmaps_[index] = this.cache.get(heightmapKey);
-        this.heightmapData_[index] = this.cache.get(heightmapKey);
+        that.heightmaps_[index] = val.heightmap;
+        that.heightmapData_[index] = val.heightmapData;
 
         callback();
-      }
+      });
+
     } else {
       // Case 2: Heightmap does not exist in cache yet.
 
-      var heightmap = new Image();
+      this.cache.set(heightmapKey);
 
+      var heightmap = new Image();
       heightmap.addEventListener('load',
           onLoad.bind(this, index, heightmapKey), false);
-
-      this.cache.set(heightmapKey, {
-        heightmap: heightmap,
-        heightmapData: null,
-        notifiers: []
-      });
-
       this.heightmaps_[index] = heightmap;
-
       heightmap.src = heightmapSrc;
     }
   },
