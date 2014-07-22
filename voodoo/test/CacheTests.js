@@ -364,3 +364,41 @@ CacheTests.prototype.testForeignModelCacheNoOrganization = function() {
 
   new ForeignModel();
 };
+
+
+/**
+ * Tests using objects as keys.
+ */
+CacheTests.prototype.testForeignModelCacheNoOrganization = function() {
+  var TestModel = voodoo.Model.extend({
+    name: 'TestModel',
+    viewType: voodoo.View.extend(),
+    initialize: function(options) {
+      this.cache.set({
+        name: 'testKey',
+        type: 'TestModel',
+        id: 88
+      }, 'testValue');
+
+      assertFalse(this.cache.has({
+        name: 'testKey',
+        type: 'TestModel',
+        id: 99
+      }));
+
+      assertTrue(this.cache.has({
+        name: 'testKey',
+        type: 'TestModel',
+        id: 88
+      }));
+
+      assertEquals('testValue', this.cache.get({
+        name: 'testKey',
+        type: 'TestModel',
+        id: 88
+      }));
+    }
+  });
+
+  new TestModel();
+};

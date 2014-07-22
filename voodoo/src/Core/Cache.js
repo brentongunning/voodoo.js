@@ -27,7 +27,7 @@ function Cache(cache) {
  *
  * @this {Cache}
  *
- * @param {string} key Storage key.
+ * @param {string|Object} key Storage key.
  * @param {string=} opt_name Optional model name. If not specified, uses the
  * current Model's name.
  * @param {string=} opt_organization Optional organization name. If not
@@ -38,6 +38,13 @@ Cache.prototype['addRef'] = function(key, opt_name, opt_organization) {
     return;
 
   log_.assert_(key, 'key must be valid.', '(Cache::addRef)');
+
+  if (typeof key === 'object') {
+    key = JSON.stringify(key);
+  } else {
+    log_.assert_(typeof key === 'string',
+        'key must be either an object or a string.', key, '(Cache::addRef)');
+  }
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
@@ -53,7 +60,7 @@ Cache.prototype['addRef'] = function(key, opt_name, opt_organization) {
  *
  * @this {Cache}
  *
- * @param {string} key Storage key.
+ * @param {string|Object} key Storage key.
  * @param {string=} opt_name Optional model name. If not specified, uses the
  * current Model's name.
  * @param {string=} opt_organization Optional organization name. If not
@@ -64,6 +71,13 @@ Cache.prototype['delete'] = function(key, opt_name, opt_organization) {
     return;
 
   log_.assert_(key, 'key must be valid.', '(Cache::delete)');
+
+  if (typeof key === 'object') {
+    key = JSON.stringify(key);
+  } else {
+    log_.assert_(typeof key === 'string',
+        'key must be either an object or a string.', key, '(Cache::delete)');
+  }
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
@@ -87,7 +101,7 @@ Cache.prototype['delete'] = function(key, opt_name, opt_organization) {
  *
  * @this {Cache}
  *
- * @param {string} key Storage key.
+ * @param {string|Object} key Storage key.
  * @param {function(Object)=} opt_onGet Optional asynchronous getter.
  * @param {function(string)=} opt_onError Optional error handler.
  * @param {number=} opt_timeout Optional asynchronous timeout in milliseconds.
@@ -105,6 +119,13 @@ Cache.prototype['get'] = function(key, opt_onGet, opt_onError, opt_timeout,
     return null;
 
   log_.assert_(key, 'key must be valid.', '(Cache::get)');
+
+  if (typeof key === 'object') {
+    key = JSON.stringify(key);
+  } else {
+    log_.assert_(typeof key === 'string',
+        'key must be either an object or a string.', key, '(Cache::get)');
+  }
 
   var numArgs = arguments.length;
   var arg1 = arguments[1];
@@ -206,7 +227,7 @@ Cache.prototype['get'] = function(key, opt_onGet, opt_onError, opt_timeout,
  *
  * @this {Cache}
  *
- * @param {string} key Storage key.
+ * @param {string|Object} key Storage key.
  * @param {string=} opt_name Optional model name. If not specified, uses the
  * current Model's name.
  * @param {string=} opt_organization Optional organization name. If not
@@ -220,6 +241,13 @@ Cache.prototype['has'] = function(key, opt_name, opt_organization) {
 
   log_.assert_(key, 'key must be valid.', '(Cache::has)');
 
+  if (typeof key === 'object') {
+    key = JSON.stringify(key);
+  } else {
+    log_.assert_(typeof key === 'string',
+        'key must be either an object or a string.', key, '(Cache::has)');
+  }
+
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
   return subcache.hasOwnProperty(key);
@@ -232,7 +260,7 @@ Cache.prototype['has'] = function(key, opt_name, opt_organization) {
  *
  * @this {Cache}
  *
- * @param {string} key Storage key.
+ * @param {string|Object} key Storage key.
  * @param {string=} opt_name Optional model name. If not specified, uses the
  * current Model's name.
  * @param {string=} opt_organization Optional organization name. If not
@@ -243,6 +271,13 @@ Cache.prototype['release'] = function(key, opt_name, opt_organization) {
     return;
 
   log_.assert_(key, 'key must be valid.', '(Cache::release)');
+
+  if (typeof key === 'object') {
+    key = JSON.stringify(key);
+  } else {
+    log_.assert_(typeof key === 'string',
+        'key must be either an object or a string.', key, '(Cache::release)');
+  }
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
@@ -260,7 +295,7 @@ Cache.prototype['release'] = function(key, opt_name, opt_organization) {
  *
  * @this {Cache}
  *
- * @param {string} key Storage key.
+ * @param {string|Object} key Storage key.
  * @param {Object=} opt_value Value to store. If unspecified, then this
  *   function reserves the key for later, and used for asynchronous gets.
  * @param {string=} opt_name Optional model name. If not specified, uses the
@@ -273,6 +308,13 @@ Cache.prototype['set'] = function(key, opt_value, opt_name, opt_organization) {
     return;
 
   log_.assert_(key, 'key must be valid.', '(Cache::set)');
+
+  if (typeof key === 'object') {
+    key = JSON.stringify(key);
+  } else {
+    log_.assert_(typeof key === 'string',
+        'key must be either an object or a string.', key, '(Cache::set)');
+  }
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
