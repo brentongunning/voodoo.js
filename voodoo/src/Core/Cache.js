@@ -38,13 +38,8 @@ Cache.prototype['addRef'] = function(key, opt_name, opt_organization) {
     return;
 
   log_.assert_(key, 'key must be valid.', '(Cache::addRef)');
-
-  if (typeof key === 'object') {
-    key = JSON.stringify(key);
-  } else {
-    log_.assert_(typeof key === 'string',
-        'key must be either an object or a string.', key, '(Cache::addRef)');
-  }
+  log_.assert_(typeof key === 'string',
+      'key must be either an object or a string.', key, '(Cache::addRef)');
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
@@ -71,13 +66,8 @@ Cache.prototype['delete'] = function(key, opt_name, opt_organization) {
     return;
 
   log_.assert_(key, 'key must be valid.', '(Cache::delete)');
-
-  if (typeof key === 'object') {
-    key = JSON.stringify(key);
-  } else {
-    log_.assert_(typeof key === 'string',
-        'key must be either an object or a string.', key, '(Cache::delete)');
-  }
+  log_.assert_(typeof key === 'string',
+      'key must be either an object or a string.', key, '(Cache::delete)');
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
@@ -119,13 +109,8 @@ Cache.prototype['get'] = function(key, opt_onGet, opt_onError, opt_timeout,
     return null;
 
   log_.assert_(key, 'key must be valid.', '(Cache::get)');
-
-  if (typeof key === 'object') {
-    key = JSON.stringify(key);
-  } else {
-    log_.assert_(typeof key === 'string',
-        'key must be either an object or a string.', key, '(Cache::get)');
-  }
+  log_.assert_(typeof key === 'string',
+      'key must be either an object or a string.', key, '(Cache::get)');
 
   var numArgs = arguments.length;
   var arg1 = arguments[1];
@@ -240,13 +225,8 @@ Cache.prototype['has'] = function(key, opt_name, opt_organization) {
     return false;
 
   log_.assert_(key, 'key must be valid.', '(Cache::has)');
-
-  if (typeof key === 'object') {
-    key = JSON.stringify(key);
-  } else {
-    log_.assert_(typeof key === 'string',
-        'key must be either an object or a string.', key, '(Cache::has)');
-  }
+  log_.assert_(typeof key === 'string',
+      'key must be either an object or a string.', key, '(Cache::has)');
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
@@ -271,13 +251,8 @@ Cache.prototype['release'] = function(key, opt_name, opt_organization) {
     return;
 
   log_.assert_(key, 'key must be valid.', '(Cache::release)');
-
-  if (typeof key === 'object') {
-    key = JSON.stringify(key);
-  } else {
-    log_.assert_(typeof key === 'string',
-        'key must be either an object or a string.', key, '(Cache::release)');
-  }
+  log_.assert_(typeof key === 'string',
+      'key must be either an object or a string.', key, '(Cache::release)');
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
@@ -308,13 +283,8 @@ Cache.prototype['set'] = function(key, opt_value, opt_name, opt_organization) {
     return;
 
   log_.assert_(key, 'key must be valid.', '(Cache::set)');
-
-  if (typeof key === 'object') {
-    key = JSON.stringify(key);
-  } else {
-    log_.assert_(typeof key === 'string',
-        'key must be either an object or a string.', key, '(Cache::set)');
-  }
+  log_.assert_(typeof key === 'string',
+      'key must be either an object or a string.', key, '(Cache::set)');
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
