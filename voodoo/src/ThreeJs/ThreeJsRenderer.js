@@ -130,8 +130,12 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
       this.aboveRenderer_.context.getContextAttributes().antialias) ||
       (enableBelowLayer &&
       this.belowRenderer_.context.getContextAttributes().antialias);
-  if (!antialiasSupported) {
-    engineOptions['antialias'] = false;
+
+  if (engineOptions['antialias']) {
+    if (!antialiasSupported) {
+      log_.error_('Antialiasing requested but not supported.');
+    }
+  } else {
     engineOptions['seamLayer'] = false;
   }
 
