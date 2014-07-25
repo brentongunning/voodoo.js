@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Colorable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -50,10 +50,8 @@ var ColorableView_ = voodoo.View.extend({
    * @param {THREE.Color} color Color.
    */
   setColorToMesh_: function(mesh, color) {
-    log_.assert_(mesh, 'mesh must be valid.',
-        '(ColorableView_::setColorToMesh_)');
-    log_.assert_(color, 'color must be valid.',
-        '(ColorableView_::setColorToMesh_)');
+    log_.assert_(mesh, 'mesh must be valid.', '(ColorableView_::setColorToMesh_)');
+    log_.assert_(color, 'color must be valid.', '(ColorableView_::setColorToMesh_)');
 
     var material = mesh.material;
     if (material) {
@@ -101,8 +99,7 @@ var Colorable = this.Colorable = voodoo.Model.extend({
     this.base.initialize(options);
 
     this.color_ = options.color || 'white';
-    this.threeJsColor_ =
-        voodoo.utility.convertCssColorToThreeJsColor(this.color_);
+    this.threeJsColor_ = voodoo.utility.convertCssColorToThreeJsColor(this.color_);
 
     var that = this;
     Object.defineProperty(this, 'color', {
@@ -126,8 +123,7 @@ Colorable.prototype.setColor = function(color) {
   if (color !== this.color_) {
 
     this.color_ = color;
-    this.threeJsColor_ =
-        voodoo.utility.convertCssColorToThreeJsColor(color);
+    this.threeJsColor_ = voodoo.utility.convertCssColorToThreeJsColor(color);
 
     this.dispatch(new voodoo.Event('changeColor', this));
 

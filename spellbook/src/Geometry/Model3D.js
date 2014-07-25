@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Model3D.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -48,10 +48,8 @@ var Model3DView_ = voodoo.View.extend({
   },
 
   reloadModel_: function(geometry, materials) {
-    log_.assert_(geometry, 'geometry must be valid.',
-        '(Model3DView_::reloadModel_)');
-    log_.assert_(materials, 'materials must be valid.',
-        '(Model3DView_::reloadModel_)');
+    log_.assert_(geometry, 'geometry must be valid.', '(Model3DView_::reloadModel_)');
+    log_.assert_(materials, 'materials must be valid.', '(Model3DView_::reloadModel_)');
 
     this.unload();
 
@@ -125,15 +123,13 @@ var Model3DView_ = voodoo.View.extend({
         cloneMaterials.push(clonedMaterial);
 
         if (clonedMaterial.map) {
-          var texturePath = THREE.Loader.prototype.extractUrlBase(
-              this.model.modelSrc_);
+          var texturePath = THREE.Loader.prototype.extractUrlBase(this.model.modelSrc_);
           var imagePath = texturePath + material.map.sourceFile;
-          clonedMaterial.map = THREE.ImageUtils.loadTexture(
-              imagePath, null, function() {
-                numMaterialsLoaded++;
-                if (numMaterialsLoaded === len)
-                  onLoad();
-              });
+          clonedMaterial.map = THREE.ImageUtils.loadTexture(imagePath, null, function() {
+            numMaterialsLoaded++;
+            if (numMaterialsLoaded === len)
+              onLoad();
+          });
         } else {
           numMaterialsLoaded++;
           if (numMaterialsLoaded === materials.length)
@@ -236,14 +232,13 @@ var Model3D = this.Model3D = voodoo.Model.extend({
 
     log_.assert_(options.modelSrc, 'modelSrc must be valid.', options.modelSrc,
         '(Model3D::initialize)');
-    log_.assert_(typeof options.modelSrc === 'string',
-        'modelSrc must be a string.', options.modelSrc,
-        '(Model3D::initialize)');
+    log_.assert_(typeof options.modelSrc === 'string', 'modelSrc must be a string.',
+        options.modelSrc, '(Model3D::initialize)');
     this.modelSrc_ = options.modelSrc;
 
     if (typeof options.format !== 'undefined') {
-      log_.assert_(options.format === 'json', 'format must be valid.',
-          options.format, '(Model3D::initialize)');
+      log_.assert_(options.format === 'json', 'format must be valid.', options.format,
+          '(Model3D::initialize)');
 
       this.format_ = options.format;
     } else {
@@ -251,8 +246,7 @@ var Model3D = this.Model3D = voodoo.Model.extend({
     }
 
     if (typeof options.animated !== 'undefined') {
-      log_.assert_(typeof options.animated === 'boolean',
-          'animated must be a boolean.',
+      log_.assert_(typeof options.animated === 'boolean', 'animated must be a boolean.',
           options.animated, '(Model3D::initialize)');
 
       this.animated_ = options.animated;
@@ -331,15 +325,15 @@ var Model3D = this.Model3D = voodoo.Model.extend({
 /**
  * Plays or resumes an animation.
  *
- * @param {string=} opt_name Name of the animation. If this unspecified,
- *   then play() will animate the last animation played.
+ * @param {string=} opt_name Name of the animation. If this unspecified, then play() will animate
+ *   the last animation played.
  *
  * @return {Model3D}
  */
 Model3D.prototype.play = function(opt_name) {
   if (typeof opt_name === 'undefined') {
-    log_.assert_(this.animation_ in this.animations_,
-        'There is no last animation to play.', '(Model3D::play)');
+    log_.assert_(this.animation_ in this.animations_, 'There is no last animation to play.',
+        '(Model3D::play)');
 
     this.playing_ = true;
 
@@ -347,8 +341,8 @@ Model3D.prototype.play = function(opt_name) {
   }
 
   log_.assert_(opt_name, 'name must be valid.', '(Model3D::setAnimation)');
-  log_.assert_(opt_name in this.animations_, 'Animation does not exist.',
-      opt_name, '(Model3D::setAnimation)');
+  log_.assert_(opt_name in this.animations_, 'Animation does not exist.', opt_name,
+      '(Model3D::setAnimation)');
 
   if (this.animation_ === opt_name) {
     this.playing_ = true;
@@ -381,28 +375,21 @@ Model3D.prototype.play = function(opt_name) {
  * @param {number} end End frame.
  * @param {number} seconds Duration in seconds.
  * @param {boolean=} opt_loop Whether to loop the animation. Default is true.
- * @param {boolean=} opt_forward Whether to play forward, or backward. Default
- *     is true.
+ * @param {boolean=} opt_forward Whether to play forward, or backward. Default is true.
  *
  * @return {Model3D}
  */
-Model3D.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
-    opt_forward) {
+Model3D.prototype.setAnimation = function(name, start, end, seconds, opt_loop, opt_forward) {
   log_.assert_(name, 'name must be valid.', '(Model3D::setAnimation)');
-  log_.assert_(typeof name === 'string', name, 'name must be a string.',
+  log_.assert_(typeof name === 'string', name, 'name must be a string.', '(Model3D::setAnimation)');
+  log_.assert_(typeof start === 'number', 'start must be a number.', start,
       '(Model3D::setAnimation)');
-  log_.assert_(typeof start === 'number', 'start must be a number.',
-      start, '(Model3D::setAnimation)');
-  log_.assert_(start >= 0, 'start must be >= 0.', start,
+  log_.assert_(start >= 0, 'start must be >= 0.', start, '(Model3D::setAnimation)');
+  log_.assert_(typeof end === 'number', 'end must be a number.', end, '(Model3D::setAnimation)');
+  log_.assert_(end >= 0, 'end must be >= 0.', end, '(Model3D::setAnimation)');
+  log_.assert_(typeof seconds === 'number', 'seconds must be a number.', seconds,
       '(Model3D::setAnimation)');
-  log_.assert_(typeof end === 'number', 'end must be a number.',
-      end, '(Model3D::setAnimation)');
-  log_.assert_(end >= 0, 'end must be >= 0.', end,
-      '(Model3D::setAnimation)');
-  log_.assert_(typeof seconds === 'number', 'seconds must be a number.',
-      seconds, '(Model3D::setAnimation)');
-  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds,
-      '(Model3D::setAnimation)');
+  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds, '(Model3D::setAnimation)');
 
   this.animations_[name] = {
     start: start,
@@ -424,10 +411,9 @@ Model3D.prototype.setAnimation = function(name, start, end, seconds, opt_loop,
  * @return {Model3D}
  */
 Model3D.prototype.setModelSrc = function(modelSrc) {
-  log_.assert_(modelSrc, 'modelSrc must be valid.', modelSrc,
+  log_.assert_(modelSrc, 'modelSrc must be valid.', modelSrc, '(Model3D::setModelSrc)');
+  log_.assert_(typeof modelSrc === 'string', 'modelSrc must be a string.', modelSrc,
       '(Model3D::setModelSrc)');
-  log_.assert_(typeof modelSrc === 'string', 'modelSrc must be a string.',
-      modelSrc, '(Model3D::setModelSrc)');
 
   if (this.modelSrc_ === modelSrc)
     return this;

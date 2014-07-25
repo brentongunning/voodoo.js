@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Scalable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -36,8 +36,7 @@ var ScalableView_ = voodoo.View.extend({
   },
 
   setScale_: function(scale) {
-    log_.assert_(scale, 'scale must be valid.',
-        '(ScalableView_::setScale_)');
+    log_.assert_(scale, 'scale must be valid.', '(ScalableView_::setScale_)');
 
     var sceneObjects = this.scene.objects;
 
@@ -62,8 +61,8 @@ var ScalableView_ = voodoo.View.extend({
  *
  * Options:
  *
- * - scale {Object|number} Initial scale. This can be a scalar number, a array
- *     of length 3, or an object with x, y, and z properties.
+ * - scale {Object|number} Initial scale. This can be a scalar number, a array of length 3, or an
+ *   object with x, y, and z properties.
  *
  * Events:
  *
@@ -201,8 +200,7 @@ var Scalable = this.Scalable = voodoo.Model.extend({
   *
   * @param {number} scale Target scale.
   * @param {number} seconds Animation duration.
-  * @param {function(number):number=} opt_easing Optional easing function.
-  *     Default is easing.easeInOutQuad.
+  * @param {function(number):number=} opt_easing Optional easing function. Default is easeInOutQuad.
   *
   * @return {Scalable}
   */
@@ -211,17 +209,14 @@ Scalable.prototype.scaleTo = function(scale, seconds, opt_easing) {
 
   endScale = this.fixScale_(endScale);
 
-  log_.assert_(typeof seconds === 'number', 'seconds must be a number.',
-      '(Scalable::scaleTo)');
-  log_.assert_(seconds >= 0, 'seconds must be >= 0.',
-      '(Scalable::scaleTo)');
+  log_.assert_(typeof seconds === 'number', 'seconds must be a number.', '(Scalable::scaleTo)');
+  log_.assert_(seconds >= 0, 'seconds must be >= 0.', '(Scalable::scaleTo)');
 
   if (seconds === 0) {
 
     this.setScale(endScale);
 
-  } else if (this.scale_.x !== endScale.x ||
-      this.scale_.y !== endScale.y ||
+  } else if (this.scale_.x !== endScale.x || this.scale_.y !== endScale.y ||
       this.scale_.z !== endScale.z) {
 
     this.startScale_.x = this.scale_.x;
@@ -237,8 +232,7 @@ Scalable.prototype.scaleTo = function(scale, seconds, opt_easing) {
     this.scaleElapsed_ = 0;
     this.scaling_ = true;
 
-    this.scaleEasing_ = opt_easing ? getEasing_(opt_easing) :
-        Easing.prototype.easeInOutQuad;
+    this.scaleEasing_ = opt_easing ? getEasing_(opt_easing) : Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('scaleBegin', this));
 
@@ -256,8 +250,7 @@ Scalable.prototype.scaleTo = function(scale, seconds, opt_easing) {
   * @return {Scalable}
   */
 Scalable.prototype.setScale = function(scale) {
-  log_.assert_(scale, 'scale must be valid.',
-      '(Scalable::setScale)');
+  log_.assert_(scale, 'scale must be valid.', '(Scalable::setScale)');
 
   this.scale_ = this.parseScale_(scale);
 
@@ -282,16 +275,15 @@ Scalable.prototype.setScale = function(scale) {
 
 
 /**
- * Sets whether we are currently scaling. This may be used to pause and
- * resume animations.
+ * Sets whether we are currently scaling. This may be used to pause and resume animations.
  *
  * @param {boolean} scaling Whether to enable or disable scaling.
  *
  * @return {Scalable}
  */
 Scalable.prototype.setScaling = function(scaling) {
-  log_.assert_(typeof scaling === 'boolean', 'scaling must be a boolean.',
-      scaling, '(Scalable::setScaling)');
+  log_.assert_(typeof scaling === 'boolean', 'scaling must be a boolean.', scaling,
+      '(Scalable::setScaling)');
 
   if (!scaling && this.scaling_) {
 
@@ -319,8 +311,7 @@ Scalable.prototype.setScaling = function(scaling) {
  * 3. Object: object.scale = {x: 1, y: 2, z: 3};
  * 4. Component: object.scale.z = 0;
  *
- * As a getter, this will always return an
- * object with x, y, and z properties.
+ * As a getter, this will always return an object with x, y, and z properties.
  *
  * @type {Object|number}
  */

@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Image3D.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -37,8 +37,7 @@ var Image3DView_ = voodoo.View.extend({
 
   createGeometry_: function() {
     var modelGeometry = this.model.geometry_;
-    log_.assert_(modelGeometry, 'modelGeometry must be valid.',
-        '(Image3DView_::createGeometry_)');
+    log_.assert_(modelGeometry, 'modelGeometry must be valid.', '(Image3DView_::createGeometry_)');
 
     var geometryKey = this.model.geometryKey_;
     if (this.cache.has(geometryKey)) {
@@ -123,8 +122,7 @@ var Image3DView_ = voodoo.View.extend({
 
   setImage_: function(image, imageSrc) {
     log_.assert_(image, 'image must be valid.', '(Image3DView_::setImage_)');
-    log_.assert_(imageSrc, 'imageSrc must be valid.',
-        '(Image3DView_::setImage_)');
+    log_.assert_(imageSrc, 'imageSrc must be valid.', '(Image3DView_::setImage_)');
 
     if (!this.texture_) {
       this.texture_ = new THREE.Texture(undefined);
@@ -168,12 +166,9 @@ var Image3DView_ = voodoo.View.extend({
  * - heightmap2 {string=} Optional second heightmap path.
  * - heightmap3 {string=} Optional third heightmap path.
  * - heightmap4 {string=} Optional fourth heightmap path.
- * - maxHeight {number=} Optional maximum depth of the heightmap.
- *     Default is 200.
- * - geometryStyle {(Image3D.GeometryStyle|string)=} Optional geometry style.
- *     Default is smooth.
- * - transparent {boolean=} Whether to allow in-between transparency.
- *     Default is true.
+ * - maxHeight {number=} Optional maximum depth of the heightmap. Default is 200.
+ * - geometryStyle {(Image3D.GeometryStyle|string)=} Optional geometry style. Default is smooth.
+ * - transparent {boolean=} Whether to allow in-between transparency. Default is true.
  *
  * Events:
  *
@@ -212,8 +207,7 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     this.base.initialize(options);
 
     this.element_ = options.element;
-    log_.assert_(options.element, 'element must be valid.',
-        '(Image3D::initalize)');
+    log_.assert_(options.element, 'element must be valid.', '(Image3D::initalize)');
 
     this.imageSrc_ = options.imageSrc ?
         getAbsoluteUrl_(options.imageSrc) :
@@ -228,29 +222,25 @@ var Image3D = this.Image3D = voodoo.Model.extend({
 
     this.heightmapKeys_ = ['', '', '', ''];
 
-    log_.assert_(options.heightmap, 'heightmap must be valid.',
-        '(Image3D::initalize)');
+    log_.assert_(options.heightmap, 'heightmap must be valid.', '(Image3D::initalize)');
 
     if (typeof options.maxHeight !== 'undefined') {
-      log_.assert_(typeof options.maxHeight === 'number',
-          'maxHeight must be a number.', options.maxHeight,
-          '(Image3D::initalize)');
-
-      log_.assert_(options.maxHeight >= 0, 'maxHeight must be >= 0.',
+      log_.assert_(typeof options.maxHeight === 'number', 'maxHeight must be a number.',
           options.maxHeight, '(Image3D::initalize)');
+
+      log_.assert_(options.maxHeight >= 0, 'maxHeight must be >= 0.', options.maxHeight,
+          '(Image3D::initalize)');
 
       this.maxHeight_ = options.maxHeight;
     } else {
       this.maxHeight_ = 200;
     }
 
-    this.geometryStyle_ = options.geometryStyle ||
-        Image3D.GeometryStyle.Smooth;
+    this.geometryStyle_ = options.geometryStyle || Image3D.GeometryStyle.Smooth;
 
     if (typeof options.transparent !== 'undefined') {
-      log_.assert_(typeof options.transparent === 'boolean',
-          'transparent must be a boolean.', options.transparent,
-          '(Image3D::initalize)');
+      log_.assert_(typeof options.transparent === 'boolean', 'transparent must be a boolean.',
+          options.transparent, '(Image3D::initalize)');
 
       this.transparent_ = options.transparent;
     } else {
@@ -291,10 +281,8 @@ var Image3D = this.Image3D = voodoo.Model.extend({
     if (!this.loaded)
       return;
 
-    if (this.element_.tagName.toLowerCase() === 'img' &&
-        this.element_.src !== this.imageSrc_) {
+    if (this.element_.tagName.toLowerCase() === 'img' && this.element_.src !== this.imageSrc_)
       this.setImageSrc(this.element_.src);
-    }
 
     if (this.morphing_) {
       var now = new Date();
@@ -322,6 +310,7 @@ var Image3D = this.Image3D = voodoo.Model.extend({
               this.startMorphTargets_[i] * invTime +
               this.endMorphTargets_[i] * time;
         }
+
         this.view.setMorphTargetInfluences_(this.currentMorphTargets_);
         if (this.stencilView)
           this.stencilView.setMorphTargetInfluences_(this.currentMorphTargets_);
@@ -387,8 +376,8 @@ var Image3D = this.Image3D = voodoo.Model.extend({
   },
 
   freeHeightmap_: function(index) {
-    log_.assert_(index >= 0 && index < 4, 'index must be between 0 and 3.',
-        index, '(Image3D::freeHeightmap_)');
+    log_.assert_(index >= 0 && index < 4, 'index must be between 0 and 3.', index,
+        '(Image3D::freeHeightmap_)');
 
     var key = this.heightmapKeys_[index];
     if (key !== '') {
@@ -398,12 +387,11 @@ var Image3D = this.Image3D = voodoo.Model.extend({
   },
 
   loadHeightmap_: function(heightmapSrc, index, callback) {
-    log_.assert_(index >= 0 && index < 4, 'index must be between 0 and 3.',
-        index, '(Image3D::loadHeightmap_)');
-    log_.assert_(callback, 'callback must be valid.',
+    log_.assert_(index >= 0 && index < 4, 'index must be between 0 and 3.', index,
         '(Image3D::loadHeightmap_)');
-    log_.assert_(typeof callback === 'function',
-        'callback must be a function.', '(Image3D::loadHeightmap_)');
+    log_.assert_(callback, 'callback must be valid.', '(Image3D::loadHeightmap_)');
+    log_.assert_(typeof callback === 'function', 'callback must be a function.',
+        '(Image3D::loadHeightmap_)');
 
     if (!heightmapSrc)
       return;
@@ -419,8 +407,7 @@ var Image3D = this.Image3D = voodoo.Model.extend({
 
       var context = canvas.getContext('2d');
       context.drawImage(heightmap, 0, 0, heightmapWidth, heightmapHeight);
-      var heightmapData = context.getImageData(0, 0,
-          heightmapWidth, heightmapHeight).data;
+      var heightmapData = context.getImageData(0, 0, heightmapWidth, heightmapHeight).data;
       this.heightmapData_[index] = heightmapData;
 
       this.heightmapKeys_[index] = heightmapKey;
@@ -456,18 +443,16 @@ var Image3D = this.Image3D = voodoo.Model.extend({
       this.cache.set(heightmapKey);
 
       var heightmap = new Image();
-      heightmap.addEventListener('load',
-          onLoad.bind(this, index, heightmapKey), false);
+      heightmap.addEventListener('load', onLoad.bind(this, index, heightmapKey), false);
       this.heightmaps_[index] = heightmap;
       heightmap.src = heightmapSrc;
     }
   },
 
   loadHeightmaps_: function(callback) {
-    log_.assert_(callback, 'callback must be valid.',
+    log_.assert_(callback, 'callback must be valid.', '(Image3D::loadHeightmaps_)');
+    log_.assert_(typeof callback === 'function', 'callback must be a function.',
         '(Image3D::loadHeightmaps_)');
-    log_.assert_(typeof callback === 'function',
-        'callback must be a function.', '(Image3D::loadHeightmaps_)');
 
     this.heightmapWidth_ = 0;
     this.heightmapHeight_ = 0;
@@ -485,8 +470,7 @@ var Image3D = this.Image3D = voodoo.Model.extend({
         log_.assert_(
             this.heightmapWidth_ === heightmap.width &&
             this.heightmapHeight_ === heightmap.height,
-            'All heightmaps must be the same size.',
-            '(Image3D::loadHeightmaps_)');
+            'All heightmaps must be the same size.', '(Image3D::loadHeightmaps_)');
       }
 
       numLoaded++;
@@ -516,12 +500,11 @@ var Image3D = this.Image3D = voodoo.Model.extend({
  * @return {Image3D}
  */
 Image3D.prototype.morph = function(index, seconds) {
-  log_.assert_(typeof index === 'number', 'index must be a number.',
-      index, '(Image3D::morph)');
-  log_.assert_(typeof seconds === 'number', 'seconds must be a number.',
-      seconds, '(Image3D::morph)');
-  log_.assert_(index >= 0 && index < 4, 'index must be between 0 and 4.',
-      index, '(Image3D::morph)');
+  log_.assert_(typeof index === 'number', 'index must be a number.', index, '(Image3D::morph)');
+  log_.assert_(typeof seconds === 'number', 'seconds must be a number.', seconds,
+      '(Image3D::morph)');
+  log_.assert_(index >= 0 && index < 4, 'index must be between 0 and 4.', index,
+      '(Image3D::morph)');
 
   var morphTargetInfluences = [0, 0, 0, 0];
   morphTargetInfluences[index - 1] = 1;
@@ -563,15 +546,11 @@ Image3D.prototype.morph = function(index, seconds) {
  * @return {Image3D}
  */
 Image3D.prototype.setGeometryStyle = function(geometryStyle) {
-  log_.assert_(typeof geometryStyle === 'string',
-      'geometryStyle must be a string.', geometryStyle,
+  log_.assert_(typeof geometryStyle === 'string', 'geometryStyle must be a string.', geometryStyle,
       '(Image3D::setGeometryStyle)');
 
-  log_.assert_(geometryStyle === 'smooth' ||
-      geometryStyle === 'block' ||
-      geometryStyle === 'float',
-      'geometryStyle must be valid.', geometryStyle,
-      '(Image3D::setGeometryStyle)');
+  log_.assert_(geometryStyle === 'smooth' || geometryStyle === 'block' || geometryStyle === 'float',
+      'geometryStyle must be valid.', geometryStyle, '(Image3D::setGeometryStyle)');
 
   if (this.geometryStyle_ !== geometryStyle) {
     this.geometryStyle_ = geometryStyle;
@@ -589,14 +568,12 @@ Image3D.prototype.setGeometryStyle = function(geometryStyle) {
  * Sets a heightmap.
  *
  * @param {string} heightmap Heightmap filename.
- * @param {number=} opt_index Heightmap number. Default is 1, the main
- *   heightmap.
+ * @param {number=} opt_index Heightmap number. Default is 1, the main heightmap.
  *
  * @return {Image3D}
  */
 Image3D.prototype.setHeightmap = function(heightmap, opt_index) {
-  log_.assert_(heightmap, 'heightmap must be valid.',
-      '(Image3D::setHeightmap)');
+  log_.assert_(heightmap, 'heightmap must be valid.', '(Image3D::setHeightmap)');
 
   heightmap = getAbsoluteUrl_(heightmap);
 
@@ -631,8 +608,7 @@ Image3D.prototype.setHeightmap = function(heightmap, opt_index) {
  * @return {Image3D}
  */
 Image3D.prototype.setImageSrc = function(imageSrc) {
-  log_.assert_(imageSrc, 'imageSrc must be valid.',
-      '(Image3D::setImageSrc)');
+  log_.assert_(imageSrc, 'imageSrc must be valid.', '(Image3D::setImageSrc)');
 
   imageSrc = getAbsoluteUrl_(imageSrc);
 
@@ -672,10 +648,9 @@ Image3D.prototype.setImageSrc = function(imageSrc) {
  * @return {Image3D}
  */
 Image3D.prototype.setMaxHeight = function(maxHeight) {
-  log_.assert_(typeof maxHeight === 'number', 'maxHeight must be a number.',
-      maxHeight, '(Image3D::setMaxHeight)');
-  log_.assert_(maxHeight >= 0, 'maxHeight must be >= 0.', maxHeight,
+  log_.assert_(typeof maxHeight === 'number', 'maxHeight must be a number.', maxHeight,
       '(Image3D::setMaxHeight)');
+  log_.assert_(maxHeight >= 0, 'maxHeight must be >= 0.', maxHeight, '(Image3D::setMaxHeight)');
 
   if (this.maxHeight_ !== maxHeight) {
     this.maxHeight_ = maxHeight;
@@ -690,16 +665,14 @@ Image3D.prototype.setMaxHeight = function(maxHeight) {
 
 
 /**
- * Sets whether we are currently morphing. This may be used to pause and
- * resume animations.
+ * Sets whether we are currently morphing. This may be used to pause and resume animations.
  *
  * @param {boolean} morphing Whether to enable or disable morphing.
  *
  * @return {Image3D}
  */
 Image3D.prototype.setMorphing = function(morphing) {
-  log_.assert_(typeof morphing === 'boolean',
-      'morphing must be a boolean.', morphing,
+  log_.assert_(typeof morphing === 'boolean', 'morphing must be a boolean.', morphing,
       '(Image3D::setMorphing)');
 
   if (!morphing && this.morphing_) {
@@ -727,8 +700,7 @@ Image3D.prototype.setMorphing = function(morphing) {
  */
 Image3D.prototype.setTransparent = function(transparent) {
   if (this.transparent_ !== transparent) {
-    log_.assert_(typeof transparent === 'boolean',
-        'transparent must be a boolean.', transparent,
+    log_.assert_(typeof transparent === 'boolean', 'transparent must be a boolean.', transparent,
         '(Image3D::setTransparent)');
 
     this.transparent_ = transparent;
@@ -752,8 +724,7 @@ Image3D.prototype.setTransparent = function(transparent) {
  * @param {THREE.Geometry} geometry Geometry.
  */
 Image3D.prototype.computeNormals_ = function(geometry) {
-  log_.assert_(geometry, 'geometry must be valid.',
-      '(Image3D::computeNormals_)');
+  log_.assert_(geometry, 'geometry must be valid.', '(Image3D::computeNormals_)');
 
   geometry.computeFaceNormals();
   geometry.computeVertexNormals();
@@ -771,14 +742,10 @@ Image3D.prototype.computeNormals_ = function(geometry) {
  * @param {Object} data Color data.
  * @param {boolean} createFaces Whether to create the faces or just vertices.
  */
-Image3D.prototype.createSmoothGeometry_ = function(geometry, verticesOwner,
-    data, createFaces) {
-  log_.assert_(geometry, 'geometry must be valid.',
-      '(Image3D::createSmoothGeometry_)');
-  log_.assert_(verticesOwner, 'verticesOwner must be valid.',
-      '(Image3D::createSmoothGeometry_)');
-  log_.assert_(data, 'data must be valid.',
-      '(Image3D::createSmoothGeometry_)');
+Image3D.prototype.createSmoothGeometry_ = function(geometry, verticesOwner, data, createFaces) {
+  log_.assert_(geometry, 'geometry must be valid.', '(Image3D::createSmoothGeometry_)');
+  log_.assert_(verticesOwner, 'verticesOwner must be valid.', '(Image3D::createSmoothGeometry_)');
+  log_.assert_(data, 'data must be valid.', '(Image3D::createSmoothGeometry_)');
 
   // Constants
   var width = this.heightmapWidth_;
@@ -858,14 +825,10 @@ Image3D.prototype.createSmoothGeometry_ = function(geometry, verticesOwner,
  * @param {Object} data Color data.
  * @param {boolean} createFaces Whether to create the faces or just vertices.
  */
-Image3D.prototype.createBlockGeometry_ = function(geometry, verticesOwner,
-    data, createFaces) {
-  log_.assert_(geometry, 'geometry must be valid.',
-      '(Image3D::createBlockGeometry_)');
-  log_.assert_(verticesOwner, 'verticesOwner must be valid.',
-      '(Image3D::createBlockGeometry_)');
-  log_.assert_(data, 'data must be valid.',
-      '(Image3D::createBlockGeometry_)');
+Image3D.prototype.createBlockGeometry_ = function(geometry, verticesOwner, data, createFaces) {
+  log_.assert_(geometry, 'geometry must be valid.', '(Image3D::createBlockGeometry_)');
+  log_.assert_(verticesOwner, 'verticesOwner must be valid.', '(Image3D::createBlockGeometry_)');
+  log_.assert_(data, 'data must be valid.', '(Image3D::createBlockGeometry_)');
 
   var vertices = verticesOwner.vertices;
 
@@ -1074,14 +1037,10 @@ Image3D.prototype.createBlockGeometry_ = function(geometry, verticesOwner,
  * @param {Object} data Color data.
  * @param {boolean} createFaces Whether to create the faces or just vertices.
  */
-Image3D.prototype.createFloatGeometry_ = function(geometry, verticesOwner,
-    data, createFaces) {
-  log_.assert_(geometry, 'geometry must be valid.',
-      '(Image3D::createFloatGeometry_)');
-  log_.assert_(verticesOwner, 'verticesOwner must be valid.',
-      '(Image3D::createFloatGeometry_)');
-  log_.assert_(data, 'data must be valid.',
-      '(Image3D::createFloatGeometry_)');
+Image3D.prototype.createFloatGeometry_ = function(geometry, verticesOwner, data, createFaces) {
+  log_.assert_(geometry, 'geometry must be valid.', '(Image3D::createFloatGeometry_)');
+  log_.assert_(verticesOwner, 'verticesOwner must be valid.', '(Image3D::createFloatGeometry_)');
+  log_.assert_(data, 'data must be valid.', '(Image3D::createFloatGeometry_)');
 
   // Constants
   var width = this.heightmapWidth_;
@@ -1125,8 +1084,7 @@ Image3D.prototype.createFloatGeometry_ = function(geometry, verticesOwner,
   if (createFaces) {
     var numFaces = width * height * 2;
     var geometryFaces = geometry.faces = new Array(numFaces);
-    var geometryFaceVertexUvs = geometry.faceVertexUvs[0] =
-        new Array(numFaces);
+    var geometryFaceVertexUvs = geometry.faceVertexUvs[0] = new Array(numFaces);
 
     i = 0;
     var faceIdx = 0;
@@ -1171,14 +1129,11 @@ Image3D.prototype.createFloatGeometry_ = function(geometry, verticesOwner,
  * @param {Object} verticesOwner Parent of the vertices object.
  * @param {boolean} createFaces Whether to create the faces or just vertices.
  */
-Image3D.prototype.createHeightmapGeometry_ = function(data, geometry,
-    verticesOwner, createFaces) {
-  log_.assert_(geometry, 'geometry must be valid.',
-      '(Image3D::createHeightmapGeometry_)');
+Image3D.prototype.createHeightmapGeometry_ = function(data, geometry, verticesOwner, createFaces) {
+  log_.assert_(geometry, 'geometry must be valid.', '(Image3D::createHeightmapGeometry_)');
   log_.assert_(verticesOwner, 'verticesOwner must be valid.',
       '(Image3D::createHeightmapGeometry_)');
-  log_.assert_(data, 'data must be valid.',
-      '(Image3D::createHeightmapGeometry_)');
+  log_.assert_(data, 'data must be valid.', '(Image3D::createHeightmapGeometry_)');
 
   switch (this.geometryStyle_) {
     case Image3D.GeometryStyle.Smooth:
@@ -1234,10 +1189,8 @@ Image3D.prototype.createGeometry_ = function() {
       true);
 
   // Make sure there are no morph targets for block geometry
-  log_.assert_(numValidHeightmaps <= 1 ||
-      this.geometryStyle_ !== Image3D.GeometryStyle.Block,
-      'Block geometry does not support multiple heightmaps.',
-      '(Image3D::createGeometry)');
+  log_.assert_(numValidHeightmaps <= 1 || this.geometryStyle_ !== Image3D.GeometryStyle.Block,
+      'Block geometry does not support multiple heightmaps.', '(Image3D::createGeometry)');
 
   for (var i = 0; i < 4; ++i) {
     var morphTarget = {

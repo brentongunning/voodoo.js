@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Autofit.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -89,8 +89,7 @@ var AutofitView_ = voodoo.View.extend({
 
 
 /**
- * Automatically scales and centers meshes added to the scene to fit
- * between -0.5 and 0.5.
+ * Automatically scales and centers meshes added to the scene to fit between -0.5 and 0.5.
  *
  * @constructor
  * @extends {voodoo.Model}

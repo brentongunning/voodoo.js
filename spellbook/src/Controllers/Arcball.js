@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Arcball.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -57,17 +57,14 @@ var ArcballView_ = voodoo.View.extend({
 
 
 /**
- * An arcball controller that lets the user rotate scene meshes using
- * the mouse.
+ * An arcball controller that lets the user rotate scene meshes using the mouse.
  *
  * Options:
  *
- * - arcballCenter {Object} Center of the arcball sphere. If null, then
- *     this will be calculated from the aggreate bounding sphere of meshes.
- *     Default is null.
- * - arcballRadius {number} Radius of the arcball sphere. If 0, then
- *     this will be calculated from the aggegate bounding sphere of meshes.
- *     Default is 0.
+ * - arcballCenter {Object} Center of the arcball sphere. If null, then this will be calculated
+ *   from the aggreate bounding sphere of meshes. Default is null.
+ * - arcballRadius {number} Radius of the arcball sphere. If 0, then this will be calculated from
+ *   the aggegate bounding sphere of meshes. Default is 0.
  *
  * Events
  *
@@ -144,8 +141,7 @@ var Arcball = this.Arcball = Rotatable.extend({
         q.normalize();
 
         that.currentArcballRotation_ = new THREE.Quaternion(0, 0, 0, 1);
-        that.currentArcballRotation_.multiplyQuaternions(
-            q, that.startArcballRotation_);
+        that.currentArcballRotation_.multiplyQuaternions(q, that.startArcballRotation_);
 
         var eulerAngles = new THREE.Euler(0, 0, 0, 'XYZ');
         eulerAngles.setFromQuaternion(that.currentArcballRotation_, 'XYZ');
@@ -226,11 +222,9 @@ Arcball.prototype.setArcballCenter = function(arcballCenter) {
  * @return {Arcball} This.
  */
 Arcball.prototype.setArcballRadius = function(arcballRadius) {
-  log_.assert_(typeof arcballRadius === 'number',
-      'arcballRadius must be a number.', arcballRadius,
+  log_.assert_(typeof arcballRadius === 'number', 'arcballRadius must be a number.', arcballRadius,
       '(Arcball::setArcballRadius)');
-  log_.assert_(arcballRadius >= 0,
-      'arcballRadius must be non-negative.', arcballRadius,
+  log_.assert_(arcballRadius >= 0, 'arcballRadius must be non-negative.', arcballRadius,
       '(Arcball::setArcballRadius)');
 
   if (arcballRadius !== this.arcballRadius_) {
@@ -284,8 +278,8 @@ Arcball.prototype.setRotation = Rotatable.prototype.setRotation;
 
 
 /**
- * Center of the arcball sphere. If null, then this will be calculated from
- * the aggreate bounding sphere of meshes. Default is null.
+ * Center of the arcball sphere. If null, then this will be calculated from the aggreate bounding
+ * sphere of meshes. Default is null.
  *
  * @type {Object}
  */
@@ -293,8 +287,8 @@ Arcball.prototype.arcballCenter = null;
 
 
 /**
- * Radius of the arcball sphere. If 0, then this will be calculated from the
- * aggegate bounding sphere of meshes. Default is 0.
+ * Radius of the arcball sphere. If 0, then this will be calculated from the aggegate bounding
+ * sphere of meshes. Default is 0.
  *
  * @type {number}
  */

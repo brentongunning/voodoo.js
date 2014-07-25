@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Hidable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -68,9 +68,8 @@ var Hidable = this.Hidable = voodoo.Model.extend({
     this.base.initialize(options);
 
     if (typeof options.visible !== 'undefined') {
-      log_.assert_(typeof options.visible === 'boolean',
-          'visible must be a boolean.', options.visible,
-          '(Hidable::initialize)');
+      log_.assert_(typeof options.visible === 'boolean', 'visible must be a boolean.',
+          options.visible, '(Hidable::initialize)');
 
       this.visible_ = options.visible;
     } else {
@@ -81,8 +80,8 @@ var Hidable = this.Hidable = voodoo.Model.extend({
     Object.defineProperty(this, 'visible', {
       get: function() { return this.visible_; },
       set: function(visible) {
-        log_.assert_(typeof visible === 'boolean',
-            'visible must be a boolean.', visible, '(Hidable::visible)');
+        log_.assert_(typeof visible === 'boolean', 'visible must be a boolean.', visible,
+            '(Hidable::visible)');
 
         if (visible !== that.visible_) {
           that.visible_ = visible;

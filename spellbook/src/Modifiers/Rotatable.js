@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Rotatable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -36,8 +36,7 @@ var RotatableView_ = voodoo.View.extend({
   },
 
   setRotation_: function(rotation) {
-    log_.assert_(rotation, 'rotation must be vaild',
-        '(RotatableView_::setRotation_)');
+    log_.assert_(rotation, 'rotation must be vaild', '(RotatableView_::setRotation_)');
 
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
@@ -61,8 +60,8 @@ var RotatableView_ = voodoo.View.extend({
  *
  * Options:
  *
- * - rotation {Object} Initial rotation. This can be an array of length 3, or
- *     an object with x, y, and z properties.
+ * - rotation {Object} Initial rotation. This can be an array of length 3, or an object with x, y,
+ *   and z properties.
  *
  * Events:
  *
@@ -197,8 +196,7 @@ var Rotatable = this.Rotatable = voodoo.Model.extend({
           t = 0;
           this.startRotation_.copy(this.rotation_);
           this.targetRotation_.copy(this.deltaRotation_);
-          this.targetRotation_ =
-              this.targetRotation_.multiply(this.rotation_);
+          this.targetRotation_ = this.targetRotation_.multiply(this.rotation_);
           this.rotationStartTime_ = new Date();
         }
       }
@@ -237,16 +235,13 @@ var Rotatable = this.Rotatable = voodoo.Model.extend({
   *    rotate({x: 0, y: 0, z: 0, angle: 0})
   *
   * @param {Object} rotation Target rotation.
-  * @param {number=} opt_seconds Animation duration. If unspecified,
-  *     default is 0.
-  * @param {function(number):number=} opt_easing Optional easing function.
-  *     Default is easing.easeInOutQuad.
+  * @param {number=} opt_seconds Animation duration. If unspecified, default is 0.
+  * @param {function(number):number=} opt_easing Optional easing function. Default is easeInOutQuad.
   *
   * @return {Rotatable}
   */
 Rotatable.prototype.rotateTo = function(rotation, opt_seconds, opt_easing) {
-  log_.assert_(rotation, 'rotation must be valid.',
-      '(Rotatable::rotateTo)');
+  log_.assert_(rotation, 'rotation must be valid.', '(Rotatable::rotateTo)');
 
   if (opt_seconds) {
 
@@ -262,8 +257,7 @@ Rotatable.prototype.rotateTo = function(rotation, opt_seconds, opt_easing) {
     this.rotationDuration_ = opt_seconds * 1000;
     this.rotationElapsed_ = 0;
 
-    this.rotationEasing_ = opt_easing ? getEasing_(opt_easing) :
-        Easing.prototype.easeInOutQuad;
+    this.rotationEasing_ = opt_easing ? getEasing_(opt_easing) : Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('rotateBegin', this));
 
@@ -294,14 +288,12 @@ Rotatable.prototype.rotateTo = function(rotation, opt_seconds, opt_easing) {
   *
   * @param {Object} rotation Amount to rotate.
   * @param {number=} opt_seconds Optional duration in seconds. Default is 0.
-  * @param {function(number):number=} opt_easing Optional easing function.
-  *     Default is easing.easeInOutQuad.
+  * @param {function(number):number=} opt_easing Optional easing function. Default is easeInOutQuad.
   *
   * @return {Rotatable}
   */
 Rotatable.prototype.rotate = function(rotation, opt_seconds, opt_easing) {
-  log_.assert_(rotation, 'rotation must be valid.',
-      '(Rotatable::rotate)');
+  log_.assert_(rotation, 'rotation must be valid.', '(Rotatable::rotate)');
 
   var delta = this.parseRotation_(rotation);
   var target = new THREE.Quaternion();
@@ -322,8 +314,7 @@ Rotatable.prototype.rotate = function(rotation, opt_seconds, opt_easing) {
     this.rotationDuration_ = opt_seconds * 1000;
     this.rotationElapsed_ = 0;
 
-    this.rotationEasing_ = opt_easing ? getEasing_(opt_easing) :
-        Easing.prototype.easeInOutQuad;
+    this.rotationEasing_ = opt_easing ? getEasing_(opt_easing) : Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('rotateBegin', this));
 
@@ -357,8 +348,7 @@ Rotatable.prototype.rotate = function(rotation, opt_seconds, opt_easing) {
   * @return {Rotatable}
   */
 Rotatable.prototype.rotateContinuous = function(rotation) {
-  log_.assert_(rotation, 'rotation must be valid.',
-      '(Rotatable::rotateContinuous)');
+  log_.assert_(rotation, 'rotation must be valid.', '(Rotatable::rotateContinuous)');
 
   this.deltaRotation_ = this.parseRotation_(rotation);
 
@@ -384,16 +374,15 @@ Rotatable.prototype.rotateContinuous = function(rotation) {
 
 
 /**
- * Sets whether we are currently rotating. This may be used to pause and
- * resume animations.
+ * Sets whether we are currently rotating. This may be used to pause and resume animations.
  *
  * @param {boolean} rotating Whether to enable or disable rotating.
  *
  * @return {Rotatable}
  */
 Rotatable.prototype.setRotating = function(rotating) {
-  log_.assert_(typeof rotating === 'boolean', 'rotating must be a boolean.',
-      rotating, '(Rotatable::setRotating)');
+  log_.assert_(typeof rotating === 'boolean', 'rotating must be a boolean.', rotating,
+      '(Rotatable::setRotating)');
 
   if (!rotating && this.rotating_) {
 
@@ -429,8 +418,7 @@ Rotatable.prototype.setRotating = function(rotating) {
   * @return {Rotatable}
   */
 Rotatable.prototype.setRotation = function(rotation) {
-  log_.assert_(rotation, 'rotation must be valid.',
-      '(Rotatable::setRotation)');
+  log_.assert_(rotation, 'rotation must be valid.', '(Rotatable::setRotation)');
 
   this.rotation_ = this.parseRotation_(rotation);
   this.eulerRotation_.setFromQuaternion(this.rotation_);
@@ -476,8 +464,7 @@ Rotatable.prototype.rotating = false;
  * 2. Object: object.rotation = {x: 1, y: 2, z: 3};
  * 3. Component: object.rotation.z = 0;
  *
- * As a getter, this will always return a
- * euler angle object with x, y, z properties.
+ * As a getter, this will always return a euler angle object with x, y, z properties.
  *
  * @type {Object}
  */
@@ -532,8 +519,8 @@ Rotatable.prototype.parseRotation_ = function(rotation) {
 
     } else {
 
-      log_.error_('Unable to parse rotation: Incorrect number of elements.',
-          rotation, '(Rotatable::parseRotation_)');
+      log_.error_('Unable to parse rotation: Incorrect number of elements.', rotation,
+          '(Rotatable::parseRotation_)');
 
     }
   } else if (typeof rotation === 'object') {
@@ -544,20 +531,16 @@ Rotatable.prototype.parseRotation_ = function(rotation) {
     log_.assert_('z' in rotation, 'Property z is undefined.', rotation,
         '(Rotatable::parseRotation_)');
 
-    log_.assert_(typeof rotation.x === 'number',
-        'Property x must be a number.', rotation,
+    log_.assert_(typeof rotation.x === 'number', 'Property x must be a number.', rotation,
         '(Rotatable::parseRotation_)');
-    log_.assert_(typeof rotation.y === 'number',
-        'Property y must be a number.', rotation,
+    log_.assert_(typeof rotation.y === 'number', 'Property y must be a number.', rotation,
         '(Rotatable::parseRotation_)');
-    log_.assert_(typeof rotation.z === 'number',
-        'Property z must be a number.', rotation,
+    log_.assert_(typeof rotation.z === 'number', 'Property z must be a number.', rotation,
         '(Rotatable::parseRotation_)');
 
     if ('angle' in rotation) {
 
-      log_.assert_(typeof rotation.angle === 'number',
-          'Property angle must be a number.', rotation,
+      log_.assert_(typeof rotation.angle === 'number', 'Property angle must be a number.', rotation,
           '(Rotatable::parseRotation_)');
 
       // Case rotate({x: 0, y: 0, z: 0, angle: 0})
@@ -567,13 +550,11 @@ Rotatable.prototype.parseRotation_ = function(rotation) {
 
     } else if ('w' in rotation) {
 
-      log_.assert_(typeof rotation.w === 'number',
-          'Property w must be a number.', rotation,
+      log_.assert_(typeof rotation.w === 'number', 'Property w must be a number.', rotation,
           '(Rotatable::parseRotation_)');
 
       // Case: Quaternion
-      quaternion = new THREE.Quaternion(
-          rotation.x, rotation.y, rotation.z, rotation.w);
+      quaternion = new THREE.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
 
     } else {
 

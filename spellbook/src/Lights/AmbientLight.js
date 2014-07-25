@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: AmbientLight.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -24,8 +24,7 @@ var AmbientLightView_ = LightView_.extend({
 
 
 /**
- * A light that illuminates the scene uniformly and has no specific origin or
- * direction.
+ * A light that illuminates the scene uniformly and has no specific origin or direction.
  *
  * Options:
  *

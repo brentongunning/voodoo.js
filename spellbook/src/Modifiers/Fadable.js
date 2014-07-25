@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Fadable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -107,8 +107,7 @@ var Fadable = this.Fadable = voodoo.Model.extend({
 
     if (typeof options.alpha !== 'undefined') {
 
-      log_.assert_(options.alpha >= 0 && options.alpha <= 1,
-          'alpha must be between 0 and 1.',
+      log_.assert_(options.alpha >= 0 && options.alpha <= 1, 'alpha must be between 0 and 1.',
           options.alpha, '(Fadable::initialize)');
 
       this.alpha_ = options.alpha;
@@ -190,8 +189,7 @@ var Fadable = this.Fadable = voodoo.Model.extend({
   * @return {Fadable}
   */
 Fadable.prototype.fadeIn = function(seconds) {
-  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds,
-      '(Fadable::fadeIn)');
+  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds, '(Fadable::fadeIn)');
 
   return this.fadeTo(1.0, seconds);
 };
@@ -205,8 +203,7 @@ Fadable.prototype.fadeIn = function(seconds) {
   * @return {Fadable}
   */
 Fadable.prototype.fadeOut = function(seconds) {
-  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds,
-      '(Fadable::fadeOut)');
+  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds, '(Fadable::fadeOut)');
 
   return this.fadeTo(0.0, seconds);
 };
@@ -217,17 +214,15 @@ Fadable.prototype.fadeOut = function(seconds) {
   *
   * @param {number} alpha Alpha value from 0-1.
   * @param {number} seconds Animation duration.
-  * @param {function(number):number|string=} opt_easing Optional easing
-  *   function. If a string, uses a function from the built in easings.
-  *   Default is 'easeInOutQuad'.
+  * @param {function(number):number|string=} opt_easing Optional easing function. If a string, uses
+  *   a function from the built in easings. Default is 'easeInOutQuad'.
   *
   * @return {Fadable}
   */
 Fadable.prototype.fadeTo = function(alpha, seconds, opt_easing) {
-  log_.assert_(alpha >= 0 && alpha <= 1, 'alpha must be between 0 and 1.',
-      alpha, '(Fadable::fadeTo)');
-  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds,
+  log_.assert_(alpha >= 0 && alpha <= 1, 'alpha must be between 0 and 1.', alpha,
       '(Fadable::fadeTo)');
+  log_.assert_(seconds >= 0, 'seconds must be >= 0.', seconds, '(Fadable::fadeTo)');
 
   if (seconds === 0) {
 
@@ -243,8 +238,7 @@ Fadable.prototype.fadeTo = function(alpha, seconds, opt_easing) {
     this.fading_ = true;
     this.fadeElapsed_ = 0;
 
-    this.fadeEasing_ = opt_easing ? getEasing_(opt_easing) :
-        Easing.prototype.easeInOutQuad;
+    this.fadeEasing_ = opt_easing ? getEasing_(opt_easing) : Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('fadeBegin', this));
 
@@ -262,8 +256,8 @@ Fadable.prototype.fadeTo = function(alpha, seconds, opt_easing) {
   * @return {Fadable}
   */
 Fadable.prototype.setAlpha = function(alpha) {
-  log_.assert_(alpha >= 0 && alpha <= 1, 'alpha must be between 0 and 1.',
-      alpha, '(Fadable::setAlpha)');
+  log_.assert_(alpha >= 0 && alpha <= 1, 'alpha must be between 0 and 1.', alpha,
+      '(Fadable::setAlpha)');
 
   this.alpha_ = alpha;
   this.targetAlpha_ = alpha;
@@ -282,16 +276,15 @@ Fadable.prototype.setAlpha = function(alpha) {
 
 
 /**
- * Get or set whether we are currently fading. This may be used to pause and
- * resume animations.
+ * Get or set whether we are currently fading. This may be used to pause and resume animations.
  *
  * @param {boolean} fading Whether to enable or disable fading.
  *
  * @return {Fadable}
  */
 Fadable.prototype.setFading = function(fading) {
-  log_.assert_(typeof fading === 'boolean', 'fading must be a boolean.',
-      fading, '(Fadable::setFading)');
+  log_.assert_(typeof fading === 'boolean', 'fading must be a boolean.', fading,
+      '(Fadable::setFading)');
 
   if (!fading && this.fading_) {
 

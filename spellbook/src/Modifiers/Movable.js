@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Movable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -36,8 +36,7 @@ var MovableView_ = voodoo.View.extend({
   },
 
   setPosition_: function(position) {
-    log_.assert_(position, 'position must be valid.',
-        '(MovableView_::setPosition_)');
+    log_.assert_(position, 'position must be valid.', '(MovableView_::setPosition_)');
 
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
@@ -61,8 +60,8 @@ var MovableView_ = voodoo.View.extend({
  *
  * Options:
  *
- * - position {Object} Initial position. This can be an array of length 3, or
- *     an object with x, y, and z properties.
+ * - position {Object} Initial position. This can be an array of length 3, or an object with x, y,
+ *   and z properties.
  *
  * Events:
  *
@@ -165,15 +164,9 @@ var Movable = this.Movable = voodoo.Model.extend({
         var i = this.moveEasing_(t);
         var invI = 1 - i;
 
-        this.position_.x =
-            this.startPosition_.x * invI +
-            this.targetPosition_.x * i;
-        this.position_.y =
-            this.startPosition_.y * invI +
-            this.targetPosition_.y * i;
-        this.position_.z =
-            this.startPosition_.z * invI +
-            this.targetPosition_.z * i;
+        this.position_.x = this.startPosition_.x * invI + this.targetPosition_.x * i;
+        this.position_.y = this.startPosition_.y * invI + this.targetPosition_.y * i;
+        this.position_.z = this.startPosition_.z * invI + this.targetPosition_.z * i;
 
       } else {
         this.position_.x = this.targetPosition_.x;
@@ -208,25 +201,21 @@ var Movable = this.Movable = voodoo.Model.extend({
   *
   * @param {Object} position Target position.
   * @param {number} seconds Animation duration.
-  * @param {function(number):number=} opt_easing Optional easing function.
-  *     Default is easing.easeInOutQuad.
+  * @param {function(number):number=} opt_easing Optional easing function. Default is easeInOutQuad.
   *
   * @return {Movable}
   */
 Movable.prototype.moveTo = function(position, seconds, opt_easing) {
   var endPosition = parseVector3_(position);
 
-  log_.assert_(typeof seconds === 'number', 'seconds must be a number.',
-      '(Movable::moveTo)');
-  log_.assert_(seconds >= 0, 'seconds must be >= 0.',
-      '(Movable::moveTo)');
+  log_.assert_(typeof seconds === 'number', 'seconds must be a number.', '(Movable::moveTo)');
+  log_.assert_(seconds >= 0, 'seconds must be >= 0.', '(Movable::moveTo)');
 
   if (seconds === 0) {
 
     this.setPosition(endPosition);
 
-  } else if (this.position_.x !== endPosition.x ||
-      this.position_.y !== endPosition.y ||
+  } else if (this.position_.x !== endPosition.x || this.position_.y !== endPosition.y ||
       this.position_.z !== endPosition.z) {
 
     this.startPosition_.x = this.position_.x;
@@ -242,8 +231,7 @@ Movable.prototype.moveTo = function(position, seconds, opt_easing) {
     this.moving_ = true;
     this.moveElapsed_ = 0;
 
-    this.moveEasing_ = opt_easing ? getEasing_(opt_easing) :
-        Easing.prototype.easeInOutQuad;
+    this.moveEasing_ = opt_easing ? getEasing_(opt_easing) : Easing.prototype.easeInOutQuad;
 
     this.dispatch(new voodoo.Event('moveBegin', this));
 
@@ -254,16 +242,15 @@ Movable.prototype.moveTo = function(position, seconds, opt_easing) {
 
 
 /**
- * Sets whether we are currently moving. This may be used to pause and
- * resume animations.
+ * Sets whether we are currently moving. This may be used to pause and resume animations.
  *
  * @param {boolean} moving Whether to enable or disable moving.
  *
  * @return {Movable}
  */
 Movable.prototype.setMoving = function(moving) {
-  log_.assert_(typeof moving === 'boolean', 'moving must be a boolean.',
-      moving, '(Movable::setMoving)');
+  log_.assert_(typeof moving === 'boolean', 'moving must be a boolean.', moving,
+      '(Movable::setMoving)');
 
   if (!moving && this.moving_) {
 
@@ -320,9 +307,8 @@ Movable.prototype.moving = false;
 /**
  * Get or set the position of all scene meshes.
  *
- * If the meshes are attached to an HTML element, then this position
- * is an offset from its attached location. Otherwise, it is an absolute
- * location on the page in pixels.
+ * If the meshes are attached to an HTML element, then this position is an offset from its attached
+ * location. Otherwise, it is an absolute location on the page in pixels.
  *
  * Setting the position may be done in one of three ways:
  *
@@ -330,8 +316,7 @@ Movable.prototype.moving = false;
  * 2. Object: object.position = {x: 1, y: 2, z: 3};
  * 3. Component: object.position.z = 0;
  *
- * As a getter, this will always return an
- * object with x, y, and z properties.
+ * As a getter, this will always return an object with x, y, and z properties.
  *
  * @type {Object}
  */
@@ -341,9 +326,8 @@ Movable.prototype.position = null;
 /**
  * Gets the position the mesh is animating to. Readonly.
  *
- * If the meshes are attached to an HTML element, then this position
- * is an offset from its attached location. Otherwise, it is an absolute
- * location on the page in pixels.
+ * If the meshes are attached to an HTML element, then this position is an offset from its attached
+ * location. Otherwise, it is an absolute location on the page in pixels.
  *
  * Returns an object an object with x, y, and z properties.
  *

@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: ArcballTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -125,8 +125,8 @@ ArcballTests.prototype.testInvalidProperties = function() {
     });
   });
 
-  // Arcball centers must be options with x, y, z properties, or an
-  // array with 3 components, or null.
+  // Arcball centers must be options with x, y, z properties, or an array with 3 components, or
+  // null.
 
   assertException(function() {
     model.arcballCenter = 10;

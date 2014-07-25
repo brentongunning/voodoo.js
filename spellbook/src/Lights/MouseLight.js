@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: MouseLight.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -53,8 +53,7 @@ var MouseLightView_ = LightView_.extend({
  * Options:
  *
  * - color {string} CSS color string.
- * - height {number} Height of the point light. A value <= 0 means to use the
- *     camera height.
+ * - height {number} Height of the point light. A value <= 0 means to use the camera height.
  *
  * Events:
  *
@@ -113,16 +112,15 @@ var MouseLight = this.MouseLight = Light_.extend({
 
 
 /**
- * Sets the height of the point light. A value <= 0 means to use the camera
- *     height.
+ * Sets the height of the point light. A value <= 0 means to use the camera height.
  *
  * @param {number} height Height of the point light.
  *
  * @return {MouseLight}
  */
 MouseLight.prototype.setHeight = function(height) {
-  log_.assert_(typeof height === 'number', 'height must be a number.',
-      height, '(MouseLight::setHeight)');
+  log_.assert_(typeof height === 'number', 'height must be a number.', height,
+      '(MouseLight::setHeight)');
 
   this.height_ = height;
 
@@ -133,8 +131,7 @@ MouseLight.prototype.setHeight = function(height) {
 
 
 /**
- * Get or set the height of the point light. A value <= 0 means to use the
- *     camera height.
+ * Get or set the height of the point light. A value <= 0 means to use the camera height.
  *
  * @type {number}
  */

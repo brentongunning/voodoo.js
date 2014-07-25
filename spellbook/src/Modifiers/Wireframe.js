@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Wireframe.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -40,8 +40,7 @@ var WireframeView_ = voodoo.View.extend({
   },
 
   setWireframeToMesh_: function(mesh, wireframe) {
-    log_.assert_(mesh, 'mesh must be valid.',
-        '(WireframeView_::setWireframeToMesh_)');
+    log_.assert_(mesh, 'mesh must be valid.', '(WireframeView_::setWireframeToMesh_)');
 
     var material = mesh.material;
     if (material) {
@@ -89,9 +88,8 @@ var Wireframe = this.Wireframe = voodoo.Model.extend({
     this.base.initialize(options);
 
     if (typeof options.wireframe !== 'undefined') {
-      log_.assert_(typeof options.wireframe === 'boolean',
-          'wireframe must be a boolean.', options.wireframe,
-          '(Wireframe::initialize)');
+      log_.assert_(typeof options.wireframe === 'boolean', 'wireframe must be a boolean.',
+          options.wireframe, '(Wireframe::initialize)');
 
       this.wireframe_ = options.wireframe;
     } else {
@@ -117,8 +115,7 @@ var Wireframe = this.Wireframe = voodoo.Model.extend({
   * @return {Wireframe}
   */
 Wireframe.prototype.setWireframe = function(wireframe) {
-  log_.assert_(typeof wireframe === 'boolean',
-      'wireframe must be a boolean.', wireframe,
+  log_.assert_(typeof wireframe === 'boolean', 'wireframe must be a boolean.', wireframe,
       '(Wireframe::initialize)');
 
   if (wireframe !== this.wireframe_) {

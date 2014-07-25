@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Helpers.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 /**
@@ -68,8 +68,7 @@ function computeBoundingSphere_(sceneObjects) {
       var dy = geometryCenter[1] - center.y;
       var dz = geometryCenter[2] - center.z;
 
-      var scale = Math.max(sceneObjectScale.x,
-          Math.max(sceneObjectScale.y, sceneObjectScale.z));
+      var scale = Math.max(sceneObjectScale.x, Math.max(sceneObjectScale.y, sceneObjectScale.z));
 
       var distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
       var objectRadius = distance + geometryBoundingSphere.radius * scale;
@@ -96,8 +95,7 @@ function computeBoundingSphere_(sceneObjects) {
  */
 function getAbsoluteUrl_(url) {
   log_.assert_(url, 'url must be valid.', url, '(getAbsoluteUrl_)');
-  log_.assert_(typeof url === 'string', 'url must be valid.', url,
-      '(getAbsoluteUrl_)');
+  log_.assert_(typeof url === 'string', 'url must be valid.', url, '(getAbsoluteUrl_)');
 
   var a = document.createElement('a');
   a.href = url;
@@ -107,8 +105,8 @@ function getAbsoluteUrl_(url) {
 
 
 /**
- * Gets the easing function given a string of one of the easing
- * functions built in, or if provided a function, returns that function.
+ * Gets the easing function given a string of one of the easing functions built in, or if provided
+ * a function, returns that function.
  *
  * @private
  *
@@ -118,8 +116,7 @@ function getAbsoluteUrl_(url) {
  */
 function getEasing_(easing) {
   if (typeof easing === 'string') {
-    log_.assert_(easing in Easing.prototype, 'easing must exist.',
-        easing, 'getEasing_');
+    log_.assert_(easing in Easing.prototype, 'easing must exist.', easing, 'getEasing_');
 
     return Easing.prototype[easing];
   }
@@ -127,8 +124,7 @@ function getEasing_(easing) {
     return easing;
   }
 
-  log_.assert_(false, 'easing must be a string or function.',
-      easing, 'getEasing_');
+  log_.assert_(false, 'easing must be a string or function.', easing, 'getEasing_');
   return Easing.prototype.linear;
 }
 
@@ -143,26 +139,20 @@ function getEasing_(easing) {
  * @return {Object}
  */
 function parseVector3_(vector) {
-  log_.assert_(typeof vector === 'object', 'vector must be an object.',
-      vector, '(parseVector3_)');
+  log_.assert_(typeof vector === 'object', 'vector must be an object.', vector, '(parseVector3_)');
 
   if ('x' in vector) {
 
     // Case: Object
 
-    log_.assert_('y' in vector, 'vector must contain y property.', vector,
-        '(parseVector3_)');
-    log_.assert_('z' in vector, 'vector must contain z property.', vector,
-        '(parseVector3_)');
+    log_.assert_('y' in vector, 'vector must contain y property.', vector, '(parseVector3_)');
+    log_.assert_('z' in vector, 'vector must contain z property.', vector, '(parseVector3_)');
 
-    log_.assert_(typeof vector.x === 'number',
-        'Property x must be a number.', vector,
+    log_.assert_(typeof vector.x === 'number', 'Property x must be a number.', vector,
         '(parseVector3_)');
-    log_.assert_(typeof vector.y === 'number',
-        'Property y must be a number.', vector,
+    log_.assert_(typeof vector.y === 'number', 'Property y must be a number.', vector,
         '(parseVector3_)');
-    log_.assert_(typeof vector.z === 'number',
-        'Property z must be a number.', vector,
+    log_.assert_(typeof vector.z === 'number', 'Property z must be a number.', vector,
         '(parseVector3_)');
 
     return vector;
@@ -171,19 +161,14 @@ function parseVector3_(vector) {
 
     // Case: Array
 
-    log_.assert_(Array.isArray(vector), 'vector must be an array.', vector,
-        '(parseVector3_)');
-    log_.assert_(vector.length === 3, 'vector must be of length 3.', vector,
-        '(parseVector3_)');
+    log_.assert_(Array.isArray(vector), 'vector must be an array.', vector, '(parseVector3_)');
+    log_.assert_(vector.length === 3, 'vector must be of length 3.', vector, '(parseVector3_)');
 
-    log_.assert_(typeof vector[0] === 'number',
-        'Property 0 must be a number.', vector,
+    log_.assert_(typeof vector[0] === 'number', 'Property 0 must be a number.', vector,
         '(parseVector3_)');
-    log_.assert_(typeof vector[1] === 'number',
-        'Property 1 must be a number.', vector,
+    log_.assert_(typeof vector[1] === 'number', 'Property 1 must be a number.', vector,
         '(parseVector3_)');
-    log_.assert_(typeof vector[2] === 'number',
-        'Property 2 must be a number.', vector,
+    log_.assert_(typeof vector[2] === 'number', 'Property 2 must be a number.', vector,
         '(parseVector3_)');
 
     return { x: vector[0], y: vector[1], z: vector[2] };

@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Easing.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 /**
@@ -16,8 +16,7 @@
  */
 function makeEaseOut_(f) {
   log_.assert_(f, 'f must be valid.', '(makeEaseOut_)');
-  log_.assert_(typeof f === 'function', 'f must be a function.',
-      '(makeEaseOut_)');
+  log_.assert_(typeof f === 'function', 'f must be a function.', '(makeEaseOut_)');
 
   return function(t) { return 1 - f(1 - t); };
 }
@@ -36,8 +35,7 @@ function makeEaseOut_(f) {
  */
 function makeEaseInOut_(f) {
   log_.assert_(f, 'f must be valid.', '(makeEaseInOut_)');
-  log_.assert_(typeof f === 'function', 'f must be a function.',
-      '(makeEaseInOut_)');
+  log_.assert_(typeof f === 'function', 'f must be a function.', '(makeEaseInOut_)');
 
   var easeOut = makeEaseOut_(f);
 
@@ -52,8 +50,8 @@ function makeEaseInOut_(f) {
 
 
 /**
- * Built-in easing functions. Easing functions control the speed of animations.
- * They take a time from 0-1 and return an animation interpolation from 0-1.
+ * Built-in easing functions. Easing functions control the speed of animations. They take a time
+ * from 0-1 and return an animation interpolation from 0-1.
  *
  * Based on Robert Penner's equations.
  *
@@ -70,10 +68,8 @@ function Easing() {}
  * @return {number} Interpolation.
  */
 Easing.prototype.linear = function(t) {
-  log_.assert_(typeof t === 'number', t, 't must be a number.',
-      '(Easing::linear)');
-  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.',
-      '(Easing::linear)');
+  log_.assert_(typeof t === 'number', t, 't must be a number.', '(Easing::linear)');
+  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.', '(Easing::linear)');
 
   return t;
 };
@@ -87,10 +83,8 @@ Easing.prototype.linear = function(t) {
  * @return {number} Interpolation.
  */
 Easing.prototype.easeInQuad = function(t) {
-  log_.assert_(typeof t === 'number', t, 't must be a number.',
-      '(Easing::easeInQuad)');
-  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.',
-      '(Easing::easeInQuad)');
+  log_.assert_(typeof t === 'number', t, 't must be a number.', '(Easing::easeInQuad)');
+  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.', '(Easing::easeInQuad)');
 
   return t * t;
 };
@@ -105,8 +99,7 @@ Easing.prototype.easeInQuad = function(t) {
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeOutQuad =
-    makeEaseOut_(Easing.prototype.easeInQuad);
+Easing.prototype.easeOutQuad = makeEaseOut_(Easing.prototype.easeInQuad);
 
 
 /**
@@ -118,8 +111,7 @@ Easing.prototype.easeOutQuad =
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeInOutQuad =
-    makeEaseInOut_(Easing.prototype.easeInQuad);
+Easing.prototype.easeInOutQuad = makeEaseInOut_(Easing.prototype.easeInQuad);
 
 
 /**
@@ -130,10 +122,8 @@ Easing.prototype.easeInOutQuad =
  * @return {number} Interpolation.
  */
 Easing.prototype.easeInCubic = function(t) {
-  log_.assert_(typeof t === 'number', t, 't must be a number.',
-      '(Easing::easeInCubic)');
-  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.',
-      '(Easing::easeInCubic)');
+  log_.assert_(typeof t === 'number', t, 't must be a number.', '(Easing::easeInCubic)');
+  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.', '(Easing::easeInCubic)');
 
   return t * t * t;
 };
@@ -148,8 +138,7 @@ Easing.prototype.easeInCubic = function(t) {
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeOutCubic =
-    makeEaseOut_(Easing.prototype.easeInCubic);
+Easing.prototype.easeOutCubic = makeEaseOut_(Easing.prototype.easeInCubic);
 
 
 /**
@@ -161,8 +150,7 @@ Easing.prototype.easeOutCubic =
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeInOutCubic =
-    makeEaseInOut_(Easing.prototype.easeInCubic);
+Easing.prototype.easeInOutCubic = makeEaseInOut_(Easing.prototype.easeInCubic);
 
 
 /**
@@ -173,10 +161,8 @@ Easing.prototype.easeInOutCubic =
  * @return {number} Interpolation.
  */
 Easing.prototype.easeInQuart = function(t) {
-  log_.assert_(typeof t === 'number', t, 't must be a number.',
-      '(Easing::easeInQuart)');
-  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.',
-      '(Easing::easeInQuart)');
+  log_.assert_(typeof t === 'number', t, 't must be a number.', '(Easing::easeInQuart)');
+  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.', '(Easing::easeInQuart)');
 
   var t2 = t * t;
   return t2 * t2;
@@ -192,8 +178,7 @@ Easing.prototype.easeInQuart = function(t) {
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeOutQuart =
-    makeEaseOut_(Easing.prototype.easeInQuart);
+Easing.prototype.easeOutQuart = makeEaseOut_(Easing.prototype.easeInQuart);
 
 
 /**
@@ -205,8 +190,7 @@ Easing.prototype.easeOutQuart =
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeInOutQuart =
-    makeEaseInOut_(Easing.prototype.easeInQuart);
+Easing.prototype.easeInOutQuart = makeEaseInOut_(Easing.prototype.easeInQuart);
 
 
 /**
@@ -217,10 +201,8 @@ Easing.prototype.easeInOutQuart =
  * @return {number} Interpolation.
  */
 Easing.prototype.easeInQuint = function(t) {
-  log_.assert_(typeof t === 'number', t, 't must be a number.',
-      '(Easing::easeInQuint)');
-  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.',
-      '(Easing::easeInQuint)');
+  log_.assert_(typeof t === 'number', t, 't must be a number.', '(Easing::easeInQuint)');
+  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.', '(Easing::easeInQuint)');
 
   var t2 = t * t;
   return t2 * t2 * t;
@@ -236,8 +218,7 @@ Easing.prototype.easeInQuint = function(t) {
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeOutQuint =
-    makeEaseOut_(Easing.prototype.easeInQuint);
+Easing.prototype.easeOutQuint = makeEaseOut_(Easing.prototype.easeInQuint);
 
 
 /**
@@ -249,8 +230,7 @@ Easing.prototype.easeOutQuint =
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeInOutQuint =
-    makeEaseInOut_(Easing.prototype.easeInQuint);
+Easing.prototype.easeInOutQuint = makeEaseInOut_(Easing.prototype.easeInQuint);
 
 
 /**
@@ -261,10 +241,8 @@ Easing.prototype.easeInOutQuint =
  * @return {number} Interpolation.
  */
 Easing.prototype.easeInSine = function(t) {
-  log_.assert_(typeof t === 'number', t, 't must be a number.',
-      '(Easing::easeInSine)');
-  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.',
-      '(Easing::easeInSine)');
+  log_.assert_(typeof t === 'number', t, 't must be a number.', '(Easing::easeInSine)');
+  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.', '(Easing::easeInSine)');
 
   return 1 - Math.cos(t * Math.PI / 2);
 };
@@ -279,8 +257,7 @@ Easing.prototype.easeInSine = function(t) {
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeOutSine =
-    makeEaseOut_(Easing.prototype.easeInSine);
+Easing.prototype.easeOutSine = makeEaseOut_(Easing.prototype.easeInSine);
 
 
 /**
@@ -292,8 +269,7 @@ Easing.prototype.easeOutSine =
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeInOutSine =
-    makeEaseInOut_(Easing.prototype.easeInSine);
+Easing.prototype.easeInOutSine = makeEaseInOut_(Easing.prototype.easeInSine);
 
 
 /**
@@ -304,10 +280,8 @@ Easing.prototype.easeInOutSine =
  * @return {number} Interpolation.
  */
 Easing.prototype.easeInExpo = function(t) {
-  log_.assert_(typeof t === 'number', t, 't must be a number.',
-      '(Easing::easeInExpo)');
-  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.',
-      '(Easing::easeInExpo)');
+  log_.assert_(typeof t === 'number', t, 't must be a number.', '(Easing::easeInExpo)');
+  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.', '(Easing::easeInExpo)');
 
   return (t === 0) ? 0 : Math.pow(2, 10 * (t - 1));
 };
@@ -322,8 +296,7 @@ Easing.prototype.easeInExpo = function(t) {
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeOutExpo =
-    makeEaseOut_(Easing.prototype.easeInExpo);
+Easing.prototype.easeOutExpo = makeEaseOut_(Easing.prototype.easeInExpo);
 
 
 /**
@@ -335,8 +308,7 @@ Easing.prototype.easeOutExpo =
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeInOutExpo =
-    makeEaseInOut_(Easing.prototype.easeInExpo);
+Easing.prototype.easeInOutExpo = makeEaseInOut_(Easing.prototype.easeInExpo);
 
 
 /**
@@ -347,10 +319,8 @@ Easing.prototype.easeInOutExpo =
  * @return {number} Interpolation.
  */
 Easing.prototype.easeInCirc = function(t) {
-  log_.assert_(typeof t === 'number', t, 't must be a number.',
-      '(Easing::easeInCirc)');
-  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.',
-      '(Easing::easeInCirc)');
+  log_.assert_(typeof t === 'number', t, 't must be a number.', '(Easing::easeInCirc)');
+  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.', '(Easing::easeInCirc)');
 
   return -Math.sqrt(1 - t * t) + 1;
 };
@@ -365,8 +335,7 @@ Easing.prototype.easeInCirc = function(t) {
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeOutCirc =
-    makeEaseOut_(Easing.prototype.easeInCirc);
+Easing.prototype.easeOutCirc = makeEaseOut_(Easing.prototype.easeInCirc);
 
 
 /**
@@ -378,8 +347,7 @@ Easing.prototype.easeOutCirc =
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeInOutCirc =
-    makeEaseInOut_(Easing.prototype.easeInCirc);
+Easing.prototype.easeInOutCirc = makeEaseInOut_(Easing.prototype.easeInCirc);
 
 
 /**
@@ -390,10 +358,8 @@ Easing.prototype.easeInOutCirc =
  * @return {number} Interpolation.
  */
 Easing.prototype.easeInElastic = function(t) {
-  log_.assert_(typeof t === 'number', t, 't must be a number.',
-      '(Easing::easeInElastic)');
-  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.',
-      '(Easing::easeInElastic)');
+  log_.assert_(typeof t === 'number', t, 't must be a number.', '(Easing::easeInElastic)');
+  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.', '(Easing::easeInElastic)');
 
   if (t === 0) return 0;
   if (t === 1) return 1;
@@ -413,8 +379,7 @@ Easing.prototype.easeInElastic = function(t) {
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeOutElastic =
-    makeEaseOut_(Easing.prototype.easeInElastic);
+Easing.prototype.easeOutElastic = makeEaseOut_(Easing.prototype.easeInElastic);
 
 
 /**
@@ -426,8 +391,7 @@ Easing.prototype.easeOutElastic =
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeInOutElastic =
-    makeEaseInOut_(Easing.prototype.easeInElastic);
+Easing.prototype.easeInOutElastic = makeEaseInOut_(Easing.prototype.easeInElastic);
 
 
 /**
@@ -438,10 +402,8 @@ Easing.prototype.easeInOutElastic =
  * @return {number} Interpolation.
  */
 Easing.prototype.easeInBack = function(t) {
-  log_.assert_(typeof t === 'number', t, 't must be a number.',
-      '(Easing::easeInBack)');
-  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.',
-      '(Easing::easeInBack)');
+  log_.assert_(typeof t === 'number', t, 't must be a number.', '(Easing::easeInBack)');
+  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.', '(Easing::easeInBack)');
 
   var s = 1.70158;
   return t * t * ((s + 1) * t - s);
@@ -457,8 +419,7 @@ Easing.prototype.easeInBack = function(t) {
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeOutBack =
-    makeEaseOut_(Easing.prototype.easeInBack);
+Easing.prototype.easeOutBack = makeEaseOut_(Easing.prototype.easeInBack);
 
 
 /**
@@ -470,8 +431,7 @@ Easing.prototype.easeOutBack =
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeInOutBack =
-    makeEaseInOut_(Easing.prototype.easeInBack);
+Easing.prototype.easeInOutBack = makeEaseInOut_(Easing.prototype.easeInBack);
 
 
 /**
@@ -482,10 +442,8 @@ Easing.prototype.easeInOutBack =
  * @return {number} Interpolation.
  */
 Easing.prototype.easeOutBounce = function(t) {
-  log_.assert_(typeof t === 'number', t, 't must be a number.',
-      '(Easing::easeOutBounce)');
-  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.',
-      '(Easing::easeOutBounce)');
+  log_.assert_(typeof t === 'number', t, 't must be a number.', '(Easing::easeOutBounce)');
+  log_.assert_(t >= 0 && t <= 1, t, 't must be between 0 and 1.', '(Easing::easeOutBounce)');
 
   if (t < 1 / 2.75)
     return 7.5625 * t * t;
@@ -507,8 +465,7 @@ Easing.prototype.easeOutBounce = function(t) {
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeInBounce =
-    makeEaseOut_(Easing.prototype.easeOutBounce);
+Easing.prototype.easeInBounce = makeEaseOut_(Easing.prototype.easeOutBounce);
 
 
 /**
@@ -520,8 +477,7 @@ Easing.prototype.easeInBounce =
  *
  * @return {number} Interpolation.
  */
-Easing.prototype.easeInOutBounce =
-    makeEaseInOut_(Easing.prototype.easeInBounce);
+Easing.prototype.easeInOutBounce = makeEaseInOut_(Easing.prototype.easeInBounce);
 
 
 /**

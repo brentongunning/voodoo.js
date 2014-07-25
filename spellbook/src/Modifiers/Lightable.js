@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Lightable.js
 //
 // Copyright (c) 2014 Voodoojs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -35,8 +35,7 @@ var LightableView_ = voodoo.View.extend({
   },
 
   setAmbient_: function(ambient) {
-    log_.assert_(ambient, 'ambient must be valid.',
-        '(LightableView_::setAmbient_)');
+    log_.assert_(ambient, 'ambient must be valid.', '(LightableView_::setAmbient_)');
 
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
@@ -48,8 +47,7 @@ var LightableView_ = voodoo.View.extend({
   },
 
   setEmissive_: function(emissive) {
-    log_.assert_(emissive, 'emissive must be valid.',
-        '(LightableView_::setEmissive_)');
+    log_.assert_(emissive, 'emissive must be valid.', '(LightableView_::setEmissive_)');
 
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
@@ -61,8 +59,7 @@ var LightableView_ = voodoo.View.extend({
   },
 
   setShading_: function(shading) {
-    log_.assert_(shading, 'shading must be valid.',
-        '(LightableView_::setShading_)');
+    log_.assert_(shading, 'shading must be valid.', '(LightableView_::setShading_)');
 
     var sceneObjects = this.scene.objects;
     for (var i = 0, len = sceneObjects.length; i < len; ++i) {
@@ -74,10 +71,8 @@ var LightableView_ = voodoo.View.extend({
   },
 
   setAmbientToMesh_: function(mesh, ambient) {
-    log_.assert_(mesh, 'mesh must be valid.',
-        '(LightableView_::setAmbientToMesh_)');
-    log_.assert_(ambient, 'ambient must be valid.',
-        '(LightableView_::setAmbientToMesh_)');
+    log_.assert_(mesh, 'mesh must be valid.', '(LightableView_::setAmbientToMesh_)');
+    log_.assert_(ambient, 'ambient must be valid.', '(LightableView_::setAmbientToMesh_)');
 
     var material = mesh.material;
     if (material) {
@@ -96,10 +91,8 @@ var LightableView_ = voodoo.View.extend({
   },
 
   setEmissiveToMesh_: function(mesh, emissive) {
-    log_.assert_(mesh, 'mesh must be valid.',
-        '(LightableView_::setEmissiveToMesh_)');
-    log_.assert_(emissive, 'emissive must be valid.',
-        '(LightableView_::setEmissiveToMesh_)');
+    log_.assert_(mesh, 'mesh must be valid.', '(LightableView_::setEmissiveToMesh_)');
+    log_.assert_(emissive, 'emissive must be valid.', '(LightableView_::setEmissiveToMesh_)');
 
     var material = mesh.material;
     if (material) {
@@ -118,10 +111,8 @@ var LightableView_ = voodoo.View.extend({
   },
 
   setShadingToMesh_: function(mesh, shading) {
-    log_.assert_(mesh, 'mesh must be valid.',
-        '(LightableView_::setShadingToMesh_)');
-    log_.assert_(shading, 'shading must be valid.',
-        '(LightableView_::setShadingToMesh_)');
+    log_.assert_(mesh, 'mesh must be valid.', '(LightableView_::setShadingToMesh_)');
+    log_.assert_(shading, 'shading must be valid.', '(LightableView_::setShadingToMesh_)');
 
     var threeJsShading = THREE.SmoothShading;
     if (shading === Lightable.ShadingStyle.Flat)
@@ -162,8 +153,7 @@ var LightableView_ = voodoo.View.extend({
  *
  * - ambient {string=} Initial ambient using CSS notation. Default is black.
  * - emissive {string=} Initial emissive using CSS notation. Default is black.
- * - shading {(Lightable.ShadingStyle|string)=} Initial shading type. Default is
- *     smooth.
+ * - shading {(Lightable.ShadingStyle|string)=} Initial shading type. Default is smooth.
  *
  * Events:
  *
@@ -186,18 +176,15 @@ var Lightable = this.Lightable = voodoo.Model.extend({
     this.base.initialize(options);
 
     this.ambient_ = options.ambient || 'black';
-    this.threeJsAmbient_ =
-        voodoo.utility.convertCssColorToThreeJsColor(this.ambient_);
+    this.threeJsAmbient_ = voodoo.utility.convertCssColorToThreeJsColor(this.ambient_);
 
     this.emissive_ = options.emissive || 'black';
-    this.threeJsEmissive_ =
-        voodoo.utility.convertCssColorToThreeJsColor(this.emissive_);
+    this.threeJsEmissive_ = voodoo.utility.convertCssColorToThreeJsColor(this.emissive_);
 
     if (typeof options.shading !== 'undefined') {
-      log_.assert_(options.shading === 'smooth' ||
-          options.shading === 'flat' ||
-          options.shading === 'none',
-          'shading must be valid', options.shading, '(Lightable::initialize');
+      log_.assert_(options.shading === 'smooth' || options.shading === 'flat' ||
+          options.shading === 'none', 'shading must be valid', options.shading,
+          '(Lightable::initialize');
 
       this.shading_ = options.shading;
     } else {
@@ -236,13 +223,11 @@ var Lightable = this.Lightable = voodoo.Model.extend({
   * @return {Lightable}
   */
 Lightable.prototype.setAmbient = function(ambient) {
-  log_.assert_(ambient, 'ambient must be valid.',
-      '(Lightable::setAmbient)');
+  log_.assert_(ambient, 'ambient must be valid.', '(Lightable::setAmbient)');
 
   if (ambient !== this.ambient_) {
     this.ambient_ = ambient;
-    this.threeJsAmbient_ =
-        voodoo.utility.convertCssColorToThreeJsColor(ambient);
+    this.threeJsAmbient_ = voodoo.utility.convertCssColorToThreeJsColor(ambient);
 
     this.dispatch(new voodoo.Event('changeAmbient', this));
 
@@ -263,13 +248,11 @@ Lightable.prototype.setAmbient = function(ambient) {
   * @return {Lightable}
   */
 Lightable.prototype.setEmissive = function(emissive) {
-  log_.assert_(emissive, 'emissive must be valid.',
-      '(Lightable::setEmissive)');
+  log_.assert_(emissive, 'emissive must be valid.', '(Lightable::setEmissive)');
 
   if (emissive !== this.emissive_) {
     this.emissive_ = emissive;
-    this.threeJsEmissive_ =
-        voodoo.utility.convertCssColorToThreeJsColor(emissive);
+    this.threeJsEmissive_ = voodoo.utility.convertCssColorToThreeJsColor(emissive);
 
     this.dispatch(new voodoo.Event('changeEmissive', this));
 
@@ -290,9 +273,7 @@ Lightable.prototype.setEmissive = function(emissive) {
   * @return {Lightable}
   */
 Lightable.prototype.setShading = function(shading) {
-  log_.assert_(shading === 'smooth' ||
-      shading === 'flat' ||
-      shading === 'none',
+  log_.assert_(shading === 'smooth' || shading === 'flat' || shading === 'none',
       'shading must be valid', shading, '(Lightable::setShading');
 
   if (shading !== this.shading_) {
