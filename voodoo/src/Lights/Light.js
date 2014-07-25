@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Light.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -39,8 +39,8 @@ LightView_.prototype['createLight'] = function() {
  * @this {LightView_}
  */
 LightView_.prototype['load'] = function() {
-  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported.', '(LightView_::load)');
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'], 'Only ThreeJs is supported.',
+      '(LightView_::load)');
 
   this.light = this['createLight']();
 
@@ -58,8 +58,8 @@ LightView_.prototype['load'] = function() {
  * @this {LightView_}
  */
 LightView_.prototype['unload'] = function() {
-  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported.', '(LightView_::unload)');
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'], 'Only ThreeJs is supported.',
+      '(LightView_::unload)');
 
   this['scene']['remove'](this.light);
 };
@@ -73,11 +73,10 @@ LightView_.prototype['unload'] = function() {
  * @param {string} color CSS color value.
  */
 LightView_.prototype['setColor'] = function(color) {
-  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported.', '(LightView_::setColor)');
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'], 'Only ThreeJs is supported.',
+      '(LightView_::setColor)');
 
-  var threeJsColor =
-      window['voodoo']['utility']['convertCssColorToThreeJsColor'](color);
+  var threeJsColor = window['voodoo']['utility']['convertCssColorToThreeJsColor'](color);
 
   this.light['color']['copy'](threeJsColor);
 };

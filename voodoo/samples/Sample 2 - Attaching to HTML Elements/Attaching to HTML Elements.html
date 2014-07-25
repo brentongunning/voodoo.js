@@ -21,9 +21,8 @@
   <center>
     <h1>Attaching to HTML Elements</h1>
     <h3>Description</h3>
-    <p>This sample shows how to attach 3D objects to 2D HTML elements,
-       thereby creating local coordinate systems for your Views
-       that automatically align and follow 2D HTML elements.</p>
+    <p>This sample shows how to attach 3D objects to 2D HTML elements, thereby creating local
+       coordinate systems for your Views that automatically align and follow 2D HTML elements.</p>
   </center>
   <div id="anchor"></div>
 </body>
@@ -31,8 +30,8 @@
 
 var SampleView = voodoo.View.extend({
   load: function() {
-  	// Create a sphere of radius 0.5. Our local coordinate system will
-  	// automatically scale it up to fit in the HTML div we attach our scene to.
+  	// Create a sphere of radius 0.5. Our local coordinate system will automatically scale it up to
+    // fit in the HTML div we attach our scene to.
   	var geometry = new THREE.SphereGeometry(0.5, 30, 30);
   	var material = new THREE.MeshLambertMaterial({
   		color: 0x00FF00,
@@ -42,13 +41,12 @@ var SampleView = voodoo.View.extend({
 
   	this.scene.add(mesh);
 
-  	// Call attach to set our local coordinate system. The first parameter is
-  	// the HTML element. The second parameter is whether the origin should be
-  	// the center of the DIV, or if false, the top left corner. The third
-  	// parameter defines the scale of our coordinate system. If true, one unit
-  	// is one pixel. If false, 1 unit along the x axis is the width of the
-  	// element, and 1 unit along the y axis is the height of the element. That
-  	// is why a sphere of radius 0.5 will scale to fit perfectly inside our div.
+  	// Call attach to set our local coordinate system. The first parameter is the HTML element. The
+    // second parameter is whether the origin should be the center of the DIV, or if false, the top
+    // left corner. The third parameter defines the scale of our coordinate system. If true, one
+    // unit is one pixel. If false, 1 unit along the x axis is the width of the element, and 1 unit
+    // along the y axis is the height of the element. That is why a sphere of radius 0.5 will scale
+    // to fit perfectly inside our div.
   	this.scene.attach(this.model.element, true, false, true);
   }
 });

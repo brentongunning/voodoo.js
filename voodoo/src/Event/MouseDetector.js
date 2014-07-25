@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: MouseDetector.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -15,8 +15,7 @@
  * @param {Engine} engine Voodoo main engine.
  */
 function MouseDetector_(engine) {
-  log_.assert_(engine, 'engine must be valid.',
-      '(MouseDetector_::MouseDetector_)');
+  log_.assert_(engine, 'engine must be valid.', '(MouseDetector_::MouseDetector_)');
 
   this.engine_ = engine;
   this.initState_();
@@ -94,18 +93,16 @@ MouseDetector_.prototype.destroy_ = function() {
  * @param {number=} opt_button Optional button code.
  * @param {EventTrigger_=} opt_target Optional target trigger.
  */
-MouseDetector_.prototype.dispatchMouseEvent_ = function(
-    type, trigger, opt_button, opt_target) {
+MouseDetector_.prototype.dispatchMouseEvent_ = function(type, trigger, opt_button, opt_target) {
   if (trigger === null) {
     var event = new window['voodoo']['Event'](type, null);
   } else {
-    var event = new window['voodoo']['Event'](type, trigger.model_,
-        trigger.triggerId_);
+    var event = new window['voodoo']['Event'](type, trigger.model_, trigger.triggerId_);
   }
 
   event.initializeMouseEvent_(this.clientX_ + window.pageXOffset,
-      this.clientY_ + window.pageYOffset, this.lastHitX_, this.lastHitY_,
-      this.lastHitZ_, opt_button);
+      this.clientY_ + window.pageYOffset, this.lastHitX_, this.lastHitY_, this.lastHitZ_,
+      opt_button);
 
   var target = opt_target || trigger;
   target.model_['dispatch'](event);
@@ -169,8 +166,7 @@ MouseDetector_.prototype.initState_ = function() {
  * @param {Event} event Event data.
  */
 MouseDetector_.prototype.onMouseDown_ = function(event) {
-  log_.assert_(event, 'event must be valid.',
-      '(MouseDetector_::onMouseDown_)');
+  log_.assert_(event, 'event must be valid.', '(MouseDetector_::onMouseDown_)');
 
   if (this.hoveredTrigger_ !== null) {
     event.preventDefault();
@@ -203,7 +199,7 @@ MouseDetector_.prototype.onMouseDown_ = function(event) {
  * @param {Event} event Event data.
  */
 MouseDetector_.prototype.onMouseMove_ = function(event) {
-  log_.assert_(event, 'event must be valid.');
+  log_.assert_(event, 'event must be valid.', '(MouseDetector_::onMouseMove_)');
 
   if (this.hoveredTrigger_ !== null)
     event.preventDefault();
@@ -225,8 +221,7 @@ MouseDetector_.prototype.onMouseMove_ = function(event) {
  * @param {Event} event Event data.
  */
 MouseDetector_.prototype.onMouseUp_ = function(event) {
-  log_.assert_(event, 'event must be valid.',
-      '(MouseDetector_::onMouseUp_)');
+  log_.assert_(event, 'event must be valid.', '(MouseDetector_::onMouseUp_)');
 
   var button = event.button;
 
@@ -240,8 +235,7 @@ MouseDetector_.prototype.onMouseUp_ = function(event) {
 
     // Fire a mouseup event on the trigger that caused the mousedown
     if (held && this.hoveredTrigger_ !== held)
-      this.dispatchMouseEvent_('mouseup', this.hoveredTrigger_,
-          button, held);
+      this.dispatchMouseEvent_('mouseup', this.hoveredTrigger_, button, held);
 
     // If the current trigger is the held trigger, this is a click.
     if (this.hoveredTrigger_.isEquivalentTo(held)) {
@@ -249,8 +243,7 @@ MouseDetector_.prototype.onMouseUp_ = function(event) {
       this.dispatchMouseEvent_('click', held, button);
 
       // Send double clicks
-      if (this.pendingDoubleClickEvent_[button] &&
-          held.isEquivalentTo(lastClicked)) {
+      if (this.pendingDoubleClickEvent_[button] && held.isEquivalentTo(lastClicked)) {
 
         this.lastClickedTrigger_[button] = null;
         this.pendingDoubleClickEvent_[button] = false;
@@ -305,9 +298,8 @@ MouseDetector_.prototype.update_ = function() {
   var raycaster = engine.raycaster_;
   var renderer = engine.renderer_;
 
-  // Whenever the mouse moves, we need to update the raycaster with the
-  // new coordinates. We do this whenever the update runs
-  // each frame instead of on mouse moves for performance.
+  // Whenever the mouse moves, we need to update the raycaster with the new coordinates. We do this
+  // whenever the update runs each frame instead of on mouse moves for performance.
   if (this.pendingMouseMove_)
     raycaster.setMouse_(new Vector2_(this.clientX_, this.clientY_));
 
@@ -356,5 +348,6 @@ MouseDetector_.prototype.update_ = function() {
   // Set the mouse cursor
   if (this.hoveredTrigger_ !== null)
     renderer.setCursor_(this.hoveredTrigger_.parent_.cursor_);
-  else renderer.setCursor_('auto');
+  else
+    renderer.setCursor_('auto');
 };

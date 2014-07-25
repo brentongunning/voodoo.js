@@ -1,14 +1,14 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Debug.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
 /**
- * Stores flags to help the user debug and develop Models. These only work in
- * the debug build. voodoo.debug is automatically instantiated.
+ * Stores flags to help the user debug and develop Models. These only work in the debug build.
+ * voodoo.debug is automatically instantiated.
  *
  * @constructor
  */
@@ -18,33 +18,33 @@ function Debug() {
 
     Object.defineProperty(this, 'disableCache', {
       get: function() { return false; },
-      set: function(val) {log_.error_(
-          'Debug settings may only be set in debug builds.',
-          '(Debug::disableCache)'); },
+      set: function(val) {
+        log_.error_('Debug settings may only be set in debug builds.', '(Debug::disableCache)');
+      },
       enumerable: true
     });
 
     Object.defineProperty(this, 'disableStencils', {
       get: function() { return false; },
-      set: function(val) { log_.error_(
-          'Debug settings may only be set in debug builds.',
-          '(Debug::disableStencils)'); },
+      set: function(val) {
+        log_.error_('Debug settings may only be set in debug builds.', '(Debug::disableStencils)');
+      },
       enumerable: true
     });
 
     Object.defineProperty(this, 'drawStencils', {
       get: function() { return false; },
-      set: function(val) { log_.error_(
-          'Debug settings may only be set in debug builds.',
-          '(Debug::drawStencils)'); },
+      set: function(val) {
+        log_.error_('Debug settings may only be set in debug builds.', '(Debug::drawStencils)');
+      },
       enumerable: true
     });
 
     Object.defineProperty(this, 'showFps', {
       get: function() { return false; },
-      set: function(val) { log_.error_(
-          'Debug settings may only be set in debug builds.',
-          '(Debug::showFps)'); },
+      set: function(val) {
+        log_.error_('Debug settings may only be set in debug builds.', '(Debug::showFps)');
+      },
       enumerable: true
     });
   } else {

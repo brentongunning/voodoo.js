@@ -26,8 +26,8 @@
   <center>
     <h1>Models and Views</h1>
     <h3>Description</h3>
-    <p>This sample shows the basic structure for creating models and views.
-       We use a simple ring as an example.</p>
+    <p>This sample shows the basic structure for creating models and views. We use a simple ring as
+       an example.</p>
   </center>
   <div id="content">
     <center>
@@ -47,19 +47,19 @@
 </body>
 <script>
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // SampleView
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
-// Let's create a custom view called SampleView by extending the
-// base View class that Voodoo provides. A View creates and manages the
-// 3D meshes and materials that the user sees. We're going to create a torus.
+// Let's create a custom view called SampleView by extending the base View class that Voodoo
+// provides. A View creates and manages the 3D meshes and materials that the user sees. We're going
+// to create a torus.
 var SampleView = voodoo.View.extend({
   load: function() {
     // TODO: Create your THREE.js objects here and add them to the scene.
 
-    // Let's create a ring, 200px long and 20px wide. Any geometry and
-    // materials you can create with THREE.js you can use in voodoo.
+    // Let's create a ring, 200px long and 20px wide. Any geometry and materials you can create
+    // with THREE.js you can use in voodoo.
     var geometry = new THREE.TorusGeometry(100, 10, 20, 80)
     var material = new THREE.MeshPhongMaterial();
     var torus = new THREE.Mesh(geometry, material);
@@ -86,10 +86,8 @@ var SampleView = voodoo.View.extend({
   // Here we define a couple functions that the model will call.
 
   setColor: function(color, ambient) {
-    this.material.color.copy(
-        voodoo.utility.convertCssColorToThreeJsColor(color));
-    this.material.ambient.copy(
-        voodoo.utility.convertCssColorToThreeJsColor(ambient));
+    this.material.color.copy(voodoo.utility.convertCssColorToThreeJsColor(color));
+    this.material.ambient.copy(voodoo.utility.convertCssColorToThreeJsColor(ambient));
   },
 
   move: function(deltaTime) {
@@ -113,12 +111,12 @@ var SampleView = voodoo.View.extend({
   }
 });
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // SampleModel
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
-// A Voodoo Model stores the state of a 3D object and interfaces with the View.
-// It is also the point of access for the user.
+// A Voodoo Model stores the state of a 3D object and interfaces with the View. It is also the
+// point of access for the user.
 //
 // Here we define a new model called SampleModel.
 var SampleModel = voodoo.Model.extend({
@@ -126,10 +124,9 @@ var SampleModel = voodoo.Model.extend({
   viewType: SampleView,
 
   initialize: function(options) {
-    // TODO: Perform any initialization of the model BEFORE the views are
-    // created. That means this.view and this.stencilView are both
-    // invalid at this time. The options parameter is the optional variable
-    // passed to the model's constructor.
+    // TODO: Perform any initialization of the model BEFORE the views are created. That means
+    // this.view and this.stencilView are both invalid at this time. The options parameter is the
+    // optional variable passed to the model's constructor.
 
     // Store the color the user provided for later.
     this.color = options.color;
@@ -143,27 +140,25 @@ var SampleModel = voodoo.Model.extend({
   },
 
   update: function(deltaTime) {
-    // TODO: Perform any animation or real-time updates. deltaTime
-    // is the time in seconds between this update and the last update.
+    // TODO: Perform any animation or real-time updates. deltaTime is the time in seconds between
+    // this update and the last update.
 
     this.view.move(deltaTime);
   },
 
   tearDownViews: function() {
-    // TODO: Perform any code to shutdown the views before their unload()
-    // methods are called.
+    // TODO: Perform any code to shutdown the views before their unload() methods are called.
   },
 
   cleanUp: function() {
-    // TODO: Clean up any remaining model resources. This is
-    // the last function called before the model is destroyed. The views have
-    // already been destroyed.
+    // TODO: Clean up any remaining model resources. This is the last function called before the
+    // model is destroyed. The views have already been destroyed.
   }
 });
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Setup
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 // Create our model.
 new SampleModel({color: 'red', ambient: 'rgb(0, 0, 0)'});

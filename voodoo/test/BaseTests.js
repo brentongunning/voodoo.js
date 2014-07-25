@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: BaseTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -110,8 +110,7 @@ BaseTests.prototype.testBaseWithTypeChain = function() {
 
 
 /**
- * Tests this.base on an object chain created by inserting
- * one object in the middle of others.
+ * Tests this.base on an object chain created by inserting one object in the middle of others.
  */
 BaseTests.prototype.testBaseWithInsertedType = function() {
   var fooCallers = [];

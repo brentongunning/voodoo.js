@@ -1,8 +1,8 @@
-:: ----------------------------------------------------------------------------
+:: ------------------------------------------------------------------------------------------------
 :: File: build.cmd
 ::
-:: Desc: A general build engine. This script is capable of compiling source
-::       and documentation, cleaning drop folders, and running tests.
+:: Desc: A general build engine. This script is capable of compiling source and documentation,
+::       cleaning drop folders, and running tests.
 ::
 :: Usage: build [op] [project] [version] [optlevel]
 ::    op        Op must be one of the following values:
@@ -26,9 +26,12 @@
 ::                  ADVANCED_OPTIMIZATIONS
 ::
 :: Copyright (c) 2014 VoodooJs Authors
-:: ----------------------------------------------------------------------------
+:: ------------------------------------------------------------------------------------------------
 
 @echo off
+
+:: GLOBALS
+set max_line_length=100
 
 :: Load system paths
 call %~dp0user
@@ -107,11 +110,11 @@ if "%op%"=="min.debug" set lint=1
 if "%op%"=="source" set lint=1
 if %lint%==1 (
   echo [Build] Running Linter on Source Code
-  %gjslint% --strict --custom_jsdoc_tags ignore,function --jsdoc --recurse "%project_src%"
+  %gjslint% --strict --max_line_length %max_line_length% --custom_jsdoc_tags ignore,function --jsdoc --recurse "%project_src%"
   echo.
   if errorlevel 1 call :error "Linting failed"
   echo [Build] Running Linter on Test Code
-  %gjslint% --strict --custom_jsdoc_tags ignore,function --jsdoc --recurse "%project_test%"
+  %gjslint% --strict --max_line_length %max_line_length% --custom_jsdoc_tags ignore,function --jsdoc --recurse "%project_test%"
   echo.
   if errorlevel 1 call :error "Linting failed"
 )

@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Event.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -37,8 +37,7 @@ this.Event = function(type, opt_model, opt_triggerId) {
  * @param {number} hitZ Intersections point Z coordinate.
  * @param {number=} opt_button Mouse button identifier.
  */
-this.Event.prototype.initializeMouseEvent_ = function(pageX, pageY,
-    hitX, hitY, hitZ, opt_button) {
+this.Event.prototype.initializeMouseEvent_ = function(pageX, pageY, hitX, hitY, hitZ, opt_button) {
   this['page']['x'] = pageX;
   this['page']['y'] = pageY;
   this['hit']['x'] = hitX;

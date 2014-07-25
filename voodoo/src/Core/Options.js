@@ -1,14 +1,14 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Options.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
 /**
- * General options for initializing the voodoo engine. Pass this to the
- * Engine when it is being created.
+ * General options for initializing the voodoo engine. Pass this to the Engine when it is being
+ * created.
  *
  * @constructor
  *
@@ -24,9 +24,8 @@ function Options(opt_options) {
 
 
 /**
- * Whether to create the above canvas that renders Z > 0. The user may wish
- * to disable this completely when they are sure there will be no 3D content
- * above the page.
+ * Whether to create the above canvas that renders Z > 0. The user may wish to disable this
+ * completely when they are sure there will be no 3D content above the page.
  *
  * Default is true.
  *
@@ -56,9 +55,8 @@ Options.prototype['antialias'] = true;
 
 
 /**
- * Whether to create the below canvas that renders Z < 0. The user may wish
- * to disable this completely when they are sure there will be no 3D content
- * behind the page.
+ * Whether to create the below canvas that renders Z < 0. The user may wish to disable this
+ * completely when they are sure there will be no 3D content behind the page.
  *
  * Default is true.
  *
@@ -88,8 +86,8 @@ Options.prototype.doubleClickInterval_ = 500;
 
 
 /**
- * Maximum camera field of view in degrees along either axis.
- * If zero, then the camera is an orthographic camera.
+ * Maximum camera field of view in degrees along either axis. If zero, then the camera is an
+ * orthographic camera.
  *
  * Default is 30.
  *
@@ -101,8 +99,8 @@ Options.prototype['fov'] = 30;
 /**
  * Whether to automatically render and update each frame.
  *
- * Default is true. If this is false, then the user must call
- * voodoo.engine.frame() to render and update.
+ * Default is true. If this is false, then the user must call voodoo.engine.frame() to render and
+ * update.
  *
  * @type {boolean}
  */
@@ -110,8 +108,8 @@ Options.prototype['frameLoop'] = true;
 
 
 /**
- * Whether to scale down the resolution of the canvases if the frames per second
- * drops below 45 for more than 3 seconds.
+ * Whether to scale down the resolution of the canvases if the frames per second drops below 45 for
+ * more than 3 seconds.
  *
  * Default is true.
  *
@@ -132,8 +130,7 @@ Options.prototype.performanceScalingFpsThreshold_ = 45;
 
 
 /**
- * The number of seconds of frames below the threshold before the
- * resolution is scaled.
+ * The number of seconds of frames below the threshold before the resolution is scaled.
  *
  * Default is 3.
  *
@@ -144,10 +141,10 @@ Options.prototype.performanceScalingTimeLimit_ = 3;
 
 
 /**
- * Whether to render every time the page is scrolled or resized, creating a
- * very consistent experience at the expense of performance, or to render only
- * when requestAnimationFrame runs, which is less frequent. If true, this
- * also performs mouse raycasts in real-time rather than only on updates.
+ * Whether to render every time the page is scrolled or resized, creating a very consistent
+ * experience at the expense of performance, or to render only when requestAnimationFrame runs,
+ * which is less frequent. If true, this also performs mouse raycasts in real-time rather than only
+ * on updates.
  *
  * Default is true.
  *
@@ -167,10 +164,9 @@ Options.prototype['renderer'] = Renderer['ThreeJs'];
 
 
 /**
- * The number of milliseconds between render frames. For example, if this
- * is 100, then 100ms/frame is 10 frames/second. If this is 0, then the engine
- * will render at the maximum framerate possible. frameLoop must be set to
- * true for this to take effect.
+ * The number of milliseconds between render frames. For example, if this is 100, then 100ms/frame
+ * is 10 frames/second. If this is 0, then the engine will render at the maximum framerate
+ * possible. frameLoop must be set to true for this to take effect.
  *
  * Default is 0.
  *
@@ -180,9 +176,8 @@ Options.prototype['renderInterval'] = 0;
 
 
 /**
- * Number of 'pixels' along the z axis that the buffer contains.
- * The higher we go, the less chance we have of a seam, but the more
- * we overlap the antialiased scene with an unantialised seam.
+ * Number of 'pixels' along the z axis that the buffer contains. The higher we go, the less chance
+ * we have of a seam, but the more we overlap the antialiased scene with an unantialised seam.
  *
  * Default is 10.
  *
@@ -193,9 +188,9 @@ Options.prototype.seamPixels_ = 10;
 
 
 /**
- * Whether to connect the seam between the above and below layers when
- * using antialiasing. This results in an additional render layer and
- * may affect performance. If antialiasing is false, this has no effect.
+ * Whether to connect the seam between the above and below layers when using antialiasing. This
+ * results in an additional render layer and may affect performance. If antialiasing is false, this
+ * has no effect.
  *
  * Default is true.
  *
@@ -205,8 +200,7 @@ Options.prototype['seamLayer'] = true;
 
 
 /**
- * The z-index for the seam layer. This should always be higher than the
- * above layer z-index.
+ * The z-index for the seam layer. This should always be higher than the above layer z-index.
  *
  * Default is 10000.
  *
@@ -218,8 +212,8 @@ Options.prototype['seamZIndex'] = 10000;
 /**
  * Whether to create a standard white ambient light and white camera light.
  *
- * Default is true. If this is false, no standard lights are created and the
- * user is responsible for creating any.
+ * Default is true. If this is false, no standard lights are created and the user is responsible
+ * for creating any.
  *
  * @type {boolean}
  */
@@ -259,10 +253,9 @@ Options.prototype.timerStartOnLoadDelayMs_ = 1000;
 
 
 /**
- * The number of milliseconds between update frames. For example, if this
- * is 100, then 100ms/frame is 10 frames/second. If this is 0, then the engine
- * will update at the maximum framerate possible. The frameLoop must be true
- * for this to take effect.
+ * The number of milliseconds between update frames. For example, if this is 100, then 100ms/frame
+ * is 10 frames/second. If this is 0, then the engine will update at the maximum framerate
+ * possible. The frameLoop must be true for this to take effect.
  *
  * Default is 0.
  *

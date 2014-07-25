@@ -38,9 +38,9 @@
 </body>
 <script>
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // CubbyView
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 var CubbyView = voodoo.View.extend({
   load: function() {
@@ -97,22 +97,21 @@ var CubbyView = voodoo.View.extend({
   }
 });
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // CubbyStencilView
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
-// Stencil views extend voodoo's View class just like normal views,
-// however, their purpose is completely different. The objects they
-// render describe where on the scene voodoo will let 3D objects
-// behind the page show through. In this example, turn on and off stencil
-// rendering to see the stencils (in light blue) and what happens when you
-// disable stencil rendering.
+// Stencil views extend voodoo's View class just like normal views, however, their purpose is
+// completely different. The objects they render describe where on the scene voodoo will let 3D
+// objects behind the page show through. In this example, turn on and off stencil rendering to see
+// the stencils (in light blue) and what happens when you disable stencil rendering.
 var CubbyStencilView = voodoo.View.extend({
   load: function() {
-    // Here out stencil mesh is a flat square exactly where the div's are
-    // located. Therefore, the user sees into the box but does not see any
-    // of the edges of the box that are outside this area.
-    this.stencilMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1),
+    // Here out stencil mesh is a flat square exactly where the div's are located. Therefore, the
+    // user sees into the box but does not see any of the edges of the box that are outside this
+    // area.
+    this.stencilMesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(1, 1),
         new THREE.MeshBasicMaterial({color:'#AACCFF'}));
 
     this.scene.add(this.stencilMesh, true, false);
@@ -125,9 +124,9 @@ var CubbyStencilView = voodoo.View.extend({
   }
 });
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Cubby
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 var Cubby = voodoo.Model.extend({
   name: 'Cubby',
@@ -141,9 +140,9 @@ var Cubby = voodoo.Model.extend({
   }
 });
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Setup
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 // Create a table of cubbies
 var content = document.getElementById('content');
@@ -161,24 +160,22 @@ for (var i = 0; i < 5; ++i) {
 }
 content.appendChild(table);
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Events
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 // These are called when the user clicks the options checkboxes.
 
 function onChangeDrawStencilsCheckBox() {
-  // drawStencils tells voodoo whether to draw ths stencils instead
-  // of the normal scene. This is useful for debugging and creating stencils.
-  voodoo.debug.drawStencils = document.getElementById(
-      'drawStencilsCheckBox').checked;
+  // drawStencils tells voodoo whether to draw ths stencils instead of the normal scene. This is
+  // useful for debugging and creating stencils.
+  voodoo.debug.drawStencils = document.getElementById('drawStencilsCheckBox').checked;
 }
 
 function onChangeDisableStencilsCheckBox() {
-  // This tells voodoo not to use stencils even when they are specified on
-  // a view. This is useful for seeing if normal content is being setup right.
-  voodoo.debug.disableStencils = document.getElementById(
-      'disableStencilsCheckBox').checked;
+  // This tells voodoo not to use stencils even when they are specified on a view. This is useful
+  // for seeing if normal content is being setup right.
+  voodoo.debug.disableStencils = document.getElementById('disableStencilsCheckBox').checked;
 }
 
 </script>

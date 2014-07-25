@@ -1,14 +1,13 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: FpsTimer.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
 /**
- * Measures frames per second and displays it in the top left corner
- * of the screen.
+ * Measures frames per second and displays it in the top left corner of the screen.
  *
  * @constructor
  * @private
@@ -75,8 +74,7 @@ FpsTimer_.prototype.frame_ = function() {
       this.showingFps_ = true;
     }
 
-    this.fpsDiv_.innerHTML = 'Frames/second: ' + this.fps_ +
-        ', Renders/second: ' + this.rps_;
+    this.fpsDiv_.innerHTML = 'Frames/second: ' + this.fps_ + ', Renders/second: ' + this.rps_;
   }
   else {
     if (this.showingFps_) {

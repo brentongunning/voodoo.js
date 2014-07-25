@@ -1,12 +1,11 @@
-:: ----------------------------------------------------------------------------
+:: ------------------------------------------------------------------------------------------------
 :: File: user.cmd
 ::
-:: Desc: Contains user-defined settings and paths for the build system. The
-::		 developer attempting to build should change the paths here to match
-:: 		 the paths on their system.
+:: Desc: Contains user-defined settings and paths for the build system. The developer attempting to
+::       build should change the paths here to match the paths on their system.
 ::
 :: Copyright (c) 2014 VoodooJs Authors
-:: ----------------------------------------------------------------------------
+:: ------------------------------------------------------------------------------------------------
 
 
 :: Java Path
@@ -24,7 +23,7 @@ set gjslint=C:\Python27\scripts\gjslint
 
 :: 7Zip Path
 
-set sevenzip=C:\Program Files (x86)\7-Zip\7z
+set sevenzip=C:\Program Files\7-Zip\7z
 
 
 :: Browsers to test, separated by commas

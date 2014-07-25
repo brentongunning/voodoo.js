@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: ThreeJsCamera.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -13,16 +13,15 @@
  * @private
  *
  * @param {HTMLCanvasElement} canvas HTML canvas element.
- * @param {number} fov Maximum camera field of view in degrees along either
- *     axis. If zero, then the camera is an orthographic camera.
+ * @param {number} fov Maximum camera field of view in degrees along either axis. If zero, then the
+ *   camera is an orthographic camera.
  * @param {number} zNear Minimum z distance rendered.
  * @param {number} zFar Maximum z distance rendered.
  */
 function ThreeJsCamera_(canvas, fov, zNear, zFar) {
   log_.info_('Creating ThreeJs Camera');
 
-  log_.assert_(canvas, 'canvas must be valid.',
-      '(ThreeJsCamera_::ThreeJsCamera_)');
+  log_.assert_(canvas, 'canvas must be valid.', '(ThreeJsCamera_::ThreeJsCamera_)');
 
   log_.assert_(typeof fov !== 'undefined', 'fov must be valid.', fov,
       '(ThreeJsCamera_::ThreeJsCamera_)');
@@ -83,13 +82,12 @@ ThreeJsCamera_.prototype.createProjectionMatrix_ = function() {
     // Case: Orthographic camera.
     var halfInnerWidth = window.innerWidth / 2.0;
     var halfInnerHeight = window.innerHeight / 2.0;
-    this.camera_.projectionMatrix.makeOrthographic(-halfInnerWidth,
-        halfInnerWidth, halfInnerHeight, -halfInnerHeight, this.zNear_,
-        this.zFar_);
+    this.camera_.projectionMatrix.makeOrthographic(-halfInnerWidth, halfInnerWidth,
+        halfInnerHeight, -halfInnerHeight, this.zNear_, this.zFar_);
   } else {
     // Case: Perspective camera.
-    this.camera_.projectionMatrix.makePerspective(this.fovY_,
-        this.aspectRatio_, this.zNear_, this.zFar_);
+    this.camera_.projectionMatrix.makePerspective(this.fovY_, this.aspectRatio_, this.zNear_,
+        this.zFar_);
   }
 };
 
@@ -194,15 +192,13 @@ ThreeJsCamera_.prototype.onResize_ = function() {
  * @param {number} zFar The maximum Z distance to render.
  */
 ThreeJsCamera_.prototype.setZNearAndFar_ = function(zNear, zFar) {
-  log_.assert_(zNear, 'zNear must be valid.', zNear,
-      '(ThreeJsCamera_::setZNearAndFar_)');
+  log_.assert_(zNear, 'zNear must be valid.', zNear, '(ThreeJsCamera_::setZNearAndFar_)');
   log_.assert_(typeof zNear === 'number', 'zNear must be a number.', zNear,
       '(ThreeJsCamera_::setZNearAndFar_)');
   log_.assert_(zNear > 0, 'zNear must be greater than 0.', zNear,
       '(ThreeJsCamera_::setZNearAndFar_)');
 
-  log_.assert_(zFar, 'zFar must be valid.', zFar,
-      '(ThreeJsCamera_::setZNearAndFar_)');
+  log_.assert_(zFar, 'zFar must be valid.', zFar, '(ThreeJsCamera_::setZNearAndFar_)');
   log_.assert_(typeof zFar === 'number', 'zFar must be a number.', zFar,
       '(ThreeJsCamera_::setZNearAndFar_)');
   log_.assert_(zFar > 0, 'zFar must be greater than 0.', zFar,
@@ -237,11 +233,10 @@ ThreeJsCamera_.prototype.update_ = function() {
     this.aspectRatio_ = canvasWidth / canvasHeight;
 
     var fov = this.fov_ || 30;
-    if (canvasWidth > canvasHeight) {
+    if (canvasWidth > canvasHeight)
       this.fovY_ = fov / this.aspectRatio_;
-    } else {
+    else
       this.fovY_ = fov;
-    }
 
     var fovYInRadians = Math.tan(this.fovY_ / 360.0 * Math.PI);
     this.zCamera_ = (canvasHeight / 2.0) / fovYInRadians;
@@ -311,8 +306,8 @@ ThreeJsCamera_.prototype.frustum_ = null;
 
 
 /**
- * Signals to the renderer that a camera move event should be fired. After
- * firing, this flag should be cleared.
+ * Signals to the renderer that a camera move event should be fired. After firing, this flag should
+ * be cleared.
  *
  * @private
  * @type {boolean}

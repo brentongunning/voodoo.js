@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Scene.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -25,21 +25,17 @@ Scene.prototype['add'] = function(object) {};
 /**
  * Sets the local coordinate system of the scene by aligning to an HTML element.
  *
- * @param {HTMLElement} element HTML element to attach to. If null, the
- *    local coordinate system is reset back to the top left corner of the page
- *    and scaled in pixels.
- * @param {boolean=} opt_center If true, sets the origin to the element's
- *    center. If false, sets the origin to the element's top left corner.
- *    Default is true.
- * @param {boolean=} opt_pixels If true, one unit is one pixel. If false, one
- *    x unit is the element's width, and one y unit is the unit's height. Z
- *    is in pixels regardless. Default is true.
- * @param {boolean=} opt_zscale If true, the z dimension is also scaled
- *    using the average of the width and height. If false, no scaling
- *    along the z axis is performed. Default is true.
+ * @param {HTMLElement} element HTML element to attach to. If null, the local coordinate system is
+ *   reset back to the top left corner of the page and scaled in pixels.
+ * @param {boolean=} opt_center If true, sets the origin to the element's center. If false, sets
+ *   the origin to the element's top left corner. Default is true.
+ * @param {boolean=} opt_pixels If true, one unit is one pixel. If false, one x unit is the
+ *   element's width, and one y unit is the unit's height. Z is in pixels regardless. Default is
+ *   true.
+ * @param {boolean=} opt_zscale If true, the z dimension is also scaled using the average of the
+ *   width and height. If false, no scaling along the z axis is performed. Default is true.
  */
-Scene.prototype['attach'] = function(element, opt_center, opt_pixels,
-    opt_zscale) {};
+Scene.prototype['attach'] = function(element, opt_center, opt_pixels, opt_zscale) {};
 
 
 /**
@@ -49,8 +45,8 @@ Scene.prototype['detach'] = function() {};
 
 
 /**
- * Converts a coordinate from local-space to page-space
- * when the scene is attached to an HTML element.
+ * Converts a coordinate from local-space to page-space when the scene is attached to an HTML
+ * element.
  *
  * @param {Object|Array.<number>} coordinate Local space xyz coordinate.
  *
@@ -81,8 +77,8 @@ Scene.prototype['on'] = function(type, listener) {};
 
 
 /**
- * Converts a coordinate from page-space to local-space
- * when the scene is attached to an HTML element.
+ * Converts a coordinate from page-space to local-space when the scene is attached to an HTML
+ * element.
  *
  * @param {Object|Array.<number>} coordinate Page-space xyz coordinate.
  *

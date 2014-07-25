@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Model.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 /**
@@ -29,10 +29,9 @@ var defaultOrganization_ = '*';
 /**
  * Base class for all models.
  *
- * A model is a single 3D object managed by the Voodoo engine. A model
- * stores the state of the object and a reference to its View. The
- * View is the renderable part of the 3D object. The user only interacts
- * with the model.
+ * A model is a single 3D object managed by the Voodoo engine. A model stores the state of the
+ * object and a reference to its View. The View is the renderable part of the 3D object. The user
+ * only interacts with the model.
  *
  * All user models must extend Model via extend().
  *
@@ -67,13 +66,10 @@ Model.prototype['cleanUp'] = function() {
  * @param {Object=} opt_options User options.
  */
 Model.prototype['construct'] = function(opt_options) {
-  log_.assert_(this['name'], 'Model type name must be valid.',
-      '(Model::Model)');
-  log_.assert_(this['viewType'], 'Model view type must be valid.',
-      '(Model::Model)');
+  log_.assert_(this['name'], 'Model type name must be valid.', '(Model::Model)');
+  log_.assert_(this['viewType'], 'Model view type must be valid.', '(Model::Model)');
 
-  if (!this['viewType'].prototype['above'] &&
-      !this['viewType'].prototype['below']) {
+  if (!this['viewType'].prototype['above'] && !this['viewType'].prototype['below']) {
     log_.error_('View must exist on at least one layer.', '(Model::Model)');
   }
 
@@ -126,8 +122,7 @@ Model.prototype['construct'] = function(opt_options) {
   var viewSupportsBelow = viewPrototype['below'];
 
   var layers = engine.renderer_.layers_;
-  for (var layerIndex = 0, numLayers = layers.length; layerIndex < numLayers;
-      ++layerIndex) {
+  for (var layerIndex = 0, numLayers = layers.length; layerIndex < numLayers; ++layerIndex) {
     var layer = layers[layerIndex];
 
     switch (layer.pass_) {
@@ -140,9 +135,8 @@ Model.prototype['construct'] = function(opt_options) {
           views.push(new this['viewType'](this, layer));
         break;
       case LayerPass_['Seam']:
-        // If the model has content in the above layer, it MUST be added
-        // to the seam layer to work with the stencil tests against other
-        // models in the seam layer.
+        // If the model has content in the above layer, it MUST be added to the seam layer to work
+        // with the stencil tests against other models in the seam layer.
         if (viewSupportsAbove)
           views.push(new this['viewType'](this, layer));
         break;
@@ -244,10 +238,9 @@ Model.prototype['dispatch'] = function(evt) {
 
 
 /**
- * Initialzes the model. This is the first method to be called when the
- * model is instantiated. Derived classes may override this. This should never
- * be called by the user. The options parameter is what the user passed to
- * the constructor when this Model was instantiated.
+ * Initialzes the model. This is the first method to be called when the model is instantiated.
+ * Derived classes may override this. This should never be called by the user. The options
+ * parameter is what the user passed to the constructor when this Model was instantiated.
  *
  * @this {Model}
  *
@@ -279,8 +272,8 @@ Model.prototype['off'] = function(type, listener) {
 
 
 /**
- * Adds an event handler. Valid events are cameramove, destroy, mousedown,
- * mouseup, mouseover, mouseout, mousemove, click, and dblclick.
+ * Adds an event handler. Valid events are cameramove, destroy, mousedown, mouseup, mouseover,
+ * mouseout, mousemove, click, and dblclick.
  *
  * @this {Model}
  *
@@ -293,9 +286,8 @@ Model.prototype['on'] = function(type, listener) {
   var vars = this['privateModelProperties'];
   vars.dispatcher_.on_(type, listener);
 
-  // Load is a special event since it can be dispatched before the user had time
-  // to register for the event, so we call it anyway as soon as an event
-  // listener is registered.
+  // Load is a special event since it can be dispatched before the user had time to register for
+  // the event, so we call it anyway as soon as an event listener is registered.
   if (type === 'load' && vars.numViewsLoaded_ === vars.numViewsToLoad_)
     listener.call(this, new window['voodoo']['Event']('load', this));
 
@@ -304,9 +296,8 @@ Model.prototype['on'] = function(type, listener) {
 
 
 /**
- * Initialize the view and stencilView. This is called after initialize() when
- * a model is instantiated. Derived classes may override this. This should never
- * be called by the user.
+ * Initialize the view and stencilView. This is called after initialize() when a model is
+ * instantiated. Derived classes may override this. This should never be called by the user.
  *
  * @this {Model}
  */
@@ -318,9 +309,8 @@ Model.prototype['setUpViews'] = function() {
 
 
 /**
- * Shuts down the views. This is called before cleanUp() when a model is
- * destroyed. Derived classes may override this. This should never be called by
- * the user.
+ * Shuts down the views. This is called before cleanUp() when a model is destroyed. Derived classes
+ * may override this. This should never be called by the user.
  *
  * @this {Model}
  */
@@ -336,8 +326,8 @@ Model.prototype['tearDownViews'] = function() {
  *
  * Derived classes may override this. This should never be called by the user.
  *
- * @param {number} deltaTime The time difference between this frame and last in
- * seconds. This is often used for consistent animation.
+ * @param {number} deltaTime The time difference between this frame and last in seconds. This is
+ *   often used for consistent animation.
  *
  * @this {Model}
  */
@@ -415,8 +405,7 @@ Model.prototype['name'] = null;
 /**
  * Organization name for this model.
  *
- * This is optional and is used to differentiate between models with the same
- * name in the cache.
+ * This is optional and is used to differentiate between models with the same name in the cache.
  *
  * @type {string}
  */
@@ -444,8 +433,8 @@ Model.prototype['stencilViewType'] = null;
 
 
 /**
- * Derives a new type from a base Model. The Model's views
- * are also automatically extended if they are defined.
+ * Derives a new type from a base Model. The Model's views are also automatically extended if they
+ * are defined.
  *
  * @this {?}
  *
@@ -470,8 +459,7 @@ Model['extend'] = function(opt_object) {
 
   // If the stencil view is undefined, use the original view.
   var stencil = thisPrototype['stencilViewType'] || viewType;
-  opt_object = (typeof opt_object === 'function' ?
-      opt_object.prototype : opt_object) || {};
+  opt_object = (typeof opt_object === 'function' ? opt_object.prototype : opt_object) || {};
   var newStencil = opt_object['stencilViewType'] || newViewType;
   if (stencil && newStencil && stencil !== newStencil)
     newTypePrototype['stencilViewType'] = stencil['extend'](newStencil);

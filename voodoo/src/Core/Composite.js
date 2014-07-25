@@ -1,17 +1,17 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Composite.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
 /**
  * Creates an aggregate object of objects of the same type.
  *
- * Given an array of objects of the same type, this function generates
- * a new object that has the same function signature as the original but
- * instead calls each of the individual objects internally.
+ * Given an array of objects of the same type, this function generates a new object that has the
+ * same function signature as the original but instead calls each of the individual objects
+ * internally.
  *
  * @constructor
  * @private
@@ -19,13 +19,10 @@
  * @param {Array.<Object>} objects Objects to aggregate.
  */
 function Composite_(objects) {
-  log_.assert_(objects, 'objects must be valid.',
-      '(Composite_::Composite_)');
-  log_.assert_(objects.length > 0, 'objects must not be empty.',
-      '(Composite_::Composite_)');
+  log_.assert_(objects, 'objects must be valid.', '(Composite_::Composite_)');
+  log_.assert_(objects.length > 0, 'objects must not be empty.', '(Composite_::Composite_)');
 
-  // Take the first view and use it to the composite assuming the rest
-  // are the same.
+  // Take the first view and use it to the composite assuming the rest are the same.
   var base = objects[0];
   var composite = this;
 
@@ -41,14 +38,12 @@ function Composite_(objects) {
 
             var returnVal;
 
-            for (var index = 0, numObjects = objects.length;
-                index < numObjects; ++index) {
+            for (var index = 0, numObjects = objects.length; index < numObjects; ++index) {
               var object = objects[index];
               returnVal = object[property].apply(object, arguments);
             }
 
-            return returnVal === objects[objects.length - 1] ?
-                composite : returnVal;
+            return (returnVal === objects[objects.length - 1]) ? composite : returnVal;
 
           };
 

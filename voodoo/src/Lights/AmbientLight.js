@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: AmbientLight.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -24,8 +24,8 @@ var AmbientLightView_ = LightView_['extend']();
  * @return {THREE.Light} Custom light.
  */
 AmbientLightView_.prototype['createLight'] = function() {
-  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported.', '(AmbientLightView_::AmbientLightView_)');
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'], 'Only ThreeJs is supported.',
+      '(AmbientLightView_::AmbientLightView_)');
 
   return new THREE.AmbientLight();
 };
@@ -33,8 +33,7 @@ AmbientLightView_.prototype['createLight'] = function() {
 
 
 /**
- * A light that illuminates the scene uniformly and has no specific
- * origin or direction.
+ * A light that illuminates the scene uniformly and has no specific origin or direction.
  *
  * Options are:
  *   color {string} CSS color string.

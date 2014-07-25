@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: ModelTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -94,8 +94,7 @@ HookedModel = voodoo.Model.extend({
 
 
 /**
- * A simple model used for testing that model, view, and stencil view methods
- * are called.
+ * A simple model used for testing that model, view, and stencil view methods are called.
  *
  * @constructor
  */
@@ -142,8 +141,7 @@ ModelTests.prototype.tearDown = function() {
 
 
 /**
- * Tests that the voodoo engine is automatically created when a model
- * is created.
+ * Tests that the voodoo engine is automatically created when a model is created.
  */
 ModelTests.prototype.testAutomaticEngineCreation = function() {
   if (voodoo.engine)
@@ -185,8 +183,7 @@ ModelTests.prototype.testCompositeView = function() {
 
 
 /**
- * Tests that the composite stencil view forwards all functions to all
- * stencil views.
+ * Tests that the composite stencil view forwards all functions to all stencil views.
  */
 ModelTests.prototype.testCompositeStencilView = function() {
   assertEquals(0, globalCounters.viewLoad);
@@ -205,8 +202,7 @@ ModelTests.prototype.testCompositeStencilView = function() {
 
 
 /**
- * Tests that the composite stencil view forwards all functions to all
- * stencil views.
+ * Tests that the composite stencil view forwards all functions to all stencil views.
  */
 ModelTests.prototype.testDestroyModel = function() {
   voodoo.engine = new voodoo.Engine({ standardLighting: false });
@@ -224,8 +220,7 @@ ModelTests.prototype.testDestroyModel = function() {
 
 
 /**
- * Tests that the composite stencil view forwards all functions to all
- * stencil views.
+ * Tests that the composite stencil view forwards all functions to all stencil views.
  */
 ModelTests.prototype.testDestroyViews = function() {
   var model = new HookedStencilModel();
@@ -239,8 +234,8 @@ ModelTests.prototype.testDestroyViews = function() {
 
 
 /**
- * Tests that when a model is extended wtih another model
- * that has a view, that the views are extended automatically.
+ * Tests that when a model is extended wtih another model that has a view, that the views are
+ * extended automatically.
  */
 ModelTests.prototype.testExtendWithView = function() {
   voodoo.engine = new voodoo.Engine({

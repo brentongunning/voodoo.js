@@ -1,17 +1,16 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Engine.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
 /**
- * Voodoo's main engine. It manages the renderer, the mouse detector, and
- * all of the models. There can only be one engine per page and the
- * user is responsible for creating it. If the user does not create an
- * engine and assign it to voodoo.engine, then one will be created automatically
- * with default options when the first model is instantiated.
+ * Voodoo's main engine. It manages the renderer, the mouse detector, and all of the models. There
+ * can only be one engine per page and the user is responsible for creating it. If the user does
+ * not create an engine and assign it to voodoo.engine, then one will be created automatically with
+ * default options when the first model is instantiated.
  *
  * @constructor
  *
@@ -20,8 +19,8 @@
 function Engine(opt_options) {
   var options = new Options(opt_options);
 
-  log_.assert_(options['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported.', '(Engine::Engine)');
+  log_.assert_(options['renderer'] === Renderer['ThreeJs'], 'Only ThreeJs is supported.',
+      '(Engine::Engine)');
 
   log_.info_('Creating Engine');
   log_.info_('   version: ' + VERSION);
@@ -47,8 +46,8 @@ function Engine(opt_options) {
   var that = this;
   Object.defineProperty(this, 'models', {
     get: function() {
-      // Create a copy of all the models. A copy lets the user iterate over
-      // and delete models without worrying about invalidating our own list.
+      // Create a copy of all the models. A copy lets the user iterate over and delete models
+      // without worrying about invalidating our own list.
       return that.models_.slice(0);
     },
     enumerable: true
@@ -82,11 +81,10 @@ function Engine(opt_options) {
   // At this point we know the engine is valid. Assign it to the global.
   window['voodoo']['engine'] = this;
 
-  // Create the standard lights here. They should be created before any
-  // models are created since ThreeJs materials expect to know how many lights
-  // are in the scene when they are created to build the shaders properly.
-  // We must set voodoo.engine because AmbientLight_ and CameraLight_ are both
-  // models that will try to create voodoo.engine if it isn't already set.
+  // Create the standard lights here. They should be created before any models are created since
+  // ThreeJs materials expect to know how many lights are in the scene when they are created to
+  // build the shaders properly. We must set voodoo.engine because AmbientLight_ and CameraLight_
+  // are both models that will try to create voodoo.engine if it isn't already set.
   if (options['standardLighting']) {
     log_.info_('Creating standard lights');
     new AmbientLight_({'color': 'white'});
@@ -122,16 +120,14 @@ function Engine(opt_options) {
 
 
 /**
- * Shuts down the engine and stops rendering. After calling this,
- * all models are invalid.
+ * Shuts down the engine and stops rendering. After calling this, all models are invalid.
  *
  * @this {Engine}
  */
 Engine.prototype['destroy'] = function() {
   log_.info_('Destroying Engine');
 
-  this.dispatcher_.dispatchEvent_(null, new window['voodoo']['Event'](
-      'destroy'));
+  this.dispatcher_.dispatchEvent_(null, new window['voodoo']['Event']('destroy'));
 
   if (this.updateThread_ !== -1)
     window.clearInterval(this.updateThread_);
@@ -231,8 +227,7 @@ Engine.prototype.addModel_ = function(model) {
   log_.assert_(model, 'model must be valid.', '(Engine::addModel_)');
 
   this.models_.push(model);
-  this.dispatcher_.dispatchEvent_(null, new window['voodoo']['Event'](
-      'addmodel', model));
+  this.dispatcher_.dispatchEvent_(null, new window['voodoo']['Event']('addmodel', model));
 };
 
 
@@ -271,8 +266,7 @@ Engine.prototype.removeModel_ = function(model) {
   log_.assert_(model, 'model must be valid.', '(Engine::removeModel_)');
 
   this.models_.splice(this.models_.indexOf(model), 1);
-  this.dispatcher_.dispatchEvent_(null, new window['voodoo']['Event'](
-      'removemodel', model));
+  this.dispatcher_.dispatchEvent_(null, new window['voodoo']['Event']('removemodel', model));
 
   // Removing objects always forces a re-render.
   this.renderer_.isDirty_ = true;
@@ -316,8 +310,8 @@ Engine.prototype.setupDeltaTimer_ = function() {
   this.lastDeltaTime_ = 0;
   this.focusDelayTimerId_ = 0;
 
-  // Register with the window focus event so we know when the user switches
-  // back to our tab. We will reset timing data.
+  // Register with the window focus event so we know when the user switches back to our tab. We
+  // will reset timing data.
   window.addEventListener('focus', function() {
     log_.info_('Window focus acquired. Starting.');
 
@@ -330,9 +324,8 @@ Engine.prototype.setupDeltaTimer_ = function() {
     }, that.options_.timerStartOnFocusDelayMs_);
   }, false);
 
-  // Register with the window blur event so that when the user switchs to
-  // another tab, we stop the timing so that the animations look like they
-  // paused.
+  // Register with the window blur event so that when the user switchs to another tab, we stop the
+  // timing so that the animations look like they paused.
   window.addEventListener('blur', function() {
     log_.info_('Window lost focus. Pausing.');
 
@@ -367,8 +360,7 @@ Engine.prototype.update_ = function() {
     this.lastTicks_ = currTicks;
   }
 
-  // If the delta time is more than twice the last delta time,
-  // use the last delta time
+  // If the delta time is more than twice the last delta time, use the last delta time
   if (deltaTime > this.lastDeltaTime_ * 2) {
     var temp = this.lastDeltaTime_;
     this.lastDeltaTime_ = deltaTime;
@@ -380,8 +372,7 @@ Engine.prototype.update_ = function() {
 
   // Update each model
   var models = this.models_;
-  for (var modelIndex = 0, numModels = models.length; modelIndex < numModels;
-      ++modelIndex)
+  for (var modelIndex = 0, numModels = models.length; modelIndex < numModels; ++modelIndex)
     models[modelIndex].update(deltaTime);
 
   // Tell the mouse detector to dispatch all frame-based events.
@@ -396,10 +387,8 @@ Engine.prototype.update_ = function() {
  */
 Engine.prototype.validateOptions_ = function() {
   // Check that there is at least one layer
-  if (!this.options_['aboveLayer'] &&
-      !this.options_['belowLayer']) {
-    log_.error_('At least one layer must be enabled.',
-        '(Engine::validateOptions_)');
+  if (!this.options_['aboveLayer'] && !this.options_['belowLayer']) {
+    log_.error_('At least one layer must be enabled.', '(Engine::validateOptions_)');
   }
 };
 
@@ -459,9 +448,8 @@ Engine.prototype.tracker_ = null;
 
 
 /**
- * Global Engine instance. The user should create an Engine and assign
- * it here. Otherwise, an Engine will be created automatically with default
- * options when the first Model is instantiated.
+ * Global Engine instance. The user should create an Engine and assign it here. Otherwise, an
+ * Engine will be created automatically with default options when the first Model is instantiated.
  *
  * @type {Engine}
  */
