@@ -42,8 +42,10 @@ Release Notes
 ---------------------------------------------------------------------------------------------------
 
 6-17-2014 0.9.1
-Cache now supports reference counting and asynchronous gets/sets.
+Cache supports reference counting.
+Cache supports asynchronous gets and sets.
 Added Debug.disableCache.
+Engine throws error when antialiasing is requested but not supported.
 Bug Fix: Setting View.loaded more than once caused Model.loaded to be false.
 Bug Fix: Memory leak when creating/destroying models repeatedly.
 Bug Fix: Removing objects always makes the scene dirty.
