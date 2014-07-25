@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: ModelTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -33,8 +33,8 @@ ViewTests.prototype.tearDown = function() {
 
 
 /**
- * Tests that when a View is extended from another View, that the
- * most conservative choice is set for above/below.
+ * Tests that when a View is extended from another View, that the most conservative choice is set
+ * for above/below.
  */
 ViewTests.prototype.testExtendViewWithAboveBelow = function() {
   var A = voodoo.View.extend({

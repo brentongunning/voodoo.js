@@ -1,14 +1,14 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Tracker.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
 /**
- * Tracks the positions of 2D HTML elements, and fires events when they move,
- * which is used to adjust the local coordinate systems of scene automatically.
+ * Tracks the positions of 2D HTML elements, and fires events when they move, which is used to
+ * adjust the local coordinate systems of scene automatically.
  *
  * @constructor
  * @private
@@ -30,15 +30,15 @@ function Tracker_() {
  * @private
  *
  * @param {HTMLElement} element Html DOM element to track.
- * @param {function(number, number, number, number, boolean, boolean)} callback
- *    Callback to fire when the element moves.
+ * @param {function(number, number, number, number, boolean, boolean)} callback Callback to fire
+ *   when the element moves.
  * @return {number} Track id used to release the callback.
  */
 Tracker_.prototype.track_ = function(element, callback) {
   log_.assert_(element, 'element must be valid.', '(Tracker_::track_)');
   log_.assert_(callback, 'callback must be valid.', '(Tracker_::track_)');
-  log_.assert_(typeof callback === 'function',
-      'callback must be a function.', '(Tracker_::track_)');
+  log_.assert_(typeof callback === 'function', 'callback must be a function.',
+      '(Tracker_::track_)');
 
   // Find or create the tracked element
   var trackedElement, trackedElementId;
@@ -48,14 +48,11 @@ Tracker_.prototype.track_ = function(element, callback) {
     trackedElement = this.trackedElements_[trackedElementId];
   } else {
     // We are not currently tracking this element. Add it.
-    trackedElementId = element['VoodooTrackedElementId'] =
-        this.nextTrackedElementId_++;
-    trackedElement = this.trackedElements_[trackedElementId] =
-        new TrackedElement_(element);
+    trackedElementId = element['VoodooTrackedElementId'] = this.nextTrackedElementId_++;
+    trackedElement = this.trackedElements_[trackedElementId] = new TrackedElement_(element);
   }
 
-  log_.assert_(trackedElement, 'TrackedElement not found.',
-      '(Tracker_::track_)');
+  log_.assert_(trackedElement, 'TrackedElement not found.', '(Tracker_::track_)');
 
   // Add the callback
   var callbackId = trackedElement.addCallback_(callback);
@@ -80,10 +77,9 @@ Tracker_.prototype.track_ = function(element, callback) {
  * @param {number} trackId Id of the track to release.
  */
 Tracker_.prototype.release_ = function(trackId) {
-  log_.assert_(trackId >= 0, 'trackId must be >= 0.',
-      trackId, '(Tracker_::release_)');
-  log_.assert_(typeof trackId === 'number', 'trackId must be a number.',
-      trackId, '(Tracker_::release_)');
+  log_.assert_(trackId >= 0, 'trackId must be >= 0.', trackId, '(Tracker_::release_)');
+  log_.assert_(typeof trackId === 'number', 'trackId must be a number.', trackId,
+      '(Tracker_::release_)');
 
   // Find the information for this track id
   var trackInfo = this.tracks_[trackId];

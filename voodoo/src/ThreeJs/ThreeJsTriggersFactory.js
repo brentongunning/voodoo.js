@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: ThreeJsTriggersFactory.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -33,8 +33,7 @@ ThreeJsTriggersFactory_.prototype.constructor =
 
 
 /**
- * Creates a ThreeJsTriggers_ specific to a View. The View must already
- * have a scene.
+ * Creates a ThreeJsTriggers_ specific to a View. The View must already have a scene.
  *
  * @private
  *
@@ -42,8 +41,7 @@ ThreeJsTriggersFactory_.prototype.constructor =
  * @return {ThreeJsTriggers_} Instantiated Triggers.
  */
 ThreeJsTriggersFactory_.prototype.createTriggers_ = function(view) {
-  log_.assert_(view, 'view must be valid.',
-      '(ThreeJsTriggersFactory_::createTriggers_)');
+  log_.assert_(view, 'view must be valid.', '(ThreeJsTriggersFactory_::createTriggers_)');
 
   return new ThreeJsTriggers_(this.triggers_, view['scene'].scene_, view);
 };

@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: LightTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -47,11 +47,10 @@ LightTests.prototype.testEnableStandardLighting = function() {
     var model = models[i];
     var modelName = model.name;
 
-    if (modelName === 'CameraLight') {
+    if (modelName === 'CameraLight')
       cameraLight = model;
-    } else if (modelName === 'AmbientLight') {
+    else if (modelName === 'AmbientLight')
       ambientLight = model;
-    }
   }
 
   assertNotNull(cameraLight);

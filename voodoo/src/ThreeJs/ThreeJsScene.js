@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: ThreeJsScene.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -16,10 +16,8 @@
  * @param {View} view Parent view.
  */
 function ThreeJsScene_(scene, view) {
-  log_.assert_(scene, 'scene must be valid.',
-      '(ThreeJsScene_::ThreeJsScene_)');
-  log_.assert_(view, 'view must be valid.',
-      '(ThreeJsScene_::ThreeJsScene_)');
+  log_.assert_(scene, 'scene must be valid.', '(ThreeJsScene_::ThreeJsScene_)');
+  log_.assert_(view, 'view must be valid.', '(ThreeJsScene_::ThreeJsScene_)');
 
   this.scene_ = scene;
   this.view_ = view;
@@ -27,9 +25,8 @@ function ThreeJsScene_(scene, view) {
   this.tracker_ = window['voodoo']['engine'].tracker_;
   this.trackId_ = null;
 
-  // All objects in the local scene are added to a parent object which
-  // is added to the root scene. This enables us to set local coordinate
-  // systems for each View via locate().
+  // All objects in the local scene are added to a parent object which is added to the root scene.
+  // This enables us to set local coordinate systems for each View via locate().
   this.parent_ = new THREE.Object3D();
   this.scene_.add(this.parent_);
 
@@ -46,8 +43,8 @@ function ThreeJsScene_(scene, view) {
 
   Object.defineProperty(this, 'objects', {
     get: function() {
-      // Create a copy of all the objects. A copy lets the user iterate over
-      // them without worrying about invalidating our own list or them changing.
+      // Create a copy of all the objects. A copy lets the user iterate over them without worrying
+      // about invalidating our own list or them changing.
       var objects = [];
       var children = that.parent_.children;
       for (var i = 0, numChildren = children.length; i < numChildren; ++i) {
@@ -86,14 +83,14 @@ ThreeJsScene_.prototype['add'] = function(object) {
 
   if (object['addedToVoodooTriggers'])
     object.visible = true;
-  else this.parent_.add(object);
+  else
+    this.parent_.add(object);
 
   object['addedToVoodooScene'] = true;
 
   this.objects_.push(object);
-  if (this.isMesh_(object)) {
+  if (this.isMesh_(object))
     this.meshes_.push(object);
-  }
 
   this.isDirty_ = true;
 
@@ -108,20 +105,16 @@ ThreeJsScene_.prototype['add'] = function(object) {
  *
  * @this {ThreeJsScene_}
  *
- * @param {HTMLElement} element HTML element to attach to. If null, the
- *    local coordinate system is reset back to the top left corner of the page
- *    and scaled in pixels.
- * @param {boolean=} opt_center If true, sets the origin to the element's
- *    center. If false, sets the origin to the element's top left corner.
- * @param {boolean=} opt_pixels If true, one unit is one pixel. If false, one
- *    x unit is the element's width, and one y unit is the unit's height. Z
- *    is in pixels regardless.
- * @param {boolean=} opt_zscale If true, the z dimension is also scaled
- *    using the average of the width and height. If false, no scaling
- *    along the z axis is performed. Default is true.
+ * @param {HTMLElement} element HTML element to attach to. If null, the local coordinate system is
+ *   reset back to the top left corner of the page and scaled in pixels.
+ * @param {boolean=} opt_center If true, sets the origin to the element's center. If false, sets
+ *   the origin to the element's top left corner.
+ * @param {boolean=} opt_pixels If true, one unit is one pixel. If false, one x unit is the
+ *   element's width, and one y unit is the unit's height. Z is in pixels regardless.
+ * @param {boolean=} opt_zscale If true, the z dimension is also scaled using the average of the
+ *   width and height. If false, no scaling along the z axis is performed. Default is true.
  */
-ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels,
-    opt_zscale) {
+ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels, opt_zscale) {
   log_.assert_(element, 'element must be valid.', '(ThreeJsScene_::attach)');
 
   var center = typeof opt_center !== 'undefined' ? opt_center : true;
@@ -137,66 +130,65 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels,
   // Attach to the new element and setup the callbacks.
   var that = this;
   if (element) {
-    this.trackId_ = this.tracker_.track_(element, function(x, y, w, h, move,
-        resize) {
-          var parent = that.parent_;
-          var parentPosition = parent.position;
-          var parentScale = parent.scale;
+    this.trackId_ = this.tracker_.track_(element, function(x, y, w, h, move, resize) {
+      var parent = that.parent_;
+      var parentPosition = parent.position;
+      var parentScale = parent.scale;
 
-          if (center) {
-            parentPosition.x = x + w / 2.0;
-            parentPosition.y = y + h / 2.0;
-          } else {
-            parentPosition.x = x;
-            parentPosition.y = y;
-          }
+      if (center) {
+        parentPosition.x = x + w / 2.0;
+        parentPosition.y = y + h / 2.0;
+      } else {
+        parentPosition.x = x;
+        parentPosition.y = y;
+      }
 
-          if (pixels) {
-            parentScale.x = parentScale.y = 1.0;
-          } else {
-            parentScale.x = w;
-            parentScale.y = h;
-          }
+      if (pixels) {
+        parentScale.x = parentScale.y = 1.0;
+      } else {
+        parentScale.x = w;
+        parentScale.y = h;
+      }
 
-          if (zscale) {
-            parentScale.z = (parentScale.x + parentScale.y) / 2.0;
-          } else {
-            parentScale.z = 1.0;
-          }
+      if (zscale) {
+        parentScale.z = (parentScale.x + parentScale.y) / 2.0;
+      } else {
+        parentScale.z = 1.0;
+      }
 
-          that.parent_.updateMatrixWorld(true);
-          that.isDirty_ = true;
+      that.parent_.updateMatrixWorld(true);
+      that.isDirty_ = true;
 
-          if (move) {
-            var event = new voodooEvent('move');
-            event.object = element;
+      if (move) {
+        var event = new voodooEvent('move');
+        event.object = element;
 
-            var eventPage = event['page'];
-            eventPage['x'] = x;
-            eventPage['y'] = y;
+        var eventPage = event['page'];
+        eventPage['x'] = x;
+        eventPage['y'] = y;
 
-            var eventSize = event['size'];
-            eventSize['x'] = w;
-            eventSize['y'] = h;
+        var eventSize = event['size'];
+        eventSize['x'] = w;
+        eventSize['y'] = h;
 
-            that.dispatcher_.dispatchEvent_(null, event);
-          }
+        that.dispatcher_.dispatchEvent_(null, event);
+      }
 
-          if (resize) {
-            var event = new voodooEvent('resize');
-            event.object = element;
+      if (resize) {
+        var event = new voodooEvent('resize');
+        event.object = element;
 
-            var eventPage = event['page'];
-            eventPage['x'] = x;
-            eventPage['y'] = y;
+        var eventPage = event['page'];
+        eventPage['x'] = x;
+        eventPage['y'] = y;
 
-            var eventSize = event['size'];
-            eventSize['x'] = w;
-            eventSize['y'] = h;
+        var eventSize = event['size'];
+        eventSize['x'] = w;
+        eventSize['y'] = h;
 
-            that.dispatcher_.dispatchEvent_(null, event);
-          }
-        });
+        that.dispatcher_.dispatchEvent_(null, event);
+      }
+    });
 
     var event = new voodooEvent('attach');
     event.object = element;
@@ -228,8 +220,8 @@ ThreeJsScene_.prototype['detach'] = function() {
 
 
 /**
- * Converts a coordinate from local-space to page-space
- * when the scene is attached to an HTML element.
+ * Converts a coordinate from local-space to page-space when the scene is attached to an HTML
+ * element.
  *
  * @this {ThreeJsScene_}
  *
@@ -238,8 +230,7 @@ ThreeJsScene_.prototype['detach'] = function() {
  * @return {Object|Array.<number>} Page-space coordinate.
  */
 ThreeJsScene_.prototype['localToPage'] = function(coordinate) {
-  log_.assert_(coordinate, 'coordinate must be valid.',
-      '(ThreeJsScene_::localToPage)');
+  log_.assert_(coordinate, 'coordinate must be valid.', '(ThreeJsScene_::localToPage)');
 
   var parentPosition = this.parent_.position;
   var parentScale = this.parent_.scale;
@@ -289,8 +280,8 @@ ThreeJsScene_.prototype['on'] = function(type, listener) {
 
 
 /**
- * Converts a coordinate from page-space to local-space
- * when the scene is attached to an HTML element.
+ * Converts a coordinate from page-space to local-space when the scene is attached to an HTML
+ * element.
  *
  * @this {ThreeJsScene_}
  *
@@ -299,8 +290,7 @@ ThreeJsScene_.prototype['on'] = function(type, listener) {
  * @return {Object|Array.<number>} Local coordinate.
  */
 ThreeJsScene_.prototype['pageToLocal'] = function(coordinate) {
-  log_.assert_(coordinate, 'coordinate must be valid.',
-      '(ThreeJsScene_::pageToLocal)');
+  log_.assert_(coordinate, 'coordinate must be valid.', '(ThreeJsScene_::pageToLocal)');
 
   var parentPosition = this.parent_.position;
   var parentScale = this.parent_.scale;
@@ -331,8 +321,7 @@ ThreeJsScene_.prototype['pageToLocal'] = function(coordinate) {
  * @param {THREE.Object3D} object Object to remove.
  */
 ThreeJsScene_.prototype['remove'] = function(object) {
-  log_.assert_(object, 'object must be valid.',
-      '(ThreeJsScene_::remove)');
+  log_.assert_(object, 'object must be valid.', '(ThreeJsScene_::remove)');
 
   var event = new window['voodoo']['Event']('remove');
   event.object = object;
@@ -340,7 +329,8 @@ ThreeJsScene_.prototype['remove'] = function(object) {
 
   if (object['addedToVoodooTriggers'])
     object.visible = false;
-  else this.parent_.remove(object);
+  else
+    this.parent_.remove(object);
 
   object['addedToVoodooScene'] = false;
 
@@ -354,8 +344,8 @@ ThreeJsScene_.prototype['remove'] = function(object) {
       this.meshes_.splice(index, 1);
   }
 
-  // Removing an object forces a re-render no matter what since the
-  // object doesn't exist to check if it's inside the frustum anymore.
+  // Removing an object forces a re-render no matter what since the object doesn't exist to check
+  // if it's inside the frustum anymore.
   this.forceRender_ = true;
 };
 
@@ -385,8 +375,8 @@ ThreeJsScene_.prototype.destroy_ = function() {
 
 
 /**
- * Helper function to determine if an object added to the scene
- * is a mesh or something else (light, camera, etc.)
+ * Helper function to determine if an object added to the scene is a mesh or something else
+ * (light, camera, etc.)
  *
  * @private
  *

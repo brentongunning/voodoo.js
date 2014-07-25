@@ -1,16 +1,16 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: ThreeJsRenderer.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
 /**
  * The ThreeJs rendering engine.
  *
- * We encapsulate all ThreeJs operations in replacable classes in case
- * a different renderer be used in the future.
+ * We encapsulate all ThreeJs operations in replacable classes in case a different renderer be used
+ * in the future.
  *
  * @constructor
  * @private
@@ -18,8 +18,7 @@
  * @param {Engine} engine Voodoo's central engine.
  */
 function ThreeJsRenderer_(engine) {
-  log_.assert_(engine, 'engine must be valid.',
-      '(ThreeJsRenderer_::ThreeJsRenderer_)');
+  log_.assert_(engine, 'engine must be valid.', '(ThreeJsRenderer_::ThreeJsRenderer_)');
 
   this.engine_ = engine;
   this.layers_ = [];
@@ -51,9 +50,9 @@ ThreeJsRenderer_.prototype.constructor = ThreeJsRenderer_.constructor;
 
 
 /**
- * Enables or disables whether the above canvas captures mouse
- * events or lets them fall through to the page. When the user is hovering
- * over a 3D object, then links on the page, etc. shouldn't be selectable.
+ * Enables or disables whether the above canvas captures mouse events or lets them fall through to
+ * the page. When the user is hovering over a 3D object, then links on the page, etc. shouldn't be
+ * selectable.
  *
  * This is called by the mouse detector.
  *
@@ -124,8 +123,8 @@ ThreeJsRenderer_.prototype.createFullscreenRenderers_ = function() {
     this.belowCanvas_.style.zIndex = engineOptions['belowZIndex'];
   }
 
-  // Check whether antialiasing is actually being used. The seam layer is only
-  // supported when antialiasing is on.
+  // Check whether antialiasing is actually being used. The seam layer is only supported when
+  // antialiasing is on.
   var antialiasSupported = (enableAboveLayer &&
       this.aboveRenderer_.context.getContextAttributes().antialias) ||
       (enableBelowLayer &&
@@ -180,37 +179,32 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
 
   // Create the above layer
   if (engineOptions['aboveLayer']) {
-    this.aboveCamera_ = new ThreeJsCamera_(this.aboveCanvas_,
-        fov, zNear, zFar);
+    this.aboveCamera_ = new ThreeJsCamera_(this.aboveCanvas_, fov, zNear, zFar);
 
     this.aboveSceneFactory_ = new ThreeJsSceneFactory_();
 
     this.aboveTriggersFactory_ = new ThreeJsTriggersFactory_();
     this.aboveCacheFactory_ = new CacheFactory_();
 
-    this.aboveLayer_ = new Layer_(LayerPass_['Above'], renderer,
-        this.aboveCamera_, this.aboveSceneFactory_, this.aboveTriggersFactory_,
-        this.aboveCacheFactory_);
+    this.aboveLayer_ = new Layer_(LayerPass_['Above'], renderer, this.aboveCamera_,
+        this.aboveSceneFactory_, this.aboveTriggersFactory_, this.aboveCacheFactory_);
 
     this.layers_.push(this.aboveLayer_);
   }
 
   // Create the below and stencil layer
   if (engineOptions['belowLayer']) {
-    this.belowCamera_ = new ThreeJsCamera_(this.belowCanvas_,
-        fov, zNear, zFar);
+    this.belowCamera_ = new ThreeJsCamera_(this.belowCanvas_, fov, zNear, zFar);
 
     this.belowSceneFactory_ = new ThreeJsSceneFactory_();
     this.belowTriggersFactory_ = new ThreeJsTriggersFactory_();
     this.belowCacheFactory_ = new CacheFactory_();
-    this.belowLayer_ = new Layer_(LayerPass_['Below'], renderer,
-        this.belowCamera_, this.belowSceneFactory_, this.belowTriggersFactory_,
-        this.belowCacheFactory_);
+    this.belowLayer_ = new Layer_(LayerPass_['Below'], renderer, this.belowCamera_,
+        this.belowSceneFactory_, this.belowTriggersFactory_, this.belowCacheFactory_);
     this.layers_.push(this.belowLayer_);
 
     if (engineOptions['stencils']) {
-      this.stencilCamera_ = new ThreeJsCamera_(this.belowCanvas_,
-          fov, zNear, zFar);
+      this.stencilCamera_ = new ThreeJsCamera_(this.belowCanvas_, fov, zNear, zFar);
 
       this.belowStencilSceneFactory_ = new ThreeJsSceneFactory_();
       this.belowStencilTriggersFactory_ = new ThreeJsTriggersFactory_();
@@ -224,33 +218,30 @@ ThreeJsRenderer_.prototype.createLayers_ = function() {
 
   // Create the seam layer and seam stencil layer
   if (engineOptions['seamLayer']) {
-    this.seamCamera_ = new ThreeJsCamera_(this.seamCanvas_,
-        fov, zNear, zFar);
+    this.seamCamera_ = new ThreeJsCamera_(this.seamCanvas_, fov, zNear, zFar);
 
     this.seamSceneFactory_ = new ThreeJsSceneFactory_();
 
-    // The triggers for the seam layer aren't actually used. We just
-    // create one so as not to break user code.
+    // The triggers for the seam layer aren't actually used. We just create one so as not to break
+    // user code.
     this.seamTriggersFactory_ = new ThreeJsTriggersFactory_();
     this.seamCacheFactory_ = new CacheFactory_();
 
-    this.seamLayer_ = new Layer_(LayerPass_['Seam'], renderer,
-        this.seamCamera_, this.seamSceneFactory_, this.seamTriggersFactory_,
-        this.seamCacheFactory_);
+    this.seamLayer_ = new Layer_(LayerPass_['Seam'], renderer, this.seamCamera_,
+        this.seamSceneFactory_, this.seamTriggersFactory_, this.seamCacheFactory_);
 
     this.layers_.push(this.seamLayer_);
 
     if (engineOptions['stencils']) {
       if (!this.stencilCamera_)
-        this.stencilCamera_ = new ThreeJsCamera_(this.seamCanvas_,
-            fov, zNear, zFar);
+        this.stencilCamera_ = new ThreeJsCamera_(this.seamCanvas_, fov, zNear, zFar);
 
       this.seamStencilSceneFactory_ = new ThreeJsSceneFactory_();
       this.seamStencilTriggersFactory_ = new ThreeJsTriggersFactory_();
       this.seamStencilCacheFactory_ = new CacheFactory_();
-      this.seamStencilLayer_ = new Layer_(LayerPass_['SeamStencil'], renderer,
-          this.stencilCamera_, this.seamStencilSceneFactory_,
-          this.seamStencilTriggersFactory_, this.seamStencilCacheFactory_);
+      this.seamStencilLayer_ = new Layer_(LayerPass_['SeamStencil'], renderer, this.stencilCamera_,
+          this.seamStencilSceneFactory_, this.seamStencilTriggersFactory_,
+          this.seamStencilCacheFactory_);
       this.layers_.push(this.seamStencilLayer_);
     }
   }
@@ -355,10 +346,8 @@ ThreeJsRenderer_.prototype.onResize_ = function(rerender) {
   var styleCanvasHeight = canvasHeight + 'px';
 
   var devicePixelRatio = window.devicePixelRatio || 1.0;
-  var renderingCanvasWidth = canvasWidth * devicePixelRatio *
-      this.canvasScale_;
-  var renderingCanvasHeight = canvasHeight * devicePixelRatio *
-      this.canvasScale_;
+  var renderingCanvasWidth = canvasWidth * devicePixelRatio * this.canvasScale_;
+  var renderingCanvasHeight = canvasHeight * devicePixelRatio * this.canvasScale_;
 
 
   function setRenderSize(renderer, canvas) {
@@ -385,9 +374,8 @@ ThreeJsRenderer_.prototype.onResize_ = function(rerender) {
     setRenderSize(this.seamRenderer_, this.seamCanvas_);
 
 
-  // This code forces webkit to redraw. It's needed because of a bug where
-  // Chrome does not repaint some elements under the fullscreen canvas on
-  // browser resize
+  // This code forces webkit to redraw. It's needed because of a bug where Chrome does not repaint
+  // some elements under the fullscreen canvas on browser resize.
 
   var documentBody = document.body;
   var documentBodyStyle = documentBody.style;
@@ -395,7 +383,6 @@ ThreeJsRenderer_.prototype.onResize_ = function(rerender) {
   documentBodyStyle.display = 'none';
   var unused = documentBody.offsetHeight;
   documentBodyStyle.display = 'block';
-
 
   this.isDirty_ = true;
 
@@ -434,10 +421,13 @@ ThreeJsRenderer_.prototype.registerWindowEvents_ = function() {
 
   // Register the canvasRenderer's onScroll and onResize events with the
   // window so we can adjust our canvas size
+
   var that = this;
+
   window.addEventListener('scroll', function(event) {
     that.onScroll_.call(that, true);
   }, false);
+
   window.addEventListener('resize', function(event) {
     that.onResize_.call(that, true);
   }, false);
@@ -472,8 +462,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
     if (enablePerformanceScaling && !this.performanceScaling_) {
 
       var fps = this.fpsTimer_.fps_;
-      if (fps > engineOptions.performanceScalingFpsThreshold_ ||
-          this.engine_.lastTicks_ === 0) {
+      if (fps > engineOptions.performanceScalingFpsThreshold_ || this.engine_.lastTicks_ === 0) {
 
         this.lastValidFpsTime_ = new Date();
 
@@ -545,24 +534,21 @@ ThreeJsRenderer_.prototype.render_ = function() {
         context.stencilFunc(context.EQUAL, 1, 0xffffffff);
       }
 
-      this.belowRenderer_.render(this.belowSceneFactory_.scene_,
-          this.belowCamera_.camera_);
+      this.belowRenderer_.render(this.belowSceneFactory_.scene_, this.belowCamera_.camera_);
 
       rendered = true;
     }
 
     if (enableAboveLayer && this.isRenderNeeded_(this.aboveLayer_)) {
 
-      this.aboveRenderer_.render(this.aboveSceneFactory_.scene_,
-          this.aboveCamera_.camera_);
+      this.aboveRenderer_.render(this.aboveSceneFactory_.scene_, this.aboveCamera_.camera_);
 
       rendered = true;
     }
 
-    // Render a narrow slit along the Z axis without antialiasing
-    // on top of the above layer to eliminate the seam from antialiasing
-    // between layers. The stencil buffer is used so we don't draw on top
-    // of content mistakenly.
+    // Render a narrow slit along the Z axis without antialiasing on top of the above layer to
+    // eliminate the seam from antialiasing between layers. The stencil buffer is used so we don't
+    // draw on top of content mistakenly.
 
     if (enableSeamLayer && (this.isRenderNeeded_(this.seamLayer_) ||
         this.isRenderNeeded_(this.seamStencilLayer_))) {
@@ -578,9 +564,9 @@ ThreeJsRenderer_.prototype.render_ = function() {
       this.seamRenderer_.autoClear = false;
       this.seamRenderer_.clear();
 
-      // We use the stencil buffer to only draw seams where they have to be
-      // and where they should be. When the stencil buffer is 1, the don't draw
-      // anything and where it is 0, we may be drawing a seam.
+      // We use the stencil buffer to only draw seams where they have to be and where they should
+      // be. When the stencil buffer is 1, the don't draw anything and where it is 0, we may be
+      // drawing a seam.
 
       if (!enableStencils || (DEBUG && debugDisableStencils)) {
         // No stencils
@@ -591,8 +577,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
 
         context.clearStencil(1);
 
-        // The seam may only be inside the stencils and in the small seam space
-        // above the page.
+        // The seam may only be inside the stencils and in the small seam space above the page.
         context.stencilOp(context.REPLACE, context.REPLACE, context.REPLACE);
         context.stencilFunc(context.NEVER, 0, 0xffffffff);
 
@@ -600,8 +585,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
             this.stencilCamera_.camera_);
 
         this.seamCamera_.setZNearAndFar_(zNear, zCamera);
-        this.seamRenderer_.render(this.seamSceneFactory_.scene_,
-            this.seamCamera_.camera_);
+        this.seamRenderer_.render(this.seamSceneFactory_.scene_, this.seamCamera_.camera_);
       }
 
       var seamSceneFactoryScene = this.seamSceneFactory_.scene_;
@@ -625,9 +609,8 @@ ThreeJsRenderer_.prototype.render_ = function() {
     }
   }
 
-  // Force rendering to complete on all layers so there is no slicing from
-  // timing differences. Then move the canvases to the target position right
-  // after we render.
+  // Force rendering to complete on all layers so there is no slicing from timing differences. Then
+  // move the canvases to the target position right after we render.
 
   if (engineOptions['aboveLayer']) {
     this.aboveRenderer_.context.finish();
@@ -674,8 +657,7 @@ ThreeJsRenderer_.prototype.render_ = function() {
  * @param {string} cursor CSS cursor style.
  */
 ThreeJsRenderer_.prototype.setCursor_ = function(cursor) {
-  log_.assert_(cursor, 'cursor must be valid.',
-      '(ThreeJsRenderer_::setCursor_)');
+  log_.assert_(cursor, 'cursor must be valid.', '(ThreeJsRenderer_::setCursor_)');
 
   var engineOptions = this.engine_.options_;
 
@@ -699,24 +681,21 @@ ThreeJsRenderer_.prototype.setCursor_ = function(cursor) {
  *
  * @param {Object} canvasRenderer The WebGL canvas renderer from THREE.js.
  */
-ThreeJsRenderer_.prototype.setupFullscreenCanvasRenderer_ =
-    function(canvasRenderer) {
+ThreeJsRenderer_.prototype.setupFullscreenCanvasRenderer_ = function(canvasRenderer) {
   log_.assert_(canvasRenderer, 'canvasRenderer must be valid.',
       '(ThreeJsRenderer_::setupFullscreenCanvasRenderer_)');
 
   var canvas = canvasRenderer.domElement;
   var canvasStyle = canvas.style;
 
-  // Reverse the face culling order on the renderer. Normally, RHS like
-  // Three.Js would cull CCW tris, but see Camera.js for an explanation.
-  // See Camera.js for an explanation.
-  canvasRenderer.setFaceCulling(THREE.CullFaceFront,
-      THREE.FrontFaceDirectionCCW);
+  // Reverse the face culling order on the renderer. Normally, RHS like Three.Js would cull CCW
+  // tris, but see Camera.js for an explanation. See Camera.js for an explanation.
+  canvasRenderer.setFaceCulling(THREE.CullFaceFront, THREE.FrontFaceDirectionCCW);
 
   canvasStyle.position = 'absolute';
 
-  // This lets mouse events fall through to underlying objects so we can
-  // select text and still use the page even when a canvas is on top.
+  // This lets mouse events fall through to underlying objects so we can select text and still use
+  // the page even when a canvas is on top.
   canvasStyle['pointerEvents'] = 'none';
 
   // Add the canvas to the page
@@ -752,15 +731,13 @@ ThreeJsRenderer_.prototype.updateCameras_ = function() {
     var models = this.engine_.models_;
     var event = new window['voodoo']['Event']('cameramove');
 
-    for (var modelIndex = 0, numModels = models.length; modelIndex < numModels;
-        ++modelIndex)
+    for (var modelIndex = 0, numModels = models.length; modelIndex < numModels; ++modelIndex)
       models[modelIndex]['dispatch'](event);
 
     if (this.aboveCamera_) this.aboveCamera_.pendingCameraMoveEvent_ = false;
     if (this.belowCamera_) this.belowCamera_.pendingCameraMoveEvent_ = false;
     if (this.seamCamera_) this.seamCamera_.pendingCameraMoveEvent_ = false;
-    if (this.stencilCamera_)
-      this.stencilCamera_.pendingCameraMoveEvent_ = false;
+    if (this.stencilCamera_) this.stencilCamera_.pendingCameraMoveEvent_ = false;
   }
 };
 
@@ -777,16 +754,14 @@ ThreeJsRenderer_.prototype.updateLayerZBoundaries_ = function() {
   var enableAboveLayer = engineOptions['aboveLayer'];
   var enableBelowLayer = engineOptions['belowLayer'];
 
-  // We subtract -0.5 from where we should cut off the Z so there is no seam
-  // between renders.
+  // We subtract -0.5 from where we should cut off the Z so there is no seam between renders.
 
   if (enableBelowLayer) {
     if (enableAboveLayer) {
       var zCamera = this.belowCamera_['position']['z'];
       this.belowCamera_.setZNearAndFar_(zCamera - 0.5, engineOptions.zFar_);
     } else {
-      this.belowCamera_.setZNearAndFar_(engineOptions.zNear_,
-          engineOptions.zFar_);
+      this.belowCamera_.setZNearAndFar_(engineOptions.zNear_, engineOptions.zFar_);
     }
   }
 
@@ -795,8 +770,7 @@ ThreeJsRenderer_.prototype.updateLayerZBoundaries_ = function() {
       var zCamera = this.aboveCamera_['position']['z'];
       this.aboveCamera_.setZNearAndFar_(engineOptions.zNear_, zCamera);
     } else {
-      this.aboveCamera_.setZNearAndFar_(engineOptions.zNear_,
-          engineOptions.zFar_);
+      this.aboveCamera_.setZNearAndFar_(engineOptions.zNear_, engineOptions.zFar_);
     }
   }
 };
@@ -811,8 +785,7 @@ ThreeJsRenderer_.prototype.updateViewportSize_ = function() {
   var testDiv = document.createElement('div');
   var documentElement = document.documentElement;
 
-  testDiv.style.cssText =
-      'position: fixed; top: 0; left: 0; bottom: 0; right: 0;';
+  testDiv.style.cssText = 'position: fixed; top: 0; left: 0; bottom: 0; right: 0;';
   documentElement.insertBefore(testDiv, documentElement.firstChild);
 
   this.viewportSize_ = new Size2_(testDiv.offsetWidth, testDiv.offsetHeight);
@@ -830,8 +803,8 @@ ThreeJsRenderer_.prototype.updateViewportSize_ = function() {
 ThreeJsRenderer_.prototype.validateAndPrepareWebpage_ = function() {
   log_.info_('Validating and preparing webpage for use');
 
-  // Set the body dimensions to 100% so the canvas sizes can be set to 100%
-  // and there will be no scroll bars.
+  // Set the body dimensions to 100% so the canvas sizes can be set to 100% and there will be no
+  // scroll bars.
 
   log_.assert_(document.body, 'document.body is undefined',
       '(ThreeJsRenderer_::validateAndPrepareWebpage_)');
@@ -840,9 +813,8 @@ ThreeJsRenderer_.prototype.validateAndPrepareWebpage_ = function() {
   documentBodyStyle.width = '100%';
   documentBodyStyle.height = '100%';
 
-  // This tells the browser not to add scroll bars for full screen canvases.
-  // Consequently, it also removes the nice looking margins from the body.
-  // The only alternative to this is to set:
+  // This tells the browser not to add scroll bars for full screen canvases. Consequently, it also
+  // removes the nice looking margins from the body. The only alternative to this is to set:
   //    document.body.style.overflow = 'hidden';
   // which prevents scrolling altogether. No good solution here :(
 

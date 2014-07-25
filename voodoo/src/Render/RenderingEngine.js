@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: RenderingEngine.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -16,9 +16,9 @@ function RenderingEngine_() {}
 
 
 /**
- * Enables or disables whether the above canvas captures mouse
- * events or lets them fall through to the page. When the user is hovering
- * over a 3D object, then links on the page, etc. shouldn't be selectable.
+ * Enables or disables whether the above canvas captures mouse events or lets them fall through to
+ * the page. When the user is hovering over a 3D object, then links on the page, etc. shouldn't be
+ * selectable.
  *
  * This is called by the mouse detector.
  *

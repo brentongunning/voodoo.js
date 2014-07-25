@@ -164,7 +164,7 @@ Model.prototype['construct'] = function(opt_options) {
 
   // Create composite view and stencil views if there are more than one.
   var view = vars.view_ = numViews > 1 ? new Composite_(views) : views[0];
-  var stencilView = (vars.stencilView_ = numStencilViews > 1) ?
+  var stencilView = vars.stencilView_ = numStencilViews > 1 ?
       new Composite_(stencilViews) : stencilViews[0];
 
   vars.numViewsToLoad_ = numViews + numStencilViews;

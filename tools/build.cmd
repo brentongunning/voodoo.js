@@ -114,7 +114,7 @@ if %lint%==1 (
   echo.
   if errorlevel 1 call :error "Linting failed"
   echo [Build] Running Linter on Test Code
-  %gjslint% --strict --custom_jsdoc_tags ignore,function --jsdoc --recurse "%project_test%"
+  %gjslint% --strict --max_line_length %max_line_length% --custom_jsdoc_tags ignore,function --jsdoc --recurse "%project_test%"
   echo.
   if errorlevel 1 call :error "Linting failed"
 )

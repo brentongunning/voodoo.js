@@ -1,17 +1,16 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: ThreeJsTriggers.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
 /**
- * A manager for ThreeJs mouse triggers. It stores all of the objects that
- * cause mouse events to fire, like mousedown, mouseleave, and click. Each
- * trigger is made up of a ThreeJs mesh object and a triggerId. The triggerId is
- * passed to the event handler to distinguish between different meshes in a
- * single model.
+ * A manager for ThreeJs mouse triggers. It stores all of the objects that cause mouse events to
+ * fire, like mousedown, mouseleave, and click. Each trigger is made up of a ThreeJs mesh object
+ * and a triggerId. The triggerId is passed to the event handler to distinguish between different
+ * meshes in a single model.
  *
  * @constructor
  * @private
@@ -21,12 +20,9 @@
  * @param {View} view Owning view.
  */
 function ThreeJsTriggers_(triggers, scene, view) {
-  log_.assert_(triggers, 'triggers must be valid.',
-      '(ThreeJsTriggers_::ThreeJsTriggers_)');
-  log_.assert_(scene, 'scene must be valid.',
-      '(ThreeJsTriggers_::ThreeJsTriggers_)');
-  log_.assert_(view, 'view must be valid.',
-      '(ThreeJsTriggers_::ThreeJsTriggers_)');
+  log_.assert_(triggers, 'triggers must be valid.', '(ThreeJsTriggers_::ThreeJsTriggers_)');
+  log_.assert_(scene, 'scene must be valid.', '(ThreeJsTriggers_::ThreeJsTriggers_)');
+  log_.assert_(view, 'view must be valid.', '(ThreeJsTriggers_::ThreeJsTriggers_)');
 
   this.triggers_ = triggers;
   this.scene_ = scene;
@@ -63,8 +59,7 @@ ThreeJsTriggers_.prototype['add'] = function(object, opt_triggerId) {
 
   // See if this trigger already exists
   if (DEBUG) {
-    for (var i = 0, numTriggers = this.triggers_.length; i < numTriggers;
-        ++i) {
+    for (var i = 0, numTriggers = this.triggers_.length; i < numTriggers; ++i) {
       if (this.triggers_[i].object_ === trigger.object_)
         log_.error_('Trigger already exists');
     }

@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: LayerTests.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -58,8 +58,8 @@ LayerTests.prototype.testBothLayers = function() {
 
 
 /**
- * Tests that by default Views are created just the above layer when
- * the below property of the view is set to false.
+ * Tests that by default Views are created just the above layer when the below property of the view
+ * is set to false.
  */
 LayerTests.prototype.testAboveLayer = function() {
   var views = 0;
@@ -84,8 +84,8 @@ LayerTests.prototype.testAboveLayer = function() {
 
 
 /**
- * Tests that by default Views are created just the below layer when
- * the above property of the view is set to false.
+ * Tests that by default Views are created just the below layer when the above property of the view
+ * is set to false.
  */
 LayerTests.prototype.testBelowLayer = function() {
   var views = 0;
@@ -110,8 +110,7 @@ LayerTests.prototype.testBelowLayer = function() {
 
 
 /**
- * Tests that an error is thrown when a view tries to be instantiated
- * but it exists in no layers.
+ * Tests that an error is thrown when a view tries to be instantiated but it exists in no layers.
  */
 LayerTests.prototype.testNoLayers = function() {
   var LayerCounterView = voodoo.View.extend({

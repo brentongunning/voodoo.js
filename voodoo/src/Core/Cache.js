@@ -27,18 +27,10 @@ function Cache(cache) {
  *
  * @this {Cache}
  *
-<<<<<<< HEAD
  * @param {string} key Storage key.
  * @param {string=} opt_name Optional model name. If not specified, uses the current Model's name.
  * @param {string=} opt_organization Optional organization name. If not specified, uses the current
  *   Model's organization.
-=======
- * @param {string|Object} key Storage key.
- * @param {string=} opt_name Optional model name. If not specified, uses the
- * current Model's name.
- * @param {string=} opt_organization Optional organization name. If not
- * specified, uses the current Model's organization.
->>>>>>> a6bdbe8c96d4d44234228406feaf54894a52c65d
  */
 Cache.prototype['addRef'] = function(key, opt_name, opt_organization) {
   if (DEBUG && window['voodoo']['debug']['disableCache'])
@@ -61,18 +53,10 @@ Cache.prototype['addRef'] = function(key, opt_name, opt_organization) {
  *
  * @this {Cache}
  *
-<<<<<<< HEAD
  * @param {string} key Storage key.
  * @param {string=} opt_name Optional model name. If not specified, uses the current Model's name.
  * @param {string=} opt_organization Optional organization name. If not specified, uses the current
  *   Model's organization.
-=======
- * @param {string|Object} key Storage key.
- * @param {string=} opt_name Optional model name. If not specified, uses the
- * current Model's name.
- * @param {string=} opt_organization Optional organization name. If not
- * specified, uses the current Model's organization.
->>>>>>> a6bdbe8c96d4d44234228406feaf54894a52c65d
  */
 Cache.prototype['delete'] = function(key, opt_name, opt_organization) {
   if (DEBUG && window['voodoo']['debug']['disableCache'])
@@ -223,18 +207,10 @@ Cache.prototype['get'] = function(key, opt_onGet, opt_onError, opt_timeout, opt_
  *
  * @this {Cache}
  *
-<<<<<<< HEAD
  * @param {string} key Storage key.
  * @param {string=} opt_name Optional model name. If not specified, uses the current Model's name.
  * @param {string=} opt_organization Optional organization name. If not specified, uses the current
  *   Model's organization.
-=======
- * @param {string|Object} key Storage key.
- * @param {string=} opt_name Optional model name. If not specified, uses the
- * current Model's name.
- * @param {string=} opt_organization Optional organization name. If not
- * specified, uses the current Model's organization.
->>>>>>> a6bdbe8c96d4d44234228406feaf54894a52c65d
  *
  * @return {boolean} True if an object exists in the cache, false if not.
  */
@@ -258,18 +234,10 @@ Cache.prototype['has'] = function(key, opt_name, opt_organization) {
  *
  * @this {Cache}
  *
-<<<<<<< HEAD
  * @param {string} key Storage key.
  * @param {string=} opt_name Optional model name. If not specified, uses the current Model's name.
  * @param {string=} opt_organization Optional organization name. If not specified, uses the current
  *   Model's organization.
-=======
- * @param {string|Object} key Storage key.
- * @param {string=} opt_name Optional model name. If not specified, uses the
- * current Model's name.
- * @param {string=} opt_organization Optional organization name. If not
- * specified, uses the current Model's organization.
->>>>>>> a6bdbe8c96d4d44234228406feaf54894a52c65d
  */
 Cache.prototype['release'] = function(key, opt_name, opt_organization) {
   if (DEBUG && window['voodoo']['debug']['disableCache'])
@@ -295,22 +263,12 @@ Cache.prototype['release'] = function(key, opt_name, opt_organization) {
  *
  * @this {Cache}
  *
-<<<<<<< HEAD
  * @param {string} key Storage key.
  * @param {Object=} opt_value Value to store. If unspecified, then this function reserves the key
  *   for later, and used for asynchronous gets.
  * @param {string=} opt_name Optional model name. If not specified, uses the current Model's name.
  * @param {string=} opt_organization Optional organization name. If not specified, uses thecurrent
  *   Model's organization.
-=======
- * @param {string|Object} key Storage key.
- * @param {Object=} opt_value Value to store. If unspecified, then this
- *   function reserves the key for later, and used for asynchronous gets.
- * @param {string=} opt_name Optional model name. If not specified, uses the
- * current Model's name.
- * @param {string=} opt_organization Optional organization name. If not
- * specified, uses the current Model's organization.
->>>>>>> a6bdbe8c96d4d44234228406feaf54894a52c65d
  */
 Cache.prototype['set'] = function(key, opt_value, opt_name, opt_organization) {
   if (DEBUG && window['voodoo']['debug']['disableCache'])
