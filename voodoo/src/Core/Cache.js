@@ -1,14 +1,14 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Cache.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
 /**
- * A reference-counted storage cache where geometry, materials, and other data
- * may be stored and shared between different 3D components.
+ * A reference-counted storage cache where geometry, materials, and other data may be stored and
+ * shared between different 3D components.
  *
  * @constructor
  *
@@ -22,16 +22,15 @@ function Cache(cache) {
 
 
 /**
- * Increases the reference count of an object in the cache. This should
- * normally be paired with a call to release later.
+ * Increases the reference count of an object in the cache. This should normally be paired with
+ * a call to release later.
  *
  * @this {Cache}
  *
  * @param {string} key Storage key.
- * @param {string=} opt_name Optional model name. If not specified, uses the
- * current Model's name.
- * @param {string=} opt_organization Optional organization name. If not
- * specified, uses the current Model's organization.
+ * @param {string=} opt_name Optional model name. If not specified, uses the current Model's name.
+ * @param {string=} opt_organization Optional organization name. If not specified, uses the current
+ *   Model's organization.
  */
 Cache.prototype['addRef'] = function(key, opt_name, opt_organization) {
   if (DEBUG && window['voodoo']['debug']['disableCache'])
@@ -41,8 +40,7 @@ Cache.prototype['addRef'] = function(key, opt_name, opt_organization) {
 
   var subcache = this.getSubcache_(opt_name, opt_organization);
 
-  log_.assert_(subcache.hasOwnProperty(key), 'key must exist in cache.',
-      '(Cache::addRef)');
+  log_.assert_(subcache.hasOwnProperty(key), 'key must exist in cache.', '(Cache::addRef)');
 
   subcache[key].count++;
 };
@@ -54,10 +52,9 @@ Cache.prototype['addRef'] = function(key, opt_name, opt_organization) {
  * @this {Cache}
  *
  * @param {string} key Storage key.
- * @param {string=} opt_name Optional model name. If not specified, uses the
- * current Model's name.
- * @param {string=} opt_organization Optional organization name. If not
- * specified, uses the current Model's organization.
+ * @param {string=} opt_name Optional model name. If not specified, uses the current Model's name.
+ * @param {string=} opt_organization Optional organization name. If not specified, uses the current
+ *   Model's organization.
  */
 Cache.prototype['delete'] = function(key, opt_name, opt_organization) {
   if (DEBUG && window['voodoo']['debug']['disableCache'])
@@ -74,33 +71,31 @@ Cache.prototype['delete'] = function(key, opt_name, opt_organization) {
 /**
  * Gets the value stored for a given key.
  *
- * This function may be either synchronous or asynchronous. If synchronous,
- * the caller should not proivde opt_onGet, opt_onError, or opt_timeout
- * arguments. The value at the key will be returned immediately.
+ * This function may be either synchronous or asynchronous. If synchronous, the caller should not
+ * proivde opt_onGet, opt_onError, or opt_timeout arguments. The value at the key will be returned
+ * immediately.
  *
- * If asynchronous, the opt_onGet parameter should be specified with a callback
- * function that accepts a single parameter, the value at the key. This will
- * be called when the given key is assigned a non-null value. If asynchronous,
- * this function will not return a value. op_onError may be specified with a
- * callback function too that accepts a single parameter: the error message.
- * This will be called if the get operation times out.
+ * If asynchronous, the opt_onGet parameter should be specified with a callback function that
+ * accepts a single parameter, the value at the key. This will be called when the given key is
+ * assigned a non-null value. If asynchronous, this function will not return a value. op_onError
+ * may be specified with a callback function too that accepts a single parameter: the error
+ * message. This will be called if the get operation times out.
  *
  * @this {Cache}
  *
  * @param {string} key Storage key.
  * @param {function(Object)=} opt_onGet Optional asynchronous getter.
  * @param {function(string)=} opt_onError Optional error handler.
- * @param {number=} opt_timeout Optional asynchronous timeout in milliseconds.
- *     Default is 2000.
- * @param {string=} opt_name Optional model name. If not specified, uses the
- * current Model's name.
- * @param {string=} opt_organization Optional organization name. If not
- * specified, uses the current Model's organization.
+ * @param {number=} opt_timeout Optional asynchronous timeout in milliseconds. Default is 2000.
+ * @param {string=} opt_name Optional model name. If not specified, uses the current Model's name.
+ * @param {string=} opt_organization Optional organization name. If not specified, uses the current
+ *   Model's organization.
  *
  * @return {?Object} The object for the given key.
  */
-Cache.prototype['get'] = function(key, opt_onGet, opt_onError, opt_timeout,
-    opt_name, opt_organization) {
+Cache.prototype['get'] = function(key, opt_onGet, opt_onError, opt_timeout, opt_name,
+    opt_organization) {
+
   if (DEBUG && window['voodoo']['debug']['disableCache'])
     return null;
 
@@ -115,8 +110,8 @@ Cache.prototype['get'] = function(key, opt_onGet, opt_onError, opt_timeout,
 
   // Look for opt_onGet
   if (typeof arg1 === 'function') {
-    // Case: Found opt_onGet. It won't be opt_Error because opt_onError must
-    // always be speciied with opt_onGet.
+    // Case: Found opt_onGet. It won't be opt_Error because opt_onError must always be speciied
+    // with opt_onGet.
 
     var arg2 = arguments[2];
 
@@ -207,10 +202,9 @@ Cache.prototype['get'] = function(key, opt_onGet, opt_onError, opt_timeout,
  * @this {Cache}
  *
  * @param {string} key Storage key.
- * @param {string=} opt_name Optional model name. If not specified, uses the
- * current Model's name.
- * @param {string=} opt_organization Optional organization name. If not
- * specified, uses the current Model's organization.
+ * @param {string=} opt_name Optional model name. If not specified, uses the current Model's name.
+ * @param {string=} opt_organization Optional organization name. If not specified, uses the current
+ *   Model's organization.
  *
  * @return {boolean} True if an object exists in the cache, false if not.
  */
@@ -227,16 +221,15 @@ Cache.prototype['has'] = function(key, opt_name, opt_organization) {
 
 
 /**
- * Decreases the reference count of an object in the cache. Once the object's
- * reference count reaches zero, the object is deleted from the cache.
+ * Decreases the reference count of an object in the cache. Once the object's reference count
+ * reaches zero, the object is deleted from the cache.
  *
  * @this {Cache}
  *
  * @param {string} key Storage key.
- * @param {string=} opt_name Optional model name. If not specified, uses the
- * current Model's name.
- * @param {string=} opt_organization Optional organization name. If not
- * specified, uses the current Model's organization.
+ * @param {string=} opt_name Optional model name. If not specified, uses the current Model's name.
+ * @param {string=} opt_organization Optional organization name. If not specified, uses the current
+ *   Model's organization.
  */
 Cache.prototype['release'] = function(key, opt_name, opt_organization) {
   if (DEBUG && window['voodoo']['debug']['disableCache'])
@@ -254,19 +247,18 @@ Cache.prototype['release'] = function(key, opt_name, opt_organization) {
 
 
 /**
- * Stores an object in the cache under a given key. If the key is not yet in
- * the cace, this will set its reference count to 1. If the key is already in
- * the cache, the reference count will remain the same.
+ * Stores an object in the cache under a given key. If the key is not yet in the cace, this will
+ * set its reference count to 1. If the key is already in the cache, the reference count will
+ * remain the same.
  *
  * @this {Cache}
  *
  * @param {string} key Storage key.
- * @param {Object=} opt_value Value to store. If unspecified, then this
- *   function reserves the key for later, and used for asynchronous gets.
- * @param {string=} opt_name Optional model name. If not specified, uses the
- * current Model's name.
- * @param {string=} opt_organization Optional organization name. If not
- * specified, uses the current Model's organization.
+ * @param {Object=} opt_value Value to store. If unspecified, then this function reserves the key
+ *   for later, and used for asynchronous gets.
+ * @param {string=} opt_name Optional model name. If not specified, uses the current Model's name.
+ * @param {string=} opt_organization Optional organization name. If not specified, uses thecurrent
+ *   Model's organization.
  */
 Cache.prototype['set'] = function(key, opt_value, opt_name, opt_organization) {
   if (DEBUG && window['voodoo']['debug']['disableCache'])
@@ -283,8 +275,10 @@ Cache.prototype['set'] = function(key, opt_value, opt_name, opt_organization) {
 
     if (opt_value) {
       var notifiers = record.notifiers;
+
       for (var i = 0, len = notifiers.length; i < len; ++i)
         notifiers[i](opt_value);
+
       record.notifiers = [];
     }
   } else {
@@ -298,15 +292,14 @@ Cache.prototype['set'] = function(key, opt_value, opt_name, opt_organization) {
 
 
 /**
- * Retrieves the subcache for the given name and organization, or if not
- * specified, the current model's name and organization.
+ * Retrieves the subcache for the given name and organization, or if not specified, the current
+ * model's name and organization.
  *
  * @private
  *
- * @param {string=} opt_name Optional model name. If not specified, uses the
- * current Model's name.
- * @param {string=} opt_organization Optional organization name. If both this
- * opt_name are unspecified, uses the current Model's organization.
+ * @param {string=} opt_name Optional model name. If not specified, uses the current Model's name.
+ * @param {string=} opt_organization Optional organization name. If both this opt_name are
+ *   unspecified, uses the current Model's organization.
  *
  * @return {Object} The model's subcache.
  */

@@ -34,8 +34,8 @@
   <center>
     <h1>Mouse Events</h1>
     <h3>Description</h3>
-    <p>This sample demonstrates how to respond to create triggers that
-       respond to mouse events. Move your mouse and click the objects below.</p>
+    <p>This sample demonstrates how to respond to create triggers that respond to mouse events.
+      Move your mouse and click the objects below.</p>
   </center>
   <div id="content">
     <center>
@@ -47,9 +47,9 @@
 </body>
 <script>
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // HoverBallView
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 var TrafficLightView = voodoo.View.extend({
   load: function() {
@@ -66,8 +66,8 @@ var TrafficLightView = voodoo.View.extend({
     // Attach to the HTML element
     this.scene.attach(this.model.element, true, false, true);
 
-    // The triggers tells voodoo that the sphere should respond to mouse
-    // events. Add it like the scene.
+    // The triggers tells voodoo that the sphere should respond to mouse events. Add it like the
+    // scene.
     this.triggers.add(mesh);
 
     // Show a pointer cursor whenever the mouse is over our mesh.
@@ -98,9 +98,9 @@ var TrafficLightView = voodoo.View.extend({
   }
 });
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // HoverBall
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 var TrafficLight = voodoo.Model.extend({
   name: 'TrafficLight',
@@ -113,17 +113,16 @@ var TrafficLight = voodoo.Model.extend({
     this.color = voodoo.utility.convertCssColorToThreeJsColor(options.color);
     this.hover = voodoo.utility.convertCssColorToThreeJsColor(options.hover);
 
-    // Add event handlers for hovers. The 'view' is normally not accessable in
-    // initialize, but we are just defining callbacks, so it is OK to
-    // reference them.
+    // Add event handlers for hovers. The 'view' is normally not accessable in initialize, but we
+    // are just defining callbacks, so it is OK to reference them.
     this.on('mouseover', function(event) { this.view.mouseover(); });
     this.on('mouseout', function(event) { this.view.mouseout(); });
   }
 });
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Setup
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 var redLight = new TrafficLight({
   element: document.getElementById('redLight'),

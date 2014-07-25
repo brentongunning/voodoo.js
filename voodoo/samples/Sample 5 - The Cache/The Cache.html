@@ -11,14 +11,15 @@
   <center>
     <h1>The Cache</h1>
     <h3>Description</h3>
-    <p>This sample demonstrates the use of the cache. Click anywhere on the screen to place a box. Red boxes create its geometry each time. Blue boxes reuse cached geometry.</p>
+    <p>This sample demonstrates the use of the cache. Click anywhere on the screen to place a box.
+       Red boxes create its geometry each time. Blue boxes reuse cached geometry.</p>
   </center>
 </body>
 <script>
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // CachingBoxView
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 var CachingBoxView = voodoo.View.extend({
   load: function() {
@@ -42,8 +43,8 @@ var CachingBoxView = voodoo.View.extend({
       this.cache.set('geometry', geometry);
     }
     
-    // We have to create a new mesh and position it individually each time.
-    // Can't use the cache for this.
+    // We have to create a new mesh and position it individually each time. Can't use the cache
+    // for this.
     var mesh = new THREE.Mesh(geometry, material);
 
     this.scene.add(mesh);
@@ -63,9 +64,9 @@ var CachingBoxView = voodoo.View.extend({
   }
 });
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // CachingBox
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 var CachingBox = voodoo.Model.extend({
   name: 'CachingBox',
@@ -80,9 +81,9 @@ var CachingBox = voodoo.Model.extend({
   }
 });
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // Create boxes
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 // Create a new box every time the user clicks.
 window.onclick = function(event) {

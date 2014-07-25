@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Utility.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -174,8 +174,7 @@ function Utility() {
  * @return {THREE.Color} The Three.Js color value.
  */
 Utility.prototype['convertCssColorToThreeJsColor'] = function(cssColor) {
-  log_.assert_(cssColor, 'cssColor undefined.',
-      '(Utility::convertCssColorToThreeJsColor)');
+  log_.assert_(cssColor, 'cssColor undefined.', '(Utility::convertCssColorToThreeJsColor)');
   log_.assert_(cssColor.length >= 3, 'cssColor too short.',
       '(Utility::convertCssColorToThreeJsColor)');
 
@@ -224,11 +223,10 @@ Utility.prototype['convertCssColorToThreeJsColor'] = function(cssColor) {
 
 
 /**
- * Gets the absolute position of an HTML element relative to the
- * top left corner of the page.
+ * Gets the absolute position of an HTML element relative to the top left corner of the page.
  *
- * This may be used to dynamically position models relative to
- * HTML elements as an alternative to Scene.attach.
+ * This may be used to dynamically position models relative to HTML elements as an alternative to
+ * Scene.attach.
  *
  * @param {Element} element HTML element.
  *
@@ -278,18 +276,12 @@ Utility.prototype.convertRGBColorToThreeJsColor_ = function(r, g, b) {
   g = parseFloat(g) / 255.0;
   b = parseFloat(b) / 255.0;
 
-  log_.assert_(r >= 0.0, 'r value < 0.',
-      '(Utility::convertRGBColorToThreeJsColor_)');
-  log_.assert_(r <= 1.0, 'r value > 1.',
-      '(Utility::convertRGBColorToThreeJsColor_)');
-  log_.assert_(g >= 0.0, 'g value < 0.',
-      '(Utility::convertRGBColorToThreeJsColor_)');
-  log_.assert_(g <= 1.0, 'g value > 1.',
-      '(Utility::convertRGBColorToThreeJsColor_)');
-  log_.assert_(b >= 0.0, 'b value < 0.',
-      '(Utility::convertRGBColorToThreeJsColor_)');
-  log_.assert_(b <= 1.0, 'b value > 1.',
-      '(Utility::convertRGBColorToThreeJsColor_)');
+  log_.assert_(r >= 0.0, 'r value < 0.', '(Utility::convertRGBColorToThreeJsColor_)');
+  log_.assert_(r <= 1.0, 'r value > 1.', '(Utility::convertRGBColorToThreeJsColor_)');
+  log_.assert_(g >= 0.0, 'g value < 0.', '(Utility::convertRGBColorToThreeJsColor_)');
+  log_.assert_(g <= 1.0, 'g value > 1.', '(Utility::convertRGBColorToThreeJsColor_)');
+  log_.assert_(b >= 0.0, 'b value < 0.', '(Utility::convertRGBColorToThreeJsColor_)');
+  log_.assert_(b <= 1.0, 'b value > 1.', '(Utility::convertRGBColorToThreeJsColor_)');
 
   return new THREE.Color().setRGB(r, g, b);
 };
@@ -313,18 +305,12 @@ Utility.prototype.convertHSLColorToThreeJsColor_ = function(h, s, l) {
   s = parseFloat(s) / 100.0;
   l = parseFloat(l) / 100.0;
 
-  log_.assert_(h >= 0.0, 'h value < 0.',
-      '(Utility::convertHSLColorToThreeJsColor_)');
-  log_.assert_(h < 360.0, 'h value >= 360.',
-      '(Utility::convertHSLColorToThreeJsColor_)');
-  log_.assert_(s >= 0.0, 's value < 0.',
-      '(Utility::convertHSLColorToThreeJsColor_)');
-  log_.assert_(s <= 1.0, 's value > 1.',
-      '(Utility::convertHSLColorToThreeJsColor_)');
-  log_.assert_(l >= 0.0, 'l value < 0.',
-      '(Utility::convertHSLColorToThreeJsColor_)');
-  log_.assert_(l <= 1.0, 'l value > 1.',
-      '(Utility::convertHSLColorToThreeJsColor_)');
+  log_.assert_(h >= 0.0, 'h value < 0.', '(Utility::convertHSLColorToThreeJsColor_)');
+  log_.assert_(h < 360.0, 'h value >= 360.', '(Utility::convertHSLColorToThreeJsColor_)');
+  log_.assert_(s >= 0.0, 's value < 0.', '(Utility::convertHSLColorToThreeJsColor_)');
+  log_.assert_(s <= 1.0, 's value > 1.', '(Utility::convertHSLColorToThreeJsColor_)');
+  log_.assert_(l >= 0.0, 'l value < 0.', '(Utility::convertHSLColorToThreeJsColor_)');
+  log_.assert_(l <= 1.0, 'l value > 1.', '(Utility::convertHSLColorToThreeJsColor_)');
 
   var chroma = (1.0 - Math.abs(2.0 * l - 1.0)) * s;
   var hprime = h / 60.0;

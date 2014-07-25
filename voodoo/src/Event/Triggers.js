@@ -1,18 +1,16 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Triggers.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
 /**
- * A manager for mouse triggers. It stores all of the objects that
- * cause mouse events, such as mouseleave and click, to fire, Each trigger
- * is a pair of a mesh object and a triggerId. A triggerId is a way of
- * distinguishing between sets of meshes that behave the same on mouse events.
- * The Model's event handlers have access to the triggerId via the Event passed
- * to them.
+ * A manager for mouse triggers. It stores all of the objects that cause mouse events, such as
+ * mouseleave and click, to fire, Each trigger is a pair of a mesh object and a triggerId. A
+ * triggerId is a way of distinguishing between sets of meshes that behave the same on mouse
+ * events. The Model's event handlers have access to the triggerId via the Event passed to them.
  *
  * @constructor
  */

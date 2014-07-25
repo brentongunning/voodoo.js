@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Log.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -22,8 +22,8 @@ function Log_(opt_project) {
 
 
 /**
- * Logs a message. Supports multiple arguments. Messages logged using this
- * method appear in both debug and release builds.
+ * Logs a message. Supports multiple arguments. Messages logged using this method appear in both
+ * debug and release builds.
  *
  * @private
  *
@@ -40,8 +40,8 @@ Log_.prototype.log_ = function(message) {
 
 
 /**
- * Logs an information message. Supports multiple arguments.
- * These messages only appear in debug builds.
+ * Logs an information message. Supports multiple arguments. These messages only appear in debug
+ * builds.
  *
  * @private
  *
@@ -56,8 +56,8 @@ Log_.prototype.info_ = function(message) {
 
 
 /**
- * Logs an informational message about a model. Supports multiple arguments.
- * These messages only appear in debug builds.
+ * Logs an informational message about a model. Supports multiple arguments. These messages only
+ * appear in debug builds.
  *
  * @private
  *
@@ -75,8 +75,8 @@ Log_.prototype.model_ = function(model, message) {
 
 
 /**
- * Logs a warning message to the console. Supports multiple arguments.
- * These messages only appear in debug builds.
+ * Logs a warning message to the console. Supports multiple arguments. These messages only appear
+ * in debug builds.
  *
  * @private
  *
@@ -95,8 +95,8 @@ Log_.prototype.warn_ = function(message) {
 
 
 /**
- * Logs an error message to the console and throws an exception.
- * Supports multiple arguments. These messages appear in all builds.
+ * Logs an error message to the console and throws an exception. Supports multiple arguments. These
+ * messages appear in all builds.
  *
  * @private
  *

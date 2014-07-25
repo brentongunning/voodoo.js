@@ -1,18 +1,17 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: View.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
 /**
  * Base class for a Model's visuals. Every Model has a View.
  *
- * Developers should extend this base class to their add 3D meshes to the
- * scene. Voodoo will automatically create instances of your Views when you
- * instantiate your Model. Since there may be several Views created, each
- * View should not store much state.
+ * Developers should extend this base class to their add 3D meshes to the scene. Voodoo will
+ * automatically create instances of your Views when youinstantiate your Model. Since there may be
+ * several Views created, each View should not store much state.
  *
  * @constructor
  *
@@ -170,9 +169,8 @@ View.prototype['unload'] = function() {
 
 
 /**
- * Whether this view's contents should be created on the above layer. Setting
- * this to false when all the View's contents are below the page will result
- * in better performance.
+ * Whether this view's contents should be created on the above layer. Setting this to false when
+ * all the View's contents are below the page will result in better performance.
  *
  * Default is true.
  *
@@ -182,9 +180,8 @@ View.prototype['above'] = true;
 
 
 /**
- * Whether this view's contents should be created on the below layer. Setting
- * this to false when all the View's contents are above the page will result
- * in better performance.
+ * Whether this view's contents should be created on the below layer. Setting this to false when
+ * all the View's contents are above the page will result in better performance.
  *
  * Default is true.
  *
@@ -210,11 +207,10 @@ View.prototype['camera'] = null;
 
 
 /**
- * The flag indicating whether this View has finished loading. This
- * is automatically set to true after load() unless the user sets it
- * to false during load(). If the user sets it to false, they are responsible
- * for setting it to true later (ex. after textures finish loading). When
- * all views have loaded, the onload event fires from the model.
+ * The flag indicating whether this View has finished loading. This is automatically set to true
+ * after load() unless the user sets it to false during load(). If the user sets it to false, they
+ * are responsible for setting it to true later (ex. after textures finish loading). When all
+ * views have loaded, the onload event fires from the model.
  *
  * @type {boolean}
  */
@@ -271,17 +267,14 @@ View['extend'] = function(opt_object) {
   var thisPrototype = baseType.prototype;
 
   if (baseType !== View) {
-    // The above and below booleans are optimizations to limit which views are
-    // created when one knows that there is nothing to display. They are not
-    // intended to be used to actually change what is displayed on screen, so
-    // if above/below were always overridden to true there should be no
-    // difference. When extending views from each other, we have to be
-    // conservative and create views for a layer when any of the views in the
-    // inheritance chain might have content in that layer.
-    newTypePrototype['above'] = newTypePrototype['above'] ||
-        thisPrototype['above'];
-    newTypePrototype['below'] = newTypePrototype['below'] ||
-        thisPrototype['below'];
+    // The above and below booleans are optimizations to limit which views are created when one
+    // knows that there is nothing to display. They are not intended to be used to actually change
+    // what is displayed on screen, so if above/below were always overridden to true there should
+    // be no difference. When extending views from each other, we have to be conservative and
+    // create views for a layer when any of the views in the inheritance chain might have content
+    // in that layer.
+    newTypePrototype['above'] = newTypePrototype['above'] || thisPrototype['above'];
+    newTypePrototype['below'] = newTypePrototype['below'] || thisPrototype['below'];
   }
 
   newType['extend'] = View['extend'];

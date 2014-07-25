@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: CameraLight.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -24,8 +24,8 @@ var CameraLightView_ = LightView_['extend']();
  * @return {THREE.Light} Custom light.
  */
 CameraLightView_.prototype['createLight'] = function() {
-  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported.', '(CameraLightView_::CameraLightView_)');
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'], 'Only ThreeJs is supported.',
+      '(CameraLightView_::CameraLightView_)');
 
   return new THREE.PointLight();
 };
@@ -51,8 +51,8 @@ CameraLightView_.prototype['load'] = function() {
  * @this {CameraLightView_}
  */
 CameraLightView_.prototype['updatePosition'] = function() {
-  log_.assert_(this['renderer'] === Renderer['ThreeJs'],
-      'Only ThreeJs is supported.', '(CameraLightView_::updatePosition)');
+  log_.assert_(this['renderer'] === Renderer['ThreeJs'], 'Only ThreeJs is supported.',
+      '(CameraLightView_::updatePosition)');
 
   var lightPosition = this.light['position'];
   var cameraPosition = this['camera']['position'];

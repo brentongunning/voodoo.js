@@ -1,31 +1,31 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Extendable.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
 /**
  * Creates an extendable type.
  *
- * Extendable provides some aspects of a classical inheritance system in
- * javascript. Each extended object:
+ * Extendable provides some aspects of a classical inheritance system in javascript. Each extended
+ * object:
  *
  *   1) Inherits all methods and variables from its parent.
  *   2) Automatically call construct() when instantiated via new.
  *   3) Enable calling overridden parent methods via this.base.
  *
- * Both Model and View derive from Extendable and override construct to perform
- * custom initialization. User models and views must inherit from them.
+ * Both Model and View derive from Extendable and override construct to perform custom
+ * initialization. User models and views must inherit from them.
  *
  * @constructor
  * @ignore
  */
 function Extendable() {
-  // Remove methods that are the same as the top of the method stack because
-  // the user will call them via this.method not this.base.method. These
-  // duplicates are a side effect of the way we build the method stack.
+  // Remove methods that are the same as the top of the method stack because the user will call
+  // them via this.method not this.base.method. These duplicates are a side effect of the way we
+  // build the method stack.
 
   var methodStack = this['extendableMethodStack'];
   for (var name in methodStack) {
@@ -97,12 +97,12 @@ Extendable['extend'] = function(opt_object) {
 
   // Clone the current method stack.
   //
-  // The method stack keeps track of all methods with the same name on this
-  // object, as well as the current ones available from the base so that we
-  // can let the user call this.base.method() and access a parent method.
+  // The method stack keeps track of all methods with the same name on this object, as well as the
+  // current ones available from the base so that we can let the user call this.base.method() and
+  // access a parent method.
   //
-  // Each method in the method stack is tracked by a method record which stores
-  // its unique methods in order as well as the index of the current one.
+  // Each method in the method stack is tracked by a method record which stores its unique methods
+  // in order as well as the index of the current one.
 
   var parentMethodStack = parentPrototype['extendableMethodStack'];
   var childMethodStack = childPrototype['extendableMethodStack'] = {};
@@ -118,9 +118,8 @@ Extendable['extend'] = function(opt_object) {
     };
   }
 
-  // Add any missing parent methods to the method stack.
-  // This can happen when the user adds methods to the prototype.
-  // Here is an example. ## represents a comment.
+  // Add any missing parent methods to the method stack. This can happen when the user adds methods
+  // to the prototype. Here is an example. ## represents a comment.
   //
   //   var A = Extendable.extend();
   //
@@ -159,8 +158,8 @@ Extendable['extend'] = function(opt_object) {
     if (!record)
       record = stack[name] = { methods: [], current: -1 };
 
-    // Add the method iff it is different than our current top-of-stack.
-    // This precludes duplicate methods.
+    // Add the method iff it is different than our current top-of-stack. This precludes duplicate
+    // methods.
 
     var recordMethods = record.methods;
     if (recordMethods[record.current] !== method) {
@@ -236,8 +235,8 @@ Extendable['extend'] = function(opt_object) {
     }
   }
 
-  // Append all methods and variables from the optional object onto our new
-  // object and its method stack.
+  // Append all methods and variables from the optional object onto our new object and its method
+  // stack.
 
   for (var property in opt_object) {
     if (!opt_object.hasOwnProperty(property))

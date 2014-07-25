@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Dispatcher.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
@@ -61,8 +61,8 @@ Dispatcher_.prototype.dispatchEvent_ = function(thisArg, event) {
 Dispatcher_.prototype.off_ = function(type, listener) {
   log_.assert_(type, 'type must be valid.', '(Dispatcher_::off_)');
   log_.assert_(listener, 'listener must be valid.', '(Dispatcher_::off_)');
-  log_.assert_(typeof listener === 'function',
-      'listener must be a function.', '(Dispatcher_::off_)');
+  log_.assert_(typeof listener === 'function', 'listener must be a function.',
+      '(Dispatcher_::off_)');
 
   if (EventHelpers_.isMouseEvent_(type)) {
     EventHelpers_.totalNumMouseEventListeners_--;
@@ -87,8 +87,8 @@ Dispatcher_.prototype.off_ = function(type, listener) {
 Dispatcher_.prototype.on_ = function(type, listener) {
   log_.assert_(type, 'type must be valid.', '(Dispatcher_::on_)');
   log_.assert_(listener, 'listener must be valid.', '(Dispatcher_::on_)');
-  log_.assert_(typeof listener === 'function',
-      'listener must be a function.', '(Dispatcher_::on_)');
+  log_.assert_(typeof listener === 'function', 'listener must be a function.',
+      '(Dispatcher_::on_)');
 
   if (EventHelpers_.isMouseEvent_(type)) {
     EventHelpers_.totalNumMouseEventListeners_++;

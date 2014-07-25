@@ -1,15 +1,14 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Layer.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 
 /**
- * A layer is essentially a render pass on a scene. Voodoo's engine
- * may create multiple layers, and each view is instantiated on
- * each layer when the model is created.
+ * A layer is essentially a render pass on a scene. Voodoo's engine may create multiple layers,
+ * and each view is instantiated on each layer when the model is created.
  *
  * @constructor
  * @private
@@ -24,14 +23,11 @@
 function Layer_(pass, renderer, camera, sceneFactory, triggersFactory,
     cacheFactory) {
   log_.assert_(pass, 'pass must be valid.', pass, '(Layer_::Layer_)');
-  log_.assert_(renderer === Renderer['ThreeJs'],
-      'Only ThreeJs is supported.', renderer, '(Layer_::Layer_)');
-  log_.assert_(camera, 'camera must be valid.',
+  log_.assert_(renderer === Renderer['ThreeJs'], 'Only ThreeJs is supported.', renderer,
       '(Layer_::Layer_)');
-  log_.assert_(sceneFactory, 'sceneFactory must be valid.',
-      '(Layer_::Layer_)');
-  log_.assert_(triggersFactory, 'triggersFactory must be valid.',
-      '(Layer_::Layer_)');
+  log_.assert_(camera, 'camera must be valid.', '(Layer_::Layer_)');
+  log_.assert_(sceneFactory, 'sceneFactory must be valid.', '(Layer_::Layer_)');
+  log_.assert_(triggersFactory, 'triggersFactory must be valid.', '(Layer_::Layer_)');
 
   this.pass_ = pass;
   this.renderer_ = renderer;
@@ -63,8 +59,7 @@ Layer_.prototype.addView_ = function(view) {
  * @private
  */
 Layer_.prototype.clearDirtyFlags_ = function() {
-  for (var viewIndex = 0, numViews = this.views_.length; viewIndex < numViews;
-      ++viewIndex) {
+  for (var viewIndex = 0, numViews = this.views_.length; viewIndex < numViews; ++viewIndex) {
     var scene = this.views_[viewIndex]['scene'];
 
     scene.isDirty_ = false;
@@ -82,8 +77,7 @@ Layer_.prototype.clearDirtyFlags_ = function() {
  */
 Layer_.prototype.isRenderNeeded_ = function() {
   var frustum = this.camera_.frustum_;
-  for (var viewIndex = 0, numViews = this.views_.length; viewIndex < numViews;
-      ++viewIndex) {
+  for (var viewIndex = 0, numViews = this.views_.length; viewIndex < numViews; ++viewIndex) {
     var view = this.views_[viewIndex];
     var scene = view['scene'];
 
@@ -100,8 +94,7 @@ Layer_.prototype.isRenderNeeded_ = function() {
       if (meshes.length !== scene.objects_.length)
         return true;
 
-      for (var meshIndex = 0, numMeshes = meshes.length; meshIndex < numMeshes;
-          ++meshIndex) {
+      for (var meshIndex = 0, numMeshes = meshes.length; meshIndex < numMeshes; ++meshIndex) {
         var mesh = meshes[meshIndex];
 
         if (mesh['geometry']) {

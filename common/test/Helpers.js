@@ -1,8 +1,8 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: Helpers.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 
 /**
@@ -16,8 +16,7 @@ function fireMouseEvent(type, x, y) {
   voodoo.engine.frame();
 
   var moveEvent = document.createEvent('MouseEvents');
-  moveEvent.initMouseEvent(type, true, true, window, 0, x, y,
-      x, y, false, false, false, false, 0, null);
+  moveEvent.initMouseEvent(type, true, true, window, 0, x, y, x, y, false, false, false, false, 0);
   document.dispatchEvent(moveEvent);
 
   voodoo.engine.frame();

@@ -1,14 +1,14 @@
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // File: MergedSourceFooter.js
 //
 // Copyright (c) 2014 VoodooJs Authors
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 };
 
-// Expose the project's namespace. If NAMESPACE = voodoo.elements, then
-// after looping currentNamespace will equal window['voodoo'] and then
-// we assign the new project() namespace to window['voodoo']['elements'].
+// Expose the project's namespace. If NAMESPACE = voodoo.elements, then after looping
+// currentNamespace will equal window['voodoo'] and then we assign the new project() namespace to
+// window['voodoo']['elements'].
 var namespaceParts = NAMESPACE.split('.');
 var currentNamespace = window;
 for (var i = 0; i < namespaceParts.length - 1; ++i) {
