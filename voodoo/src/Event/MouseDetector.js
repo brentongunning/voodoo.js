@@ -15,6 +15,8 @@
  * @param {Engine} engine Voodoo main engine.
  */
 function MouseDetector_(engine) {
+  log_.info_('Creating mouse detector');
+
   log_.assert_(engine, 'engine must be valid.', '(MouseDetector_::MouseDetector_)');
 
   this.engine_ = engine;
@@ -57,17 +59,17 @@ function MouseDetector_(engine) {
 MouseDetector_.prototype.addGlobalMouseEventListeners_ = function() {
   var that = this;
 
-  document.addEventListener('mousemove', function(event) {
-    that.onMouseMove_(event);
-  }, false);
+  var savedOnMouseMove = function(event) { that.onMouseMove_(event); };
+  var savedOnMouseDown = function(event) { that.onMouseDown_(event); };
+  var savedOnMouseUp = function(event) { that.onMouseUp_(event); };
 
-  document.addEventListener('mousedown', function(event) {
-    that.onMouseDown_(event);
-  }, false);
+  document.addEventListener('mousemove', savedOnMouseMove, false);
+  document.addEventListener('mousedown', savedOnMouseDown, false);
+  document.addEventListener('mouseup', savedOnMouseUp, false);
 
-  document.addEventListener('mouseup', function(event) {
-    that.onMouseUp_(event);
-  }, false);
+  this.savedOnMouseMove_ = savedOnMouseMove;
+  this.savedOnMouseDown_ = savedOnMouseDown;
+  this.savedOnMouseUp_ = savedOnMouseUp;
 };
 
 
@@ -78,8 +80,14 @@ MouseDetector_.prototype.addGlobalMouseEventListeners_ = function() {
  * @this {MouseDetector_}
  */
 MouseDetector_.prototype.destroy_ = function() {
+  log_.info_('Shutting down mouse detector');
+
   this.initState_();
   this.engine_ = null;
+
+  document.removeEventListener('mousemove', this.savedOnMouseMove_, false);
+  document.removeEventListener('mousedown', this.savedOnMouseDown_, false);
+  document.removeEventListener('mouseup', this.savedOnMouseUp_, false);
 };
 
 

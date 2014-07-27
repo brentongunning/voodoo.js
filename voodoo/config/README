@@ -50,6 +50,7 @@ Bug Fix: Setting View.loaded more than once caused Model.loaded to be false.
 Bug Fix: Memory leak when creating/destroying models repeatedly.
 Bug Fix: Removing objects always makes the scene dirty.
 Bug Fix: Restore original body margins after shutting down the Voodoo engine.
+Bug Fix: Remove all mouse event listeners after shutting down the Voodoo engine.
 
 6-14-2014 - 0.9.0
 Feature: Enable orthographic camera by setting Options.fov to 0.
