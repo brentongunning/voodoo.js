@@ -60,7 +60,7 @@ function Engine(opt_options) {
   switch (options['renderer']) {
 
     case Renderer['ThreeJs']:
-      this.renderer_ = new ThreeJsRenderer_(this);
+      this.renderer_ = new ThreeJsRenderer_(this, this.options_);
       this.raycaster_ = new ThreeJsRaycaster_(this);
       break;
 

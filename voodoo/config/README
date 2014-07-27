@@ -41,19 +41,21 @@ This software is released under the MIT license. See LICENSE file for details.
 Release Notes
 ---------------------------------------------------------------------------------------------------
 
-6-17-2014 0.9.1
-Cache supports reference counting.
-Cache supports asynchronous gets and sets.
-Added Debug.disableCache.
-Engine throws error when antialiasing is requested but not supported.
+7-27-2014 0.9.1
+Feature: Reference counted objects in cache.
+Feature: Asynchronous gets and sets in cache.
+Feature: Added Debug.disableCache.
+Bug Fix: Engine throws error when antialiasing is requested but not supported.
 Bug Fix: Setting View.loaded more than once caused Model.loaded to be false.
 Bug Fix: Memory leak when creating/destroying models repeatedly.
 Bug Fix: Removing objects always makes the scene dirty.
+Bug Fix: Restore original body margins after shutting down the Voodoo engine.
+Bug Fix: Remove all mouse event listeners after shutting down the Voodoo engine.
 
 6-14-2014 - 0.9.0
-Enable orthographic camera by setting Options.fov to 0.
-Camera now defined using maximum fov rather than fovY. See Options.fov.
-Enable z scaling when attached to HTML elements. Added parameter to Scene.attach.
+Feature: Enable orthographic camera by setting Options.fov to 0.
+Feature: Camera now defined using maximum fov rather than fovY. See Options.fov.
+Feature: Enable z scaling when attached to HTML elements. Added parameter to Scene.attach.
 Optimization: Only render when window has focus.
 Bug Fix: Re-render after changing debug settings.
 Bug Fix: Exceptions thrown no longer break this.base in future calls.
@@ -62,9 +64,9 @@ Minor updates to samples.
 Update ThreeJs to r67.
 
 4-29-2014 - 0.8.9
-Added Model.loaded property.
-Added Scene.localToPage and Scene.pageToLocal coordinate change functions.
-Change Event to store page coordinates instead of client coordinates.
+Feature: Added Model.loaded property.
+Feature: Added Scene.localToPage and Scene.pageToLocal coordinate change functions.
+Feature: Change Event to store page coordinates instead of client coordinates.
 Bug Fix: Adding/removing to the scene makes it dirty.
 Bug Fix: Error when removing event listeners.
 Bug Fix: Crash in min builds on engine initialization.
@@ -76,43 +78,43 @@ Optimization: Only raycast when there are mouse listeners.
 Many minor perf improvements identified during code cleanup.
 
 2-19-2014 - 0.8.8
-Add 'load' Model event and View.loaded to set when a View has finished loading.
-Add 'base' property for accessing methods in the parent class generically.
-Support calling extend() with another Model or View.
+Feature: Add 'load' Model event and View.loaded to set when a View has finished loading.
+Feature: Add 'base' property for accessing methods in the parent class generically.
+Feature: Support calling extend() with another Model or View.
 Bug Fix: Support dirtiable non-mesh scene objects (ie. lights).
 Bug Fix: Fix crash when using min build and performanceScaling disabled
 Reorganize source code and improve documentation readability.
 Updated ThreeJs to r65.
 
 9-28-2013 - 0.8.7
-Add Model.dispatch for firing custom events.
-Add Triggers.cursor for setting mouse cursors.
-Add Engine.on/off and Scene.on/off.
-Add Scene.objects.
-Add Engine events: destroy, addmodel, removemodel.
-Add Scene events: add, remove, attach, detach, move, resize.
-Add Model event: destroy
+Feature: Add Model.dispatch for firing custom events.
+Feature: Add Triggers.cursor for setting mouse cursors.
+Feature: Add Engine.on/off and Scene.on/off.
+Feature: Add Scene.objects.
+Feature: Add Engine events: destroy, addmodel, removemodel.
+Feature: Add Scene events: add, remove, attach, detach, move, resize.
+Feature: Add Model event: destroy
 Bug Fix: Fire mouseup events on last mousedown trigger.
 Bug Fix: Performance scale only when page has focus.
 
 9-25-2013 - 0.8.6
-Add Scene.attach/detach for Views to automatically align with 2D HTML elements.
-Add View.dirty to support dirtiable-based rendering to preserve battery life.
-Add new sample for creating local coordinate systems using Scene.attach.
-Add Options.realtime to support both realtime and deferred rendering and updates.
-Add Options.performanceScaling to lower resolution when performance drops.
-Add Options.updateInterval/renderInterval to control update and render frequency.
-More improvements to reduce jitteryness when scrolling.
-Add Debug.showFPS to display the frames per second.
+Feature: Add Scene.attach/detach for Views to automatically align with 2D HTML elements.
+Feature: Add View.dirty to support dirtiable-based rendering to preserve battery life.
+Feature: Add new sample for creating local coordinate systems using Scene.attach.
+Feature: Add Options.realtime to support both realtime and deferred rendering and updates.
+Feature: Add Options.performanceScaling to lower resolution when performance drops.
+Feature: Add Options.updateInterval/renderInterval to control update and render frequency.
+Feature: Add Debug.showFPS to display the frames per second.
+Bug Fix: More improvements to reduce jitteryness when scrolling.
 Updated ThreeJs to r61.
 
 8-19-2013 - 0.8.5
-Added seam layer to fix the small gap between antialiased layers.
-Added Cache to Model and View for reusing objects across controls.
+Feature: Added seam layer to fix the small gap between antialiased layers.
+Feature: Added Cache to Model and View for reusing objects across controls.
+Feature: Added Options.stencils for enabling or disabling stencils altogether.
 Simplified API: Passing an options object when creating an engine.
 Simplified API: Replaced View.zMin/zMax with View.above/below.
-Reduced jitteryness when scrolling.
-Added Options.stencils for enabling or disabling stencils altogether.
+Bug Fix: Reduced jitteryness when scrolling.
 Simplified samples.
 Updated ThreeJs to r60.
 
@@ -124,16 +126,16 @@ Moving to MIT license.
 Updating bundled ThreeJs to r59.
 
 7-13-2013 - 0.8.2
-Adding voodoo.version.
-Using a standard lighting model by default.
+Feature: Adding voodoo.version.
+Feature: Using a standard lighting model by default.
+Feature: Adding options to control the canvases created and renaming others.
 Removing AmbientLight and CameraLight from public API.
 Removing View.destroy from public API.
-Adding options to control the canvases created and renaming others.
 
 7-06-2013 - 0.8.1
 License change so there is no expiration for non-commercial use.
-Passing the view to triggers.add is no longer necessary.
-Fixing bug on Firefox where canvas size was incorrect when zoomed.
+Feature: Passing the view to triggers.add is no longer necessary.
+Big Fix: On Firefox the canvas size was incorrect when zoomed in.
 
 6-23-2013 - 0.8.0
 This is the first public pre-release. There are no release notes.
