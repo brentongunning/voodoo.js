@@ -53,6 +53,12 @@ var ColorableView_ = voodoo.View.extend({
     log_.assert_(mesh, 'mesh must be valid.', '(ColorableView_::setColorToMesh_)');
     log_.assert_(color, 'color must be valid.', '(ColorableView_::setColorToMesh_)');
 
+    var children = mesh.children;
+    if (children) {
+      for (var i = 0, len = children.length; i < len; ++i)
+        this.setColorToMesh_(children[i], color);
+    }
+
     var material = mesh.material;
     if (material) {
       var materials = material.materials;

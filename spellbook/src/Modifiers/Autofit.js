@@ -36,6 +36,12 @@ var AutofitView_ = voodoo.View.extend({
   },
 
   autofitMeshGeometry_: function(sceneObject) {
+    var children = sceneObject.children;
+    if (children) {
+      for (var i = 0, len = children.length; i < len; ++i)
+        this.autofitMeshGeometry_(children[i]);
+    }
+
     var geometry = sceneObject['geometry'];
     if (!geometry)
       return;

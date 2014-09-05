@@ -147,6 +147,24 @@ var Model3DView_ = voodoo.View.extend({
     }
   },
 
+  reloadObject_: function() {
+    this.unload();
+
+    this.loaded = false;
+
+    var loader = new THREE.ObjectLoader();
+    var that = this;
+
+    loader.load(this.model.modelSrc_, function(obj) {
+      that.modelMesh_ = obj;
+
+      that.scene.add(obj);
+      that.triggers.add(obj);
+
+      that.loaded = true;
+    });
+  },
+
   playAnimation_: function(animation) {
     if (!this.loaded) {
       this.pendingAnimation_ = animation;
@@ -237,8 +255,8 @@ var Model3D = this.Model3D = voodoo.Model.extend({
     this.modelSrc_ = options.modelSrc;
 
     if (typeof options.format !== 'undefined') {
-      log_.assert_(options.format === 'json', 'format must be valid.', options.format,
-          '(Model3D::initialize)');
+      log_.assert_(options.format === 'json' || options.format === 'object',
+          'format must be valid.', options.format, '(Model3D::initialize)');
 
       this.format_ = options.format;
     } else {
@@ -505,6 +523,20 @@ Model3D.prototype.loadModel_ = function() {
 
   if (this.format_ === Model3D.Format.JSON)
     this.loadJson_();
+  else if (this.format_ === Model3D.Format.Object)
+    this.loadObject_();
+};
+
+
+/**
+ * Loads the 3D model using the ObjectLoader.
+ *
+ * @private
+ */
+Model3D.prototype.loadObject_ = function() {
+  this.view.reloadObject_();
+  if (this.stencilView)
+    this.stencilView.reloadObject_();
 };
 
 
@@ -557,5 +589,6 @@ Model3D.prototype.playing = false;
  * @enum {string}
  */
 Model3D.Format = {
-  JSON: 'json'
+  JSON: 'json',
+  Object: 'object'
 };

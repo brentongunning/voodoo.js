@@ -22,11 +22,7 @@ var FadableView_ = voodoo.View.extend({
     this.base.load();
 
     this.scene.on('add', function(e) {
-      var objectMaterial = e.object.material;
-
-      if (objectMaterial)
-        objectMaterial.opacity = this.model.alpha_;
-
+      this.setAlphaToMesh_(e.object, this.model.alpha_);
       this.dirty();
     });
 
@@ -35,13 +31,22 @@ var FadableView_ = voodoo.View.extend({
 
   setAlpha_: function(alpha) {
     var sceneObjects = this.scene.objects;
-    for (var i = 0, len = sceneObjects.length; i < len; ++i) {
-      var sceneObject = sceneObjects[i];
-      if (sceneObject.material)
-        sceneObject.material.opacity = alpha;
-    }
+
+    for (var i = 0, len = sceneObjects.length; i < len; ++i)
+      this.setAlphaToMesh_(sceneObjects[i], alpha);
 
     this.dirty();
+  },
+
+  setAlphaToMesh_: function(mesh, alpha) {
+    var children = mesh.children;
+    if (children) {
+      for (var i = 0, len = children.length; i < len; ++i)
+        this.setAlphaToMesh_(children[i], alpha);
+    }
+
+    if (mesh.material)
+      mesh.material.opacity = alpha;
   }
 
 });

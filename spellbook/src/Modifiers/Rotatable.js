@@ -23,11 +23,8 @@ var RotatableView_ = voodoo.View.extend({
 
     this.scene.on('add', function(e) {
       var rotation = this.model.eulerRotation_;
-      var objectRotation = e.object.rotation;
 
-      objectRotation.x = rotation.x;
-      objectRotation.y = rotation.y;
-      objectRotation.z = rotation.z;
+      this.setRotationToMesh_(e.object, rotation);
 
       this.dirty();
     });
@@ -36,19 +33,28 @@ var RotatableView_ = voodoo.View.extend({
   },
 
   setRotation_: function(rotation) {
-    log_.assert_(rotation, 'rotation must be vaild', '(RotatableView_::setRotation_)');
+    log_.assert_(rotation, 'rotation must be valid.', '(RotatableView_::setRotation_)');
 
     var sceneObjects = this.scene.objects;
-    for (var i = 0, len = sceneObjects.length; i < len; ++i) {
-      var sceneObject = sceneObjects[i];
-      var sceneObjectRotation = sceneObject.rotation;
 
-      sceneObjectRotation.x = rotation.x;
-      sceneObjectRotation.y = rotation.y;
-      sceneObjectRotation.z = rotation.z;
-    }
+    for (var i = 0, len = sceneObjects.length; i < len; ++i)
+      this.setRotationToMesh_(sceneObjects[i], rotation);
 
     this.dirty();
+  },
+
+  setRotationToMesh_: function(mesh, rotation) {
+    var children = mesh.children;
+    if (children && children.length) {
+      for (var i = 0, len = children.length; i < len; ++i)
+        this.setRotationToMesh_(children[i], rotation);
+    } else {
+      var meshRotation = mesh.rotation;
+
+      meshRotation.x = rotation.x;
+      meshRotation.y = rotation.y;
+      meshRotation.z = rotation.z;
+    }
   }
 
 });

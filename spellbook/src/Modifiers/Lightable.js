@@ -74,6 +74,12 @@ var LightableView_ = voodoo.View.extend({
     log_.assert_(mesh, 'mesh must be valid.', '(LightableView_::setAmbientToMesh_)');
     log_.assert_(ambient, 'ambient must be valid.', '(LightableView_::setAmbientToMesh_)');
 
+    var children = mesh.children;
+    if (children) {
+      for (var i = 0, len = children.length; i < len; ++i)
+        this.setAmbientToMesh_(children[i], ambient);
+    }
+
     var material = mesh.material;
     if (material) {
       var materials = material.materials;
@@ -94,6 +100,12 @@ var LightableView_ = voodoo.View.extend({
     log_.assert_(mesh, 'mesh must be valid.', '(LightableView_::setEmissiveToMesh_)');
     log_.assert_(emissive, 'emissive must be valid.', '(LightableView_::setEmissiveToMesh_)');
 
+    var children = mesh.children;
+    if (children) {
+      for (var i = 0, len = children.length; i < len; ++i)
+        this.setEmissiveToMesh_(children[i], emissive);
+    }
+
     var material = mesh.material;
     if (material) {
       var materials = material.materials;
@@ -113,6 +125,12 @@ var LightableView_ = voodoo.View.extend({
   setShadingToMesh_: function(mesh, shading) {
     log_.assert_(mesh, 'mesh must be valid.', '(LightableView_::setShadingToMesh_)');
     log_.assert_(shading, 'shading must be valid.', '(LightableView_::setShadingToMesh_)');
+
+    var children = mesh.children;
+    if (children) {
+      for (var i = 0, len = children.length; i < len; ++i)
+        this.setShadingToMesh_(children[i], shading);
+    }
 
     var threeJsShading = THREE.SmoothShading;
     if (shading === Lightable.ShadingStyle.Flat)

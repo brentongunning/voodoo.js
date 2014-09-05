@@ -22,7 +22,7 @@ var HidableView_ = voodoo.View.extend({
     this.base.load();
 
     this.scene.on('add', function(e) {
-      e.object.visible = this.model.visible_;
+      this.setVisibleToMesh_(e.object, this.model.visible_);
       this.dirty();
     });
 
@@ -31,10 +31,21 @@ var HidableView_ = voodoo.View.extend({
 
   setVisible_: function(visible) {
     var sceneObjects = this.scene.objects;
+
     for (var i = 0, len = sceneObjects.length; i < len; ++i)
-      sceneObjects[i].visible = visible;
+      this.setVisibleToMesh_(sceneObjects[i], visible);
 
     this.dirty();
+  },
+
+  setVisibleToMesh_: function(mesh, visible) {
+    var children = mesh.children;
+    if (children) {
+      for (var i = 0, len = children.length; i < len; ++i)
+        this.setVisibleToMesh_(children[i], visible);
+    }
+
+    mesh.visible = visible;
   }
 
 });

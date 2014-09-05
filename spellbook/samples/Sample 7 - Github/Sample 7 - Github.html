@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="utf-8" http-equiv="encoding">
+
+	<title>Github 404 Demo</title>
+</head>
+
+<style>
+	body {
+		text-align: center;
+	}
+
+	#spacer {
+		height: 500px;
+	}
+
+	#model {
+		width: 200px;
+		height: 200px;
+		display: inline-block;
+	}
+</style>
+
+<script src="../../lib/three.min.js"></script>
+<script src="../../lib/voodoo.min.js"></script>
+<script src="../../lib/spellbook.min.debug.js"></script>
+
+<body>
+	<div id="spacer"></div>
+	<div id="model"></div>
+	<div id="spacer"></div>
+</body>
+
+<script type="text/javascript">
+
+	new voodoo.Engine({
+		stencils: false,
+		performanceScaling: false,
+		belowLayer: false
+	});
+
+	var ParallaxModel = voodoo.Model3D.extend(voodoo.Attachable);
+	ParallaxModel = ParallaxModel.extend(voodoo.Movable);
+
+	ParallaxView = ParallaxModel.prototype.viewType.extend({
+		getLocation: function(coord) {
+			return this.scene.localToPage({x: 0, y: 0});
+		}
+	});
+
+	ParallaxModel = ParallaxModel.extend({
+		viewType: ParallaxView,
+
+		setUpViews: function() {
+			this.base.setUpViews();
+
+			var that = this;
+			document.addEventListener('mousemove', function(e) {
+				var mouseX = e.pageX;
+				var mouseY = e.pageY;
+
+				var location = that.view.getLocation();
+				var deltaX = mouseX - location.x;
+				var deltaY = mouseY - location.y;
+
+				var parallaxScaleX = 1 / 10;
+				var parallaxScaleY = 1 / 5;
+				var parallaxScaleZ = 1 / 400;
+
+				deltaX *= parallaxScaleX;
+				deltaY *= parallaxScaleY;
+
+				var zStart = 1000;
+				var z = zStart - that.position.z;
+				deltaX /= (z * parallaxScaleZ);
+				deltaY /= (z * parallaxScaleZ);
+
+				that.position.x = deltaX;
+				that.position.y = deltaY;
+			}, false);
+		}
+	});
+
+	var model1 = new ParallaxModel({
+		element: document.getElementById('model'),
+		format: 'object',
+		modelSrc: 'simple.js',
+		animated: false,
+		center: true,
+		pixelScale: true,
+		position: [0, 0, -400]
+	});
+
+	var model2 = new ParallaxModel({
+		element: document.getElementById('model'),
+		format: 'object',
+		modelSrc: 'simple.js',
+		animated: false,
+		center: true,
+		pixelScale: true,
+		position: [0, 0, 0]
+	});
+
+	var model3 = new ParallaxModel({
+		element: document.getElementById('model'),
+		format: 'object',
+		modelSrc: 'simple.js',
+		animated: false,
+		center: true,
+		pixelScale: true,
+		position: [0, 0, 400]
+	});
+
+</script>
+
+</html>

@@ -23,11 +23,8 @@ var MovableView_ = voodoo.View.extend({
 
     this.scene.on('add', function(e) {
       var position = this.model.position_;
-      var objectPosition = e.object.position;
 
-      objectPosition.x = position.x;
-      objectPosition.y = position.y;
-      objectPosition.z = position.z;
+      this.setPositionToMesh_(e.object, position);
 
       this.dirty();
     });
@@ -39,16 +36,25 @@ var MovableView_ = voodoo.View.extend({
     log_.assert_(position, 'position must be valid.', '(MovableView_::setPosition_)');
 
     var sceneObjects = this.scene.objects;
-    for (var i = 0, len = sceneObjects.length; i < len; ++i) {
-      var sceneObject = sceneObjects[i];
-      var sceneObjectPosition = sceneObject.position;
 
-      sceneObjectPosition.x = position.x;
-      sceneObjectPosition.y = position.y;
-      sceneObjectPosition.z = position.z;
-    }
+    for (var i = 0, len = sceneObjects.length; i < len; ++i)
+      this.setPositionToMesh_(sceneObjects[i], position);
 
     this.dirty();
+  },
+
+  setPositionToMesh_: function(mesh, position) {
+    var children = mesh.children;
+    if (children && children.length) {
+      for (var i = 0, len = children.length; i < len; ++i)
+        this.setPositionToMesh_(children[i], position);
+    } else {
+      var meshPosition = mesh.position;
+
+      meshPosition.x = position.x;
+      meshPosition.y = position.y;
+      meshPosition.z = position.z;
+    }
   }
 
 });

@@ -23,11 +23,8 @@ var ScalableView_ = voodoo.View.extend({
 
     this.scene.on('add', function(e) {
       var scale = this.model.scale_;
-      var objectScale = e.object.scale;
 
-      objectScale.x = scale.x;
-      objectScale.y = scale.y;
-      objectScale.z = scale.z;
+      this.setScaleToMesh_(e.object, scale);
 
       this.dirty();
     });
@@ -40,16 +37,24 @@ var ScalableView_ = voodoo.View.extend({
 
     var sceneObjects = this.scene.objects;
 
-    for (var i = 0, len = sceneObjects.length; i < len; ++i) {
-      var sceneObject = sceneObjects[i];
-      var sceneObjectScale = sceneObject.scale;
-
-      sceneObjectScale.x = scale.x;
-      sceneObjectScale.y = scale.y;
-      sceneObjectScale.z = scale.z;
-    }
+    for (var i = 0, len = sceneObjects.length; i < len; ++i)
+      this.setScaleToMesh_(sceneObjects[i], scale);
 
     this.dirty();
+  },
+
+  setScaleToMesh_: function(mesh, scale) {
+    var children = mesh.children;
+    if (children && children.length) {
+      for (var i = 0, len = children.length; i < len; ++i)
+        this.setScaleToMesh_(children[i], scale);
+    } else {
+      var meshScale = mesh.scale;
+
+      meshScale.x = scale.x;
+      meshScale.y = scale.y;
+      meshScale.z = scale.z;
+    }
   }
 
 });
