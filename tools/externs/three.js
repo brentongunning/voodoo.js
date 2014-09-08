@@ -294,6 +294,7 @@ var THREE = {
     "Loader": function () {},
     "ImageLoader": function () {},
     "JSONLoader": function () {},
+    "ObjectLoader": function () {},
     "LoadingMonitor": function () {},
     "SceneLoader": function () {},
     "TextureLoader": function () {},

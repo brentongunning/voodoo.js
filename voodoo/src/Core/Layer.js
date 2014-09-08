@@ -101,6 +101,18 @@ Layer_.prototype.isRenderNeeded_ = function() {
           mesh.updateMatrixWorld(true);
           if (frustum.intersectsObject(mesh))
             return true;
+        } else {
+          var children = mesh['children'];
+          if (children) {
+            for (var j = 0, numChildren = children.length; j < numChildren; ++j) {
+              var child = children[j];
+              if (child['geometry']) {
+                child.updateMatrixWorld(true);
+                if (frustum.intersectsObject(child))
+                  return true;
+              }
+            }
+          }
         }
       }
     }

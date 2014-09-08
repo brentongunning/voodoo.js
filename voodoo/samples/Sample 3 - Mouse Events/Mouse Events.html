@@ -64,7 +64,7 @@ var TrafficLightView = voodoo.View.extend({
     this.scene.add(mesh);
 
     // Attach to the HTML element
-    this.scene.attach(this.model.element, true, false, true);
+    this.attach(this.model.element, true, false, true);
 
     // The triggers tells voodoo that the sphere should respond to mouse events. Add it like the
     // scene.

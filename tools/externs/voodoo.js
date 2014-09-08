@@ -223,8 +223,30 @@ voodoo.View = function() {};
  */
 voodoo.View.extend = function(opt_object) {};
 
+/**
+ * @param {HTMLElement} element
+ * @param {boolean=} opt_center
+ * @param {boolean=} opt_pixels
+ * @param {boolean=} opt_zscale
+ */
+voodoo.View.prototype.attach = function(element, opt_center, opt_pixels, opt_zscale) {};
+
+voodoo.View.prototype.detach = function() {};
 voodoo.View.prototype.dirty = function() {};
 voodoo.View.prototype.load = function() {};
+
+/**
+ * @param {Object|Array.<number>} coordinate
+ * @return {Object|Array.<number>}
+ */
+voodoo.View.prototype.localToPage = function(coordinate) {};
+
+/**
+ * @param {Object|Array.<number>} coordinate
+ * @return {Object|Array.<number>}
+ */
+voodoo.View.prototype.pageToLocal = function(coordinate) {};
+
 voodoo.View.prototype.unload = function() {};
 
 /** @type {boolean} */
@@ -290,23 +312,6 @@ voodoo.Scene = function() {};
 voodoo.Scene.prototype.add = function(object) {};
 
 /**
- * @param {HTMLElement} element
- * @param {boolean=} opt_center
- * @param {boolean=} opt_pixels
- * @param {boolean=} opt_zscale
- */
-voodoo.Scene.prototype.attach = function(element, opt_center, opt_pixels,
-    opt_zscale) {};
-
-voodoo.Scene.prototype.detach = function() {};
-
-/**
- * @param {Object|Array.<number>} coordinate
- * @return {Object|Array.<number>}
- */
-voodoo.Scene.prototype.localToPage = function(coordinate) {};
-
-/**
  * @param {string} type
  * @param {function(voodoo.Event)} listener
  */
@@ -317,12 +322,6 @@ voodoo.Scene.prototype.on = function(type, listener) {};
  * @param {function(voodoo.Event)} listener
  */
 voodoo.Scene.prototype.off = function(type, listener) {};
-
-/**
- * @param {Object|Array.<number>} coordinate
- * @return {Object|Array.<number>}
- */
-voodoo.Scene.prototype.pageToLocal = function(coordinate) {};
 
 /** @param {THREE.Object3D} object */
 voodoo.Scene.prototype.remove = function(object) {};

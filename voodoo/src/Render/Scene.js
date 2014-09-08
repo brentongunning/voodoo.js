@@ -23,41 +23,6 @@ Scene.prototype['add'] = function(object) {};
 
 
 /**
- * Sets the local coordinate system of the scene by aligning to an HTML element.
- *
- * @param {HTMLElement} element HTML element to attach to. If null, the local coordinate system is
- *   reset back to the top left corner of the page and scaled in pixels.
- * @param {boolean=} opt_center If true, sets the origin to the element's center. If false, sets
- *   the origin to the element's top left corner. Default is true.
- * @param {boolean=} opt_pixels If true, one unit is one pixel. If false, one x unit is the
- *   element's width, and one y unit is the unit's height. Z is in pixels regardless. Default is
- *   true.
- * @param {boolean=} opt_zscale If true, the z dimension is also scaled using the average of the
- *   width and height. If false, no scaling along the z axis is performed. Default is true.
- */
-Scene.prototype['attach'] = function(element, opt_center, opt_pixels, opt_zscale) {};
-
-
-/**
- * Removes the local coordinate system of the scene.
- */
-Scene.prototype['detach'] = function() {};
-
-
-/**
- * Converts a coordinate from local-space to page-space when the scene is attached to an HTML
- * element.
- *
- * @param {Object|Array.<number>} coordinate Local space xyz coordinate.
- *
- * @return {Object|Array.<number>} Page-space coordinate.
- */
-Scene.prototype['localToPage'] = function(coordinate) {
-  return {};
-};
-
-
-/**
  * Removes an event handler.
  *
  * @param {string} type Event type.
@@ -77,19 +42,6 @@ Scene.prototype['on'] = function(type, listener) {};
 
 
 /**
- * Converts a coordinate from page-space to local-space when the scene is attached to an HTML
- * element.
- *
- * @param {Object|Array.<number>} coordinate Page-space xyz coordinate.
- *
- * @return {Object|Array.<number>} Local coordinate.
- */
-Scene.prototype['pageToLocal'] = function(coordinate) {
-  return {};
-};
-
-
-/**
  * Removes a mesh from the scene graph.
  *
  * @param {THREE.Object3D} object Object to remove.
@@ -106,11 +58,67 @@ Scene.prototype['objects'] = null;
 
 
 /**
+ * Sets the local coordinate system of the scene by aligning to an HTML element.
+ *
+ * @private
+ *
+ * @param {HTMLElement} element HTML element to attach to. If null, the local coordinate system is
+ *   reset back to the top left corner of the page and scaled in pixels.
+ * @param {boolean=} opt_center If true, sets the origin to the element's center. If false, sets
+ *   the origin to the element's top left corner. Default is true.
+ * @param {boolean=} opt_pixels If true, one unit is one pixel. If false, one x unit is the
+ *   element's width, and one y unit is the unit's height. Z is in pixels regardless. Default is
+ *   true.
+ * @param {boolean=} opt_zscale If true, the z dimension is also scaled using the average of the
+ *   width and height. If false, no scaling along the z axis is performed. Default is true.
+ */
+Scene.prototype.attach_ = function(element, opt_center, opt_pixels, opt_zscale) {};
+
+
+/**
  * Destroys objects associated with the scene.
  *
  * @private
  */
 Scene.prototype.destroy_ = function() {};
+
+
+/**
+ * Removes the local coordinate system of the scene.
+ *
+ * @private
+ */
+Scene.prototype.detach_ = function() {};
+
+
+/**
+ * Converts a coordinate from local-space to page-space when the scene is attached to an HTML
+ * element.
+ *
+ * @private
+ *
+ * @param {Object|Array.<number>} coordinate Local space xyz coordinate.
+ *
+ * @return {Object|Array.<number>} Page-space coordinate.
+ */
+Scene.prototype.localToPage_ = function(coordinate) {
+  return {};
+};
+
+
+/**
+ * Converts a coordinate from page-space to local-space when the scene is attached to an HTML
+ * element.
+ *
+ * @private
+ *
+ * @param {Object|Array.<number>} coordinate Page-space xyz coordinate.
+ *
+ * @return {Object|Array.<number>} Local coordinate.
+ */
+Scene.prototype.pageToLocal_ = function(coordinate) {
+  return {};
+};
 
 
 /**

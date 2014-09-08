@@ -58,7 +58,7 @@ var CubbyView = voodoo.View.extend({
 
     this.scene.add(mesh);
 
-    this.scene.attach(this.model.element, true, false, true);
+    this.attach(this.model.element, true, false, true);
 
     this.mesh = mesh;
   },
@@ -116,7 +116,7 @@ var CubbyStencilView = voodoo.View.extend({
 
     this.scene.add(this.stencilMesh, true, false);
 
-    this.scene.attach(this.model.element, true, false, true);
+    this.attach(this.model.element, true, false, true);
   },
 
   unload: function() {

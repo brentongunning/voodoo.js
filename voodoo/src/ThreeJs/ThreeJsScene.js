@@ -101,8 +101,72 @@ ThreeJsScene_.prototype['add'] = function(object) {
 
 
 /**
+ * Removes an event handler.
+ *
+ * @this {Engine}
+ *
+ * @param {string} type Event type.
+ * @param {function(Event)} listener Event listener.
+ */
+ThreeJsScene_.prototype['off'] = function(type, listener) {
+  this.dispatcher_.off_(type, listener);
+};
+
+
+/**
+ * Adds an event handler.
+ *
+ * @this {Engine}
+ *
+ * @param {string} type Event type.
+ * @param {function(Event)} listener Event listener.
+ */
+ThreeJsScene_.prototype['on'] = function(type, listener) {
+  this.dispatcher_.on_(type, listener);
+};
+
+
+/**
+ * Removes an object to the ThreeJs scene.
+ *
+ * @this {ThreeJsScene_}
+ *
+ * @param {THREE.Object3D} object Object to remove.
+ */
+ThreeJsScene_.prototype['remove'] = function(object) {
+  log_.assert_(object, 'object must be valid.', '(ThreeJsScene_::remove)');
+
+  var event = new window['voodoo']['Event']('remove');
+  event.object = object;
+  this.dispatcher_.dispatchEvent_(this.view_, event);
+
+  if (object['addedToVoodooTriggers'])
+    object.visible = false;
+  else
+    this.parent_.remove(object);
+
+  object['addedToVoodooScene'] = false;
+
+  var index = this.objects_.indexOf(object);
+  if (index !== -1)
+    this.objects_.splice(index, 1);
+
+  if (this.isMesh_(object)) {
+    index = this.meshes_.indexOf(object);
+    if (index !== -1)
+      this.meshes_.splice(index, 1);
+  }
+
+  // Removing an object forces a re-render no matter what since the object doesn't exist to check
+  // if it's inside the frustum anymore.
+  this.forceRender_ = true;
+};
+
+
+/**
  * Sets the local coordinate system of the scene by aligning to an HTML element.
  *
+ * @private
  * @this {ThreeJsScene_}
  *
  * @param {HTMLElement} element HTML element to attach to. If null, the local coordinate system is
@@ -114,7 +178,7 @@ ThreeJsScene_.prototype['add'] = function(object) {
  * @param {boolean=} opt_zscale If true, the z dimension is also scaled using the average of the
  *   width and height. If false, no scaling along the z axis is performed. Default is true.
  */
-ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels, opt_zscale) {
+ThreeJsScene_.prototype.attach_ = function(element, opt_center, opt_pixels, opt_zscale) {
   log_.assert_(element, 'element must be valid.', '(ThreeJsScene_::attach)');
 
   var center = typeof opt_center !== 'undefined' ? opt_center : true;
@@ -198,11 +262,36 @@ ThreeJsScene_.prototype['attach'] = function(element, opt_center, opt_pixels, op
 
 
 /**
+ * Destroys objects associated with the scene.
+ *
+ * @private
+ */
+ThreeJsScene_.prototype.destroy_ = function() {
+  this.scene_.remove(this.parent_);
+
+  // TODO: Remove
+  // This is hack to workaround a memory leak in Three.js.
+  // https://github.com/mrdoob/three.js/issues/4887
+  this.scene_['__objectsRemoved'] = [];
+
+  if (this.trackId_ !== null)
+    this.detach_();
+
+  this.dispatcher_.destroy_();
+  this.dispatcher_ = null;
+  this.scene_ = null;
+  this.view_ = null;
+  this.parent_ = null;
+};
+
+
+/**
  * Removes the local coordinate system of the scene.
  *
+ * @private
  * @this {ThreeJsScene_}
  */
-ThreeJsScene_.prototype['detach'] = function() {
+ThreeJsScene_.prototype.detach_ = function() {
   var event = new window['voodoo']['Event']('detach');
   this.dispatcher_.dispatchEvent_(null, event);
 
@@ -223,13 +312,14 @@ ThreeJsScene_.prototype['detach'] = function() {
  * Converts a coordinate from local-space to page-space when the scene is attached to an HTML
  * element.
  *
+ * @private
  * @this {ThreeJsScene_}
  *
  * @param {Object|Array.<number>} coordinate Local space xyz coordinate.
  *
  * @return {Object|Array.<number>} Page-space coordinate.
  */
-ThreeJsScene_.prototype['localToPage'] = function(coordinate) {
+ThreeJsScene_.prototype.localToPage_ = function(coordinate) {
   log_.assert_(coordinate, 'coordinate must be valid.', '(ThreeJsScene_::localToPage)');
 
   var parentPosition = this.parent_.position;
@@ -254,42 +344,17 @@ ThreeJsScene_.prototype['localToPage'] = function(coordinate) {
 
 
 /**
- * Removes an event handler.
- *
- * @this {Engine}
- *
- * @param {string} type Event type.
- * @param {function(Event)} listener Event listener.
- */
-ThreeJsScene_.prototype['off'] = function(type, listener) {
-  this.dispatcher_.off_(type, listener);
-};
-
-
-/**
- * Adds an event handler.
- *
- * @this {Engine}
- *
- * @param {string} type Event type.
- * @param {function(Event)} listener Event listener.
- */
-ThreeJsScene_.prototype['on'] = function(type, listener) {
-  this.dispatcher_.on_(type, listener);
-};
-
-
-/**
  * Converts a coordinate from page-space to local-space when the scene is attached to an HTML
  * element.
  *
+ * @private
  * @this {ThreeJsScene_}
  *
  * @param {Object|Array.<number>} coordinate Page-space xyz coordinate.
  *
  * @return {Object|Array.<number>} Local coordinate.
  */
-ThreeJsScene_.prototype['pageToLocal'] = function(coordinate) {
+ThreeJsScene_.prototype.pageToLocal_ = function(coordinate) {
   log_.assert_(coordinate, 'coordinate must be valid.', '(ThreeJsScene_::pageToLocal)');
 
   var parentPosition = this.parent_.position;
@@ -310,67 +375,6 @@ ThreeJsScene_.prototype['pageToLocal'] = function(coordinate) {
       (coordinate[2] - parentPosition.z) / parentScale.z
     ];
   }
-};
-
-
-/**
- * Removes an object to the ThreeJs scene.
- *
- * @this {ThreeJsScene_}
- *
- * @param {THREE.Object3D} object Object to remove.
- */
-ThreeJsScene_.prototype['remove'] = function(object) {
-  log_.assert_(object, 'object must be valid.', '(ThreeJsScene_::remove)');
-
-  var event = new window['voodoo']['Event']('remove');
-  event.object = object;
-  this.dispatcher_.dispatchEvent_(this.view_, event);
-
-  if (object['addedToVoodooTriggers'])
-    object.visible = false;
-  else
-    this.parent_.remove(object);
-
-  object['addedToVoodooScene'] = false;
-
-  var index = this.objects_.indexOf(object);
-  if (index !== -1)
-    this.objects_.splice(index, 1);
-
-  if (this.isMesh_(object)) {
-    index = this.meshes_.indexOf(object);
-    if (index !== -1)
-      this.meshes_.splice(index, 1);
-  }
-
-  // Removing an object forces a re-render no matter what since the object doesn't exist to check
-  // if it's inside the frustum anymore.
-  this.forceRender_ = true;
-};
-
-
-/**
- * Destroys objects associated with the scene.
- *
- * @private
- */
-ThreeJsScene_.prototype.destroy_ = function() {
-  this.scene_.remove(this.parent_);
-
-  // TODO: Remove
-  // This is hack to workaround a memory leak in Three.js.
-  // https://github.com/mrdoob/three.js/issues/4887
-  this.scene_['__objectsRemoved'] = [];
-
-  if (this.trackId_ !== null)
-    this['detach']();
-
-  this.dispatcher_.destroy_();
-  this.dispatcher_ = null;
-  this.scene_ = null;
-  this.view_ = null;
-  this.parent_ = null;
 };
 
 

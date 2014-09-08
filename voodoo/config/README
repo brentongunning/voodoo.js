@@ -45,6 +45,7 @@ Release Notes
 Feature: Reference counted objects in cache.
 Feature: Asynchronous gets and sets in cache.
 Feature: Added Debug.disableCache.
+Design Change: Moved attach, detach, localToPage and pageToLocal methods from Scene to View.
 Bug Fix: Engine throws error when antialiasing is requested but not supported.
 Bug Fix: Setting View.loaded more than once caused Model.loaded to be false.
 Bug Fix: Memory leak when creating/destroying models repeatedly.
