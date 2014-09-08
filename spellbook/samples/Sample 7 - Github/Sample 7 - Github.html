@@ -44,16 +44,7 @@
 
 	var ParallaxModel = voodoo.Model3D.extend(voodoo.Attachable);
 	ParallaxModel = ParallaxModel.extend(voodoo.Movable);
-
-	ParallaxView = ParallaxModel.prototype.viewType.extend({
-		getLocation: function(coord) {
-			return this.scene.localToPage({x: 0, y: 0});
-		}
-	});
-
 	ParallaxModel = ParallaxModel.extend({
-		viewType: ParallaxView,
-
 		setUpViews: function() {
 			this.base.setUpViews();
 
@@ -62,7 +53,7 @@
 				var mouseX = e.pageX;
 				var mouseY = e.pageY;
 
-				var location = that.view.getLocation();
+				var location = that.view.localToPage({x: 0, y: 0});
 				var deltaX = mouseX - location.x;
 				var deltaY = mouseY - location.y;
 

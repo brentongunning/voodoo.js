@@ -70,7 +70,7 @@ var AttachedModel = voodoo.Model.extend({
       var mesh = new THREE.Mesh(geometry, material);
 
       this.scene.add(mesh);
-      this.scene.attach(this.model.element);
+      this.attach(this.model.element);
       this.triggers.add(mesh);
     }
   })

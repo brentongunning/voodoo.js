@@ -43,10 +43,10 @@ var ArcballView_ = voodoo.View.extend({
         this.arcballRadius_ = modelArcballRadius;
     }
 
-    var center = this.scene.localToPage(this.arcballCenter_);
+    var center = this.localToPage(this.arcballCenter_);
     return {
       center: center,
-      radius: Math.abs(this.scene.localToPage(
+      radius: Math.abs(this.localToPage(
           [this.arcballCenter_.x - this.arcballRadius_, 0, 0])[0] -
           center.x)
     };

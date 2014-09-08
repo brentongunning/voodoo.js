@@ -7,30 +7,6 @@
 
 
 /**
- * The view that attaches scene meshes to elements.
- *
- * @constructor
- * @private
- * @extends {voodoo.View}
- */
-var AttachableView_ = voodoo.View.extend({
-
-  above: false,
-  below: false,
-
-  attachScene_: function(element, center, pixels) {
-    this.scene.attach(element, center, pixels);
-  },
-
-  detachScene_: function() {
-    this.scene.detach();
-  }
-
-});
-
-
-
-/**
  * Adds functions to attach meshes to HTML elements.
  *
  * Options:
@@ -53,7 +29,7 @@ var Attachable = this.Attachable = voodoo.Model.extend({
 
   name: 'Attachable',
   organization: 'spellbook',
-  viewType: AttachableView_,
+  viewType: voodoo.View.extend(),
 
   initialize: function(options) {
     this.base.initialize(options);
@@ -108,9 +84,9 @@ Attachable.prototype.attach = function(element, opt_center, opt_pixelScale) {
   log_.assert_(element instanceof HTMLElement, 'element must be an HTMLElement.',
       '(Attachable::attach)');
 
-  this.view.attachScene_(element, opt_center, opt_pixelScale);
+  this.view.attach(element, opt_center, opt_pixelScale);
   if (this.stencilView)
-    this.stencilView.attachScene_(element, opt_center, opt_pixelScale);
+    this.stencilView.attach(element, opt_center, opt_pixelScale);
 
   this.dispatch(new voodoo.Event('attach', this));
 
@@ -126,9 +102,9 @@ Attachable.prototype.attach = function(element, opt_center, opt_pixelScale) {
 Attachable.prototype.detach = function() {
   this.dispatch(new voodoo.Event('detach', this));
 
-  this.view.detachScene_();
+  this.view.detach();
   if (this.stencilView)
-    this.stencilView.detachScene_();
+    this.stencilView.detach();
 
   return this;
 };

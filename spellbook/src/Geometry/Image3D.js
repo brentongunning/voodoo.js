@@ -21,7 +21,7 @@ var Image3DView_ = voodoo.View.extend({
   load: function() {
     this.base.load();
 
-    this.scene.attach(this.model.element_, false, false, false);
+    this.attach(this.model.element_, false, false, false);
 
     this.loaded = false;
   },
