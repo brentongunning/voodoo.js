@@ -62,7 +62,7 @@ SceneTests.prototype.testAttachCenterPixels = function() {
         this.scene.add(mesh);
         this.triggers.add(mesh);
 
-        this.scene.attach(this.model.element/*, true, true, true */);
+        this.attach(this.model.element/*, true, true, true */);
       }
     }),
     initialize: function(options) {
@@ -106,7 +106,7 @@ SceneTests.prototype.testAttachTopLeftUnits = function() {
         this.scene.add(mesh);
         this.triggers.add(mesh);
 
-        this.scene.attach(this.model.element, false, false, true);
+        this.attach(this.model.element, false, false, true);
       }
     }),
     initialize: function(options) {
@@ -148,10 +148,7 @@ SceneTests.prototype.testDetach = function() {
         this.scene.add(mesh);
         this.triggers.add(mesh);
 
-        this.scene.attach(this.model.element, true, false, true);
-      },
-      detach: function() {
-        this.scene.detach();
+        this.attach(this.model.element, true, false, true);
       }
     }),
     initialize: function(options) {
@@ -215,11 +212,8 @@ SceneTests.prototype.testSceneEvents = function() {
         this.scene.add(this.mesh);
         this.triggers.add(this.mesh);
 
-        this.scene.attach(this.model.element, true, false);
+        this.attach(this.model.element, true, false);
         assertEquals('scene objects:', 1, this.scene.objects.length);
-      },
-      detach: function() {
-        this.scene.detach();
       },
       unload: function() {
         this.scene.remove(this.mesh);
@@ -271,13 +265,7 @@ SceneTests.prototype.testConvertCoordinates = function() {
         this.scene.add(mesh);
         this.triggers.add(mesh);
 
-        this.scene.attach(this.model.element, true, false, false);
-      },
-      localToPage: function(coordinate) {
-        return this.scene.localToPage(coordinate);
-      },
-      pageToLocal: function(coordinate) {
-        return this.scene.pageToLocal(coordinate);
+        this.attach(this.model.element, true, false, false);
       }
     }),
     initialize: function(options) {
@@ -329,13 +317,7 @@ SceneTests.prototype.testZScaling = function() {
         this.scene.add(mesh);
         this.triggers.add(mesh);
 
-        this.scene.attach(this.model.element, true, false, true);
-      },
-      localToPage: function(coordinate) {
-        return this.scene.localToPage(coordinate);
-      },
-      pageToLocal: function(coordinate) {
-        return this.scene.pageToLocal(coordinate);
+        this.attach(this.model.element, true, false, true);
       }
     }),
     initialize: function(options) {

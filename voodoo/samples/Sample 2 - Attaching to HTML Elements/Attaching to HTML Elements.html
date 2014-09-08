@@ -47,7 +47,7 @@ var SampleView = voodoo.View.extend({
     // unit is one pixel. If false, 1 unit along the x axis is the width of the element, and 1 unit
     // along the y axis is the height of the element. That is why a sphere of radius 0.5 will scale
     // to fit perfectly inside our div.
-  	this.scene.attach(this.model.element, true, false, true);
+  	this.attach(this.model.element, true, false, true);
   }
 });
 

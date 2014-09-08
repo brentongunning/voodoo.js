@@ -226,7 +226,7 @@ Utility.prototype['convertCssColorToThreeJsColor'] = function(cssColor) {
  * Gets the absolute position of an HTML element relative to the top left corner of the page.
  *
  * This may be used to dynamically position models relative to HTML elements as an alternative to
- * Scene.attach.
+ * attach.
  *
  * @param {Element} element HTML element.
  *
