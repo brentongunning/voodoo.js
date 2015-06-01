@@ -130,7 +130,7 @@ if %merge%==1 (
   call :delete "%build_merged%"
   call :mkdir "%project_build%"
   call :append "%header%" "%build_merged%"
-  for /f "usebackq delims=*" %%A in ("%project_config%\sources.txt") do (
+  for /f "usebackq delims=*" %%A in ("%project_config%\sources-win.txt") do (
     call :append "%project_src%\%%A" "%build_merged%"
   )
   call :append "%footer%" "%build_merged%"
@@ -284,14 +284,14 @@ if "%op%"=="testdebug" set test=1
 set jstest="%java%" -jar "%root%js-test-driver\JsTestDriver.jar"
 set port=46576
 set server=http://localhost:46576
-set testconf=%project_config%\jsTestDriver.conf
-if "%op%"=="testdebug" set testconf=%project_config%\jsTestDriver-debug.conf
+set testconf=%project_config%\jsTestDriver-win.conf
+if "%op%"=="testdebug" set testconf=%project_config%\jsTestDriver-debug-win.conf
 set captureConsole=
 if "%op%"=="testdebug" set captureConsole=--captureConsole
 
 if %test%==1 (
   echo [Build] Testing
-  %jstest% --port "%port%" --browser "%browsersToTest%" %captureConsole% --config "%testconf%" -preloadFiles --reset --server "%server%" --tests all --verbose --raiseOnFailure true --basePath "%project_root%"
+  %jstest% --port "%port%" --browser "%browsersToTest%" %captureConsole% --config "%testconf%" --preloadFiles --reset --server "%server%" --tests all --verbose --raiseOnFailure true --basePath "%project_root%"
   if errorlevel 1 call :error "Testing failed"
   echo.
 )
