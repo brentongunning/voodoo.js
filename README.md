@@ -36,7 +36,7 @@ Voodoo currently builds on Windows. It would be great if someone ported the buil
 
   https://developers.google.com/closure/utilities/docs/linter_howto
 
-#### Step 3: Install 7zip
+#### Step 3: Install 7zip (Windows)
 
   http://www.7-zip.org/
   
@@ -44,7 +44,7 @@ Voodoo currently builds on Windows. It would be great if someone ported the buil
 
   http://www.java.com/en/
 
-#### Step 5: Update tools\user.cmd
+#### Step 5: Update tools\user.cmd (Windows)
 
   Update this script with paths to your installations and browsers to test.
 
