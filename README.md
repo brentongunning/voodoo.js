@@ -26,7 +26,7 @@ In addition, after building there will be these new folders:
 
 ### How to Build
 
-Voodoo currently builds on Windows. It would be great if someone ported the build engine to Unix and Python.
+Voodoo builds on Windows, Mac, and Linux.
 
 #### Step 1: Install Python 2.7
 
@@ -36,7 +36,7 @@ Voodoo currently builds on Windows. It would be great if someone ported the buil
 
   https://developers.google.com/closure/utilities/docs/linter_howto
 
-#### Step 3: Install 7zip (Windows)
+#### Step 3: Install 7zip (Windows) or Zip (Mac/Linux)
 
   http://www.7-zip.org/
   
@@ -50,7 +50,7 @@ Voodoo currently builds on Windows. It would be great if someone ported the buil
 
 #### Step 6: Build
 
-  Run build.cmd in the root folder.
+  Run build.cmd (Windows) or build.sh (Mac/Linux) in the root folder.
 
 ## License
   

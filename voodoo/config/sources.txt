@@ -32,7 +32,7 @@ Event/Raycaster.js
 Event/MouseDetector.js
 
 ThreeJs/ThreeJsCamera.js
-ThreeJS/ThreeJsRaycaster.js
+ThreeJs/ThreeJsRaycaster.js
 ThreeJs/ThreeJsScene.js
 ThreeJs/ThreeJsSceneFactory.js
 ThreeJs/ThreeJsTriggers.js
