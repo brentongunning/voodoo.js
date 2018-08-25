@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Voodoo Documentation - Class: View</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Class: View</h1>
+    
+    
+
+
+
+<section>
+    
+<header>
+    <h2>
+    View
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    
+    
+    <h4 class="name" id="View"><span class="type-signature"></span>new View<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Base class for a Model&#39;s visuals. Every Model has a View.</p>
+
+<p>Developers should extend this base class to their add 3D meshes to the
+scene. Voodoo will automatically create instances of your Views when you
+instantiate your Model. Since there may be several Views created, each
+View should not store much state.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+    
+    
+        <h3 class="subsection-title">Extends</h3>
+        
+        <ul>
+            <li><a href="Extendable.html">Extendable</a></li>
+        </ul>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    
+    
+    <h4 class="name" id="['above']"><span class="type-signature"></span>above<span class="type-signature"> :boolean</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Whether this view&#39;s contents should be created on the above layer. Setting
+this to false when all the View&#39;s contents are below the page will result
+in better performance.</p>
+
+<p>Default is true.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    
+    
+    <h4 class="name" id="['base']"><span class="type-signature"></span>base<span class="type-signature"> :Object</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Parent method accessor. This work like base in C# or super in Java.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        
+        Extendable.base
+    </li></dd>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    
+    
+    <h4 class="name" id="['below']"><span class="type-signature"></span>below<span class="type-signature"> :boolean</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Whether this view&#39;s contents should be created on the below layer. Setting
+this to false when all the View&#39;s contents are above the page will result
+in better performance.</p>
+
+<p>Default is true.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    
+    
+    <h4 class="name" id="['cache']"><span class="type-signature"></span>cache<span class="type-signature"> :<a href="Cache.html">Cache</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>The storage cache for view objects.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    
+    
+    <h4 class="name" id="['camera']"><span class="type-signature"></span>camera<span class="type-signature"> :<a href="Camera.html">Camera</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>The camera for this View.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    
+    
+    <h4 class="name" id="['loaded']"><span class="type-signature"></span>loaded<span class="type-signature"> :boolean</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>The flag indicating whether this View has finished loading. This
+is automatically set to true after load() unless the user sets it
+to false during load(). If the user sets it to false, they are responsible
+for setting it to true later (ex. after textures finish loading). When
+all views have loaded, the onload event fires from the model.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    
+    
+    <h4 class="name" id="['model']"><span class="type-signature"></span>model<span class="type-signature"> :<a href="Model.html">Model</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>The model for this View.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    
+    
+    <h4 class="name" id="['renderer']"><span class="type-signature"></span>renderer<span class="type-signature"> :<a href="global.html#Renderer">Renderer</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>The type of rendering engine.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    
+    
+    <h4 class="name" id="['scene']"><span class="type-signature"></span>scene<span class="type-signature"> :<a href="Scene.html">Scene</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>The scene for this View.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    
+    
+    <h4 class="name" id="['triggers']"><span class="type-signature"></span>triggers<span class="type-signature"> :<a href="Triggers.html">Triggers</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>The mouse event triggers for this View.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    
+    
+    <h4 class="name" id="['dirty']"><span class="type-signature"></span>dirty<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Marks the view&#39;s contents as dirty so that they will be rendered again.</p>
+    </div>
+    
+
+    
+    
+    
+        <h5>This:</h5>
+        <ul><li>{<a href="View.html">View</a>}</li></ul>
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    
+    
+    <h4 class="name" id="['load']"><span class="type-signature"></span>load<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Creates the View&#39;s 3D meshes and adds them to the scene.</p>
+
+<p>Derived classes may override this. This should never be called by the user.</p>
+    </div>
+    
+
+    
+    
+    
+        <h5>This:</h5>
+        <ul><li>{<a href="Model.html">Model</a>}</li></ul>
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    
+    
+    <h4 class="name" id="['unload']"><span class="type-signature"></span>unload<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Removes the View&#39;s 3D meshes from the scene.</p>
+
+<p>Derived classes may override this. This should never be called by the user.</p>
+    </div>
+    
+
+    
+    
+    
+        <h5>This:</h5>
+        <ul><li>{<a href="Model.html">Model</a>}</li></ul>
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Cache.html">Cache</a></li><li><a href="Camera.html">Camera</a></li><li><a href="Debug.html">Debug</a></li><li><a href="Engine.html">Engine</a></li><li><a href="Event.html">Event</a></li><li><a href="Model.html">Model</a></li><li><a href="Options.html">Options</a></li><li><a href="Scene.html">Scene</a></li><li><a href="Triggers.html">Triggers</a></li><li><a href="Utility.html">Utility</a></li><li><a href="View.html">View</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Model['extend']">Model.extend</a></li><li><a href="global.html#Renderer">Renderer</a></li><li><a href="global.html#this['debug']">debug</a></li><li><a href="global.html#this['engine']">engine</a></li><li><a href="global.html#this['utility']">utility</a></li><li><a href="global.html#this['version']">version</a></li><li><a href="global.html#View['extend']">View.extend</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<script> prettyPrint(); </script>
+</body>
+</html>

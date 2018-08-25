@@ -1,0 +1,71 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  background-color: rgb(255, 255, 255);
+}
+
+.hero-unit {
+  background-color: rgb(20, 20, 20);
+  color: rgb(240, 240, 240);
+}
+
+.spacer100 {
+  height: 100px;
+}
+
+.spacer25 {
+  height: 25px;
+}
+
+.spacer10 {
+  height: 10px;
+}
+
+.marketing {
+  text-align: center;
+  color: #5a5a5a;
+}
+
+.marketing h1 {
+  margin: 60px 0 10px;
+  font-size: 60px;
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.marketing-byline {
+  margin-bottom: 40px;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.25;
+  color: #999;
+}
+
+#main {
+  overflow: auto;
+  padding-bottom: 60px; /* this needs to be bigger than footer height*/
+}
+
+#wrap {
+  width: 100%;
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0px 0px -60px 0px;
+}
+
+#footer {
+  width: 100%;
+  background-color: #f5f5f5;
+  color: #777;
+  height: 60px;
+}
+
+.error {
+  color: red;
+}

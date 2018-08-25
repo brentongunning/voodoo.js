@@ -1,0 +1,26 @@
+    <!-- Add some space so that the footer isn't right up on the content -->
+    <div class="spacer100"></div>
+  </div>
+</div>
+
+<div id="footer">
+  <div class="container">
+    <center>
+      <p class="credit">Thanks to ThreeJs, Modernizr, and Bootstrap for making this project possible.</p>
+      <p>Designed and built by <a href="http://www.twitter.com/brentgunning">Brent Gunning</a>. Logo from <a href="http://findicons.com/icon/33154/mask_02?id=33154">Fast Icon</a>.</p>
+    </center>
+  </div>
+</div>
+
+<!-- Put these at the end to load the page faster -->
+<script src="<?php echo $voodoo_relative_host_path; ?>/js/jquery.js"></script>
+<script src="<?php echo $voodoo_relative_host_path; ?>/js/bootstrap.min.js"></script>
+<script src="<?php echo $voodoo_relative_host_path; ?>/js/jquery.scrollto.min.js"></script>
+
+<?php if ($section != '') {
+  echo '<script>';
+  echo '  window.setTimeout(function() {';
+  echo '    $.scrollTo(\'#' . $section . '\', 650);';
+  echo '  }, 200);';
+  echo '</script>';
+} ?>

@@ -1,0 +1,66 @@
+<?php
+  preg_match('/.*\/(?P<filename>(\w|\d)+)(\.php|\/)/', $_SERVER['REQUEST_URI'], $matches);
+
+  if (array_key_exists('filename', $matches))
+    $page = $matches['filename'];
+  else $page = 'index';
+
+  if (array_key_exists('section', $_GET))
+    $section = $_GET['section'];
+  else $section = '';
+?>
+
+<div id="wrap">
+
+  <!-- Navbar -->
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+
+        <?php if ($page == 'index') { ?>
+          <a class="brand" id="voodoomenu" href="" onclick="$.scrollTo(0, 650); setActiveMenu(''); return false;">Voodoo</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li <?php if ($section == 'features') { ?> class="active" <?php } ?> id="featuresmenu"><a href="" onclick="$.scrollTo('#features', 650); setActiveMenu('featuresmenu'); return false;">Features</a></li>
+              <li <?php if ($section == 'getstarted') { ?> class="active" <?php } ?> id="getstartedmenu"><a href="" onclick="$.scrollTo('#getstarted', 650); setActiveMenu('getstartedmenu'); return false;">Get Started</a></li>
+              <li id="learnmoremenu"><a href="<?php echo $voodoo_relative_host_path; ?>/learnmore.php">Learn More</a></li>
+              <li id="documentationmenu"><a href="<?php echo $voodoo_relative_host_path; ?>/documentation.php">Documentation</a></li>
+              <li id="supportmenu"><a href="<?php echo $voodoo_relative_host_path; ?>/support.php">Support</a></li>
+              <li id="blogmenu"><a href="<?php echo $voodoo_relative_host_path; ?>/blog">Blog</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        <?php } else { ?>
+          <a class="brand" id="voodoomenu" href="<?php echo $voodoo_relative_host_path; ?>/index.php">Voodoo</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li id="featuresmenu"><a href="<?php echo $voodoo_relative_host_path; ?>/index.php?section=features">Features</a></li>
+              <li id="getstartedmenu"><a href="<?php echo $voodoo_relative_host_path; ?>/index.php?section=getstarted">Get Started</a></li>
+              <li id="learnmoremenu" <?php if ($page == 'learnmore') { ?> class="active" <?php } ?>><a href="<?php echo $voodoo_relative_host_path; ?>/learnmore.php">Learn More</a></li>
+              <li id="documentationmenu" <?php if ($page == 'documentation') { ?> class="active" <?php } ?>><a href="<?php echo $voodoo_relative_host_path; ?>/documentation.php">Documentation</a></li>
+              <li id="supportmenu" <?php if ($page == 'support') { ?> class="active" <?php } ?>><a href="<?php echo $voodoo_relative_host_path; ?>/support.php">Support</a></li>
+              <li id="blogmenu"<?php if ($page == 'blog') { ?> class="active" <?php } ?>><a href="<?php echo $voodoo_relative_host_path; ?>/blog">Blog</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        <?php } ?>
+        <div class="nav pull-right">
+          <a href="http://www.twitter.com/voodoojs"><img src="<?php echo $voodoo_relative_host_path; ?>/ico/twitter.png?"></a>
+          <a href="https://plus.google.com/communities/102475989401421622056"><img src="<?php echo $voodoo_relative_host_path; ?>/ico/gplus.png"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <a href="https://github.com/brentongunning/voodoo"><img style="position: fixed; top: 0; right: 0; border: 0; z-index: 12000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+  
+  
+
+  <div class="spacer25"></div>
+  <div class="spacer25"></div>
+  <div class="spacer10"></div>
+
+  <div id="main" class="container clear-top">

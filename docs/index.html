@@ -1,0 +1,273 @@
+---
+title: index
+---
+
+{% include page-header.html %}
+{% include content-header.html %}
+
+<div class="alert alert-info fade in" style="display: none;" id="noWebGLSupportAlert">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>Oh no!</strong> Your browser doesn't support WebGL and we can't show you any cool demos. Come back using a <a href="http://caniuse.com/webgl">WebGL-supported browser</a>.
+</div>
+
+<!-- Main hero unit for a primary marketing message or call to action -->
+<div class="hero-unit">
+  <img src="img/logo.png" alt="Voodoo main logo" class="pull-left" width="400px" height="400px">
+  <h1>Introducing Voodoo!</h1>
+  <br/>
+  <p class="lead">
+    Voodoo is a Javascript framework that lets you easily mix 2D and 3D content together on the same page. See for yourself.
+  </p>
+  <br/>
+  <p>
+    <center><a href="#getstarted" class="btn btn-primary btn-large" setActiveMenu('getstartedmenu'); return false;" id="getStartedButton">Get Started &raquo;</a></center>
+  </p>
+</div>
+
+<div class="spacer25" id="features"></div>
+
+<!-- Features -->
+<!-- The elements here are repositioned in a script at the end depending on whether the 3D demos are supported. -->
+<div class="marketing">
+  <h1 class="container">Features</h1>
+</div>
+<div id="featurescontent"></div>
+
+<div id="feature1" style="display: none;">
+  <h3><img src="ico/black_multiple.png"></img>&nbsp 3D and 2D Together</h3>
+  <p>
+    Voodoo lets 3D WebGL objects be placed anywhere on a standard HTML page. Above. Below. Side-by-side. The goal is to make designing for 3D on the web as natural as 2D. Behind the scenes, Voodoo maps its 3D space onto the 2D landscape, allowing 3D objects to scroll and resize automatically with the rest.
+  </p>
+</div>
+
+<div id="feature2" style="display: none;">
+  <h3><img src="ico/black_hammer.png"></img>&nbsp Reusable Objects</h3>
+  <p>
+    Voodoo's Model-View framework allows developers to create 3D objects that can be shared with others. Examples could include buttons, graphs, characters, or anything else. All 3D object extend Voodoo's base classes provided by the engine. The model contain its state and the view its renderables.
+  </p>
+</div>
+
+<div id="feature3" style="display: none;">
+  <h3><img src="ico/black_handshake.png"></img>&nbsp Three.js Support</h3>
+  <p>
+    Voodoo natively supports ThreeJs, the most popular WebGL framework. Use it to load models, create geometry, setup materials and more.
+  </p>
+</div>
+
+<div id="feature4" style="display: none;">
+  <h3><img src="ico/black_pointer.png"></img>&nbsp DOM Events</h3>
+  <p>
+    3D objects expose DOM events such as click and mousemove similar to 2D HTML elements. Voodoo detects manages listeners and detects these events behind the scenes.
+  </p>
+</div>
+
+<div class="spacer25" id="getstarted"></div>
+
+<!-- Get Started -->
+<div class="marketing">
+  <h1 class="container">Get Started</h1>
+  <p class="marketing-byline">Public Beta 0.9.0</p>
+</div>
+
+</p>
+<legend>What you get</legend>        
+<ul>
+  <li>Minified debug and production builds</li>
+  <li>Samples</li>
+  <li>Offline documentation</li>
+  <li>Closure compiler externs</li>
+  <li><strong>Permissive Free Software License</strong></li>
+</ul>
+<div class="spacer10"></div>
+<div class="spacer10"></div>
+<div class="spacer10"></div>
+
+<button class="btn btn-primary btn-large" id="downloadButton" onclick="location.href='build/voodoo-0.9.0.zip';">Download Voodoo 0.9.0</button>
+
+{% include content-footer.html %}
+
+<script src="js/three.min.js"></script>
+<script src="js/voodoo.min.js"></script>
+<script src="js/modernizr.min.js"></script>
+<script src="js/voodoo-piegraph.js"></script>
+<script src="js/voodoo-jsonmodel.js"></script>
+<script src="js/voodoo-ring.js"></script>
+
+<script>
+  var features = document.getElementById('featurescontent');
+  var feature1 = document.getElementById('feature1');
+  var feature2 = document.getElementById('feature2');
+  var feature3 = document.getElementById('feature3');
+  var feature4 = document.getElementById('feature4');
+
+  feature1.parentNode.removeChild(feature1);
+  feature2.parentNode.removeChild(feature2);
+  feature3.parentNode.removeChild(feature3);
+  feature4.parentNode.removeChild(feature4);
+
+  function isWebGLEnabled() {
+    try {
+      return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
+    } catch(e) {
+      return false;
+    }
+  }
+
+  // Restructure the page to show WebGL demos if they are supported
+  if (Modernizr.webgl && isWebGLEnabled()) {
+    var row1 = document.createElement('div');
+    row1.setAttribute('class', 'row');
+    features.appendChild(row1);
+
+    var row1col1 = document.createElement('div');
+    row1col1.setAttribute('class', 'span5');
+    row1.appendChild(row1col1);
+
+    var row1col2 = document.createElement('div');
+    row1col2.setAttribute('class', 'span5 offset2');
+    row1col2.id = 'example1';
+    row1col2.style.height = '340px';
+    row1.appendChild(row1col2);
+    row1col2.innerHTML = "<a href='http://caniuse.com/webgl' style='color:rgb(170,170,170)'><center><p class='lead'>" +
+        "Example: WebGL Support in September 2013</p></center></a>" +
+        "<div id='demo1' style='width:100%; height:310px'></div>";
+
+    var row2 = document.createElement('div');
+    row2.setAttribute('class', 'row');
+    features.appendChild(row2);
+
+    var row2col1 = document.createElement('div');
+    row2col1.setAttribute('class', 'span5');
+    row2col1.id = 'example2';
+    row2col1.style.height = '270px';
+    row2.appendChild(row2col1);
+
+    var row2col2 = document.createElement('div');
+    row2col2.setAttribute('class', 'span5 offset2');
+    row2.appendChild(row2col2);
+
+    row1col1.appendChild(feature1);
+    row2col2.appendChild(feature2);
+    row1col1.appendChild(feature3);
+    row2col2.appendChild(feature4);
+
+    // Space
+    var spaceRow = document.createElement('div');
+    spaceRow.setAttribute('class', 'row');
+    features.appendChild(spaceRow);
+    spaceRow.style.height = '100px';
+
+    // Create the final example
+    var row3 = document.createElement('div');
+    row3.setAttribute('class', 'row');
+    features.appendChild(row3);
+    row3.style.height = '80px';
+
+    var row4 = document.createElement('div');
+    row4.setAttribute('class', 'row');
+    features.appendChild(row4);
+
+    var row5 = document.createElement('div');
+    row5.setAttribute('class', 'row');
+    features.appendChild(row5);
+    row5.style.height = '80px';
+
+    // Another space
+    var spaceRow2 = document.createElement('div');
+    spaceRow2.setAttribute('class', 'row');
+    features.appendChild(spaceRow2);
+    spaceRow2.style.height = '30px';
+
+    var row4col = document.createElement('div');
+    row4col.setAttribute('class', 'span12');
+    row4col.id = 'example3';
+    row4col.style.textAlign = 'center';
+    row4col.style['font-size'] = '115%';
+    row4col.style['vertical-align'] = 'middle';
+    row4col.style['position'] = 'relative';
+    row4col.style['z-index'] = 1;
+    row4.appendChild(row4col);
+    row4col.innerHTML ='<em>"The art challenges the technology, and the technology inspires the art." - John Lasseter</em>';
+
+    // Create the engine
+    var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+    voodoo.engine = new voodoo.Engine({
+      fov: 45,
+      aboveZIndex: 9,
+      seamZIndex: 10,
+      belowZIndex: isFirefox ? -1 : 0,
+      stencils: false
+    });
+
+    // Load 3d content
+    var pieGraph = new VoodooPieGraph({
+      elementId: 'demo1',
+      data: [
+        {name: 'Support', percent: 0.3361, color: 0xBBEE88},
+        {name: 'Partial Support', percent: 0.2024, color: 0x779944},
+        {name: 'Not Supported or Unknown', percent: 0.4685, color: 0x997744}
+      ]
+    }).on('click', function() {
+      window.location.href = 'http://caniuse.com/webgl';
+    });
+    
+    new VoodooJsonModel({
+      elementId: 'example2',
+      jsonFile: '3d/tree.json',
+      offsetWidthMultiplier: 0.8 / 6.0,
+      scale: 50,
+      rotationX: Math.PI / 2.0,
+      rotationY: Math.PI / 2.0
+    });
+    new VoodooRing({
+      upperElement: row3,
+      lowerElement: row5
+    });
+  } else {
+    var row1 = document.createElement('div');
+    row1.setAttribute('class', 'row');
+    features.appendChild(row1);
+
+    var row1col1 = document.createElement('div');
+    row1col1.setAttribute('class', 'span5');
+    row1.appendChild(row1col1);
+
+    var row1col2 = document.createElement('div');
+    row1col2.setAttribute('class', 'span5 offset2');
+    row1.appendChild(row1col2);
+
+    row1col1.appendChild(feature1);
+    row1col2.appendChild(feature2);
+    row1col1.appendChild(feature3);
+    row1col2.appendChild(feature4);
+
+    var noWebGLSupportAlert = document.getElementById('noWebGLSupportAlert');
+    noWebGLSupportAlert.style.display = 'block';
+  }
+
+  // Show the features
+  feature1.style.display = 'block';
+  feature2.style.display = 'block';
+  feature3.style.display = 'block';
+  feature4.style.display = 'block';
+
+  function setActiveMenu(menu) {
+    var featuresMenu = document.getElementById('featuresmenu');
+    var getstartedMenu = document.getElementById('getstartedmenu');
+    var learnmoreMenu = document.getElementById('learnmoremenu');
+    var documentationMenu = document.getElementById('documentationmenu');
+    var supportMenu = document.getElementById('supportmenu');
+
+    featuresMenu.removeAttribute('class');
+    getstartedMenu.removeAttribute('class');
+    learnmoreMenu.removeAttribute('class');
+    documentationMenu.removeAttribute('class');
+    supportMenu.removeAttribute('class');
+
+    var menu = document.getElementById(menu);
+    if (menu) menu.setAttribute('class', 'active');
+  }
+
+</script>
+
+{% include page-footer.html %}

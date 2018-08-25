@@ -1,0 +1,44 @@
+---
+title: learnmore
+---
+
+{% include page-header.html %}
+{% include content-header.html %}
+
+<h1>Learn More</h1>
+
+<div class="spacer25"></div>
+
+<legend>Resources</legend>
+
+<h4>Examples</h4>
+<p>See the samples bundled with Voodoo.</p>
+<div class="spacer25"></div>
+
+<h4>Documentation</h4>
+<p>See the <a href="documentation.html">VoodooJs documentation</a>, the <a href="https://github.com/brentongunning/voodoo/wiki">GitHub wiki</a>, and the <a href="http://www.threejs.org/docs">ThreeJs documentation</a>.
+<div class="spacer25"></div>
+
+<h4>Questions</h4>
+<p>Please post questions at <a href="http://stackoverflow.com/questions/tagged/voodoo">Stack Overflow</a>. Use tag <span class="label">voodoo</span></p>.
+<div class="spacer25"></div>
+
+<legend>Frequently Asked Questions</legend>
+
+<h5>What browsers are supported?</h5>
+<p>Voodoo runs on all browsers that fully implement WebGL. For a complete listing, visit <a href="http://caniuse.com/webgl">here</a>.</p>
+
+<div class="spacer25"></div>
+<h5>Where are the demos?</h5>
+<p>There are several demos on the <a href="index.html">main page</a>. Most likely your browser's WebGL support crashed. Try refreshing.</p>
+
+<div class="spacer25"></div>
+<h5>What tools are available for debugging?</h5>
+<p>The debug build of Voodoo writes trace messages to the console and performs asserts. There are also debug hooks in <code>voodoo.debug</code>. See the <a href="documentation.html">Documentation</a>. Finally, the <a href="support.html">Support</a> page has information about asking a specific question or reporting a bug.</p>
+
+<div class="spacer25"></div>
+<h5>Why did I get an error when accessing a variable in the View from the Model?</h5>
+<p>A Model may call any method on a View but must not access its variables. This is because <code>Model.view</code> and <code>Model.stencilView</code> are not actually instances of your views. Instead, they are <em>composite views</em> that wrap a set of views in an object that shares the same method interface. Variables are not exposed.</p>
+
+{% include content-footer.html %}
+{% include page-footer.html %}
